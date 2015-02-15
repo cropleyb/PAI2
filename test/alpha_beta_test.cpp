@@ -1,10 +1,8 @@
 #include "gmock/gmock.h"
-#include "loc.h"
-#include "mock_bridge.h"
-//#include "gtest/gtest.h"
 
 #define private public
 
+#include "loc.h"
 #include "alpha_beta.h"
 
 class AlphaBetaFixture : public testing::Test {
@@ -18,11 +16,9 @@ public:
 	MockBridge() {}
 
     MOCK_METHOD0(foobar, Loc());
-	//virtual void foobar();
-
 };
 
-using ::testing::AtLeast;                     // #1
+using ::testing::AtLeast;
 using ::testing::Return;
 
 TEST_F(AlphaBetaFixture, FindFromOnlyOneOption) {
@@ -32,18 +28,13 @@ TEST_F(AlphaBetaFixture, FindFromOnlyOneOption) {
 	// node, since there is only one choice.
 	MockBridge mb;
 	
-    // EXPECT_EQ(0, 1);
-
-//TEST(PainterTest, CanDrawSomething) {
     Loc locFromFoobar(2,3);
-	EXPECT_CALL(mb, foobar())              // #3
+	EXPECT_CALL(mb, foobar())
       .Times(AtLeast(1))
       .WillOnce(Return(locFromFoobar))
       ;
 
     AlphaBeta ab(mb);
-
-  // Painter painter(&turtle);                   // #4
 
 	Loc move = ab.getBestMove();
 	EXPECT_EQ(move, locFromFoobar);

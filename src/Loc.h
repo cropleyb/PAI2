@@ -13,9 +13,4 @@ private:
 	unsigned short _value = 0;
 };
 
-#if 0
-inline
-Loc::Loc(Coord x, Coord y) : _value
-#endif
-
 #endif
