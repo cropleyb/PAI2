@@ -13,14 +13,39 @@ public:
 class MockBridge : public IABBridge
 {
 public:
-	MockBridge() {}
+	MockBridge() : IABBridge() {}
 
-    MOCK_METHOD0(foobar, Loc());
+    MOCK_CONST_METHOD0(isOneMove, bool());
+    MOCK_METHOD0(getOnlyMove, Loc());
+	MOCK_METHOD0(getUtilityAndMove, std::pair<UtilityValue, Loc>());
+    MOCK_METHOD0(makeNextMove, Loc());
+    MOCK_METHOD0(undoLastMove, void());
+    MOCK_CONST_METHOD1(isCutoff, bool(unsigned char depth));
 };
 
 using ::testing::AtLeast;
 using ::testing::Return;
 
+TEST_F(AlphaBetaFixture, NoOptions) {
+	// Do a search of a tree with no possible moves
+	// - should return 0
+	MockBridge mb;
+	
+	EXPECT_CALL(mb, isOneMove())
+      .WillOnce(Return(true))
+      ;
+	EXPECT_CALL(mb, getOnlyMove())
+      .WillOnce(Return(Loc::INVALID))
+      ;
+
+    AlphaBeta ab(mb);
+
+	Loc move = ab.getBestMove();
+	EXPECT_EQ(move.isValid(), false);
+}
+
+#if 0
+// TODO soon
 TEST_F(AlphaBetaFixture, FindFromOnlyOneOption) {
 	// Do a search of a tree with a single possible move
 	// - should find that move, and return it.
@@ -28,17 +53,21 @@ TEST_F(AlphaBetaFixture, FindFromOnlyOneOption) {
 	// node, since there is only one choice.
 	MockBridge mb;
 	
-    Loc locFromFoobar(2,3);
-	EXPECT_CALL(mb, foobar())
-      .Times(AtLeast(1))
-      .WillOnce(Return(locFromFoobar))
+    Loc locFromBridge(2,3);
+	EXPECT_CALL(mb, isOneMove())
+      .WillOnce(Return(true))
+      ;
+	EXPECT_CALL(mb, getOnlyMove())
+      .WillOnce(Return(locFromBridge))
       ;
 
     AlphaBeta ab(mb);
 
 	Loc move = ab.getBestMove();
-	EXPECT_EQ(move, locFromFoobar);
+	EXPECT_FALSE(move.isValid());
+	EXPECT_EQ(move, locFromBridge);
 }
+#endif
 
 #if 0
     def test_top_level_options(self):
