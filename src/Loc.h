@@ -4,6 +4,10 @@
 typedef unsigned char Coord;
 typedef unsigned short CompressedLoc;
 
+#include <string>
+
+using std::string;
+
 class Loc
 {
 public:
@@ -15,10 +19,11 @@ public:
         { if (dim) return (_value/32); else return (_value%32); }
 
 	bool isValid() const { return _value < (CompressedLoc)(19 * 32); }
+	//string toString() const { return string("(") + (_value/32) + "," + (_value%32) + ")"; }
 
     static Loc INVALID;
 
-private:
+//private:
 	CompressedLoc _value = 0;
 };
 

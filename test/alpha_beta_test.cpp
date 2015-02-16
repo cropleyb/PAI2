@@ -25,6 +25,7 @@ public:
 
 using ::testing::AtLeast;
 using ::testing::Return;
+using ::testing::InSequence;
 
 TEST_F(AlphaBetaFixture, NoOptions) {
 	// Do a search of a tree with no possible moves
@@ -44,8 +45,6 @@ TEST_F(AlphaBetaFixture, NoOptions) {
 	EXPECT_EQ(move.isValid(), false);
 }
 
-#if 0
-// TODO soon
 TEST_F(AlphaBetaFixture, FindFromOnlyOneOption) {
 	// Do a search of a tree with a single possible move
 	// - should find that move, and return it.
@@ -64,10 +63,68 @@ TEST_F(AlphaBetaFixture, FindFromOnlyOneOption) {
     AlphaBeta ab(mb);
 
 	Loc move = ab.getBestMove();
-	EXPECT_FALSE(move.isValid());
+	EXPECT_TRUE(move.isValid());
 	EXPECT_EQ(move, locFromBridge);
 }
-#endif
+
+using std::cout;
+using std::endl;
+
+TEST_F(AlphaBetaFixture, FindFromTwoOptions) {
+	// Do a search of a tree with a single possible move
+	// - should find that move, and return it.
+	// We shouldn't need to evaluate the utility function for that child
+	// node, since there is only one choice.
+	MockBridge mb;
+	
+    Loc locFromBridge1(2,3);
+    std::pair<UtilityValue, Loc> ulpair1(20.5, locFromBridge1);
+    Loc locFromBridge2(4,5);
+    std::pair<UtilityValue, Loc> ulpair2(48.2, locFromBridge2);
+
+	InSequence dummy;
+
+	EXPECT_CALL(mb, isOneMove())
+      .WillOnce(Return(false))
+      ;
+	EXPECT_CALL(mb, isCutoff(0))
+      .WillOnce(Return(false))
+      ;
+	EXPECT_CALL(mb, makeNextMove())
+      .WillOnce(Return(locFromBridge1))
+      ;
+	EXPECT_CALL(mb, isCutoff(1))
+      .WillOnce(Return(true))
+      ;
+	EXPECT_CALL(mb, getUtilityAndMove())
+      .WillOnce(Return(ulpair1))
+      ;
+	EXPECT_CALL(mb, undoLastMove())
+      ;
+	EXPECT_CALL(mb, makeNextMove())
+      .WillOnce(Return(locFromBridge1))
+      ;
+	EXPECT_CALL(mb, isCutoff(1))
+      .WillOnce(Return(true))
+      ;
+	EXPECT_CALL(mb, getUtilityAndMove())
+      .WillOnce(Return(ulpair2))
+      ;
+	EXPECT_CALL(mb, undoLastMove())
+      ;
+	EXPECT_CALL(mb, makeNextMove())
+      .WillOnce(Return(Loc::INVALID))
+      ;
+
+    AlphaBeta ab(mb);
+
+	cout << "1 before getBestMove" << endl;
+	Loc move = ab.getBestMove();
+	cout << "x after getBestMove, (" << (int)move[0] << ',' << (int)move[1] << ')' << endl;
+	cout << "expected: " << locFromBridge2._value << endl;
+	EXPECT_TRUE(move.isValid());
+	EXPECT_EQ(locFromBridge2, move);
+}
 
 #if 0
     def test_top_level_options(self):
