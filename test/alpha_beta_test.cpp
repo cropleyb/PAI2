@@ -29,7 +29,7 @@ using ::testing::InSequence;
 
 TEST_F(AlphaBetaFixture, NoOptions) {
 	// Do a search of a tree with no possible moves
-	// - should return 0
+	// - should return an invalid Loc instance
 	MockBridge mb;
 	
 	EXPECT_CALL(mb, isOneMove())
@@ -71,10 +71,9 @@ using std::cout;
 using std::endl;
 
 TEST_F(AlphaBetaFixture, FindFromTwoOptions) {
-	// Do a search of a tree with a single possible move
+	// Do a search of a tree with two possible moves, both terminal positions
 	// - should find that move, and return it.
-	// We shouldn't need to evaluate the utility function for that child
-	// node, since there is only one choice.
+	// We need to evaluate the utility function for each terminal child node
 	MockBridge mb;
 	
     Loc locFromBridge1(2,3);
@@ -102,7 +101,7 @@ TEST_F(AlphaBetaFixture, FindFromTwoOptions) {
 	EXPECT_CALL(mb, undoLastMove())
       ;
 	EXPECT_CALL(mb, makeNextMove())
-      .WillOnce(Return(locFromBridge1))
+      .WillOnce(Return(locFromBridge2))
       ;
 	EXPECT_CALL(mb, isCutoff(1))
       .WillOnce(Return(true))
@@ -124,6 +123,61 @@ TEST_F(AlphaBetaFixture, FindFromTwoOptions) {
 	cout << "expected: " << locFromBridge2._value << endl;
 	EXPECT_TRUE(move.isValid());
 	EXPECT_EQ(locFromBridge2, move);
+}
+
+TEST_F(AlphaBetaFixture, FindFromTwoOptionsReversed) {
+	// Same as above, only searching the best move first
+	// - should find the first move, and return it.
+	// We need to evaluate the utility function for each terminal child node
+	MockBridge mb;
+	
+    Loc locFromBridge1(2,3);
+    std::pair<UtilityValue, Loc> ulpair1(20.5, locFromBridge1);
+    Loc locFromBridge2(4,5);
+    std::pair<UtilityValue, Loc> ulpair2(17.2, locFromBridge2);
+
+	InSequence dummy;
+
+	EXPECT_CALL(mb, isOneMove())
+      .WillOnce(Return(false))
+      ;
+	EXPECT_CALL(mb, isCutoff(0))
+      .WillOnce(Return(false))
+      ;
+	EXPECT_CALL(mb, makeNextMove())
+      .WillOnce(Return(locFromBridge1))
+      ;
+	EXPECT_CALL(mb, isCutoff(1))
+      .WillOnce(Return(true))
+      ;
+	EXPECT_CALL(mb, getUtilityAndMove())
+      .WillOnce(Return(ulpair1))
+      ;
+	EXPECT_CALL(mb, undoLastMove())
+      ;
+	EXPECT_CALL(mb, makeNextMove())
+      .WillOnce(Return(locFromBridge2))
+      ;
+	EXPECT_CALL(mb, isCutoff(1))
+      .WillOnce(Return(true))
+      ;
+	EXPECT_CALL(mb, getUtilityAndMove())
+      .WillOnce(Return(ulpair2))
+      ;
+	EXPECT_CALL(mb, undoLastMove())
+      ;
+	EXPECT_CALL(mb, makeNextMove())
+      .WillOnce(Return(Loc::INVALID))
+      ;
+
+    AlphaBeta ab(mb);
+
+	cout << "1 before getBestMove" << endl;
+	Loc move = ab.getBestMove();
+	cout << "x after getBestMove, (" << (int)move[0] << ',' << (int)move[1] << ')' << endl;
+	cout << "expected: " << locFromBridge1._value << endl;
+	EXPECT_TRUE(move.isValid());
+	EXPECT_EQ(locFromBridge1, move);
 }
 
 #if 0
