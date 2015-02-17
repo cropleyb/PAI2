@@ -26,11 +26,11 @@ Loc AlphaBeta::getBestMove()
 
 std::pair<UtilityValue, Loc> AlphaBeta::maxValue(UtilityValue alpha, UtilityValue beta, unsigned char depth)
 {
-	cout << "1 in maxValue" << endl;
+	cout << "1 in maxValue - depth: " << (int)depth << endl;
     if (_bridge.isCutoff(depth))
     {
-		cout << "2 in maxValue" << endl;
         std::pair<UtilityValue, Loc> utilMove = _bridge.getUtilityAndMove();
+		cout << "2 in maxValue - getUtilityAndMove gave: " << utilMove.first << endl;
         return utilMove;
     }
 
@@ -44,10 +44,10 @@ std::pair<UtilityValue, Loc> AlphaBeta::maxValue(UtilityValue alpha, UtilityValu
         // deepest level moves. This probably goes in the bridge though
 
 		cout << "4 in maxValue" << endl;
-        // 1. Make and locally store the next suggested move
+        // Make and locally store the next suggested move
         Loc move = _bridge.makeNextMove();
 
-        // 2. No more moves at this level
+        // No more moves at this level
         if (!move.isValid())
         {
 			cout << "5 in maxValue" << endl;
@@ -55,18 +55,21 @@ std::pair<UtilityValue, Loc> AlphaBeta::maxValue(UtilityValue alpha, UtilityValu
         }
 
 		cout << "6 in maxValue" << endl;
-        // 3. Recursively calculate the worst forcible utility value
-        //    for the resultant position
+        // Recursively calculate the worst forcible utility value
+        // for the resultant position
         curr = minValue(alpha, beta, depth+1);
 
 		cout << "7 in maxValue" << endl;
-        // 4. Undo the move made at 1.
+        // Undo the move made above
         _bridge.undoLastMove();
+		cout << "undo to depth " << (int)depth << " in maxValue" << endl;
 
         UtilityValue val = curr.first;
+		cout << "7.5 in maxValue - val: " << val << endl;
+
         if (val > best.first)
         {
-			cout << "8 in maxValue" << endl;
+			cout << "8 in maxValue - update best to: " << val << endl;
             best.first = val;
             best.second = curr.second;
         }
@@ -99,14 +102,77 @@ std::pair<UtilityValue, Loc> AlphaBeta::maxValue(UtilityValue alpha, UtilityValu
 
 std::pair<UtilityValue, Loc> AlphaBeta::minValue(UtilityValue alpha, UtilityValue beta, unsigned char depth)
 {
+	cout << "1 in minValue - depth: " << (int)depth << endl;
     if (_bridge.isCutoff(depth))
-	{
-		// TEMP
-	}
     {
+		cout << "2 in minValue" << endl;
         std::pair<UtilityValue, Loc> utilMove = _bridge.getUtilityAndMove();
         return utilMove;
     }
+	cout << "3 in minValue" << endl;
+    std::pair<UtilityValue,Loc> best(200*INF, Loc(-1,-1));
+    std::pair<UtilityValue,Loc> curr;
+
+    while (true)
+    {
+        // TODO: optimise out maintainence of move suggester for 2nd
+        // deepest level moves. This probably goes in the bridge though
+
+		cout << "4 in minValue" << endl;
+        // Make and locally store the next suggested move
+        Loc move = _bridge.makeNextMove();
+
+        // No more moves at this level
+        if (!move.isValid())
+        {
+			cout << "5 in minValue" << endl;
+            break;
+        }
+
+		cout << "6 in minValue" << endl;
+        // Recursively calculate the worst forcible utility value
+        // for the resultant position
+        curr = maxValue(alpha, beta, depth+1);
+
+		cout << "7 in minValue" << endl;
+        // Undo the move made above
+        _bridge.undoLastMove();
+
+		cout << "undo to depth " << (int)depth << " in minValue" << endl;
+
+        UtilityValue val = curr.first;
+		cout << "7.5 in minValue - val: " << val << endl;
+        if (val < best.first)
+        {
+			cout << "8 in minValue - update best to: " << val << endl;
+            best.first = val;
+            best.second = curr.second;
+        }
+        if (val <= alpha)
+		{
+			cout << "9 in minValue" << endl;
+            break;
+        }
+        if (val < NEGINF/100.0)
+		{
+			cout << "10 in minValue" << endl;
+            // Game lost, can't get a better value
+            break;
+        }
+		cout << "11 in minValue" << endl;
+        if (beta < val)
+		{
+			cout << "12 in minValue" << endl;
+            beta = val;
+		}
+		cout << "13 in minValue" << endl;
+    }
+#if 0
+    // TODO: Save to transposition table
+    // game.save_utility(state, depth, v)
+#endif
+	cout << "14 in minValue" << endl;
+    return best;
 }
 
 #if 0

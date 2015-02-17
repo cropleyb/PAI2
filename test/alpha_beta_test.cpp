@@ -180,6 +180,87 @@ TEST_F(AlphaBetaFixture, FindFromTwoOptionsReversed) {
 	EXPECT_EQ(locFromBridge1, move);
 }
 
+TEST_F(AlphaBetaFixture, OpponentChoosesBadMoveForUs) {
+	// Same as above, only searching the best move first
+	// - should find the first move, and return it.
+	// We need to evaluate the utility function for each terminal child node
+	MockBridge mb;
+
+    Loc loc1(1,1);
+    std::pair<UtilityValue, Loc> ulpair1(1.0, loc1);
+    Loc loc2(2,2);
+    std::pair<UtilityValue, Loc> ulpair2(2.0, loc2);
+    Loc loc3(3,3);
+    std::pair<UtilityValue, Loc> ulpair3(3.0, loc3);
+    Loc loc4(4,4);
+    std::pair<UtilityValue, Loc> ulpair4(4.0, loc4);
+
+	InSequence dummy;
+
+	// This code is indented with the depth of the search.
+	EXPECT_CALL(mb, isOneMove())
+      .WillOnce(Return(false))
+      ;
+	EXPECT_CALL(mb, isCutoff(0))
+      .WillOnce(Return(false))
+      ;
+	EXPECT_CALL(mb, makeNextMove())
+      .WillOnce(Return(loc1))
+      ;
+		EXPECT_CALL(mb, isCutoff(1))
+		  .WillOnce(Return(false))
+		  ;
+		EXPECT_CALL(mb, makeNextMove())
+		  .WillOnce(Return(loc3))
+		  ;
+			EXPECT_CALL(mb, isCutoff(2))
+			  .WillOnce(Return(true))
+			  ;
+			EXPECT_CALL(mb, getUtilityAndMove())
+			  .WillOnce(Return(ulpair3))
+			  ;
+		EXPECT_CALL(mb, undoLastMove())
+		  ;
+		EXPECT_CALL(mb, makeNextMove())
+		  .WillOnce(Return(loc4))
+		  ;
+			EXPECT_CALL(mb, isCutoff(2))
+			  .WillOnce(Return(true))
+			  ;
+			EXPECT_CALL(mb, getUtilityAndMove())
+			  .WillOnce(Return(ulpair4))
+			  ;
+		EXPECT_CALL(mb, undoLastMove())
+		  ;
+		EXPECT_CALL(mb, makeNextMove())
+		  .WillOnce(Return(Loc::INVALID))
+		  ;
+	EXPECT_CALL(mb, undoLastMove())
+      ;
+	EXPECT_CALL(mb, makeNextMove())
+      .WillOnce(Return(loc2))
+      ;
+		EXPECT_CALL(mb, isCutoff(1))
+		  .WillOnce(Return(true))
+		  ;
+		EXPECT_CALL(mb, getUtilityAndMove())
+		  .WillOnce(Return(ulpair2))
+		  ;
+	EXPECT_CALL(mb, undoLastMove())
+      ;
+	EXPECT_CALL(mb, makeNextMove())
+	  .WillOnce(Return(Loc::INVALID))
+	  ;
+
+    AlphaBeta ab(mb);
+
+	cout << "1 before getBestMove" << endl;
+	Loc move = ab.getBestMove();
+	cout << "x after getBestMove, (" << (int)move[0] << ',' << (int)move[1] << ')' << endl;
+	EXPECT_TRUE(move.isValid());
+	EXPECT_EQ(loc3, move);
+}
+
 #if 0
     def test_top_level_options(self):
         game = MockGame([
@@ -271,17 +352,6 @@ class AlphaBetaTest(unittest.TestCase):
         action, value = alphabeta_search(state="S0", game=game)
         self.assertEquals(action, (2, "S3"))
         self.assertEquals(value, 4)
-
-    def test_opponent_chooses_bad_move_for_us(self):
-        game = MockGame([
-            MockState("S0", 1, [(0,"S1"),(1,"S2")]),
-            MockState("S1", 1, [(0,"S3"),(1,"S4")]),
-            MockState("S2", 2, []),
-            MockState("S3", 3, []),
-            MockState("S4", 4, [])])
-        action, value = alphabeta_search(state="S0", game=game)
-        self.assertEquals(action, (0, "S1"))
-        self.assertEquals(value, 3)
 
     def test_only_search_one_depth_level(self):
         game = MockGame([
