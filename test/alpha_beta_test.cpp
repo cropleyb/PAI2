@@ -4,6 +4,7 @@
 
 #include "loc.h"
 #include "alpha_beta.h"
+#include "bdebug.h"
 
 class AlphaBetaFixture : public testing::Test {
 public:
@@ -67,9 +68,6 @@ TEST_F(AlphaBetaFixture, FindFromOnlyOneOption) {
 	EXPECT_EQ(move, locFromBridge);
 }
 
-using std::cout;
-using std::endl;
-
 TEST_F(AlphaBetaFixture, FindFromTwoOptions) {
 	// Do a search of a tree with two possible moves, both terminal positions
 	// - should find that move, and return it.
@@ -117,10 +115,10 @@ TEST_F(AlphaBetaFixture, FindFromTwoOptions) {
 
     AlphaBeta ab(mb);
 
-	cout << "1 before getBestMove" << endl;
+	BD(cout << "1 before getBestMove" << endl);
 	Loc move = ab.getBestMove();
-	cout << "x after getBestMove, (" << (int)move[0] << ',' << (int)move[1] << ')' << endl;
-	cout << "expected: " << locFromBridge2._value << endl;
+	BD(cout << "x after getBestMove, (" << (int)move[0] << ',' << (int)move[1] << ')' << endl);
+	BD(cout << "expected: " << locFromBridge2._value << endl);
 	EXPECT_TRUE(move.isValid());
 	EXPECT_EQ(locFromBridge2, move);
 }
@@ -172,10 +170,10 @@ TEST_F(AlphaBetaFixture, FindFromTwoOptionsReversed) {
 
     AlphaBeta ab(mb);
 
-	cout << "1 before getBestMove" << endl;
+	BD(cout << "1 before getBestMove" << endl);
 	Loc move = ab.getBestMove();
-	cout << "x after getBestMove, (" << (int)move[0] << ',' << (int)move[1] << ')' << endl;
-	cout << "expected: " << locFromBridge1._value << endl;
+	BD(cout << "x after getBestMove, (" << (int)move[0] << ',' << (int)move[1] << ')' << endl);
+	BD(cout << "expected: " << locFromBridge1._value << endl);
 	EXPECT_TRUE(move.isValid());
 	EXPECT_EQ(locFromBridge1, move);
 }
@@ -254,9 +252,9 @@ TEST_F(AlphaBetaFixture, OpponentChoosesBadMoveForUs) {
 
     AlphaBeta ab(mb);
 
-	cout << "1 before getBestMove" << endl;
+	BD(cout << "1 before getBestMove" << endl);
 	Loc move = ab.getBestMove();
-	cout << "x after getBestMove, (" << (int)move[0] << ',' << (int)move[1] << ')' << endl;
+	BD(cout << "x after getBestMove, (" << (int)move[0] << ',' << (int)move[1] << ')' << endl);
 	EXPECT_TRUE(move.isValid());
 	EXPECT_EQ(loc3, move);
 }
