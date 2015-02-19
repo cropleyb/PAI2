@@ -1,0 +1,13 @@
+How to unit test pai2?
+
+Components
+----------
+AlphaBeta - Mock out Bridge as template
+
+Move Suggestor
+Utility Calculator
+Utility Stats
+Game State
+ABBridge
+
+
