@@ -7,18 +7,28 @@
 
 class PriorityLevelFixture : public testing::Test {
 public:
+	void arc(Loc l, int inc=1) { pl.addOrRemoveCandidate(l, inc); }
 
+	PriorityLevel pl;
+	Loc candidateBuffer[MAX_CANDS];
 };
 
 TEST_F(PriorityLevelFixture, testEmpty)
 {
-	PriorityLevel pl;
-	
-	Loc candidateBuffer[MAX_CANDS];
-
 	int candCount = pl.copyCands(candidateBuffer);
 
 	EXPECT_EQ(0, candCount);
+}
+
+TEST_F(PriorityLevelFixture, testAddOne)
+{
+	Loc l(5,3);
+	arc(l);
+	
+	int candCount = pl.copyCands(candidateBuffer);
+
+	EXPECT_EQ(1, candCount);
+	EXPECT_EQ(l, candidateBuffer[0]);
 }
 
 #if 0
@@ -39,11 +49,6 @@ class PriorityLevelTest(unittest.TestCase):
 
 
 #if 0
-    def test_add_1(self):
-        self.arc((4,5))
-        l = self.get_iter()
-        self.assertEquals(len(l), 1)
-        self.assertEquals(self.num_cands(), 1)
 
     def test_add_2(self):
         self.arc((4,5))
