@@ -1,6 +1,6 @@
 #include "loc.h"
 
-typedef unsigned short Ind;
+typedef short Ind;
 
 #define MAX_NODES 19*19
 
@@ -47,7 +47,8 @@ class PriorityLevel
 public:
 	PriorityLevel();
 
-	int copyCands(Loc *candidateBuffer);
+	Ind getCands(Loc *locBuffer, Ind *countBuffer, Ind max);
+	Ind getNumCands();
 	void addOrRemoveCandidate(Loc l, int inc=1);
 
 private:

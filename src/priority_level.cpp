@@ -1,5 +1,6 @@
 #include "priority_level.h"
 
+#include "bdebug.h"
 
 #if 0
 	// TODO
@@ -23,12 +24,6 @@ PriorityLevel::PriorityLevel()
 	_dlNodes[MAX_NODES-1].setNextInd(-1);
 }
 
-int
-PriorityLevel::copyCands(Loc *candidateBuffer)
-{
-	return 0;
-}
-
 #if 0
     def add_or_remove_candidates(self, cand_list, inc):
         for cand_loc in cand_list:
@@ -38,44 +33,57 @@ PriorityLevel::copyCands(Loc *candidateBuffer)
 void
 PriorityLevel::addOrRemoveCandidate(Loc candLoc, int inc)
 {
+	BD(cout << "ARC: " << (void *)this << "----------------" << endl);
+
 	// Get the index of the node for the given candidate location
 	CompressedLoc candLocVal = candLoc._value;
 	Ind nodeInd = _nodeIndByLoc[candLocVal];
 
 	if (nodeInd < 0)
 	{
+		BD(cout << "ARC 1" << endl);
 		if (inc < 0)
 		{
+			BD(cout << "ARC 2" << endl);
+			// Trying to reduce the count below zero. Error?
 			return;
 		}
+		BD(cout << "ARC 3" << endl);
 		// assert(inc > 0)
 
 		// Node for this loc has no count yet
 		// Use the next node from the free list
+		BD(cout << "ARC 4 - using node " << _freeListInd << endl);
 		nodeInd = _freeListInd;
 		_nodeIndByLoc[candLocVal] = nodeInd;
-		DLNode node = _dlNodes[nodeInd];
+		DLNode &node = _dlNodes[nodeInd];
 		_freeListInd = node._nextInd;
 
 		Ind nextInd = _dlHeadInd;
 		Ind oldHeadInd = _dlHeadInd;
 		node.setPrevInd(-1); // "node" is currently the head of the list
 		node.setNextInd(nextInd);
+		BD(cout << "ARC 4a" << endl);
 
 		if (oldHeadInd >= 0)
 		{
+			BD(cout << "ARC 5" << endl);
 			DLNode &oldHead = _dlNodes[oldHeadInd];
 			oldHead.setPrevInd(nodeInd);
 		}
 
+		BD(cout << "ARC set head ind to ---------------" << nodeInd << endl);
 		_dlHeadInd = nodeInd;
+		BD(cout << "ARC set node loc to ---------------" << candLoc._value << endl);
 		node.setLoc(candLoc);
+		BD(cout << "ARC set inc to " << inc << endl);
 		node.adjustCount(inc);
 
 		_numCands += 1;
 	}
 	else
 	{
+		BD(cout << "ARC B 1" << endl);
 		// A node for this loc has already been used, update its count
 		DLNode &node = _dlNodes[nodeInd];
 		Ind newCount = node.adjustCount(inc);
@@ -118,115 +126,37 @@ PriorityLevel::addOrRemoveCandidate(Loc candLoc, int inc)
 	}
 }
 
-#if 0
+Ind
+PriorityLevel::getNumCands()
+{
+	return _numCands;
+}
 
-class PriorityLevel:
-    MAXnODES = 19*19
+Ind
+PriorityLevel::getCands(Loc *locBuffer, Ind *countBuffer, Ind max)
+{
+	BD(cout << "getCands top - " << (void *)this << endl);
+	BD(cout << "getCands 1 - _dlHeadInd" << _dlHeadInd << endl);
+	Ind numAdded = 0;
+	Ind currInd = _dlHeadInd;
 
-    def _init__(self):
-        self.free_list_ind = 0
-        self.dl_head_ind = -1
-        self.dl_nodes = []
-        self.num_cands = 0
-        for i in range(self.MAX_NODES):
-            node = DLNode()
-            node.set_next_ind(i+1)
-            self.dl_nodes.append(node)
+	while ((currInd >= 0) && (numAdded < max))
+	{
+		BD(cout << "getCands 2 - currInd: " << currInd << endl);
+		DLNode &currNode = _dlNodes[currInd];
+		if (currNode._loc == Loc::INVALID)
+		{
+			BD(cout << "getCands 3 - INVALID" << endl);
+			break;
+		}
+		BD(cout << "getCands 4 - adding " << currNode._loc._value << endl);
+		locBuffer[numAdded] = currNode._loc;
+		countBuffer[numAdded] = currNode._count;
+		currInd = currNode._nextInd;
+		numAdded++;
+	}
+	BD(cout << "getCands 5" << endl);
 
-        node.set_next_ind(-1)
+	return numAdded;
+}
 
-        self.node_ind_by_loc = [-1] * self.MAX_NODES
-
-    def add_or_remove_candidates(self, cand_list, inc):
-        for cand_loc in cand_list:
-            self.add_or_remove_candidate(cand_loc, inc)
-
-    def add_or_remove_candidate(self, cand_loc, inc):
-        assert(cand_loc.__class__ == Loc)
-        # Get the index of the node for the given candidate location
-        cand_loc_val = cand_loc.val
-        node_ind = self.node_ind_by_loc[cand_loc_val]
-
-        dl_nodes = self.dl_nodes
-
-        if node_ind < 0:
-            if inc < 0:
-                return
-            #assert(inc > 0)
-
-            # Node for this loc has no count yet
-            # Use the next node from the free list
-            node_ind = self.free_list_ind
-            self.node_ind_by_loc[cand_loc_val] = node_ind
-            node = dl_nodes[node_ind]
-            self.free_list_ind = node.next_ind
-
-            next_ind = old_head_ind = self.dl_head_ind
-            node.set_prev_ind(-1) # "node" is currently the head of the list
-            node.set_next_ind(next_ind)
-
-            if old_head_ind >= 0:
-                old_head = dl_nodes[old_head_ind]
-                old_head.set_prev_ind(node_ind)
-
-            self.dl_head_ind = node_ind
-            node.set_loc(cand_loc)
-            node.adjust_count(inc)
-
-            self.num_cands += 1
-
-        else:
-            # A node for this loc has already been used, update its count
-            node = dl_nodes[node_ind]
-            new_count = node.adjust_count(inc)
-
-            if new_count <= 0:
-                # We don't need this node any more
-                assert(new_count == 0)
-
-                # Remove it from its current place in the dl_list
-                prev_node_ind = node.prev_ind
-                next_node_ind = node.next_ind
-
-                if prev_node_ind >= 0:
-                    prev_node = dl_nodes[prev_node_ind]
-                    prev_node.set_next_ind(next_node_ind)
-
-                if next_node_ind >= 0:
-                    next_node = dl_nodes[next_node_ind]
-                    next_node.set_prev_ind(prev_node_ind)
-
-                if self.dl_head_ind == node_ind:
-                    #st()
-                    new_head_ind = node.next_ind
-                    self.dl_head_ind = new_head_ind
-
-                self.node_ind_by_loc[cand_loc_val] = -1
-
-                # TODO Put it at the head of the free list
-                node.next_ind = self.free_list_ind
-                self.free_list_ind = node_ind
-
-                self.num_cands -= 1
-
-    def get_num_cands(self):
-        return self.num_cands
-
-    #def __iter__(self):
-    def get_iter(self):
-        dl_nodes = self.dl_nodes
-        curr_ind = self.dl_head_ind
-
-        while curr_ind >= 0:
-            try:
-                curr_node = dl_nodes[curr_ind]
-            except:
-                st()
-            curr_loc = curr_node.loc
-            curr_ind = curr_node.next_ind
-            curr_count = curr_node.count
-            #assert curr_ind >= 0
-            assert curr_count >= 0
-            assert curr_loc.val >= 0
-            yield curr_loc, curr_count
-#endif
