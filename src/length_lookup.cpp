@@ -1,26 +1,9 @@
 
-#include <stdint.h>
+#include "length_lookup.h"
+// typedef uint64_t U64
 
-#include "length_lookup_table.h"
-
-LengthTableItem lengthLookup[MaxSpanMask];
-
-bool initialised=false;
-
-// class lengthtablebuilder
-// {
-void buildAll()
-{
-	if (initialised) return;
-	initialised = true;
-	lengthLookup[1]._colour = P1;
-	lengthLookup[1]._length = 1;
-	lengthLookup[1]._open[0] = false;
-	lengthLookup[1]._open[1] = true;
-	lengthLookup[1]._open[2] = true;
-	lengthLookup[1]._open[3] = true;
-	lengthLookup[1]._open[4] = true;
-}
+// # TODO: This will need to be increased for pente-keryo
+//#define COUNT_LENGTH=5
 
 #if 0
 from pentai.base.defines import *

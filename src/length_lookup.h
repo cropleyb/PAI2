@@ -1,28 +1,28 @@
+#ifndef _length_lookup_h
+#define _length_lookup_h
 
-#include <stdint.h>
+#include "defines.h"
 
-#include "length_lookup_table.h"
-
-LengthTableItem lengthLookup[MaxSpanMask];
-
-bool initialised=false;
-
-// class lengthtablebuilder
-// {
-void buildAll()
-{
-	if (initialised) return;
-	initialised = true;
-	lengthLookup[1]._colour = P1;
-	lengthLookup[1]._length = 1;
-	lengthLookup[1]._open[0] = false;
-	lengthLookup[1]._open[1] = true;
-	lengthLookup[1]._open[2] = true;
-	lengthLookup[1]._open[3] = true;
-	lengthLookup[1]._open[4] = true;
-}
+//typedef unsigned char Colour; // TODO: Move
+//typedef unsigned short Mask;
+//#define P1 1 // TODO: Constants!
+//#define P2 2
 
 #if 0
+template<typename T>
+void processSubstrips(Mask pattern, int firstInd, int lastInd, T *stats, Colour colour)
+{
+
+}
+
+// typedef uint64_t U64
+#endif
+
+#if 0
+# TODO: This will need to be increased to 6 for pente-keryo
+cdef int COUNT_LENGTH
+COUNT_LENGTH=5
+
 from pentai.base.defines import *
 
 from pentai.ai.utility_stats cimport report_length_candidate
@@ -100,5 +100,38 @@ def prepare_length_lookups():
 
 # TODO: Something better than a global
 prepare_length_lookups()
+
+@cython.profile(False)
+cpdef process_substrips(U64 bs, int min_ind, int max_ind, us, int inc):
+    """
+    Try to match each stretch of 5 positions against our lookup table.
+    If we find a match then report the number of stones of the same
+    colour via length_counters, and report the empty locations (indices)
+    for use by the search filter (us = UtilityStats)
+    If we are removing the contributions, inc will be set to -1
+    """
+    cdef int ind
+    cdef int shift
+    cdef U64 occs
+    cdef int colour
+    cdef int length
+
+    for ind in range(min_ind, max_ind+1-4):
+        # Extract just the 5 * 2 bits that we're currently interested in.
+        shift = ind << 1 # x 2 for 2 bits each occ - EMPTY:0, P1:1 or P2:2
+        occs = (bs >> shift) & FIVE_OCCS_MASK
+
+        # Now see if it's in our lookup table
+        try:
+            colour, length, empty_list, rep_str = length_lookup[occs]
+        except KeyError:
+            # Nope. Not interesting.
+            continue
+
+        # Report it
+        shifted_empties = [e+ind for e in empty_list]
+        report_length_candidate(us, colour, length, shifted_empties, inc)
 #endif
 
+
+#endif

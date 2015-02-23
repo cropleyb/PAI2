@@ -4,13 +4,13 @@
 
 #include "bdebug.h"
 #include "loc.h"
-#include "length_lookup_table.h"
+#include "length_lookup.h"
 
 #include <string>
 using std::string;
 using testing::ElementsAre;
 
-Mask maskStringToBs(const string &occStr)
+Mask patternStringToBs(const string &occStr)
 {
     Mask ret = 0;
 	int i = occStr.length() - 1;
@@ -23,30 +23,71 @@ Mask maskStringToBs(const string &occStr)
     return ret;
 }
 
-class LengthLookupTableFixture : public testing::Test {
+class MockStats
+{
 public:
-	LengthTableItem *processMaskString(const string &occStr) 
+    // MOCK_METHOD5(reportLengthCandidate, void(Colour colour, int length, int numLocs, Loc *locs, int inc));
+	void reportLengthCandidate(Colour c, int length, int numLocs, Loc *locs, int inc)
 	{
-		buildAll();
-		Mask occs = maskStringToBs(occStr);
-		return &lengthLookup[occs];
+		int **counter;
+		if (c == P1) {
+			black_counter[length] += (numLocs * inc);
+		} else {
+			white_counter[length] += (numLocs * inc);
+		}
+		// TODO: set of locs.
+	}
+#if 0
+    MOCK_CONST_METHOD0(isOneMove, bool());
+	MOCK_METHOD0(getUtilityAndMove, std::pair<UtilityValue, Loc>());
+    MOCK_METHOD0(makeNextMove, Loc());
+    MOCK_METHOD0(undoLastMove, void());
+    MOCK_CONST_METHOD1(isCutoff, bool(unsigned char depth));
+#endif
+	int black_counter[5] = {0, 0, 0, 0, 0};
+	int white_counter[5] = {0, 0, 0, 0, 0};
+};
+
+#if 0
+template<MockStats>
+void processSubstrips(Mask pattern, int firstInd, int lastInd, T *stats, Colour colour);
+#endif
+
+class LengthLookupFixture : public testing::Test {
+public:
+	MockStats ms;
+	void processSubstripsString(const string &occStr, Colour colour) 
+	{
+		Mask occs = patternStringToBs(occStr);
+		// processSubstrips(occs, 0, occStr.length()-1, &ms, colour);
 	}
 };
 
+using ::testing::AtLeast;
+using ::testing::Return;
+using ::testing::InSequence;
 
-TEST_F(LengthLookupTableFixture, NoLocsYet) {
-	LengthTableItem *item = processMaskString("     ");
-	EXPECT_EQ(0, item->_colour);
-	EXPECT_EQ(0, item->_length);
-	ASSERT_THAT(item->_open, ElementsAre(false,false,false,false,false));
+TEST_F(LengthLookupFixture, NoLocsYet) {
+	processSubstripsString("         ", P1);
 }
 
-TEST_F(LengthLookupTableFixture, CountSingleBlack) {
-	LengthTableItem *item = processMaskString("B    ");
-	EXPECT_EQ(P1, item->_colour);
-	EXPECT_EQ(1, item->_length);
-	ASSERT_THAT(item->_open, ElementsAre(false,true,true,true,true));
+#if 0
+// TODO...
+TEST_F(LengthLookupFixture, CountSingleBlack) {
+	// Do a search of a tree with no possible moves
+	// - should return an invalid Loc instance
+	// MockStats ms;
+	
+	// EXPECT_CALL(ms, reportLengthCandidate(P1, 1, 1, ms.whatever, 1));
+	  // .WillOnce(Return(Loc::INVALID))
+    //MOCK_METHOD5(reportLengthCandidate, void(Colour colour, int length, int numLocs, Loc *locs, int inc));
+	// template<MockStats> 
+	//processSubstrips(&ms); //int firstInd, int lastInd, T *stats, Colour colour)
+	processSubstripsString("    B    ", P1);
+	ASSERT_THAT(ms.black_counter, ElementsAre(5,0,0,0,0));
+	ASSERT_THAT(ms.white_counter, ElementsAre(0,0,0,0,0));
 }
+#endif
 
 
 #if 0
