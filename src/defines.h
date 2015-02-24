@@ -5,6 +5,7 @@
 
 typedef unsigned char Colour;
 typedef unsigned short Mask;
+#define EMPTY 0
 #define P1 1 // TODO: Constants!
 #define P2 2
 

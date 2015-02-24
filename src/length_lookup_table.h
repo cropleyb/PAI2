@@ -5,12 +5,16 @@
 
 void buildAll();
 
+typedef unsigned char Length;
+
 class LengthTableItem
 {
 public:
+	LengthTableItem() : _colour(EMPTY), _length(0) {}
+
 	Colour _colour;
-	int _length;
-	bool _open[WIN_LENGTH];
+	Length _length;
+	bool _empty[WIN_LENGTH];
 };
 
 const int MaxSpanMask = 4 * 4 * 4 * 4 * 4;
