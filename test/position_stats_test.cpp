@@ -11,17 +11,13 @@
 using std::string;
 //using testing::ElementsAre;
 
+//#define MAX_CANDS 20
+
 class PositionStatsFixture : public testing::Test {
 public:
 	PositionStats ps;
-#if 0
-	MockStats ms;
-	void processSubstripsString(const string &occStr, Colour colour) 
-	{
-		Mask occs = patternStringToBs(occStr);
-		// processSubstrips(occs, 0, occStr.length()-1, &ms, colour);
-	}
-#endif
+	Loc locBuffer[MAX_CANDS];
+	Ind countBuffer[MAX_CANDS];
 };
 
 using ::testing::AtLeast;
@@ -33,11 +29,17 @@ typedef vector<Loc> LocArr;
 
 TEST_F(PositionStatsFixture, NoStatsYet) {
 	LocArr ll;
-	ll.push_back(Loc(5,2));
+	Loc l1(5,2);
+	ll.push_back(l1);
 	ps.reportLengthCandidates(P1, 1, ll, 1);
-	// Ind getCands(Loc *locBuffer, Ind *countBuffer, Ind max);
-	// Ind getNumCands();
-	EXPECT_EQ(1, ps.getLengthPriorityLevel(P1, 1).getNumCands());
+
+	const PriorityLevel &pl = ps.getLengthPriorityLevel(P1, 1);
+	EXPECT_EQ(1, pl.getNumCands());
+
+	Ind found = pl.getCands(locBuffer, countBuffer, 4);
+	EXPECT_EQ(1, found);
+	EXPECT_EQ(l1, locBuffer[0]);
+	EXPECT_EQ(1, countBuffer[0]);
 	
 	//ASSERT_THAT(ms.blackCounter, ElementsAre(5,0,0,0,0));
 }

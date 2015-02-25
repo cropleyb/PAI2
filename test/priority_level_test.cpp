@@ -3,8 +3,7 @@
 #include "priority_level.h"
 #include "gmock/gmock.h"
 #include "bdebug.h"
-
-#define MAX_CANDS 20
+#include "defines.h"
 
 class PriorityLevelFixture : public testing::Test {
 public:

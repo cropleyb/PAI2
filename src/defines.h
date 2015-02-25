@@ -16,5 +16,6 @@ const Colour P1 = 1;
 const Colour P2 = 2;
 
 #define WIN_LENGTH 5
+#define MAX_CANDS 20
 
 #endif
