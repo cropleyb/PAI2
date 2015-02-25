@@ -21,7 +21,7 @@ Loc AlphaBeta::getBestMove()
     return val.second;
 }
 
-std::pair<UtilityValue, Loc> AlphaBeta::maxValue(UtilityValue alpha, UtilityValue beta, unsigned char depth)
+std::pair<UtilityValue, Loc> AlphaBeta::maxValue(UtilityValue alpha, UtilityValue beta, Depth depth)
 {
 	BD(cout << "1 in maxValue - depth: " << (int)depth << endl);
     if (_bridge.isCutoff(depth))
@@ -97,7 +97,7 @@ std::pair<UtilityValue, Loc> AlphaBeta::maxValue(UtilityValue alpha, UtilityValu
     return best;
 }
 
-std::pair<UtilityValue, Loc> AlphaBeta::minValue(UtilityValue alpha, UtilityValue beta, unsigned char depth)
+std::pair<UtilityValue, Loc> AlphaBeta::minValue(UtilityValue alpha, UtilityValue beta, Depth depth)
 {
 	BD(cout << "1 in minValue - depth: " << (int)depth << endl);
     if (_bridge.isCutoff(depth))

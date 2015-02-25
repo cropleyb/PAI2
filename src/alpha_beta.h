@@ -1,5 +1,6 @@
 #include "loc.h"
 #include "ab_utility.h"
+#include "defines.h"
 #include <utility>
 
 class IABBridge
@@ -14,7 +15,7 @@ public:
 
 	virtual Loc makeNextMove() =0;
 	virtual void undoLastMove() =0;
-    virtual bool isCutoff(unsigned char depth) const =0;
+    virtual bool isCutoff(Depth depth) const =0;
 };
 
 class AlphaBeta
@@ -25,8 +26,8 @@ public:
 	Loc getBestMove();
 
 private:
-    std::pair<UtilityValue, Loc> maxValue(UtilityValue alpha, UtilityValue beta, unsigned char depth);
-    std::pair<UtilityValue, Loc> minValue(UtilityValue alpha, UtilityValue beta, unsigned char depth);
+    std::pair<UtilityValue, Loc> maxValue(UtilityValue alpha, UtilityValue beta, Depth depth);
+    std::pair<UtilityValue, Loc> minValue(UtilityValue alpha, UtilityValue beta, Depth depth);
 
 	IABBridge &_bridge;
 };

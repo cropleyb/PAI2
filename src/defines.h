@@ -11,6 +11,7 @@ typedef unsigned char Length;
 typedef signed char Step;
 typedef unsigned short Mask;
 typedef unsigned char Colour;
+typedef unsigned char Depth;
 const Colour EMPTY = 0;
 const Colour P1 = 1;
 const Colour P2 = 2;
