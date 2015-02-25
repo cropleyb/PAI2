@@ -47,8 +47,8 @@ class PriorityLevel
 public:
 	PriorityLevel();
 
-	Ind getCands(Loc *locBuffer, Ind *countBuffer, Ind max);
-	Ind getNumCands();
+	Ind getCands(Loc *locBuffer, Ind *countBuffer, Ind max) const;
+	Ind getNumCands() const;
 	void addOrRemoveCandidate(Loc l, int inc=1);
 
 private:

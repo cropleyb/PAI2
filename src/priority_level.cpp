@@ -127,13 +127,13 @@ PriorityLevel::addOrRemoveCandidate(Loc candLoc, int inc)
 }
 
 Ind
-PriorityLevel::getNumCands()
+PriorityLevel::getNumCands() const
 {
 	return _numCands;
 }
 
 Ind
-PriorityLevel::getCands(Loc *locBuffer, Ind *countBuffer, Ind max)
+PriorityLevel::getCands(Loc *locBuffer, Ind *countBuffer, Ind max) const
 {
 	BD(cout << "getCands top - " << (void *)this << endl);
 	BD(cout << "getCands 1 - _dlHeadInd" << _dlHeadInd << endl);
@@ -143,7 +143,7 @@ PriorityLevel::getCands(Loc *locBuffer, Ind *countBuffer, Ind max)
 	while ((currInd >= 0) && (numAdded < max))
 	{
 		BD(cout << "getCands 2 - currInd: " << currInd << endl);
-		DLNode &currNode = _dlNodes[currInd];
+		const DLNode &currNode = _dlNodes[currInd];
 		if (currNode._loc == Loc::INVALID)
 		{
 			BD(cout << "getCands 3 - INVALID" << endl);

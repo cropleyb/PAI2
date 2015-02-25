@@ -2,14 +2,18 @@
 #define _defines_h
 
 #include <cstdint>
-
-typedef unsigned char Colour;
-typedef unsigned short Mask;
-#define EMPTY 0
-#define P1 1 // TODO: Constants!
-#define P2 2
+#include <vector>
+using std::vector;
 
 typedef uint64_t U64;
+
+typedef unsigned char Length;
+typedef signed char Step;
+typedef unsigned short Mask;
+typedef unsigned char Colour;
+const Colour EMPTY = 0;
+const Colour P1 = 1;
+const Colour P2 = 2;
 
 #define WIN_LENGTH 5
 
