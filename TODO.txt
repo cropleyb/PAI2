@@ -43,6 +43,7 @@ BoardLine
  - max index
  - min index?
  - Left edge start Loc?
+/LengthLookupTable
 BoardDirectionRep
  - array of BoardLines
  - bit representation of whole board
@@ -50,15 +51,16 @@ BoardDirectionRep
  - convert from ind to Loc and back
  - beforeSetOcc(loc, colour, posStats)
  - afterSetOcc(loc, colour, posStats)
+ - Uses lengthLookupTable
 BoardReps
  - 4x BoardDirectionReps
  - setOcc(loc, colour, posStats)
 Game
  - BoardRep
-PriorityLevel
+/PriorityLevel
 PositionStats
- - PriorityLevel * 4 for line lengths
- - PriorityLevel * 2 for takes and threats
+ /- PriorityLevel * 4 for line lengths
+ /- PriorityLevel * 2 for takes and threats
  - Captured counts
  - Chessboard counts
 CandidateCache
@@ -66,5 +68,7 @@ CandidateCache
  - max depth * number of Locs
  - max depth * next Loc index
  - MoveSuggestor = old PriorityFilter
+AlphaBeta
+ - first cut
 
 	
