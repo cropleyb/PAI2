@@ -11,12 +11,42 @@
 #if 0
 template<typename T>
 void processSubstrips(Mask pattern, int firstInd, int lastInd, T *stats, Colour colour)
+// process_substrips(U64 bs, int min_ind, int max_ind, us, int inc):
 {
+	/*
+    Try to match each stretch of 5 positions against our lookup table.
+    If we find a match then report the number of stones of the same
+    colour via length_counters, and report the empty locations (indices)
+    for use by the search filter (us = UtilityStats)
+    If we are removing the contributions, inc will be set to -1
+	*/
+    int ind;
+    int shift;
+    U64 occs;
+    int colour;
+    int length;
 
+    for (ind=minInd; ind<maxInd-1+4;ind++)
+	{
+        # Extract just the 5 * 2 bits that we're currently interested in.
+        shift = ind << 1 # x 2 for 2 bits each occ - EMPTY:0, P1:1 or P2:2
+        occs = (bs >> shift) & FIVE_OCCS_MASK
+
+        # Now see if it's in our lookup table
+        try:
+            colour, length, emptyList, repStr = lengthLookup[occs]
+        except KeyError:
+            # Nope. Not interesting.
+            continue
+
+        # Report it
+        shiftedEmpties = [e+ind for e in emptyList]
+        reportLengthCandidate(us, colour, length, shiftedEmpties, inc)
+	}
 }
+#endif
 
 // typedef uint64_t U64
-#endif
 
 #if 0
 # TODO: This will need to be increased to 6 for pente-keryo

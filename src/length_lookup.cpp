@@ -6,6 +6,26 @@
 //#define COUNT_LENGTH=5
 
 #if 0
+typedef unsigned char Length;
+
+class LengthTableItem
+{
+public:
+	LengthTableItem() : _colour(EMPTY), _length(0) {}
+
+	Colour _colour;
+	Length _length;
+	bool _empty[WIN_LENGTH];
+};
+
+const int MaxSpanMask = 4 * 4 * 4 * 4 * 4;
+
+// The lengthLookup (and its contained class) is the only
+// public scope variable, and only to LengthLookup.cpp (hopefully :) )
+extern LengthTableItem lengthLookup[MaxSpanMask];
+#endif
+
+#if 0
 from pentai.base.defines import *
 
 from pentai.ai.utility_stats cimport report_length_candidate

@@ -18,6 +18,9 @@ public:
 };
 
 const int MaxSpanMask = 4 * 4 * 4 * 4 * 4;
+
+// The lengthLookup (and its contained class) is the only
+// public scope variable, and only to LengthLookup.cpp (hopefully :) )
 extern LengthTableItem lengthLookup[MaxSpanMask];
 
 #if 0

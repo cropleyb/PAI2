@@ -29,11 +29,10 @@ public:
     // MOCK_METHOD5(reportLengthCandidate, void(Colour colour, int length, int numLocs, Loc *locs, int inc));
 	void reportLengthCandidate(Colour c, int length, int numLocs, Loc *locs, int inc)
 	{
-		int **counter;
 		if (c == P1) {
-			black_counter[length] += (numLocs * inc);
+			blackCounter[length] += (numLocs * inc);
 		} else {
-			white_counter[length] += (numLocs * inc);
+			whiteCounter[length] += (numLocs * inc);
 		}
 		// TODO: set of locs.
 	}
@@ -44,8 +43,8 @@ public:
     MOCK_METHOD0(undoLastMove, void());
     MOCK_CONST_METHOD1(isCutoff, bool(unsigned char depth));
 #endif
-	int black_counter[5] = {0, 0, 0, 0, 0};
-	int white_counter[5] = {0, 0, 0, 0, 0};
+	int blackCounter[5] = {0, 0, 0, 0, 0};
+	int whiteCounter[5] = {0, 0, 0, 0, 0};
 };
 
 #if 0
@@ -84,8 +83,8 @@ TEST_F(LengthLookupFixture, CountSingleBlack) {
 	// template<MockStats> 
 	//processSubstrips(&ms); //int firstInd, int lastInd, T *stats, Colour colour)
 	processSubstripsString("    B    ", P1);
-	ASSERT_THAT(ms.black_counter, ElementsAre(5,0,0,0,0));
-	ASSERT_THAT(ms.white_counter, ElementsAre(0,0,0,0,0));
+	ASSERT_THAT(ms.blackCounter, ElementsAre(5,0,0,0,0));
+	ASSERT_THAT(ms.whiteCounter, ElementsAre(0,0,0,0,0));
 }
 #endif
 
