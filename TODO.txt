@@ -8,6 +8,63 @@ Move Suggestor
 Utility Calculator
 Utility Stats
 Game State
-ABBridge
+ABBridge? Or is this the Game/Game State?
 
+US
+--
+board locations: (these are shared with move suggestor)
+total counts/length for each player
+  "      "  /caps    "    "    "
+  "      "  /threats "    "    "
 
+other measurements:
+caps for each player (should also be used by move suggestor)
+  "      "  /enc. 4s "    "    "
+chessboard counts
+
+Index + BoardStrip -> Loc
+start of strip + direction * index
+can this be done with ints? probably :)
+
+who calls who?
+Game::make move
+    setOcc
+		before - iterate over masks for board strip
+			length lookup table access
+			convert indices to Locs
+			update move suggestor/utility data
+		update board strip data (place/capture 1 piece)
+		after - iterate over masks for board strip
+			length lookup table access
+			convert indices to Locs
+			update move suggestor/utility data
+
+BoardLine
+ - max index
+ - min index?
+ - Left edge start Loc?
+BoardDirectionRep
+ - array of BoardLines
+ - bit representation of whole board
+ - direction (Loc offset)
+ - convert from ind to Loc and back
+ - beforeSetOcc(loc, colour, posStats)
+ - afterSetOcc(loc, colour, posStats)
+BoardReps
+ - 4x BoardDirectionReps
+ - setOcc(loc, colour, posStats)
+Game
+ - BoardRep
+PriorityLevel
+PositionStats
+ - PriorityLevel * 4 for line lengths
+ - PriorityLevel * 2 for takes and threats
+ - Captured counts
+ - Chessboard counts
+CandidateCache
+ - max depth * max breadth array of Locs
+ - max depth * number of Locs
+ - max depth * next Loc index
+ - MoveSuggestor = old PriorityFilter
+
+	
