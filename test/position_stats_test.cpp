@@ -112,3 +112,33 @@ TEST_F(PositionStatsFixture, AddP1Take) {
 	const PriorityLevel &pl2 = ps.getTakesPriorityLevel(P2);
 	EXPECT_EQ(0, pl2.getNumCands());
 }
+
+TEST_F(PositionStatsFixture, AddP2Take) {
+	Loc l1(5,2);
+	ps.reportTake(P2, l1, 1);
+
+	const PriorityLevel &pl2 = ps.getTakesPriorityLevel(P2);
+	EXPECT_EQ(1, pl2.getNumCands());
+	const PriorityLevel &pl1 = ps.getTakesPriorityLevel(P1);
+	EXPECT_EQ(0, pl1.getNumCands());
+}
+
+TEST_F(PositionStatsFixture, AddP1Threat) {
+	Loc l1(5,2);
+	ps.reportThreat(P1, l1, 1);
+
+	const PriorityLevel &pl1 = ps.getThreatsPriorityLevel(P1);
+	EXPECT_EQ(1, pl1.getNumCands());
+	const PriorityLevel &pl2 = ps.getThreatsPriorityLevel(P2);
+	EXPECT_EQ(0, pl2.getNumCands());
+}
+
+TEST_F(PositionStatsFixture, AddP2Threat) {
+	Loc l1(5,2);
+	ps.reportThreat(P2, l1, 1);
+
+	const PriorityLevel &pl2 = ps.getThreatsPriorityLevel(P2);
+	EXPECT_EQ(1, pl2.getNumCands());
+	const PriorityLevel &pl1 = ps.getThreatsPriorityLevel(P1);
+	EXPECT_EQ(0, pl1.getNumCands());
+}

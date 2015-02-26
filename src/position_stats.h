@@ -41,10 +41,21 @@ public:
 		return _takes[colour];
 	}
 
+	void reportThreat(Colour c, Loc l, int inc)
+	{
+		_threats[c].addOrRemoveCandidate(l, inc);
+	}
+
+	const PriorityLevel &getThreatsPriorityLevel(Colour colour) const
+	{
+		return _threats[colour];
+	}
+
 private:
 	PriorityLevel _levels[3][6];
 	CapCount _captured[3];
 	PriorityLevel _takes[3];
+	PriorityLevel _threats[3];
 };
 
 #endif
