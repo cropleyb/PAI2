@@ -51,6 +51,8 @@ public:
 		return _threats[colour];
 	}
 
+	// TODO: checkerboardStats
+	
 private:
 	PriorityLevel _levels[3][6];
 	CapCount _captured[3];

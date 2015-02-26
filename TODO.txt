@@ -61,7 +61,7 @@ Game
 PositionStats
  /- PriorityLevel * 4 for line lengths
  /- PriorityLevel * 2 for takes and threats
- - Captured counts
+ /- Captured counts
  - Chessboard counts
 CandidateCache
  - max depth * max breadth array of Locs
