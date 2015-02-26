@@ -82,3 +82,33 @@ TEST_F(PositionStatsFixture, AddAndRemoveSingleP1) {
 	Ind found = pl.getCands(locBuffer, countBuffer, 4); // Max
 	EXPECT_EQ(0, found);
 }
+
+TEST_F(PositionStatsFixture, AddP1Captured) {
+	ps.reportCaptured(P1, 2, 1); // count, inc
+
+	int capturedP1 = ps.getCaptured(P1);
+	EXPECT_EQ(2, capturedP1);
+	int capturedP2 = ps.getCaptured(P2);
+	EXPECT_EQ(0, capturedP2);
+}
+
+TEST_F(PositionStatsFixture, AddAndRemoveP2Captured) {
+	ps.reportCaptured(P2, 3, 1);
+	ps.reportCaptured(P2, 2, 1);
+	ps.reportCaptured(P2, 2, -1);
+
+	int capturedP1 = ps.getCaptured(P1);
+	EXPECT_EQ(0, capturedP1);
+	int capturedP2 = ps.getCaptured(P2);
+	EXPECT_EQ(3, capturedP2);
+}
+
+TEST_F(PositionStatsFixture, AddP1Take) {
+	Loc l1(5,2);
+	ps.reportTake(P1, l1, 1);
+
+	const PriorityLevel &pl1 = ps.getTakesPriorityLevel(P1);
+	EXPECT_EQ(1, pl1.getNumCands());
+	const PriorityLevel &pl2 = ps.getTakesPriorityLevel(P2);
+	EXPECT_EQ(0, pl2.getNumCands());
+}

@@ -21,7 +21,7 @@ public:
 	MOCK_METHOD0(getUtilityAndMove, std::pair<UtilityValue, Loc>());
     MOCK_METHOD0(makeNextMove, Loc());
     MOCK_METHOD0(undoLastMove, void());
-    MOCK_CONST_METHOD1(isCutoff, bool(unsigned char depth));
+    MOCK_CONST_METHOD1(isCutoff, bool(Depth depth));
 };
 
 using ::testing::AtLeast;
