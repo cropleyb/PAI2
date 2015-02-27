@@ -2,6 +2,7 @@
 #define _position_stats_h
 
 #include "priority_level.h"
+#include "defines.h"
 
 class PositionStats
 {

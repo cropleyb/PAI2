@@ -70,5 +70,7 @@ TEST_F(CandidateCacheFixture, GetMovesFrom2DepthLevels) {
 	ASSERT_THAT(res_locs1, ElementsAre(l4,l5,l6));
 	vector<Loc> res_locs0 = getMoves(0);
 	ASSERT_THAT(res_locs0, ElementsAre(l1,l2,l3));
+	vector<Loc> res_locs0_again = getMoves(0);
+	ASSERT_THAT(res_locs0_again, ElementsAre());
 }
 
