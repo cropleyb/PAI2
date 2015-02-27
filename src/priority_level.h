@@ -1,8 +1,9 @@
 #include "loc.h"
+#include "defines.h"
 
 typedef short Ind;
 
-#define MAX_NODES 19*19
+// #define MAX_NODES 19*19
 
 class DLNode
 {
@@ -47,7 +48,7 @@ class PriorityLevel
 public:
 	PriorityLevel();
 
-	Ind getCands(Loc *locBuffer, Ind *countBuffer, Ind max) const;
+	Ind getCands(Loc *locBuffer, Ind max) const;
 	Ind getNumCands() const;
 	void addOrRemoveCandidate(Loc l, int inc=1);
 
@@ -55,7 +56,7 @@ private:
     Ind _freeListInd = 0;
     Ind _dlHeadInd = -1;
     Ind _numCands = 0;
-    DLNode _dlNodes[MAX_NODES];
-    Ind _nodeIndByLoc[MAX_NODES];
+    DLNode _dlNodes[MAX_LOCS];
+    Ind _nodeIndByLoc[MAX_LOCS];
 };
 

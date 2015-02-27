@@ -1,5 +1,4 @@
 #include "priority_level.h"
-
 #include "bdebug.h"
 
 #if 0
@@ -15,13 +14,13 @@ PriorityLevel::PriorityLevel()
     _dlHeadInd = -1;
     _numCands = 0;
 
-	for (int i=0; i<MAX_NODES; i++)
+	for (int i=0; i<MAX_LOCS; i++)
 	{
         _dlNodes[i].setNextInd(i+1);
 		_nodeIndByLoc[i] = -1;
 	}
 
-	_dlNodes[MAX_NODES-1].setNextInd(-1);
+	_dlNodes[MAX_LOCS-1].setNextInd(-1);
 }
 
 #if 0
@@ -133,7 +132,7 @@ PriorityLevel::getNumCands() const
 }
 
 Ind
-PriorityLevel::getCands(Loc *locBuffer, Ind *countBuffer, Ind max) const
+PriorityLevel::getCands(Loc *locBuffer, Ind max) const
 {
 	BD(cout << "getCands top - " << (void *)this << endl);
 	BD(cout << "getCands 1 - _dlHeadInd" << _dlHeadInd << endl);
@@ -151,7 +150,7 @@ PriorityLevel::getCands(Loc *locBuffer, Ind *countBuffer, Ind max) const
 		}
 		BD(cout << "getCands 4 - adding " << currNode._loc._value << endl);
 		locBuffer[numAdded] = currNode._loc;
-		countBuffer[numAdded] = currNode._count;
+		//countBuffer[numAdded] = currNode._count;
 		currInd = currNode._nextInd;
 		numAdded++;
 	}

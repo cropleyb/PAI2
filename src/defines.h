@@ -22,5 +22,8 @@ const Colour P2 = 2;
 #define WIN_LENGTH 5
 #define MAX_CANDS 20
 #define MAX_DEPTH 20
+#define MAX_LOCS 19*19
+
+#define otherPlayer(p) (p==P1?P2:P1)
 
 #endif
