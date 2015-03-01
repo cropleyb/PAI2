@@ -3,12 +3,12 @@
 #define private public
 
 #include "loc.h"
-#include "move_suggestor.h"
+#include "move_suggester.h"
 #include "position_stats.h"
 #include "candidate_cache.h"
 #include "bdebug.h"
 
-class MoveSuggestorFixture : public testing::Test {
+class MoveSuggesterFixture : public testing::Test {
 public:
 
 };
@@ -32,10 +32,10 @@ using ::testing::Return;
 #endif
 using ::testing::InSequence;
 
-TEST_F(MoveSuggestorFixture, NoMoves) {
+TEST_F(MoveSuggesterFixture, NoMoves) {
 	PositionStats ps;
 	CandidateCache cc;
-	MoveSuggestor ms(ps, cc);
+	MoveSuggester ms(ps, cc);
 
 	Loc move = ms.getNextMove(0);
 
@@ -45,10 +45,10 @@ TEST_F(MoveSuggestorFixture, NoMoves) {
 using std::vector;
 typedef vector<Loc> LocArr;
 
-TEST_F(MoveSuggestorFixture, OneMove) {
+TEST_F(MoveSuggesterFixture, OneMove) {
 	PositionStats ps;
 	CandidateCache cc;// TODO: Make this invisible to the user code?
-	MoveSuggestor ms(ps, cc);
+	MoveSuggester ms(ps, cc);
 
 	LocArr ll;
 	Loc l1(1,1);

@@ -1,14 +1,14 @@
 
-#include "move_suggestor.h"
+#include "move_suggester.h"
 #include "position_stats.h"
 #include "candidate_cache.h"
 
-MoveSuggestor::MoveSuggestor(PositionStats &ps, CandidateCache &cc)
+MoveSuggester::MoveSuggester(PositionStats &ps, CandidateCache &cc)
 	: _posStats(ps), _candCache(cc)
 {
 }
 
-Loc MoveSuggestor::getNextMove(Depth depth)
+Loc MoveSuggester::getNextMove(Depth depth)
 {
 	Loc move = _candCache.getNextMove(depth);
 	if (move.isValid()) {
@@ -28,7 +28,7 @@ Loc MoveSuggestor::getNextMove(Depth depth)
 	//return Loc::INVALID;
 }
 
-Breadth MoveSuggestor::filterCandidates(Loc *moveBuffer, Depth depth, Breadth maxMoves, Colour ourColour)
+Breadth MoveSuggester::filterCandidates(Loc *moveBuffer, Depth depth, Breadth maxMoves, Colour ourColour)
 {
 	Breadth found = 0;
 	bool tried[MAX_LOCS];

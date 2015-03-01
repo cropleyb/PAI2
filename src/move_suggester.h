@@ -4,10 +4,10 @@
 class PositionStats;
 class CandidateCache;
 
-class MoveSuggestor
+class MoveSuggester
 {
 public:
-	MoveSuggestor(PositionStats &ps, CandidateCache &cc);
+	MoveSuggester(PositionStats &ps, CandidateCache &cc);
 
 	Loc getNextMove(Depth d);
 
