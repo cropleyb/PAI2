@@ -4,7 +4,14 @@
 class CandidateCache
 {
 public:
-	CandidateCache() {}
+	CandidateCache()
+	{
+		for (Breadth b=0; b<MAX_DEPTH; b++)
+		{
+			_moveCount[b] = 0;
+			_currIndex[b] = 0;
+		}
+	}
 
 	Loc getNextMove(Depth depth) {
 		Breadth currInd = _currIndex[depth];
@@ -14,6 +21,7 @@ public:
 			_currIndex[depth]++;
 			return _bigBuffer[depth][currInd];
 		}
+		_moveCount[depth] = 0;
 		// No more left at current depth
 		return Loc::INVALID;
 	}
@@ -25,6 +33,11 @@ public:
 	void setDepthMoves(Depth d, unsigned char moveCount) { 
 		_moveCount[d] = moveCount;
 		_currIndex[d] = 0;
+	}
+
+	bool needsFilling(Depth d)
+	{
+		return _moveCount[d] == 0;
 	}
 
 private:

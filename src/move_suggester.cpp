@@ -10,22 +10,18 @@ MoveSuggester::MoveSuggester(PositionStats &ps, CandidateCache &cc)
 
 Loc MoveSuggester::getNextMove(Depth depth)
 {
-	Loc move = _candCache.getNextMove(depth);
-	if (move.isValid()) {
-		return move;
+	if (_candCache.needsFilling(depth))
+	{
+		Loc *moveBuffer = _candCache.getBuffer(depth);
+
+		Breadth maxMoves = 9;
+		if (depth > 3) maxMoves = 4;
+
+		Breadth moveCount = filterCandidates(moveBuffer, depth, maxMoves, P1); // FIXME - our real colour
+		_candCache.setDepthMoves(depth, moveCount);
 	}
 
-    Loc *moveBuffer = _candCache.getBuffer(depth);
-	Breadth maxMoves = 9;
-	if (depth > 3) maxMoves = 4;
-	Breadth moveCount = filterCandidates(moveBuffer, depth, maxMoves, P1); // FIXME - our real colour
-	_candCache.setDepthMoves(depth, moveCount);
 	return _candCache.getNextMove(depth);
-
-	// No moves prepared at this depth. Must generate them.
-	//const PriorityLevel &ones = _posStats.getLengthPriorityLevel(P1, 1);
-
-	//return Loc::INVALID;
 }
 
 Breadth MoveSuggester::filterCandidates(Loc *moveBuffer, Depth depth, Breadth maxMoves, Colour ourColour)
