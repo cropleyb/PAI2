@@ -84,10 +84,8 @@ TEST_F(MoveSuggesterFixture, TwoMoves) {
 	EXPECT_EQ(move.isValid(), true);
 	EXPECT_EQ(l2, move);
 
-#if 0
 	move = ms.getNextMove(2);
 	EXPECT_EQ(move.isValid(), false);
-#endif
 }
 
 #if 0
