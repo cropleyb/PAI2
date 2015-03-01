@@ -115,6 +115,48 @@ TEST_F(MoveSuggesterFixture, TwoMovesDiffPL) {
 	EXPECT_EQ(move.isValid(), false);
 }
 
+TEST_F(MoveSuggesterFixture, AddAndThenRemoveSameLoc) {
+	PositionStats ps;
+	CandidateCache cc;// TODO: Make this invisible to the user code?
+	MoveSuggester ms(ps, cc);
+
+	Loc l1(1,1);
+	LocArr ll1;
+	ll1.push_back(l1);
+	ps.reportLengthCandidates(P1, 4, ll1, 1); // length 4, inc
+	ps.reportLengthCandidates(P1, 4, ll1, -1); // length 4, dec
+
+	Loc move = ms.getNextMove(2);
+	EXPECT_EQ(move.isValid(), false);
+}
+
+TEST_F(MoveSuggesterFixture, Extend3BeforeExtend2) {
+	PositionStats ps;
+	CandidateCache cc;// TODO: Make this invisible to the user code?
+	MoveSuggester ms(ps, cc);
+
+	Loc l1(1,1);
+	LocArr ll1;
+	ll1.push_back(l1);
+	ps.reportLengthCandidates(P1, 3, ll1, 1);
+
+	Loc l2(2,2);
+	LocArr ll2;
+	ll2.push_back(l2);
+	ps.reportLengthCandidates(P1, 2, ll2, 1);
+
+	Loc move = ms.getNextMove(2);
+	EXPECT_EQ(move.isValid(), true);
+	EXPECT_EQ(l1, move);
+
+	move = ms.getNextMove(2);
+	EXPECT_EQ(move.isValid(), true);
+	EXPECT_EQ(l2, move);
+
+	move = ms.getNextMove(2);
+	EXPECT_EQ(move.isValid(), false);
+}
+
 #if 0
     def setUp(self):
         self.pf = PriorityFilter6()
@@ -130,42 +172,6 @@ TEST_F(MoveSuggesterFixture, TwoMovesDiffPL) {
 
     def ar_threat(self, *args, **kwargs):
         self.pf.add_or_remove_threat(*args, **kwargs)
-
-    def test_dont_start_in_the_middle_13(self):
-        l = list(self.pf.get_iter(P1))
-        self.assertEquals(len(l), 0)
-
-    def test_add_and_remove(self):
-        self.arc(P1, 4, ((3,4),))
-        self.arc(P1, 4, ((3,4),), -1)
-        self.arc(P1, 3, ((3,2),))
-        l = list(self.pf.get_iter(P1))
-        self.assertEquals(len(l), 1)
-        self.assertEquals(l[0],(3,2))
-#endif
-
-#if 0
-TEST_F(AlphaBetaFixture, FindFromOnlyOneOption) {
-	// Do a search of a tree with a single possible move
-	// - should find that move, and return it.
-	// We shouldn't need to evaluate the utility function for that child
-	// node, since there is only one choice.
-	MockBridge mb;
-	
-    Loc locFromBridge(2,3);
-	EXPECT_CALL(mb, isOneMove())
-      .WillOnce(Return(true))
-      ;
-	EXPECT_CALL(mb, getOnlyMove())
-      .WillOnce(Return(locFromBridge))
-      ;
-
-    AlphaBeta ab(mb);
-
-	Loc move = ab.getBestMove();
-	EXPECT_TRUE(move.isValid());
-	EXPECT_EQ(move, locFromBridge);
-}
 #endif
 
 #if 0
