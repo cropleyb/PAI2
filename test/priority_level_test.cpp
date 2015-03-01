@@ -99,3 +99,35 @@ TEST_F(PriorityLevelFixture, testAddTooManyToIterateOver)
 	EXPECT_EQ(l2, locBuffer[1]);
 }
 
+TEST_F(PriorityLevelFixture, testDoubleComesFirstA)
+{
+	Loc l1(1,1);
+	Loc l2(2,2);
+	arc(l1);
+	arc(l2);
+	arc(l2);
+	
+	int candCount = pl.getCands(locBuffer, 2);
+
+	EXPECT_EQ(2, candCount);
+	EXPECT_EQ(l2, locBuffer[0]);
+	EXPECT_EQ(l1, locBuffer[1]);
+}
+
+#if 0
+// TODO keep them sorted by count?
+TEST_F(PriorityLevelFixture, testDoubleComesFirstB)
+{
+	Loc l1(1,1);
+	Loc l2(2,2);
+	arc(l1);
+	arc(l1);
+	arc(l2);
+	
+	int candCount = pl.getCands(locBuffer, 2);
+
+	EXPECT_EQ(2, candCount);
+	EXPECT_EQ(l1, locBuffer[0]);
+	EXPECT_EQ(l2, locBuffer[1]);
+}
+#endif

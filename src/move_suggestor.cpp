@@ -36,9 +36,29 @@ Breadth MoveSuggestor::filterCandidates(Loc *moveBuffer, Depth depth, Breadth ma
 	Colour theirColour = otherPlayer(ourColour);
 	
 	// bool onePoss = getPriorityLevels(ourColour);
-	const PriorityLevel &pl = _posStats.getLengthPriorityLevel(ourColour, 4);
-	Breadth foundFromPL = pl.getCands(moveBuffer, maxMoves-found);
+	Ind coloursInOrder[2] = {ourColour, theirColour};
+
 	
+	for (int slotInd = 4; slotInd >= 0; slotInd--)
+	{
+		
+		for (int colourInd = 0; colourInd < 2; colourInd++)
+		{
+
+			const PriorityLevel &pl = _posStats.getLengthPriorityLevel(coloursInOrder[colourInd], slotInd);
+			Breadth foundFromPL = pl.getCands(moveBuffer, maxMoves-found);
+
+			found += foundFromPL;
+			if (found >= maxMoves)
+			{
+				break;
+			}
+			moveBuffer += foundFromPL;
+	
+		}
+	}
+	return found;
+
 #if 0
 	for slot in candidate_slots:
 		#slot_arr = slot.iteritems()
@@ -46,8 +66,8 @@ Breadth MoveSuggestor::filterCandidates(Loc *moveBuffer, Depth depth, Breadth ma
 		sorted_slot = [(count, loc) for (loc, count) in slot_arr]
 		sorted_slot.sort(reverse=True)
 		for count, loc in sorted_slot:
-#endif
 	return found;
+#endif
 }
 
 #if 0

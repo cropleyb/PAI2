@@ -45,33 +45,20 @@ TEST_F(MoveSuggestorFixture, NoMoves) {
 using std::vector;
 typedef vector<Loc> LocArr;
 
-#if 0
-// TODO
 TEST_F(MoveSuggestorFixture, OneMove) {
 	PositionStats ps;
-	CandidateCache cc;
+	CandidateCache cc;// TODO: Make this invisible to the user code?
 	MoveSuggestor ms(ps, cc);
 
 	LocArr ll;
 	Loc l1(1,1);
-	Loc l2(2,2);
-	Loc l3(3,3);
 	ll.push_back(l1);
-	ll.push_back(l2);
-	ll.push_back(l3);
-	ps.reportLengthCandidates(P2, 2, ll, 1); // length 1, inc
+	ps.reportLengthCandidates(P2, 2, ll, 1); // length 2, inc
 
-	Loc move = ms.getNextMove(3);
+	Loc move = ms.getNextMove(3); // depth
 	EXPECT_EQ(move.isValid(), true);
 	EXPECT_EQ(l1, move);
-	move = ms.getNextMove(3);
-	EXPECT_EQ(move.isValid(), true);
-	EXPECT_EQ(l2, move);
-	move = ms.getNextMove(3);
-	EXPECT_EQ(move.isValid(), true);
-	EXPECT_EQ(l3, move);
 }
-#endif
 
 #if 0
     def setUp(self):

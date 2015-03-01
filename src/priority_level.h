@@ -53,6 +53,10 @@ public:
 	void addOrRemoveCandidate(Loc l, int inc=1);
 
 private:
+	// TODO?
+	// void reorderLeft(Ind ind);
+	// void reorderRight(Ind ind);
+
     Ind _freeListInd = 0;
     Ind _dlHeadInd = -1;
     Ind _numCands = 0;

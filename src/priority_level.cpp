@@ -10,6 +10,7 @@
 
 PriorityLevel::PriorityLevel()
 {
+	BD(cout << "PriorityLevel constructor" << this << "----------------" << endl);
     _freeListInd = 0;
     _dlHeadInd = -1;
     _numCands = 0;
@@ -66,7 +67,7 @@ PriorityLevel::addOrRemoveCandidate(Loc candLoc, int inc)
 
 		if (oldHeadInd >= 0)
 		{
-			BD(cout << "ARC 5" << endl);
+			BD(cout << "ARC 5 " << endl);
 			DLNode &oldHead = _dlNodes[oldHeadInd];
 			oldHead.setPrevInd(nodeInd);
 		}
@@ -111,6 +112,7 @@ PriorityLevel::addOrRemoveCandidate(Loc candLoc, int inc)
 			if (_dlHeadInd == nodeInd)
 			{
 				Ind newHeadInd = node._nextInd;
+				BD(cout << "addOrRemoveCandidate: setting headInd to " << newHeadInd << endl);
 				_dlHeadInd = newHeadInd;
 			}
 
