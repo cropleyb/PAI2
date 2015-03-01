@@ -2,6 +2,7 @@
 #include "move_suggester.h"
 #include "position_stats.h"
 #include "candidate_cache.h"
+#include "bdebug.h"
 
 MoveSuggester::MoveSuggester(PositionStats &ps, CandidateCache &cc)
 	: _posStats(ps), _candCache(cc)
@@ -18,6 +19,7 @@ Loc MoveSuggester::getNextMove(Depth depth)
 		if (depth > 3) maxMoves = 4;
 
 		Breadth moveCount = filterCandidates(moveBuffer, depth, maxMoves, P1); // FIXME - our real colour
+		BD(cout << "Setting depth moves for depth " << (int)depth << " to " << (int)moveCount << endl;)
 		_candCache.setDepthMoves(depth, moveCount);
 	}
 
@@ -34,23 +36,23 @@ Breadth MoveSuggester::filterCandidates(Loc *moveBuffer, Depth depth, Breadth ma
 	// bool onePoss = getPriorityLevels(ourColour);
 	Ind coloursInOrder[2] = {ourColour, theirColour};
 
-	
-	for (int slotInd = 4; slotInd >= 0; slotInd--)
+	for (int slotInd=4; slotInd>=0; slotInd--)
 	{
-		
-		for (int colourInd = 0; colourInd < 2; colourInd++)
+		for (int colourInd=0; colourInd<2; colourInd++)
 		{
-
 			const PriorityLevel &pl = _posStats.getLengthPriorityLevel(coloursInOrder[colourInd], slotInd);
+			BD(cout << "Searching for up to " << maxMoves-found << " in MS" << endl;)
 			Breadth foundFromPL = pl.getCands(moveBuffer, maxMoves-found);
+			BD(cout << "Found " << (int)foundFromPL << endl;)
 
 			found += foundFromPL;
 			if (found >= maxMoves)
 			{
-				break;
+				// (two breaks would be good)
+				BD(cout << "Found enough in MS" << endl;)
+				return found;
 			}
 			moveBuffer += foundFromPL;
-	
 		}
 	}
 	return found;

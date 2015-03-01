@@ -31,7 +31,7 @@ public:
 
 	// Report how many items are used in the buffer, and reset the "iterator"
 	void setDepthMoves(Depth d, unsigned char moveCount) { 
-		_moveCount[d] = moveCount;
+		_moveCount[d] += moveCount;
 		_currIndex[d] = 0;
 	}
 

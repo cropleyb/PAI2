@@ -63,7 +63,7 @@ TEST_F(MoveSuggesterFixture, OneMove) {
 	EXPECT_EQ(move.isValid(), false);
 }
 
-TEST_F(MoveSuggesterFixture, TwoMoves) {
+TEST_F(MoveSuggesterFixture, TwoMovesSamePL) {
 	PositionStats ps;
 	CandidateCache cc;// TODO: Make this invisible to the user code?
 	MoveSuggester ms(ps, cc);
@@ -88,19 +88,20 @@ TEST_F(MoveSuggesterFixture, TwoMoves) {
 	EXPECT_EQ(move.isValid(), false);
 }
 
-#if 0
-TEST_F(MoveSuggesterFixture, TwoMoves) {
+TEST_F(MoveSuggesterFixture, TwoMovesDiffPL) {
 	PositionStats ps;
 	CandidateCache cc;// TODO: Make this invisible to the user code?
 	MoveSuggester ms(ps, cc);
 
-	LocArr ll;
 	Loc l1(1,1);
+	LocArr ll1;
+	ll1.push_back(l1);
+	ps.reportLengthCandidates(P1, 4, ll1, 1); // length 4, inc
+
 	Loc l2(2,2);
-	ll.push_back(l2);
-	ll.push_back(l1);
-	ll.push_back(l1);
-	ps.reportLengthCandidates(P1, 4, ll, 1); // length 4, inc
+	LocArr ll2;
+	ll2.push_back(l2);
+	ps.reportLengthCandidates(P1, 2, ll2, 1); // length 2, inc
 
 	Loc move = ms.getNextMove(2);
 	EXPECT_EQ(move.isValid(), true);
@@ -109,8 +110,10 @@ TEST_F(MoveSuggesterFixture, TwoMoves) {
 	move = ms.getNextMove(2);
 	EXPECT_EQ(move.isValid(), true);
 	EXPECT_EQ(l2, move);
+
+	move = ms.getNextMove(2);
+	EXPECT_EQ(move.isValid(), false);
 }
-#endif
 
 #if 0
     def setUp(self):
