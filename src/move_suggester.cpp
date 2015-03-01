@@ -33,8 +33,14 @@ Breadth MoveSuggester::filterCandidates(Loc *moveBuffer, Depth depth, Breadth ma
 
 	Colour theirColour = otherPlayer(ourColour);
 	
-	// bool onePoss = getPriorityLevels(ourColour);
+	// bool onePoss = getPriorityLevels(ourColour); TODO
 	Ind coloursInOrder[2] = {ourColour, theirColour};
+	if (depth % 2)
+	{
+		// TODO: Ugly
+		coloursInOrder[0] = theirColour;
+		coloursInOrder[1] = ourColour;
+	}
 
 	for (int slotInd=4; slotInd>=0; slotInd--)
 	{

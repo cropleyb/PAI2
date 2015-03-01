@@ -184,6 +184,33 @@ TEST_F(MoveSuggesterFixture, ExtendOursBeforeTheirs) {
 	EXPECT_EQ(move.isValid(), false);
 }
 
+TEST_F(MoveSuggesterFixture, ExtendTheirsBeforeOurs) {
+	PositionStats ps;
+	CandidateCache cc;// TODO: Make this invisible to the user code?
+	MoveSuggester ms(ps, cc);
+
+	Loc l1(1,1);
+	LocArr ll1;
+	ll1.push_back(l1);
+	ps.reportLengthCandidates(P1, 3, ll1, 1);
+
+	Loc l2(2,2);
+	LocArr ll2;
+	ll2.push_back(l2);
+	ps.reportLengthCandidates(P2, 3, ll2, 1);
+
+	Loc move = ms.getNextMove(1);
+	EXPECT_EQ(move.isValid(), true);
+	EXPECT_EQ(l2, move);
+
+	move = ms.getNextMove(1);
+	EXPECT_EQ(move.isValid(), true);
+	EXPECT_EQ(l1, move);
+
+	move = ms.getNextMove(1);
+	EXPECT_EQ(move.isValid(), false);
+}
+
 TEST_F(MoveSuggesterFixture, IterateTwiceNoChange) {
 	PositionStats ps;
 	CandidateCache cc;// TODO: Make this invisible to the user code?
