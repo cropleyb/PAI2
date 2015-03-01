@@ -245,6 +245,28 @@ TEST_F(MoveSuggesterFixture, IterateTwiceNoChange) {
 	EXPECT_EQ(move.isValid(), false);
 }
 
+TEST_F(MoveSuggesterFixture, IterateDifferentDepths) {
+	PositionStats ps;
+	CandidateCache cc;// TODO: Make this invisible to the user code?
+	MoveSuggester ms(ps, cc);
+
+	Loc l1(1,1);
+	LocArr ll1;
+	ll1.push_back(l1);
+	ps.reportLengthCandidates(P1, 1, ll1, 1);
+
+	Loc move = ms.getNextMove(0);
+	EXPECT_EQ(move.isValid(), true);
+	EXPECT_EQ(l1, move);
+
+	move = ms.getNextMove(1);
+	EXPECT_EQ(move.isValid(), true);
+	EXPECT_EQ(l1, move);
+
+	move = ms.getNextMove(2);
+	EXPECT_EQ(move.isValid(), true);
+	EXPECT_EQ(l1, move);
+}
 #if 0
     def setUp(self):
         self.pf = PriorityFilter6()
