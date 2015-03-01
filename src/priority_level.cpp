@@ -10,7 +10,7 @@
 
 PriorityLevel::PriorityLevel()
 {
-	BD(cout << "PriorityLevel constructor" << this << "----------------" << endl);
+	//BD(cout << "PriorityLevel constructor" << this << "----------------" << endl);
     _freeListInd = 0;
     _dlHeadInd = -1;
     _numCands = 0;

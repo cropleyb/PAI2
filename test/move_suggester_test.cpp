@@ -60,6 +60,28 @@ TEST_F(MoveSuggesterFixture, OneMove) {
 	EXPECT_EQ(l1, move);
 }
 
+TEST_F(MoveSuggesterFixture, TwoMoves) {
+	PositionStats ps;
+	CandidateCache cc;// TODO: Make this invisible to the user code?
+	MoveSuggester ms(ps, cc);
+
+	LocArr ll;
+	Loc l1(1,1);
+	Loc l2(2,2);
+	ll.push_back(l2);
+	ll.push_back(l1);
+	ll.push_back(l1);
+	ps.reportLengthCandidates(P1, 4, ll, 1); // length 4, inc
+
+	Loc move = ms.getNextMove(2);
+	EXPECT_EQ(move.isValid(), true);
+	EXPECT_EQ(l1, move);
+
+	move = ms.getNextMove(2);
+	EXPECT_EQ(move.isValid(), true);
+	EXPECT_EQ(l2, move);
+}
+
 #if 0
     def setUp(self):
         self.pf = PriorityFilter6()
