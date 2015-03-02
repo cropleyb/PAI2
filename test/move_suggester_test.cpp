@@ -19,6 +19,15 @@ public:
 
 	MoveSuggesterFixture() : ms(ps, cc) {}
 
+	LocArr getLocsInOrder(Depth d)
+	{
+		LocArr la;
+		for (Loc loc=ms.getNextMove(d); loc.isValid(); loc=ms.getNextMove(d)) {
+			la.push_back(loc);
+		}
+		return la;
+	}
+
 	void addLocs(LocArr & /* ll */)
 	{
 	}
@@ -38,22 +47,21 @@ public:
 		ps.reportLengthCandidates(c, l, ll, inc);
 	}
 
-#if 0
-    void set_captured_by(self, colour, captured)
+	// Hack for testing...
+    void setCapturedBy(Colour colour, int count)
 	{
-        pf.captured[colour] = captured;
+		ps._captured[colour] = count;
 	}
 
-    void ar_take(self, *args, **kwargs)
+    void arTake(Colour c, Loc l, int inc)
 	{
-        pf.add_or_remove_take(*args, **kwargs);
+		ps._takes[c].addOrRemoveCandidate(l, inc);
 	}
 
-    void ar_threat(self, *args, **kwargs)
+    void arThreat(Colour c, Loc l, int inc)
 	{
-        pf.add_or_remove_threat(*args, **kwargs);
+		ps._threats[c].addOrRemoveCandidate(l, inc);
 	}
-#endif
 };
 
 using ::testing::InSequence;
@@ -221,343 +229,310 @@ TEST_F(MoveSuggesterFixture, IterateDifferentDepths) {
 	EXPECT_EQ(l1, move);
 }
 
-#if 0
-
-#!/usr/bin/env python
-
-import unittest
-
-from pentai.base.board import *
-from pentai.ai.priority_filter_6 import *
-
-class PriorityFilter6Test(unittest.TestCase)
+TEST_F(MoveSuggesterFixture, dontStartInTheMiddle13)
 {
-    void setUp(self)
-	{
-        pf = PriorityFilter6();
-	}
+	// Starting in the middle of the board is not handled here.
+	LocArr la = getLocsInOrder(0);
+	EXPECT_EQ(0, la.size());
+}
 
-    void arc(self, colour, length, candidate_list, inc=1)
-	{
-        pf.add_or_remove_candidates(colour, length, candidate_list, inc);
-	}
 
-    void set_captured_by(self, colour, captured)
-	{
-        pf.captured[colour] = captured;
-	}
+TEST_F(MoveSuggesterFixture, test_add_and_remove)
+{
+	arcs(P1, 4, 1, Loc(3,4));
+	arcs(P1, 4, -1, Loc(3,4));
+	arcs(P1, 3, 1, Loc(3,2));
+	LocArr la = getLocsInOrder(0);
+	EXPECT_EQ(la.size(), 1);
+	EXPECT_EQ(Loc(3,2), la[0]);
+}
 
-    void ar_take(self, *args, **kwargs)
-	{
-        pf.add_or_remove_take(*args, **kwargs);
-	}
+#if 0
+TEST_F(MoveSuggesterFixture, test_iterate_over_our_four)
+{
+	arcs(P1, 4, ((3,4),));
+	arcs(P1, 3, ((3,2),));
+	LocArr la = getLocsInOrder(0);
+	EXPECT_EQ(la.size(), 1);
+	EXPECT_EQ(l[0],(3,4));
+}
 
-    void ar_threat(self, *args, **kwargs)
-	{
-        pf.add_or_remove_threat(*args, **kwargs);
-	}
+TEST_F(MoveSuggesterFixture, test_iterate_over_one_of_their_fours)
+{
+	arcs(P2, 4, ((3,4),));
+	ar_take(P1, (3,2));
+	set_captured_by(P1, 6);
+	LocArr la = getLocsInOrder(0);
+	EXPECT_EQ(la.size(), 2);
+	EXPECT_EQ(l[0],(3,4));
+	EXPECT_EQ(l[1],(3,2));
+}
 
-    void test_dont_start_in_the_middle_13(self)
-	{
-        l = list(pf.get_iter(P1));
-        assertEquals(len(l), 0);
-	}
+TEST_F(MoveSuggesterFixture, test_two_of_their_fours_try_the_take)
+{
+	arcs(P2, 4, ((1,2),));
+	arcs(P2, 4, ((3,4),));
+	ar_take(P1, (3,2));
+	LocArr la = getLocsInOrder(0);
+	EXPECT_EQ(la.size(), 1);
+	EXPECT_EQ(l[0],(3,2));
+}
 
-    void test_add_and_remove(self)
-	{
-        arc(P1, 4, ((3,4),));
-        arc(P1, 4, ((3,4),), -1);
-        arc(P1, 3, ((3,2),));
-        l = list(pf.get_iter(P1));
-        assertEquals(len(l), 1);
-        assertEquals(l[0],(3,2));
-	}
+TEST_F(MoveSuggesterFixture, test_two_of_their_fours_no_take)
+{
+	#st();
+	arcs(P2, 4, ((1,2),));
+	arcs(P2, 4, ((3,4),));
+	LocArr la = getLocsInOrder(0);
+	EXPECT_EQ(la.size(), 1);
+	# It doesn't matter which one we choose, we're lost
+	# Evaluating this node should give the result
+	# But we need to choose one or the other
+}
 
-    void test_iterate_over_our_four(self)
-	{
-        arc(P1, 4, ((3,4),));
-        arc(P1, 3, ((3,2),));
-        l = list(pf.get_iter(P1));
-        assertEquals(len(l), 1);
-        assertEquals(l[0],(3,4));
-	}
+TEST_F(MoveSuggesterFixture, test_finish_capture_win)
+{
+	set_captured_by(P1, 8);
+	ar_take(P1, (1,2));
+	arcs(P2, 4, ((3,4),));
+	LocArr la = getLocsInOrder(0);
+	EXPECT_EQ(la.size(), 1);
+	EXPECT_EQ(l[0],(1,2));
+}
 
-    void test_iterate_over_one_of_their_fours(self)
-	{
-        arc(P2, 4, ((3,4),));
-        ar_take(P1, (3,2));
-        set_captured_by(P1, 6);
-        l = list(pf.get_iter(P1));
-        assertEquals(len(l), 2);
-        assertEquals(l[0],(3,4));
-        assertEquals(l[1],(3,2));
-	}
+TEST_F(MoveSuggesterFixture, test_block_or_take_to_defend_capture_loss)
+{
+	set_captured_by(P2, 8);
+	ar_take(P1, (1,2));
+	ar_take(P2, (3,4));
+	LocArr la = getLocsInOrder(0);
+	EXPECT_EQ(la.size(), 2);
+}
 
-    void test_two_of_their_fours_try_the_take(self)
-	{
-        arc(P2, 4, ((1,2),));
-        arc(P2, 4, ((3,4),));
-        ar_take(P1, (3,2));
-        l = list(pf.get_iter(P1));
-        assertEquals(len(l), 1);
-        assertEquals(l[0],(3,2));
-	}
+TEST_F(MoveSuggesterFixture, test_iterate_over_own_black_first)
+{
+	arcs(P2, 4, ((1,5),));
+	arcs(P1, 4, ((3,4),));
+	LocArr la = getLocsInOrder(0);
+	EXPECT_EQ(la.size(), 1);
+	EXPECT_EQ(l[0],(3,4));
+}
 
-    void test_two_of_their_fours_no_take(self)
-	{
-        #st();
-        arc(P2, 4, ((1,2),));
-        arc(P2, 4, ((3,4),));
-        l = list(pf.get_iter(P1));
-        assertEquals(len(l), 1);
-        # It doesn't matter which one we choose, we're lost
-        # Evaluating this node should give the result
-        # But we need to choose one or the other
-	}
+TEST_F(MoveSuggesterFixture, test_iterate_over_higher_priority_only)
+{
+	arcs(P2, 3, ((1,5),));
+	arcs(P2, 4, ((3,4),));
+	LocArr la = getLocsInOrder(0);
+	EXPECT_EQ(la.size(), 1);
+	EXPECT_EQ(l[0],(3,4));
+}
 
-    void test_finish_capture_win(self)
-	{
-        set_captured_by(P1, 8);
-        ar_take(P1, (1,2));
-        arc(P2, 4, ((3,4),));
-        l = list(pf.get_iter(P1));
-        assertEquals(len(l), 1);
-        assertEquals(l[0],(1,2));
-	}
+TEST_F(MoveSuggesterFixture, test_iterate_over_capture)
+{
+	pf.add_or_remove_take(P1, (3,4));
+	LocArr la = getLocsInOrder(0);
+	EXPECT_EQ(la.size(), 1);
+	EXPECT_EQ(l[0],(3,4));
+}
 
-    void test_block_or_take_to_defend_capture_loss(self)
-	{
-        set_captured_by(P2, 8);
-        ar_take(P1, (1,2));
-        ar_take(P2, (3,4));
-        l = list(pf.get_iter(P1));
-        assertEquals(len(l), 2);
-	}
+TEST_F(MoveSuggesterFixture, test_iterate_over_own_capture_first)
+{
+	pf.add_or_remove_take(P1, (1,2));
+	pf.add_or_remove_take(P2, (3,4));
+	l = list(pf.get_iter(P2));
+	EXPECT_EQ(la.size(), 2);
+	EXPECT_EQ(l[0],(3,4));
+	EXPECT_EQ(l[1],(1,2));
+}
 
-    void test_iterate_over_own_black_first(self)
-	{
-        arc(P2, 4, ((1,5),));
-        arc(P1, 4, ((3,4),));
-        l = list(pf.get_iter(P1));
-        assertEquals(len(l), 1);
-        assertEquals(l[0],(3,4));
-	}
+TEST_F(MoveSuggesterFixture, test_iterate_over_other_players_four_before_our_capture)
+{
+	pf.add_or_remove_take(P2, (7,2));
+	arcs(P1, 4, ((3,4),));
+	l = list(pf.get_iter(P2));
+	EXPECT_EQ(la.size(), 2);
+	EXPECT_EQ(l[0],(3,4));
+	EXPECT_EQ(l[1],(7,2));
+}
 
-    void test_iterate_over_higher_priority_only(self)
-	{
-        arc(P2, 3, ((1,5),));
-        arc(P2, 4, ((3,4),));
-        l = list(pf.get_iter(P1));
-        assertEquals(len(l), 1);
-        assertEquals(l[0],(3,4));
-	}
+TEST_F(MoveSuggesterFixture, atest_iterate_over_other_players_capture_before_our_threes)
+{
+	arcs(P1, 3, ((3,4),(1,5)));
+	pf.add_or_remove_take(P2, (7,2));
+	l = list(pf.get_iter(P2));
+	EXPECT_EQ(la.size(), 3);
+	EXPECT_EQ(l[0],(7,2));
+	our_threes = ((3,4),(1,5));
+	assertIn(l[1], our_threes);
+	assertIn(l[2], our_threes);
+}
 
-    void test_iterate_over_capture(self)
-	{
-        pf.add_or_remove_take(P1, (3,4));
-        l = list(pf.get_iter(P1));
-        assertEquals(len(l), 1);
-        assertEquals(l[0],(3,4));
-	}
+TEST_F(MoveSuggesterFixture, test_iterate_block_only)
+{
+	arcs(P2, 3, ((1,5),(2,4)));
+	pf.add_or_remove_take(P1, (1,5));
+	arcs(P1, 4, ((2,4),));
+	l = list(pf.get_iter(P2));
+	EXPECT_EQ(la.size(), 1);
+	EXPECT_EQ(l[0],(2,4));
+}
 
-    void test_iterate_over_own_capture_first(self)
-	{
-        pf.add_or_remove_take(P1, (1,2));
-        pf.add_or_remove_take(P2, (3,4));
-        l = list(pf.get_iter(P2));
-        assertEquals(len(l), 2);
-        assertEquals(l[0],(3,4));
-        assertEquals(l[1],(1,2));
-	}
+TEST_F(MoveSuggesterFixture, test_iterate_over_capture)
+{
+	pf.add_or_remove_take(P1, (1,5));
+	l = list(pf.get_iter(P2));
+	EXPECT_EQ(la.size(), 1);
+	EXPECT_EQ(l[0],(1,5));
+}
 
-    void test_iterate_over_other_players_four_before_our_capture(self)
-	{
-        pf.add_or_remove_take(P2, (7,2));
-        arc(P1, 4, ((3,4),));
-        l = list(pf.get_iter(P2));
-        assertEquals(len(l), 2);
-        assertEquals(l[0],(3,4));
-        assertEquals(l[1],(7,2));
-	}
+TEST_F(MoveSuggesterFixture, test_iterate_over_their_capture_before_our_two)
+{
+	arcs(P1, 2, ((2,4),(4,6),(5,7)));
+	pf.add_or_remove_take(P2, (1,5));
+	LocArr la = getLocsInOrder(0);
+	EXPECT_EQ(la.size(), 4);
+	EXPECT_EQ(l[0],(1,5));
+	twos = (2,4),(4,6),(5,7);
+	assertIn(l[1], twos);
+	assertIn(l[2], twos);
+	assertIn(l[3], twos);
+}
 
-    void atest_iterate_over_other_players_capture_before_our_threes(self)
-	{
-        arc(P1, 3, ((3,4),(1,5)));
-        pf.add_or_remove_take(P2, (7,2));
-        l = list(pf.get_iter(P2));
-        assertEquals(len(l), 3);
-        assertEquals(l[0],(7,2));
-        our_threes = ((3,4),(1,5));
-        assertIn(l[1], our_threes);
-        assertIn(l[2], our_threes);
-	}
+TEST_F(MoveSuggesterFixture, test_iterate_over_their_three_before_our_threat)
+{
+	arcs(P1, 3, ((2,4),(4,6),));
+	pf.add_or_remove_threat(P2, (1,5));
+	LocArr la = getLocsInOrder(0);
+	EXPECT_EQ(la.size(), 3);
+	threes = (2,4),(4,6);
+	assertIn(l[0], threes);
+	assertIn(l[1], threes);
+	EXPECT_EQ(l[2],(1,5));
+	
+TEST_F(MoveSuggesterFixture, test_add_and_remove_length_candidate)
+{
+	#st();
+	arcs(P1, 3, ((2,4),(4,6),), inc=1);
+	pf.add_or_remove_threat(P1, (1,5));
+	arcs(P1, 3, ((2,4),(4,6),), inc=-1);
+	LocArr la = getLocsInOrder(0);
+	EXPECT_EQ(la.size(), 1);
+	EXPECT_EQ(l[0],(1,5));
+}
 
-    void test_iterate_block_only(self)
-	{
-        arc(P2, 3, ((1,5),(2,4)));
-        pf.add_or_remove_take(P1, (1,5));
-        arc(P1, 4, ((2,4),));
-        l = list(pf.get_iter(P2));
-        assertEquals(len(l), 1);
-        assertEquals(l[0],(2,4));
-	}
+TEST_F(MoveSuggesterFixture, test_add_and_remove_capture_candidate)
+{
+	pf.add_or_remove_take(P1, (1,5), inc=1);
+	pf.add_or_remove_take(P1, (1,5), inc=-1);
+	LocArr la = getLocsInOrder(0);
+	EXPECT_EQ(la.size(), 0);
+}
 
-    void test_iterate_over_capture(self)
-	{
-        pf.add_or_remove_take(P1, (1,5));
-        l = list(pf.get_iter(P2));
-        assertEquals(len(l), 1);
-        assertEquals(l[0],(1,5));
-	}
+TEST_F(MoveSuggesterFixture, test_add_and_remove_threat_candidate)
+{
+	pf.add_or_remove_threat(P1, (1,5), inc=1);
+	pf.add_or_remove_threat(P1, (1,5), inc=-1);
+	LocArr la = getLocsInOrder(0);
+	EXPECT_EQ(la.size(), 0);
+}
 
-    void test_iterate_over_their_capture_before_our_two(self)
-	{
-        arc(P1, 2, ((2,4),(4,6),(5,7)));
-        pf.add_or_remove_take(P2, (1,5));
-        l = list(pf.get_iter(P1));
-        assertEquals(len(l), 4);
-        assertEquals(l[0],(1,5));
-        twos = (2,4),(4,6),(5,7);
-        assertIn(l[1], twos);
-        assertIn(l[2], twos);
-        assertIn(l[3], twos);
-	}
+TEST_F(MoveSuggesterFixture, test_add_and_remove_length_candidate_from_diff_directions)
+{
+	arcs(P1, 3, ((2,4),(4,6),), inc=1);
+	arcs(P1, 3, ((2,4),(3,3),), inc=1);
+	arcs(P1, 3, ((2,4),(4,6),), inc=-1);
+	LocArr la = getLocsInOrder(0);
+	EXPECT_EQ(la.size(), 2);
+	pair = ((2,4),(3,3),);
+	assertIn(l[0], pair);
+	assertIn(l[1], pair);
+}
 
-    void test_iterate_over_their_three_before_our_threat(self)
-	{
-        arc(P1, 3, ((2,4),(4,6),));
-        pf.add_or_remove_threat(P2, (1,5));
-        l = list(pf.get_iter(P1));
-        assertEquals(len(l), 3);
-        threes = (2,4),(4,6);
-        assertIn(l[0], threes);
-        assertIn(l[1], threes);
-        assertEquals(l[2],(1,5));
-        
-    void test_add_and_remove_length_candidate(self)
-	{
-        #st();
-        arc(P1, 3, ((2,4),(4,6),), inc=1);
-        pf.add_or_remove_threat(P1, (1,5));
-        arc(P1, 3, ((2,4),(4,6),), inc=-1);
-        l = list(pf.get_iter(P1));
-        assertEquals(len(l), 1);
-        assertEquals(l[0],(1,5));
-	}
+TEST_F(MoveSuggesterFixture, test_multiple_entries_searcshed_first)
+{
+	arcs(P1, 3, ((2,4),(4,6),), inc=1);
+	arcs(P1, 3, ((2,4),(3,3),), inc=1);
+	LocArr la = getLocsInOrder(0);
+	EXPECT_EQ(la.size(), 3);
+	EXPECT_EQ(l[0],(2,4));
+	others = ((4,6), (3,3));
+	assertIn(l[1], others);
+	assertIn(l[2], others);
+}
 
-    void test_add_and_remove_capture_candidate(self)
-	{
-        pf.add_or_remove_take(P1, (1,5), inc=1);
-        pf.add_or_remove_take(P1, (1,5), inc=-1);
-        l = list(pf.get_iter(P1));
-        assertEquals(len(l), 0);
-	}
+TEST_F(MoveSuggesterFixture, test_choose_the_only_winner)
+{
+	arcs(P1, 4, ((4,6),), inc=1);
+	arcs(P1, 4, ((5,7),), inc=1);
+	arcs(P1, 4, ((4,6),), inc=-1);
+	LocArr la = getLocsInOrder(0);
+	EXPECT_EQ(la.size(), 1);
+	EXPECT_EQ(l[0],(5,7));
+}
 
-    void test_add_and_remove_threat_candidate(self)
-	{
-        pf.add_or_remove_threat(P1, (1,5), inc=1);
-        pf.add_or_remove_threat(P1, (1,5), inc=-1);
-        l = list(pf.get_iter(P1));
-        assertEquals(len(l), 0);
-	}
+TEST_F(MoveSuggesterFixture, atest_one_opponent_double_three_must_be_block_cap_or_threatened)
+{
+	# i.e. a single instance of a double 3 attack must be blocked,
+	# captured, or threatened, or we must extend a 3 of our own
+	pf.add_or_remove_take(P2, (1,5), inc=1);
 
-    void test_add_and_remove_length_candidate_from_diff_directions(self)
-	{
-        arc(P1, 3, ((2,4),(4,6),), inc=1);
-        arc(P1, 3, ((2,4),(3,3),), inc=1);
-        arc(P1, 3, ((2,4),(4,6),), inc=-1);
-        l = list(pf.get_iter(P1));
-        assertEquals(len(l), 2);
-        pair = ((2,4),(3,3),);
-        assertIn(l[0], pair);
-        assertIn(l[1], pair);
-	}
+	# Only their threes needs to be looked at, since there is a double 3
+	arcs(P1, 3, ((4,6),(5,6),), inc=1);
+	arcs(P1, 3, ((5,6),(9,6),), inc=1);
 
-    void test_multiple_entries_searched_first(self)
-	{
-        arc(P1, 3, ((2,4),(4,6),), inc=1);
-        arc(P1, 3, ((2,4),(3,3),), inc=1);
-        l = list(pf.get_iter(P1));
-        assertEquals(len(l), 3);
-        assertEquals(l[0],(2,4));
-        others = ((4,6), (3,3));
-        assertIn(l[1], others);
-        assertIn(l[2], others);
-	}
+	# all our 3s should be included
+	arcs(P2, 3, ((4,8),(10,6),), inc=1);
 
-    void test_choose_the_only_winner(self)
-	{
-        arc(P1, 4, ((4,6),), inc=1);
-        arc(P1, 4, ((5,7),), inc=1);
-        arc(P1, 4, ((4,6),), inc=-1);
-        l = list(pf.get_iter(P1));
-        assertEquals(len(l), 1);
-        assertEquals(l[0],(5,7));
-	}
+	# only threats that threaten the double 3 really need considering (TODO)
+	pf.add_or_remove_threat(P2, (2,9), inc=1);
 
-    void atest_one_opponent_double_three_must_be_block_cap_or_threatened(self)
-	{
-        # i.e. a single instance of a double 3 attack must be blocked,
-        # captured, or threatened, or we must extend a 3 of our own
-        pf.add_or_remove_take(P2, (1,5), inc=1);
+	# All 2s are irrelevant since there is a double 3
+	arcs(P2, 2, ((7,8),(8,8),(10,8)), inc=1);
+	arcs(P2, 2, ((8,8),(10,8),(12,8)), inc=1);
+	arcs(P2, 2, ((10,8),(12,8),(13,8)), inc=1);
 
-        # Only their threes needs to be looked at, since there is a double 3
-        arc(P1, 3, ((4,6),(5,6),), inc=1);
-        arc(P1, 3, ((5,6),(9,6),), inc=1);
+	#st()
+	l = list(pf.get_iter(P2));
 
-        # all our 3s should be included
-        arc(P2, 3, ((4,8),(10,6),), inc=1);
+	EXPECT_EQ(la.size(), 5);
+	EXPECT_EQ(l[0], (5,6)); # Their open 3
+	EXPECT_EQ(l[1], (1,5)); # Our take
+	our_threes = ((4,8), (10,6)); # Our 3s
+	assertIn(l[2], our_threes);
+	assertIn(l[3], our_threes);
+	EXPECT_EQ(l[4], (2,9)); # Our threat (TODO)
+}
 
-        # only threats that threaten the double 3 really need considering (TODO)
-        pf.add_or_remove_threat(P2, (2,9), inc=1);
+TEST_F(MoveSuggesterFixture, atest_three_plus_opponent_double_threes_cannot_block)
+{
+	# i.e. a single instance of a double 3 attack must be blocked,
+	# captured, or threatened, or we must extend a 3 of our own
+	pf.add_or_remove_take(P2, (1,5), inc=1)
 
-        # All 2s are irrelevant since there is a double 3
-        arc(P2, 2, ((7,8),(8,8),(10,8)), inc=1);
-        arc(P2, 2, ((8,8),(10,8),(12,8)), inc=1);
-        arc(P2, 2, ((10,8),(12,8),(13,8)), inc=1);
+	# 3 x Two double attacks - can't block
+	arcs(P1, 3, ((4,6),(5,6),), inc=1);
+	arcs(P1, 3, ((5,6),(9,6),), inc=1);
+	arcs(P1, 3, ((4,6),(9,6),), inc=1);
 
-        #st()
-        l = list(pf.get_iter(P2));
+	# all our 3s should be included
+	arcs(P2, 3, ((4,8),(10,6),), inc=1);
 
-        assertEquals(len(l), 5);
-        assertEquals(l[0], (5,6)); # Their open 3
-        assertEquals(l[1], (1,5)); # Our take
-        our_threes = ((4,8), (10,6)); # Our 3s
-        assertIn(l[2], our_threes);
-        assertIn(l[3], our_threes);
-        assertEquals(l[4], (2,9)); # Our threat (TODO)
-	}
+	# only threats that threaten the double 3 really need considering (TODO)
+	pf.add_or_remove_threat(P2, (2,9), inc=1);
 
-    void atest_three_plus_opponent_double_threes_cannot_block(self)
-	{
-        # i.e. a single instance of a double 3 attack must be blocked,
-        # captured, or threatened, or we must extend a 3 of our own
-        pf.add_or_remove_take(P2, (1,5), inc=1)
+	# All 2s are irrelevant since there is a double 3
+	arcs(P2, 2, ((7,8),(8,8),(10,8)), inc=1);
+	arcs(P2, 2, ((8,8),(10,8),(12,8)), inc=1);
+	arcs(P2, 2, ((10,8),(12,8),(13,8)), inc=1);
 
-        # 3 x Two double attacks - can't block
-        arc(P1, 3, ((4,6),(5,6),), inc=1);
-        arc(P1, 3, ((5,6),(9,6),), inc=1);
-        arc(P1, 3, ((4,6),(9,6),), inc=1);
-
-        # all our 3s should be included
-        arc(P2, 3, ((4,8),(10,6),), inc=1);
-
-        # only threats that threaten the double 3 really need considering (TODO)
-        pf.add_or_remove_threat(P2, (2,9), inc=1);
-
-        # All 2s are irrelevant since there is a double 3
-        arc(P2, 2, ((7,8),(8,8),(10,8)), inc=1);
-        arc(P2, 2, ((8,8),(10,8),(12,8)), inc=1);
-        arc(P2, 2, ((10,8),(12,8),(13,8)), inc=1);
-
-        l = list(pf.get_iter(P2));
-        assertEquals(len(l), 4);
-        assertEquals(l[0], (1,5)); # Our take
-        our_threes = ((4,8), (10,6)); # Our 3s
-        assertIn(l[1], our_threes);
-        assertIn(l[2], our_threes);
-        assertEquals(l[3], (2,9)); # Our threat (TODO)
-	}
+	l = list(pf.get_iter(P2));
+	EXPECT_EQ(la.size(), 4);
+	EXPECT_EQ(l[0], (1,5)); # Our take
+	our_threes = ((4,8), (10,6)); # Our 3s
+	assertIn(l[1], our_threes);
+	assertIn(l[2], our_threes);
+	EXPECT_EQ(l[3], (2,9)); # Our threat (TODO)
+}
 
 #endif
 
