@@ -8,6 +8,9 @@
 #include "candidate_cache.h"
 #include "bdebug.h"
 
+using std::vector;
+typedef vector<Loc> LocArr;
+
 class MoveSuggesterFixture : public testing::Test {
 public:
 	PositionStats ps;
@@ -15,6 +18,25 @@ public:
 	MoveSuggester ms;
 
 	MoveSuggesterFixture() : ms(ps, cc) {}
+
+	void addLocs(LocArr & /* ll */)
+	{
+	}
+
+	template<typename ... Types>
+	void addLocs(LocArr &ll, Loc first, Types ... rest)
+	{
+		ll.push_back(first);
+		addLocs(ll, rest...);
+	}
+
+	template<typename ... Types>
+	void arcs(Colour c, Length l, int inc, Types ... rest)
+	{
+		LocArr ll;
+		addLocs(ll, rest...);
+		ps.reportLengthCandidates(c, l, ll, inc);
+	}
 };
 
 using ::testing::InSequence;
@@ -25,14 +47,9 @@ TEST_F(MoveSuggesterFixture, NoMoves) {
 	EXPECT_EQ(move.isValid(), false);
 }
 
-using std::vector;
-typedef vector<Loc> LocArr;
-
 TEST_F(MoveSuggesterFixture, OneMove) {
-	LocArr ll;
 	Loc l1(1,1);
-	ll.push_back(l1);
-	ps.reportLengthCandidates(P2, 2, ll, 1); // length 2, inc
+	arcs(P2, 2, 1, l1); // length 2, inc
 
 	Loc move = ms.getNextMove(3); // depth
 	EXPECT_EQ(move.isValid(), true);
@@ -43,13 +60,9 @@ TEST_F(MoveSuggesterFixture, OneMove) {
 }
 
 TEST_F(MoveSuggesterFixture, TwoMovesSamePL) {
-	LocArr ll;
 	Loc l1(1,1);
 	Loc l2(2,2);
-	ll.push_back(l2);
-	ll.push_back(l1);
-	ll.push_back(l1);
-	ps.reportLengthCandidates(P1, 4, ll, 1); // length 4, inc
+	arcs(P1, 4, 1, l2, l1, l1); // length 2, inc
 
 	Loc move = ms.getNextMove(2);
 	EXPECT_EQ(move.isValid(), true);
@@ -65,14 +78,10 @@ TEST_F(MoveSuggesterFixture, TwoMovesSamePL) {
 
 TEST_F(MoveSuggesterFixture, TwoMovesDiffPL) {
 	Loc l1(1,1);
-	LocArr ll1;
-	ll1.push_back(l1);
-	ps.reportLengthCandidates(P1, 4, ll1, 1); // length 4, inc
+	arcs(P1, 4, 1, l1); // length 2, inc
 
-	Loc l2(2,2);
-	LocArr ll2;
-	ll2.push_back(l2);
-	ps.reportLengthCandidates(P1, 2, ll2, 1); // length 2, inc
+	Loc l2(1,1);
+	arcs(P1, 2, 1, l2); // length 2, inc
 
 	Loc move = ms.getNextMove(2);
 	EXPECT_EQ(move.isValid(), true);
@@ -88,10 +97,8 @@ TEST_F(MoveSuggesterFixture, TwoMovesDiffPL) {
 
 TEST_F(MoveSuggesterFixture, AddAndThenRemoveSameLoc) {
 	Loc l1(1,1);
-	LocArr ll1;
-	ll1.push_back(l1);
-	ps.reportLengthCandidates(P1, 4, ll1, 1); // length 4, inc
-	ps.reportLengthCandidates(P1, 4, ll1, -1); // length 4, dec
+	arcs(P1, 4, 1, l1); // length 4, inc
+	arcs(P1, 4, -1, l1); // length 4, dec
 
 	Loc move = ms.getNextMove(2);
 	EXPECT_EQ(move.isValid(), false);
@@ -99,14 +106,10 @@ TEST_F(MoveSuggesterFixture, AddAndThenRemoveSameLoc) {
 
 TEST_F(MoveSuggesterFixture, Extend3BeforeExtend2) {
 	Loc l1(1,1);
-	LocArr ll1;
-	ll1.push_back(l1);
-	ps.reportLengthCandidates(P1, 3, ll1, 1);
+	arcs(P1, 3, 1, l1);
 
 	Loc l2(2,2);
-	LocArr ll2;
-	ll2.push_back(l2);
-	ps.reportLengthCandidates(P1, 2, ll2, 1);
+	arcs(P1, 2, 1, l2);
 
 	Loc move = ms.getNextMove(2);
 	EXPECT_EQ(move.isValid(), true);
@@ -122,14 +125,10 @@ TEST_F(MoveSuggesterFixture, Extend3BeforeExtend2) {
 
 TEST_F(MoveSuggesterFixture, ExtendOursBeforeTheirs) {
 	Loc l1(1,1);
-	LocArr ll1;
-	ll1.push_back(l1);
-	ps.reportLengthCandidates(P1, 3, ll1, 1);
+	arcs(P1, 3, 1, l1);
 
 	Loc l2(2,2);
-	LocArr ll2;
-	ll2.push_back(l2);
-	ps.reportLengthCandidates(P2, 3, ll2, 1);
+	arcs(P2, 3, 1, l2);
 
 	Loc move = ms.getNextMove(0);
 	EXPECT_EQ(move.isValid(), true);
@@ -145,14 +144,10 @@ TEST_F(MoveSuggesterFixture, ExtendOursBeforeTheirs) {
 
 TEST_F(MoveSuggesterFixture, ExtendTheirsBeforeOurs) {
 	Loc l1(1,1);
-	LocArr ll1;
-	ll1.push_back(l1);
-	ps.reportLengthCandidates(P1, 3, ll1, 1);
+	arcs(P1, 3, 1, l1);
 
 	Loc l2(2,2);
-	LocArr ll2;
-	ll2.push_back(l2);
-	ps.reportLengthCandidates(P2, 3, ll2, 1);
+	arcs(P2, 3, 1, l2);
 
 	Loc move = ms.getNextMove(1);
 	EXPECT_EQ(move.isValid(), true);
@@ -168,14 +163,10 @@ TEST_F(MoveSuggesterFixture, ExtendTheirsBeforeOurs) {
 
 TEST_F(MoveSuggesterFixture, IterateTwiceNoChange) {
 	Loc l1(1,1);
-	LocArr ll1;
-	ll1.push_back(l1);
-	ps.reportLengthCandidates(P1, 3, ll1, 1);
+	arcs(P1, 3, 1, l1);
 
 	Loc l2(2,2);
-	LocArr ll2;
-	ll2.push_back(l2);
-	ps.reportLengthCandidates(P2, 3, ll2, 1);
+	arcs(P2, 3, 1, l2);
 
 	Loc move = ms.getNextMove(2);
 	EXPECT_EQ(l1, move);
@@ -198,9 +189,7 @@ TEST_F(MoveSuggesterFixture, IterateTwiceNoChange) {
 
 TEST_F(MoveSuggesterFixture, IterateDifferentDepths) {
 	Loc l1(1,1);
-	LocArr ll1;
-	ll1.push_back(l1);
-	ps.reportLengthCandidates(P1, 1, ll1, 1);
+	arcs(P1, 1, 1, l1);
 
 	Loc move = ms.getNextMove(0);
 	EXPECT_EQ(move.isValid(), true);
