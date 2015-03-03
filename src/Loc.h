@@ -11,6 +11,7 @@ public:
 	Loc(CompressedLoc v) : _value(v) {}
 	Loc() : _value(-1) {}
 	bool operator ==(const Loc &other) const { return _value == other._value; }
+	bool operator <(const Loc &other) const { return _value < other._value; }
 	Coord operator [](int dim) const
         { if (dim) return (_value/32); else return (_value%32); }
 
