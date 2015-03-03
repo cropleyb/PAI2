@@ -44,7 +44,7 @@ BoardLine
  - min index?
  - Left edge start Loc?
 /LengthLookupTable
-BoardDirectionRep
+BoardDirectionRep (=old DirectionStrips)
  - array of BoardLines
  - bit representation of whole board
  - direction (Loc offset)
@@ -58,17 +58,20 @@ BoardReps
 Game
  - BoardRep
 /PriorityLevel
+ - Priority levels must be searched in order of decreasing counts per candidate
+ - Sort on demand. Quicksort variant? Natural Merge sort?
+ - Dirty bit
 PositionStats
  /- PriorityLevel * 4 for line lengths
  /- PriorityLevel * 2 for takes and threats
  /- Captured counts
  - Chessboard counts
-CandidateCache
- - max depth * max breadth array of Locs
- - max depth * number of Locs
- - max depth * next Loc index
- - MoveSuggestor = old PriorityFilter
-AlphaBeta
- - first cut
+/CandidateCache
+ /- max depth * max breadth array of Locs
+ /- max depth * number of Locs
+ /- max depth * next Loc index
+- MoveSuggestor = old PriorityFilter
+/AlphaBeta
+ /- first cut
 
 	
