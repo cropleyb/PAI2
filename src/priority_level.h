@@ -1,3 +1,6 @@
+#ifndef _priority_level_h
+#define _priority_level_h
+
 #include "loc.h"
 #include "defines.h"
 
@@ -64,3 +67,4 @@ private:
     Ind _nodeIndByLoc[MAX_LOCS];
 };
 
+#endif

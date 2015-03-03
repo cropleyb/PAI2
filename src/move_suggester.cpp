@@ -2,6 +2,7 @@
 #include "move_suggester.h"
 #include "position_stats.h"
 #include "candidate_cache.h"
+#include "defines.h"
 #include "bdebug.h"
 
 MoveSuggester::MoveSuggester(PositionStats &ps, CandidateCache &cc)
@@ -26,44 +27,140 @@ Loc MoveSuggester::getNextMove(Depth depth)
 	return _candCache.getNextMove(depth);
 }
 
+bool MoveSuggester::getPriorityLevels(Colour ourColour)
+{
+	bool onePoss;
+
+	Colour theirColour = otherPlayer(ourColour);
+
+	const PriorityLevel &ourFours
+		= _posStats.getLengthPriorityLevel(ourColour, 4);
+	if (ourFours.getNumCands() > 0)
+	{
+		// This will win
+		_toSearchLevels[0] = &ourFours;
+		_numSearchLevels = 1;
+		onePoss = true;
+		return onePoss;
+	}
+
+	CapCount ourCaptureCount = _posStats.getCaptured(ourColour);
+	const PriorityLevel &ourTakes
+		= _posStats.getTakesPriorityLevel(ourColour);
+
+	if (ourCaptureCount >= 8 and ourTakes.getNumCands() > 0) {
+		// This will win too
+		// _toSearch.push_back(ourTakes);
+		_toSearchLevels[0] = &ourTakes;
+		_numSearchLevels = 1;
+		onePoss = true;
+		return onePoss;
+	}
+
+	CapCount theirCaptureCount = _posStats.getCaptured(theirColour);
+	const PriorityLevel &theirTakes
+		= _posStats.getTakesPriorityLevel(theirColour);
+
+	if (theirCaptureCount >= 8 and theirTakes.getNumCands() > 0) {
+		// Block their takes, or capture one of the ends of an
+		// attacker, or lose
+		//_toSearch.push_back(ourTakes);
+		//_toSearch.push_back(theirTakes);
+		_toSearchLevels[0] = &ourTakes;
+		_toSearchLevels[1] = &theirTakes;
+		_numSearchLevels = 2;
+		onePoss = false;
+		return onePoss;
+	}
+
+	const PriorityLevel &theirFours
+		= _posStats.getLengthPriorityLevel(theirColour, 4);
+
+	if (theirFours.getNumCands() > 0) {
+		if (theirFours.getNumCands() > 1) {
+			if (ourTakes.getNumCands() > 0) {
+				// We will lose unless we capture
+				// _toSearch.push_back(ourTakes);
+				_toSearchLevels[0] = &ourTakes;
+				_numSearchLevels = 1;
+				onePoss = false;
+				return onePoss;
+			} else {
+				// Might as well block one of them, can't stop 'em all
+				// _toSearch.push_back(theirFours);
+				_toSearchLevels[0] = &theirFours;
+				_numSearchLevels = 1;
+				onePoss = true;
+				return onePoss;
+			}
+		}
+
+		// We will lose unless we block or capture 
+		//_toSearch.push_back(theirFours);
+		//_toSearch.push_back(ourTakes);
+		_toSearchLevels[0] = &theirFours;
+		_toSearchLevels[1] = &ourTakes;
+		_numSearchLevels = 2;
+		onePoss = false;
+		return onePoss;
+	}
+	// Defaulting to many levels
+	fillPriorityLevels(ourColour, theirColour);
+	_numSearchLevels = 10;
+	onePoss = false;
+	return onePoss;
+}
+
+#define GETTAKES(C) &_posStats.getTakesPriorityLevel(C)
+#define GETTHREATS(C) &_posStats.getThreatsPriorityLevel(C)
+#define GETLEVEL(C,L) &_posStats.getLengthPriorityLevel(C,L)
+
+// TODO This could be cached.
+void MoveSuggester::fillPriorityLevels(Colour ourColour, Colour theirColour)
+{
+	_toSearchLevels[0] = GETTAKES(ourColour);
+	_toSearchLevels[1] = GETTAKES(theirColour);
+	_toSearchLevels[2] = GETLEVEL(ourColour, 3);
+	_toSearchLevels[3] = GETLEVEL(theirColour, 3);
+	_toSearchLevels[4] = GETTHREATS(ourColour);
+	_toSearchLevels[5] = GETTHREATS(theirColour);
+	_toSearchLevels[6] = GETLEVEL(ourColour, 2);
+	_toSearchLevels[7] = GETLEVEL(theirColour, 2);
+	_toSearchLevels[8] = GETLEVEL(ourColour, 1);
+	_toSearchLevels[9] = GETLEVEL(theirColour, 1);
+}
+
 Breadth MoveSuggester::filterCandidates(Loc *moveBuffer, Depth depth, Breadth maxMoves, Colour ourColour)
 {
 	Breadth found = 0;
 	bool tried[MAX_LOCS];
-
-	Colour theirColour = otherPlayer(ourColour);
 	
-	// bool onePoss = getPriorityLevels(ourColour); TODO
-	Ind coloursInOrder[2] = {ourColour, theirColour};
-	if (depth % 2)
-	{
-		// TODO: Ugly
-		coloursInOrder[0] = theirColour;
-		coloursInOrder[1] = ourColour;
+	Colour searchColour = ourColour;
+	if (depth % 2) {
+		searchColour = otherPlayer(ourColour);
 	}
 
-	for (int slotInd=4; slotInd>=0; slotInd--)
-	{
-		for (int colourInd=0; colourInd<2; colourInd++)
-		{
-			const PriorityLevel &pl = _posStats.getLengthPriorityLevel(coloursInOrder[colourInd], slotInd);
-			BD(cout << "Searching for up to " << maxMoves-found << " in MS" << endl;)
-			Breadth foundFromPL = pl.getCands(moveBuffer, maxMoves-found);
-			BD(cout << "Found " << (int)foundFromPL << endl;)
+	bool onePoss = getPriorityLevels(searchColour);
 
-			found += foundFromPL;
-			if (found >= maxMoves)
-			{
-				// (two breaks would be good)
-				BD(cout << "Found enough in MS" << endl;)
-				return found;
-			}
-			moveBuffer += foundFromPL;
+	for (int slotInd=0; slotInd<_numSearchLevels; slotInd++)
+	{
+		const PriorityLevel *pl = _toSearchLevels[slotInd];
+		Breadth foundFromPL = pl->getCands(moveBuffer, maxMoves-found);
+		BD(cout << "Found " << (int)foundFromPL << endl;)
+
+		found += foundFromPL;
+		if (found >= maxMoves)
+		{
+			BD(cout << "Found enough in MS" << endl;)
+			return found;
 		}
+		moveBuffer += foundFromPL;
 	}
 	return found;
+}
 
 #if 0
+	// TODO: sorting per level
 	for slot in candidate_slots:
 		#slot_arr = slot.iteritems()
 		slot_arr = slot.get_iter()
@@ -72,7 +169,6 @@ Breadth MoveSuggester::filterCandidates(Loc *moveBuffer, Depth depth, Breadth ma
 		for count, loc in sorted_slot:
 	return found;
 #endif
-}
 
 #if 0
     def get_iter_inner(self, our_colour, state=None, depth=0, min_priority=0, tried={}): # min_priority is ignored

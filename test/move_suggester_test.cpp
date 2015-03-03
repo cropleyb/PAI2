@@ -103,7 +103,7 @@ TEST_F(MoveSuggesterFixture, TwoMovesSamePL) {
 
 TEST_F(MoveSuggesterFixture, TwoMovesDiffPL) {
 	Loc l1(1,1);
-	arcs(P1, 4, 1, l1); // length 2, inc
+	arcs(P1, 3, 1, l1); // length 2, inc
 
 	Loc l2(1,1);
 	arcs(P1, 2, 1, l2); // length 2, inc
@@ -236,8 +236,7 @@ TEST_F(MoveSuggesterFixture, dontStartInTheMiddle13)
 	EXPECT_EQ(0, la.size());
 }
 
-
-TEST_F(MoveSuggesterFixture, test_add_and_remove)
+TEST_F(MoveSuggesterFixture, AddAndRemove)
 {
 	arcs(P1, 4, 1, Loc(3,4));
 	arcs(P1, 4, -1, Loc(3,4));
@@ -247,16 +246,17 @@ TEST_F(MoveSuggesterFixture, test_add_and_remove)
 	EXPECT_EQ(Loc(3,2), la[0]);
 }
 
-#if 0
-TEST_F(MoveSuggesterFixture, test_iterate_over_our_four)
+TEST_F(MoveSuggesterFixture, IterateOverOurFour)
 {
-	arcs(P1, 4, ((3,4),));
-	arcs(P1, 3, ((3,2),));
+	// Don't bother with the 3->4 as we can win this turn with the 4->5
+	arcs(P1, 4, 1, Loc(3,4));
+	arcs(P1, 3, 1, Loc(3,2));
 	LocArr la = getLocsInOrder(0);
 	EXPECT_EQ(la.size(), 1);
-	EXPECT_EQ(l[0],(3,4));
+	EXPECT_EQ(Loc(3,4), la[0]);
 }
 
+#if 0
 TEST_F(MoveSuggesterFixture, test_iterate_over_one_of_their_fours)
 {
 	arcs(P2, 4, ((3,4),));
