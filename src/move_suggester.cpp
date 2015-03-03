@@ -141,6 +141,9 @@ Breadth MoveSuggester::filterCandidates(Loc *moveBuffer, Depth depth, Breadth ma
 	}
 
 	bool onePoss = getPriorityLevels(searchColour);
+	if (onePoss) {
+		maxMoves = 1;
+	}
 
 	for (int slotInd=0; slotInd<_numSearchLevels; slotInd++)
 	{
