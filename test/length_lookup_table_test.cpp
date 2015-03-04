@@ -23,9 +23,9 @@ Mask maskStringToBs(const string &occStr)
     return ret;
 }
 
-class LengthLookupTableFixture : public testing::Test {
+class LineLookupTableFixture : public testing::Test {
 public:
-	LengthTableItem *processMaskString(const string &occStr) 
+	LineTableItem *processMaskString(const string &occStr) 
 	{
 		buildAll();
 		Mask occs = maskStringToBs(occStr);
@@ -34,43 +34,42 @@ public:
 };
 
 
-TEST_F(LengthLookupTableFixture, NoLocsYet) {
-	LengthTableItem *item = processMaskString("     ");
+TEST_F(LineLookupTableFixture, NoLocsYet) {
+	LineTableItem *item = processMaskString("     ");
 	EXPECT_EQ(EMPTY, item->_colour);
 	EXPECT_EQ(0, item->_length);
 }
 
-TEST_F(LengthLookupTableFixture, CountSingleBlack) {
-	LengthTableItem *item = processMaskString("B    ");
+TEST_F(LineLookupTableFixture, CountSingleBlack) {
+	LineTableItem *item = processMaskString("B    ");
 	EXPECT_EQ(P1, item->_colour);
 	EXPECT_EQ(1, item->_length);
-	ASSERT_THAT(item->_empty, ElementsAre(false,true,true,true,true));
+	ASSERT_THAT(item->_candInds, ElementsAre(1, 2, 3, 4));
 }
 
-TEST_F(LengthLookupTableFixture, CountOneBlackOtherEnd) {
-	LengthTableItem *item = processMaskString("    B");
+TEST_F(LineLookupTableFixture, CountOneBlackOtherEnd) {
+	LineTableItem *item = processMaskString("    B");
 	EXPECT_EQ(P1, item->_colour);
 	EXPECT_EQ(1, item->_length);
-	ASSERT_THAT(item->_empty, ElementsAre(true,true,true,true,false));
+	ASSERT_THAT(item->_candInds, ElementsAre(0, 1, 2, 3));
 }
 
-TEST_F(LengthLookupTableFixture, CountOneWhiteOtherEnd) {
-	LengthTableItem *item = processMaskString("    W");
+TEST_F(LineLookupTableFixture, CountOneWhiteOtherEnd) {
+	LineTableItem *item = processMaskString("    W");
 	EXPECT_EQ(P2, item->_colour);
 	EXPECT_EQ(1, item->_length);
-	ASSERT_THAT(item->_empty, ElementsAre(true,true,true,true,false));
+	ASSERT_THAT(item->_candInds, ElementsAre(0, 1, 2, 3));
 }
 
-TEST_F(LengthLookupTableFixture, TwoBlacksAtStart) {
-	LengthTableItem *item = processMaskString("BB   ");
+TEST_F(LineLookupTableFixture, TwoBlacksAtStart) {
+	LineTableItem *item = processMaskString("BB   ");
 	EXPECT_EQ(P1, item->_colour);
 	EXPECT_EQ(2, item->_length);
-	ASSERT_THAT(item->_empty, ElementsAre(false,false,true,true,true));
+	ASSERT_THAT(item->_candInds, ElementsAre(2, 3, 4));
 }
 
-TEST_F(LengthLookupTableFixture, MixedNoMatch) {
-	LengthTableItem *item = processMaskString("B   W");
+TEST_F(LineLookupTableFixture, MixedNoMatch) {
+	LineTableItem *item = processMaskString("B   W");
 	EXPECT_EQ(EMPTY, item->_colour);
 	EXPECT_EQ(0, item->_length);
 }
-

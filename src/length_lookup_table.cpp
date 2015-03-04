@@ -3,7 +3,7 @@
 
 #include "length_lookup_table.h"
 
-LengthTableItem lengthLookup[MaxSpanMask];
+LineTableItem lengthLookup[MaxSpanMask];
 
 bool initialised=false;
 
@@ -16,12 +16,12 @@ to the information we need - the colour, current length and empty indices
 of the row of 5 positions that we are currently looking at.
 */
 
-// candidateLookup = [3,1,0,2,4];
+Breadth candidateLookup[5] {3,1,0,2,4};
 
 // Fwd decl.
-void buildAndStoreValues(int depth, Mask occVal, LengthTableItem lti);
+void buildAndStoreValues(int levelsDone, Mask occVal, LineTableItem lti);
 
-void extendAndStoreLookups(Colour occ, int depth, Mask occVal, LengthTableItem lti)
+void extendAndStoreLookups(Colour occ, int levelsDone,  Mask occVal, LineTableItem lti)
 {
     /*
     occ is the colour of the stone (or EMPTY) that we are extending by
@@ -35,14 +35,15 @@ void extendAndStoreLookups(Colour occ, int depth, Mask occVal, LengthTableItem l
     if (occ != EMPTY)
 	{
         // add occ to lookup value
-        occVal += lti._colour;
+        occVal += lti._colour << (levelsDone * 2);
 
         // add one to length
         lti._length += 1;
+	} else {
+		lti._candInds.push_back(levelsDone);
 	}
-	lti._empty[depth] = (occ == EMPTY);
 
-    if (depth <= 0)
+    if (levelsDone >= 4)
 	{
         if (lti._length > 0)
 		{
@@ -57,20 +58,20 @@ void extendAndStoreLookups(Colour occ, int depth, Mask occVal, LengthTableItem l
 		}
 	} else {
         // Recursively add to the stretch
-        buildAndStoreValues(depth-1, occVal, lti);
+        buildAndStoreValues(levelsDone+1, occVal, lti);
 	}
 }
 
 
-void buildAndStoreValues(int depth, Mask occVal, LengthTableItem lti)
+void buildAndStoreValues(int levelsDone, Mask occVal, LineTableItem lti)
 {
     // Add one stone or empty place
 
     // Shift what we've seen so far to the right
-    occVal *= 4;
+    //occVal *= 4;
 
-	extendAndStoreLookups(EMPTY, depth, occVal, lti);
-	extendAndStoreLookups(lti._colour, depth, occVal, lti);
+	extendAndStoreLookups(EMPTY, levelsDone, occVal, lti);
+	extendAndStoreLookups(lti._colour, levelsDone, occVal, lti);
 }
 
 /* Build the entire lookup table */
@@ -79,11 +80,11 @@ void buildAll()
     // We only care about stretches of 5 with one colour and empties in it.
 	if (initialised) return;
 	initialised = true;
-	LengthTableItem lti;
+	LineTableItem lti;
 	lti._colour = P1;
-    buildAndStoreValues(4, 0, lti);
+    buildAndStoreValues(0, 0, lti);
 	lti._colour = P2;
-    buildAndStoreValues(4, 0, lti);
+    buildAndStoreValues(0, 0, lti);
 }
 
 #if 0
