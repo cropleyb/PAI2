@@ -10,7 +10,7 @@ typedef unsigned char Cands;
 
 enum MatchType
 {
-	None=0,
+	NoMatch=0,
 	Line1=1,
 	Line2=2,
 	Line3=3,
@@ -24,7 +24,7 @@ enum MatchType
 class LineTableItem
 {
 public:
-	LineTableItem() : _colour(EMPTY), _matchType(None) {}
+	LineTableItem() : _colour(EMPTY), _matchType(NoMatch) {}
 
 	Colour _colour;
 	MatchType _matchType;
