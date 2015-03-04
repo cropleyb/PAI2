@@ -284,7 +284,7 @@ TEST_F(MoveSuggesterFixture, test_two_of_their_fours_try_the_take)
 	arcs(P2, 4, 1, Loc(3,4));
 	arTake(P1, 1, Loc(3,2));
 	LocArr la = getLocsInOrder(0);
-	EXPECT_EQ(la.size(), 1);
+	EXPECT_EQ(1, la.size());
 	EXPECT_EQ(Loc(3,2), la[0]);
 }
 
@@ -293,7 +293,7 @@ TEST_F(MoveSuggesterFixture, test_two_of_their_fours_no_take)
 	arcs(P2, 4, 1, Loc(1,2));
 	arcs(P2, 4, 1, Loc(3,4));
 	LocArr la = getLocsInOrder(0);
-	EXPECT_EQ(la.size(), 1);
+	EXPECT_EQ(1, la.size());
 	// It doesn't matter which one we choose, we're lost
 	// Evaluating this node should give the result
 	// But we need to choose one or the other
@@ -448,7 +448,7 @@ TEST_F(MoveSuggesterFixture, test_add_and_remove_length_candidate_from_diff_dire
 	arcs(P1, 3, 1, Loc(2,4), Loc(3,3));
 	arcs(P1, 3,-1, Loc(2,4), Loc(4,6));
 	LocArr la = getLocsInOrder(0);
-	EXPECT_EQ(la.size(), 2);
+	EXPECT_EQ(2, la.size());
 	LocSet okPair(Loc(2,4), Loc(3,3));
 	EXPECT_TRUE(okPair.contains(la[0]));
 	EXPECT_TRUE(okPair.contains(la[1]));
@@ -502,7 +502,7 @@ TEST_F(MoveSuggesterFixture, test_one_opponent_double_three_must_be_block_cap_or
 
 	LocArr la = getLocsInOrder(1);
 
-	EXPECT_EQ(la.size(), 5);
+	EXPECT_EQ(5, la.size());
 	EXPECT_EQ(la[0], Loc(5,6)); // Their open 3
 	EXPECT_EQ(la[1], Loc(1,5)); // Our take
 	our_threes = Loc(4,8), Loc(10,6); // Our 3s
@@ -534,7 +534,7 @@ TEST_F(MoveSuggesterFixture, atest_three_plus_opponent_double_threes_cannot_bloc
 	arcs(P2, 2, 1, Loc(10,8), Loc(12,8), Loc(13,8)));
 
 	LocArr la = getLocsInOrder(1);
-	EXPECT_EQ(la.size(), 4);
+	EXPECT_EQ(4, la.size());
 	EXPECT_EQ(la[0], Loc(1,5)); // Our take
 	our_threes = Loc(4,8), Loc(10,6)); // Our 3s
 	assertIn(la[1], our_threes);
