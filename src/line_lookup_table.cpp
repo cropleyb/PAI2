@@ -38,14 +38,14 @@ void extendAndStoreLookups(Colour occ, int levelsDone,  Mask occVal, LineTableIt
         occVal += lti._colour << (levelsDone * 2);
 
         // add one to length
-        lti._length += 1;
+        lti._matchType = (MatchType)((int)lti._matchType + 1);
 	} else {
 		lti._candInds.push_back(levelsDone);
 	}
 
     if (levelsDone >= 4)
 	{
-        if (lti._length > 0)
+        if (lti._matchType > 0)
 		{
             // Add Pattern
             // assert length <= 5

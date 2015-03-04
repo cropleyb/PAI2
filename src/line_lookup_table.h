@@ -1,5 +1,5 @@
-#ifndef _length_lookup_table_h
-#define _length_lookup_table_h
+#ifndef _line_lookup_table_h
+#define _line_lookup_table_h
 
 #include "defines.h"
 
@@ -11,20 +11,22 @@ typedef unsigned char Cands;
 enum MatchType
 {
 	None=0,
-	Line=1,
-	Threat=2,
-	Take=3,
-	Blocked=4,
+	Line1=1,
+	Line2=2,
+	Line3=3,
+	Line4=4,
+	Threat=5,
+	Take=6,
+	Blocked=7,
 	MAX_MATCH_TYPE
 };
 
 class LineTableItem
 {
 public:
-	LineTableItem() : _colour(EMPTY), _length(0) {}
+	LineTableItem() : _colour(EMPTY), _matchType(None) {}
 
 	Colour _colour;
-	Length _length;
 	MatchType _matchType;
 	vector<Breadth> _candInds;
 };
