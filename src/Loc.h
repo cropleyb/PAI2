@@ -13,7 +13,7 @@ public:
 	bool operator ==(const Loc &other) const { return _value == other._value; }
 	bool operator <(const Loc &other) const { return _value < other._value; }
 	Coord operator [](int dim) const
-        { if (dim) return (_value/32); else return (_value%32); }
+        { if (dim) return (_value/32); else return (_value&31); }
 
 	bool isValid() const { return _value < (CompressedLoc)(19 * 32); }
 	// TODO: operator <<

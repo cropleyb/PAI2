@@ -38,9 +38,8 @@ TEST_F(LocFixture, INVALIDIsInvalid) {
 
 TEST_F(LocFixture, GetCoord1And2) {
     Loc loc(3, 5);
-    //int x = loc[0];
+    int x = loc[0];
     int y = loc[1];
-    //EXPECT_EQ(x,3);
-    EXPECT_EQ(5,y);
-    //EXPECT_EQ(loc[1],5);
+    EXPECT_EQ(3, x);
+    EXPECT_EQ(5, y);
 }
