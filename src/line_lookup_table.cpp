@@ -1,7 +1,7 @@
 
 #include <stdint.h>
 
-#include "length_lookup_table.h"
+#include "line_lookup_table.h"
 
 LineTableItem lengthLookup[MaxSpanMask];
 

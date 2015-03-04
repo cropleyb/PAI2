@@ -4,7 +4,7 @@
 
 #include "bdebug.h"
 #include "loc.h"
-#include "length_lookup_table.h"
+#include "line_lookup_table.h"
 
 #include <string>
 using std::string;
