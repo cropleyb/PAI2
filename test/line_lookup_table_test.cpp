@@ -149,3 +149,35 @@ TEST_F(LineLookupTableFixture, WhiteThreatEdge) {
 	ASSERT_THAT(item->_candInds, ElementsAre(0, 3));
 }
 
+/////////////////////////////////////////////////////
+// Blocked
+/////////////////////////////////////////////////////
+
+TEST_F(LineLookupTableFixture, BlackBlockedRight) {
+	LineTableItem *item = processMaskString("BBBBW");
+	EXPECT_EQ(P1, item->_colour);
+	EXPECT_EQ(Blocked, item->_matchType);
+	ASSERT_THAT(item->_candInds, ElementsAre());
+}
+
+TEST_F(LineLookupTableFixture, BlackBlockedLeft) {
+	LineTableItem *item = processMaskString("WBBBB");
+	EXPECT_EQ(P1, item->_colour);
+	EXPECT_EQ(Blocked, item->_matchType);
+	ASSERT_THAT(item->_candInds, ElementsAre());
+}
+
+TEST_F(LineLookupTableFixture, WhiteBlockedRight) {
+	LineTableItem *item = processMaskString("WWWWB");
+	EXPECT_EQ(P2, item->_colour);
+	EXPECT_EQ(Blocked, item->_matchType);
+	ASSERT_THAT(item->_candInds, ElementsAre());
+}
+
+TEST_F(LineLookupTableFixture, WhiteBlockedLeft) {
+	LineTableItem *item = processMaskString("BWWWW");
+	EXPECT_EQ(P2, item->_colour);
+	EXPECT_EQ(Blocked, item->_matchType);
+	ASSERT_THAT(item->_candInds, ElementsAre());
+}
+
