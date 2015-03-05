@@ -19,9 +19,9 @@ of the row of 5 positions that we are currently looking at.
 Breadth candidateLookup[5] {3,1,0,2,4};
 
 // Fwd decl.
-void buildAndStoreValues(int levelsDone, Mask occVal, LineTableItem lti);
+void buildAndStoreLineValues(int levelsDone, Mask occVal, LineTableItem lti);
 
-void extendAndStoreLookups(Colour occ, int levelsDone,  Mask occVal, LineTableItem lti)
+void extendAndStoreLineLookups(Colour occ, int levelsDone,  Mask occVal, LineTableItem lti)
 {
     /*
     occ is the colour of the stone (or EMPTY) that we are extending by
@@ -58,20 +58,103 @@ void extendAndStoreLookups(Colour occ, int levelsDone,  Mask occVal, LineTableIt
 		}
 	} else {
         // Recursively add to the stretch
-        buildAndStoreValues(levelsDone+1, occVal, lti);
+        buildAndStoreLineValues(levelsDone+1, occVal, lti);
 	}
 }
 
 
-void buildAndStoreValues(int levelsDone, Mask occVal, LineTableItem lti)
+void buildAndStoreLineValues(int levelsDone, Mask occVal, LineTableItem lti)
 {
     // Add one stone or empty place
 
     // Shift what we've seen so far to the right
     //occVal *= 4;
 
-	extendAndStoreLookups(EMPTY, levelsDone, occVal, lti);
-	extendAndStoreLookups(lti._colour, levelsDone, occVal, lti);
+	extendAndStoreLineLookups(EMPTY, levelsDone, occVal, lti);
+	extendAndStoreLineLookups(lti._colour, levelsDone, occVal, lti);
+}
+
+// BWWx
+U64 P1_CAPTURE_LEFT_PATTERN = P1 + (4 * P2) + (16 * P2); // + 64 * 0
+// WBBx
+U64 P2_CAPTURE_LEFT_PATTERN = P2 + (4 * P1) + (16 * P1); // + 64 * 0
+// xWWB
+U64 P1_CAPTURE_RIGHT_PATTERN = (P2 + (4 * P2) + (16 * P1)) * 4;
+// xBBW
+U64 P2_CAPTURE_RIGHT_PATTERN = (P1 + (4 * P1) + (16 * P2)) * 4;
+
+void buildAndStoreEndedTakes(Colour c, bool side)
+{
+	Mask occVal;
+	if (c == P1)
+		if (side)
+			occVal = P1_CAPTURE_LEFT_PATTERN;
+		else
+			occVal = P1_CAPTURE_RIGHT_PATTERN;
+	else
+		if (side)
+			occVal = P2_CAPTURE_LEFT_PATTERN;
+		else
+			occVal = P2_CAPTURE_RIGHT_PATTERN;
+
+	Breadth candInd = 0;
+	if (side) candInd = 3;
+
+	LineTableItem lti;
+	lti._colour = c;
+	lti._matchType = Take;
+
+	for (int lastColumn=EMPTY; lastColumn<=EDGE; lastColumn++)
+	{
+		lti._candInds.clear();
+		lti._candInds.push_back(candInd);
+
+		Mask storeOccVal = occVal + (lastColumn << 8);
+		lengthLookup[storeOccVal] = lti;
+	}
+}
+
+void buildAndStoreAllTakes()
+{
+	for (Colour c=P1; c<=P2; c++)
+	{
+		buildAndStoreEndedTakes(c, false);
+		buildAndStoreEndedTakes(c, true);
+	}
+}
+
+// xWWx
+U64 P1_THREAT_PATTERN = 0 + (4 * P2) + (16 * P2); // + 64 * 0
+// WBBx
+U64 P2_THREAT_PATTERN = 0 + (4 * P1) + (16 * P1); // + 64 * 0
+
+void buildAndStoreEndedThreats(Colour c)
+{
+	Mask occVal;
+	if (c == P1)
+		occVal = P1_THREAT_PATTERN;
+	else
+		occVal = P2_THREAT_PATTERN;
+
+	LineTableItem lti;
+	lti._colour = c;
+	lti._matchType = Threat;
+	lti._candInds.push_back(0);
+	lti._candInds.push_back(3);
+
+	for (int lastColumn=EMPTY; lastColumn<=EDGE; lastColumn++)
+	{
+		Mask storeOccVal = occVal + (lastColumn << 8);
+		lengthLookup[storeOccVal] = lti;
+	}
+}
+
+void buildAndStoreAllThreats()
+{
+	for (Colour c=P1; c<=P2; c++)
+	{
+		buildAndStoreEndedThreats(c);
+	}
 }
 
 /* Build the entire lookup table */
@@ -82,9 +165,12 @@ void buildAll()
 	initialised = true;
 	LineTableItem lti;
 	lti._colour = P1;
-    buildAndStoreValues(0, 0, lti);
+    buildAndStoreLineValues(0, 0, lti);
 	lti._colour = P2;
-    buildAndStoreValues(0, 0, lti);
+    buildAndStoreLineValues(0, 0, lti);
+
+    buildAndStoreAllTakes();
+    buildAndStoreAllThreats();
 }
 
 #if 0

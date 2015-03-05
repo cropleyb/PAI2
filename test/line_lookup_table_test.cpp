@@ -18,6 +18,7 @@ Mask maskStringToBs(const string &occStr)
         ret *= 4;
 		if (occStr[i] == 'B') ret += 1;
 		else if (occStr[i] == 'W') ret += 2;
+		else if (occStr[i] == '|') ret += 3;
 		i -= 1;
 	}
     return ret;
@@ -39,6 +40,10 @@ TEST_F(LineLookupTableFixture, NoLocsYet) {
 	EXPECT_EQ(EMPTY, item->_colour);
 	EXPECT_EQ(NoMatch, item->_matchType);
 }
+
+/////////////////////////////////////////////////////
+// Lines
+/////////////////////////////////////////////////////
 
 TEST_F(LineLookupTableFixture, CountSingleBlack) {
 	LineTableItem *item = processMaskString("B    ");
@@ -73,10 +78,74 @@ TEST_F(LineLookupTableFixture, MixedNoMatch) {
 	EXPECT_EQ(NoMatch, item->_matchType);
 }
 
-#if 0
-TEST_F(LineLookupTableFixture, BlackCaptureLeftEmpty) {
+/////////////////////////////////////////////////////
+// Takes
+/////////////////////////////////////////////////////
+
+TEST_F(LineLookupTableFixture, BlackTakeLeftEmpty) {
 	LineTableItem *item = processMaskString("BWW  ");
 	EXPECT_EQ(P1, item->_colour);
-	EXPECT_EQ(NoMatch, item->_matchType);
+	EXPECT_EQ(Take, item->_matchType);
+	ASSERT_THAT(item->_candInds, ElementsAre(3));
 }
-#endif
+
+TEST_F(LineLookupTableFixture, WhiteTakeRightWhite) {
+	LineTableItem *item = processMaskString(" BBWW");
+	EXPECT_EQ(P2, item->_colour);
+	EXPECT_EQ(Take, item->_matchType);
+	ASSERT_THAT(item->_candInds, ElementsAre(0));
+}
+
+TEST_F(LineLookupTableFixture, WhiteTakeRightBlack) {
+	LineTableItem *item = processMaskString(" BBWB");
+	EXPECT_EQ(P2, item->_colour);
+	EXPECT_EQ(Take, item->_matchType);
+	ASSERT_THAT(item->_candInds, ElementsAre(0));
+}
+
+TEST_F(LineLookupTableFixture, WhiteTakeRightEdge) {
+	LineTableItem *item = processMaskString(" BBW|");
+	EXPECT_EQ(P2, item->_colour);
+	EXPECT_EQ(Take, item->_matchType);
+	ASSERT_THAT(item->_candInds, ElementsAre(0));
+}
+
+TEST_F(LineLookupTableFixture, WhiteTakeLeftEdge) {
+	LineTableItem *item = processMaskString("WBB |");
+	EXPECT_EQ(P2, item->_colour);
+	EXPECT_EQ(Take, item->_matchType);
+	ASSERT_THAT(item->_candInds, ElementsAre(3));
+}
+
+/////////////////////////////////////////////////////
+// Threats
+/////////////////////////////////////////////////////
+
+TEST_F(LineLookupTableFixture, BlackThreatEmpty) {
+	LineTableItem *item = processMaskString(" WW  ");
+	EXPECT_EQ(P1, item->_colour);
+	EXPECT_EQ(Threat, item->_matchType);
+	ASSERT_THAT(item->_candInds, ElementsAre(0, 3));
+}
+
+TEST_F(LineLookupTableFixture, WhiteThreatWhite) {
+	LineTableItem *item = processMaskString(" BB W");
+	EXPECT_EQ(P2, item->_colour);
+	EXPECT_EQ(Threat, item->_matchType);
+	ASSERT_THAT(item->_candInds, ElementsAre(0, 3));
+}
+
+TEST_F(LineLookupTableFixture, WhiteThreatBlack) {
+	LineTableItem *item = processMaskString(" BB B");
+	EXPECT_EQ(P2, item->_colour);
+	EXPECT_EQ(Threat, item->_matchType);
+	ASSERT_THAT(item->_candInds, ElementsAre(0, 3));
+}
+
+TEST_F(LineLookupTableFixture, WhiteThreatEdge) {
+	LineTableItem *item = processMaskString(" BB |");
+	EXPECT_EQ(P2, item->_colour);
+	EXPECT_EQ(Threat, item->_matchType);
+	ASSERT_THAT(item->_candInds, ElementsAre(0, 3));
+}
+

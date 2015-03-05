@@ -19,6 +19,7 @@ typedef signed char BoardWidth;
 const Colour EMPTY = 0;
 const Colour P1 = 1;
 const Colour P2 = 2;
+const Colour EDGE = 3;
 
 #define WIN_LENGTH 5
 #define MAX_CANDS 20
