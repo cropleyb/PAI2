@@ -21,6 +21,15 @@ const Colour P1 = 1;
 const Colour P2 = 2;
 const Colour EDGE = 3;
 
+enum DirectionType
+{
+	E_DIR=0,
+	SE_DIR=1,
+	S_DIR=2,
+	SW_DIR=3,
+	MAX_DIR
+};
+
 #define WIN_LENGTH 5
 #define MAX_CANDS 20
 #define MAX_DEPTH 20
