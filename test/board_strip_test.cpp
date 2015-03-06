@@ -143,3 +143,25 @@ TEST_F(BoardStripFixture, ThreatMatches) {
 	processOccString(" BB     |", 0, 8);
 }
 
+TEST_F(BoardStripFixture, ThreatMatchesRightEdge) {
+	LineTableItem lti;
+	lti._colour = P1;
+	lti._matchType = Line1;
+
+	expectCandInds(lti, 2,3,4,5);
+	EXPECT_CALL(mr, report(lti));
+
+	lti._matchType = Line2;
+	expectCandInds(lti, 3,4,5);
+	EXPECT_CALL(mr, report(lti));
+
+	expectCandInds(lti, 4,5,8);
+	EXPECT_CALL(mr, report(lti));
+
+	lti._matchType = Threat;
+	lti._colour = P2;
+	expectCandInds(lti, 5,8);
+	EXPECT_CALL(mr, report(lti));
+	processOccString("      BB |", 0, 9);
+}
+

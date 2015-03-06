@@ -219,3 +219,24 @@ void buildAll()
     buildAndStoreAllBlocked();
 }
 
+// For debugging only
+string LineTableItem::to_str() const
+{
+	ostringstream ss;
+	ss << "Colour: " << (int)_colour
+	   << " Match type: " << _matchType;
+	if (!_candInds.empty())
+	{
+		ss << " Cands: ";
+		std::copy(_candInds.begin(), _candInds.end(),
+			std::ostream_iterator<int>(ss, ","));
+	}
+	ss << endl;
+	return ss.str();
+}
+
+std::ostream & operator<<(std::ostream &os, const LineTableItem& lti)
+{
+    return os << lti.to_str();
+}
+

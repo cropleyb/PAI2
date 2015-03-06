@@ -25,14 +25,24 @@ enum MatchType
 	MAX_MATCH_TYPE
 };
 
+#include <sstream>
+using std::string;
+using std::endl;
+using std::ostringstream;
+
 class LineTableItem
 {
 public:
 	LineTableItem() : _colour(EMPTY), _matchType(NoMatch) {}
+
 	bool operator ==(const LineTableItem &other) const
 	{ return (_colour == other._colour) &&
 		     (_matchType == other._matchType) &&
 			 (_candInds == other._candInds); }
+
+	// For debugging only
+    string to_str() const;
+	friend std::ostream & operator<<(std::ostream &os, const LineTableItem& lti);
 
 	Colour _colour;
 	MatchType _matchType;
