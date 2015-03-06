@@ -4,6 +4,7 @@
 #include "line_lookup_table.h"
 
 LineTableItem lengthLookup[MaxSpanMask];
+LineTableItem threatLookup[MaxSpanMask];
 
 bool initialised=false;
 
@@ -145,6 +146,10 @@ void buildAndStoreEndedThreats(Colour c)
 	for (int lastColumn=EMPTY; lastColumn<=EDGE; lastColumn++)
 	{
 		Mask storeOccVal = occVal + (lastColumn << 8);
+		if (lengthLookup[storeOccVal]._matchType != NoMatch)
+		{
+			threatLookup[storeOccVal] = lengthLookup[storeOccVal];
+		}
 		lengthLookup[storeOccVal] = lti;
 	}
 }

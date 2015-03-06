@@ -44,5 +44,8 @@ const int MaxSpanMask = 4 * 4 * 4 * 4 * 4;
 // The lengthLookup (and its contained class) is the only
 // public scope variable, and only to LengthLookup.cpp (hopefully :) )
 extern LineTableItem lengthLookup[MaxSpanMask];
+// Threats are usually also Line2s - this is a secondary table for the
+// original Line2s.
+extern LineTableItem threatLookup[MaxSpanMask];
 
 #endif

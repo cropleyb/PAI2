@@ -27,6 +27,23 @@ void matchRange(U64 occs, BoardWidth minInd, BoardWidth maxInd, REPORTER &report
 			candInd += ind;
 		}
 		reporter.report(toReport);
+
+		if (found->_matchType != Threat) continue;
+
+		// If it is a threat, it is probably a Line2 as well.
+		// Look it up in the overflow table.
+		found = &threatLookup[mask];
+		
+		if (found->_matchType == NoMatch) continue;
+
+        // Report it too
+		LineTableItem toReport2 = *found;
+
+		for (Breadth &candInd: toReport2._candInds)
+		{
+			candInd += ind;
+		}
+		reporter.report(toReport2);
 	}
 }
 
