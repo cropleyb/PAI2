@@ -74,7 +74,6 @@ public:
 	}
 
 	MockReporter mr;
-	//LineTableItem lti;
 };
 
 
@@ -89,5 +88,35 @@ TEST_F(BoardStripFixture, OneMatch) {
 	expectCandInds(lti, 1,2,3,4);
 	EXPECT_CALL(mr, report(lti));
 	processOccString("B       |", 0, 8);
+}
+
+TEST_F(BoardStripFixture, TwoMatches) {
+	LineTableItem lti;
+	lti._colour = P2;
+	lti._matchType = Line1;
+	expectCandInds(lti, 0,2,3,4);
+	EXPECT_CALL(mr, report(lti));
+	expectCandInds(lti, 2,3,4,5);
+	EXPECT_CALL(mr, report(lti));
+	processOccString(" W      |", 0, 8);
+}
+
+TEST_F(BoardStripFixture, FourMatches) {
+	LineTableItem lti;
+	lti._colour = P1;
+	lti._matchType = Line2;
+
+	expectCandInds(lti, 0,2,4);
+	EXPECT_CALL(mr, report(lti));
+	expectCandInds(lti, 2,4,5);
+	EXPECT_CALL(mr, report(lti));
+
+	lti._matchType = Line1;
+	expectCandInds(lti, 2,4,5,6);
+	EXPECT_CALL(mr, report(lti));
+	expectCandInds(lti, 4,5,6,7);
+	EXPECT_CALL(mr, report(lti));
+
+	processOccString(" B B    |", 0, 8);
 }
 
