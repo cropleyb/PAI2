@@ -3,6 +3,10 @@
 
 #include "defines.h"
 
+/*
+ * The LineLookupTable maps lengths of 5 to significant pattern types.
+ */
+
 void buildAll();
 
 typedef unsigned char Length;
@@ -25,6 +29,10 @@ class LineTableItem
 {
 public:
 	LineTableItem() : _colour(EMPTY), _matchType(NoMatch) {}
+	bool operator ==(const LineTableItem &other) const
+	{ return (_colour == other._colour) &&
+		     (_matchType == other._matchType) &&
+			 (_candInds == other._candInds); }
 
 	Colour _colour;
 	MatchType _matchType;

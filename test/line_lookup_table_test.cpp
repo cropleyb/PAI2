@@ -10,6 +10,11 @@
 using std::string;
 using testing::ElementsAre;
 
+/*
+ * These tests are for the LineLookupTable, which maps lengths of 5 to
+ * significant pattern types.
+ */
+
 Mask maskStringToBs(const string &occStr)
 {
     Mask ret = 0;
