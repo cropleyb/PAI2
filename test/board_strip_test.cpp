@@ -183,3 +183,21 @@ TEST_F(BoardStripFixture, BlockedMatchesRightEdge) {
 	processOccString("    WBBBB|", 2, 9);
 }
 
+TEST_F(BoardStripFixture, ThreatButNotTwoRightEdge) {
+	LineTableItem lti;
+	lti._matchType = Threat;
+	lti._colour = P2;
+	expectCandInds(lti,3,6);
+	EXPECT_CALL(mr, report(lti));
+	processOccString("  W BB |", 0, 7);
+}
+
+TEST_F(BoardStripFixture, ThreatButNotTwoLeftEdge) {
+	LineTableItem lti;
+	lti._matchType = Threat;
+	lti._colour = P1;
+	expectCandInds(lti,0,3);
+	EXPECT_CALL(mr, report(lti));
+	processOccString(" WW B |", 0, 7);
+}
+
