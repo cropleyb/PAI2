@@ -26,7 +26,7 @@ void BoardReps::setOcc(Loc l, Colour c)
 			U64 shift = 1 >> (2 * ind);
 			U64 bits = (val << shift) & FIVE_OCCS_MASK;
 			const LinePattern *patternEntry = &lengthLookup[bits];
-			if (patternEntry->_matchType == NoMatch)
+			if (patternEntry->_patternType == NoPattern)
 			{
 				continue;
 			}

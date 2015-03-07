@@ -39,14 +39,14 @@ void extendAndStoreLineLookups(Colour occ, int levelsDone,  Mask occVal, LinePat
         occVal += lti._colour << (levelsDone * 2);
 
         // add one to length
-        lti._matchType = (MatchType)((int)lti._matchType + 1);
+        lti._patternType = (PatternType)((int)lti._patternType + 1);
 	} else {
 		lti._candInds.push_back(levelsDone);
 	}
 
     if (levelsDone >= 4)
 	{
-        if (lti._matchType > 0)
+        if (lti._patternType > 0)
 		{
             // Add Pattern
             // assert length <= 5
@@ -103,7 +103,7 @@ void buildAndStoreEndedTakes(Colour c, bool side)
 
 	LinePattern lti;
 	lti._colour = c;
-	lti._matchType = Take;
+	lti._patternType = Take;
 
 	for (int lastColumn=EMPTY; lastColumn<=EDGE; lastColumn++)
 	{
@@ -139,14 +139,14 @@ void buildAndStoreEndedThreats(Colour c)
 
 	LinePattern lti;
 	lti._colour = c;
-	lti._matchType = Threat;
+	lti._patternType = Threat;
 	lti._candInds.push_back(0);
 	lti._candInds.push_back(3);
 
 	for (int lastColumn=EMPTY; lastColumn<=EDGE; lastColumn++)
 	{
 		Mask storeOccVal = occVal + (lastColumn << 8);
-		if (lengthLookup[storeOccVal]._matchType != NoMatch)
+		if (lengthLookup[storeOccVal]._patternType != NoPattern)
 		{
 			threatLookup[storeOccVal] = lengthLookup[storeOccVal];
 		}
@@ -190,7 +190,7 @@ void buildAndStoreBlocked(Colour c, bool side)
 
 	LinePattern lti;
 	lti._colour = c;
-	lti._matchType = Blocked;
+	lti._patternType = Blocked;
 	lengthLookup[occVal] = lti;
 }
 

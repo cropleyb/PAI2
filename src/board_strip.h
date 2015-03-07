@@ -17,7 +17,7 @@ void matchRange(U64 occs, BoardWidth minInd, BoardWidth maxInd, REPORTER &report
         // Now see if it's in our lookup table
 		const LinePattern *found = &lengthLookup[mask];
 		
-		if (found->_matchType == NoMatch) continue;
+		if (found->_patternType == NoPattern) continue;
 
         // Report it
 		LinePattern toReport = *found;
@@ -28,13 +28,13 @@ void matchRange(U64 occs, BoardWidth minInd, BoardWidth maxInd, REPORTER &report
 		}
 		reporter.report(toReport);
 
-		if (found->_matchType != Threat) continue;
+		if (found->_patternType != Threat) continue;
 
 		// If it is a threat, it is probably a Line2 as well.
 		// Look it up in the overflow table.
 		found = &threatLookup[mask];
 		
-		if (found->_matchType == NoMatch) continue;
+		if (found->_patternType == NoPattern) continue;
 
         // Report it too
 		LinePattern toReport2 = *found;

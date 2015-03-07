@@ -84,7 +84,7 @@ TEST_F(BoardStripFixture, NoLocsYet) {
 TEST_F(BoardStripFixture, OneMatch) {
 	LinePattern lti;
 	lti._colour = P1;
-	lti._matchType = Line1;
+	lti._patternType = Line1;
 	expectCandInds(lti, 1,2,3,4);
 	EXPECT_CALL(mr, report(lti));
 	processOccString("B       |", 0, 8);
@@ -93,7 +93,7 @@ TEST_F(BoardStripFixture, OneMatch) {
 TEST_F(BoardStripFixture, TwoMatches) {
 	LinePattern lti;
 	lti._colour = P2;
-	lti._matchType = Line1;
+	lti._patternType = Line1;
 	expectCandInds(lti, 0,2,3,4);
 	EXPECT_CALL(mr, report(lti));
 	expectCandInds(lti, 2,3,4,5);
@@ -104,14 +104,14 @@ TEST_F(BoardStripFixture, TwoMatches) {
 TEST_F(BoardStripFixture, FourMatches) {
 	LinePattern lti;
 	lti._colour = P1;
-	lti._matchType = Line2;
+	lti._patternType = Line2;
 
 	expectCandInds(lti, 0,2,4);
 	EXPECT_CALL(mr, report(lti));
 	expectCandInds(lti, 2,4,5);
 	EXPECT_CALL(mr, report(lti));
 
-	lti._matchType = Line1;
+	lti._patternType = Line1;
 	expectCandInds(lti, 2,4,5,6);
 	EXPECT_CALL(mr, report(lti));
 	expectCandInds(lti, 4,5,6,7);
@@ -123,20 +123,20 @@ TEST_F(BoardStripFixture, FourMatches) {
 TEST_F(BoardStripFixture, ThreatMatches) {
 	LinePattern lti;
 	lti._colour = P2;
-	lti._matchType = Threat;
+	lti._patternType = Threat;
 
 	expectCandInds(lti, 0,3);
 	EXPECT_CALL(mr, report(lti));
 
 	lti._colour = P1;
-	lti._matchType = Line2;
+	lti._patternType = Line2;
 	expectCandInds(lti, 0,3,4);
 	EXPECT_CALL(mr, report(lti));
 
 	expectCandInds(lti, 3,4,5);
 	EXPECT_CALL(mr, report(lti));
 
-	lti._matchType = Line1;
+	lti._patternType = Line1;
 	expectCandInds(lti, 3,4,5,6);
 	EXPECT_CALL(mr, report(lti));
 
@@ -146,19 +146,19 @@ TEST_F(BoardStripFixture, ThreatMatches) {
 TEST_F(BoardStripFixture, ThreatMatchesRightEdge) {
 	LinePattern lti;
 	lti._colour = P1;
-	lti._matchType = Line1;
+	lti._patternType = Line1;
 
 	expectCandInds(lti, 2,3,4,5);
 	EXPECT_CALL(mr, report(lti));
 
-	lti._matchType = Line2;
+	lti._patternType = Line2;
 	expectCandInds(lti, 3,4,5);
 	EXPECT_CALL(mr, report(lti));
 
 	expectCandInds(lti, 4,5,8);
 	EXPECT_CALL(mr, report(lti));
 
-	lti._matchType = Threat;
+	lti._patternType = Threat;
 	lti._colour = P2;
 	expectCandInds(lti, 5,8);
 	EXPECT_CALL(mr, report(lti));
@@ -167,7 +167,7 @@ TEST_F(BoardStripFixture, ThreatMatchesRightEdge) {
 
 TEST_F(BoardStripFixture, TakeMatchesRightEdge) {
 	LinePattern lti;
-	lti._matchType = Take;
+	lti._patternType = Take;
 	lti._colour = P2;
 	expectCandInds(lti, 8);
 	EXPECT_CALL(mr, report(lti));
@@ -176,7 +176,7 @@ TEST_F(BoardStripFixture, TakeMatchesRightEdge) {
 
 TEST_F(BoardStripFixture, BlockedMatchesRightEdge) {
 	LinePattern lti;
-	lti._matchType = Blocked;
+	lti._patternType = Blocked;
 	lti._colour = P1;
 	expectCandInds(lti);
 	EXPECT_CALL(mr, report(lti));
@@ -185,7 +185,7 @@ TEST_F(BoardStripFixture, BlockedMatchesRightEdge) {
 
 TEST_F(BoardStripFixture, ThreatButNotTwoRightEdge) {
 	LinePattern lti;
-	lti._matchType = Threat;
+	lti._patternType = Threat;
 	lti._colour = P2;
 	expectCandInds(lti,3,6);
 	EXPECT_CALL(mr, report(lti));
@@ -194,7 +194,7 @@ TEST_F(BoardStripFixture, ThreatButNotTwoRightEdge) {
 
 TEST_F(BoardStripFixture, ThreatButNotTwoLeftEdge) {
 	LinePattern lti;
-	lti._matchType = Threat;
+	lti._patternType = Threat;
 	lti._colour = P1;
 	expectCandInds(lti,0,3);
 	EXPECT_CALL(mr, report(lti));
