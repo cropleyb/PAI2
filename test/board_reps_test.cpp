@@ -48,3 +48,18 @@ TEST_F(BoardRepsFixture, GetAndSetMaxMax) {
 	EXPECT_EQ(P2, c);
 }
 
+#if 0
+// TODO
+
+//////////////////////////////
+// Reporting to PositionStats
+//////////////////////////////
+
+TEST_F(BoardRepsFixture, CheckLine1s) {
+	br.setOcc(Loc(0,0), P1);
+
+	const PriorityLevel &pl = ps.getLengthPriorityLevel(P1, 1);
+
+	EXPECT_EQ(3, pl.getNumCands());
+}
+#endif
