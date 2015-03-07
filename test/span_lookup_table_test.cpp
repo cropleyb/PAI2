@@ -22,9 +22,16 @@ public:
 	}
 };
 
-/////////////////////////////////////////////
-// East
-/////////////////////////////////////////////
+/////////////////////////////////////////////////////////
+// East (per line; line indices ascend with increasing y
+/////////////////////////////////////////////////////////
+//    Diagram:
+// Strip numbers:        Indices in each strip:
+//     44444                 01234
+//     33333                 01234
+//     22222                 01234
+//     11111                 01234
+//     00000                 01234
 
 TEST_F(SpanLookupTableFixture, ZeroZeroE) {
 	Loc l(0,0);
@@ -81,9 +88,17 @@ TEST_F(SpanLookupTableFixture, MidMidE) {
 	EXPECT_EQ(Loc(1,0), item->_offsetPerIndex);
 }
 
-/////////////////////////////////////////////
-// South East
-/////////////////////////////////////////////
+/////////////////////////////////////////////////////////
+// South East (per line; line indices ascend with increasing y
+/////////////////////////////////////////////////////////
+//    Diagram:
+// Strip numbers:        Indices in each strip:
+//    45678                 01234
+//    34567                 01234
+//    23456                 01234
+//    12345                 01234
+//    01234                 01234
+
 
 TEST_F(SpanLookupTableFixture, ZeroZeroSE) {
 	Loc l(0,0);
@@ -151,9 +166,16 @@ TEST_F(SpanLookupTableFixture, MidMidSE) {
 	EXPECT_EQ(Loc(1,-1), item->_offsetPerIndex);
 }
 
-/////////////////////////////////////////////
-// North
-/////////////////////////////////////////////
+/////////////////////////////////////////////////////////
+// North (per line; line indices ascend with increasing x
+/////////////////////////////////////////////////////////
+//     Diagram:
+// Strip numbers:        Indices in each strip:
+//     01234                 44444
+//     01234                 33333
+//     01234                 22222
+//     01234                 11111
+//     01234                 00000
 
 TEST_F(SpanLookupTableFixture, ZeroZeroN) {
 	Loc l(0,0);
@@ -210,74 +232,79 @@ TEST_F(SpanLookupTableFixture, MidMidN) {
 	EXPECT_EQ(Loc(0,1), item->_offsetPerIndex);
 }
 
-#if 0
-/////////////////////////////////////////////
-// South West
-/////////////////////////////////////////////
+/////////////////////////////////////////////////////////
+// North East (per line; line indices ascend with increasing y
+/////////////////////////////////////////////////////////
+//     Diagram:
+//     Strip numbers:        Indices in each strip:
+//     87654                 01234
+//     76543                 01234
+//     65432                 01234
+//     54321                 01234
+//     43210                 01234
 
-TEST_F(SpanLookupTableFixture, ZeroZeroSE) {
+TEST_F(SpanLookupTableFixture, ZeroZeroNE) {
 	Loc l(0,0);
-	SpanEntry *item = &spanLookupTable[SE_DIR][l._value];
-	EXPECT_EQ(0, item->_strip);
+	SpanEntry *item = &spanLookupTable[NE_DIR][l._value];
+	EXPECT_EQ(18, item->_strip);
 	EXPECT_EQ(0, item->_locIndex);
 	EXPECT_EQ(0, item->_minIndex);
-	EXPECT_EQ(0, item->_maxIndex);
-	EXPECT_EQ(l, item->_baseLoc);
-	EXPECT_EQ(Loc(1,-1), item->_offsetPerIndex);
+	EXPECT_EQ(4, item->_maxIndex);
+	EXPECT_EQ(Loc(0,0), item->_baseLoc);
+	EXPECT_EQ(Loc(1,1), item->_offsetPerIndex);
 }
 
-TEST_F(SpanLookupTableFixture, OneZeroSE) {
+TEST_F(SpanLookupTableFixture, OneZeroNE) {
 	Loc l(1,0);
-	SpanEntry *item = &spanLookupTable[SE_DIR][l._value];
-	EXPECT_EQ(1, item->_strip);
+	SpanEntry *item = &spanLookupTable[NE_DIR][l._value];
+	EXPECT_EQ(19, item->_strip);
 	EXPECT_EQ(1, item->_locIndex);
-	EXPECT_EQ(0, item->_minIndex);
-	EXPECT_EQ(1, item->_maxIndex);
-	EXPECT_EQ(Loc(0,1), item->_baseLoc);
-	EXPECT_EQ(Loc(1,-1), item->_offsetPerIndex);
+	EXPECT_EQ(1, item->_minIndex);
+	EXPECT_EQ(5, item->_maxIndex);
+	EXPECT_EQ(Loc(0,-1), item->_baseLoc);
+	EXPECT_EQ(Loc(1,1), item->_offsetPerIndex);
 }
 
-TEST_F(SpanLookupTableFixture, ZeroOneSE) {
+TEST_F(SpanLookupTableFixture, ZeroOneNE) {
 	Loc l(0,1);
-	SpanEntry *item = &spanLookupTable[SE_DIR][l._value];
-	EXPECT_EQ(1, item->_strip);
+	SpanEntry *item = &spanLookupTable[NE_DIR][l._value];
+	EXPECT_EQ(17, item->_strip);
 	EXPECT_EQ(0, item->_locIndex);
 	EXPECT_EQ(0, item->_minIndex);
-	EXPECT_EQ(1, item->_maxIndex);
+	EXPECT_EQ(4, item->_maxIndex);
 	EXPECT_EQ(Loc(0,1), item->_baseLoc);
-	EXPECT_EQ(Loc(1,-1), item->_offsetPerIndex);
+	EXPECT_EQ(Loc(1,1), item->_offsetPerIndex);
 }
 
-TEST_F(SpanLookupTableFixture, TwoThreeSE) {
+TEST_F(SpanLookupTableFixture, TwoThreeNE) {
 	Loc l(2,3);
-	SpanEntry *item = &spanLookupTable[SE_DIR][l._value];
-	EXPECT_EQ(5, item->_strip);
+	SpanEntry *item = &spanLookupTable[NE_DIR][l._value];
+	EXPECT_EQ(17, item->_strip);
 	EXPECT_EQ(2, item->_locIndex);
 	EXPECT_EQ(0, item->_minIndex);
-	EXPECT_EQ(5, item->_maxIndex);
-	EXPECT_EQ(Loc(0,5), item->_baseLoc);
-	EXPECT_EQ(Loc(1,-1), item->_offsetPerIndex);
+	EXPECT_EQ(6, item->_maxIndex);
+	EXPECT_EQ(Loc(0,1), item->_baseLoc);
+	EXPECT_EQ(Loc(1,1), item->_offsetPerIndex);
 }
 
-TEST_F(SpanLookupTableFixture, MaxMaxSE) {
+TEST_F(SpanLookupTableFixture, MaxMaxNE) {
 	Loc l(18,18);
-	SpanEntry *item = &spanLookupTable[SE_DIR][l._value];
-	EXPECT_EQ(36, item->_strip);
+	SpanEntry *item = &spanLookupTable[NE_DIR][l._value];
+	EXPECT_EQ(18, item->_strip);
 	EXPECT_EQ(18, item->_locIndex);
-	EXPECT_EQ(18, item->_minIndex);
+	EXPECT_EQ(14, item->_minIndex);
 	EXPECT_EQ(18, item->_maxIndex);
-	EXPECT_EQ(Loc(0,36), item->_baseLoc);
-	EXPECT_EQ(Loc(1,-1), item->_offsetPerIndex);
+	EXPECT_EQ(Loc(0,0), item->_baseLoc);
+	EXPECT_EQ(Loc(1,1), item->_offsetPerIndex);
 }
 
-TEST_F(SpanLookupTableFixture, MidMidSE) {
+TEST_F(SpanLookupTableFixture, MidMidNE) {
 	Loc l(9,9);
-	SpanEntry *item = &spanLookupTable[SE_DIR][l._value];
+	SpanEntry *item = &spanLookupTable[NE_DIR][l._value];
 	EXPECT_EQ(18, item->_strip);
 	EXPECT_EQ(9, item->_locIndex);
 	EXPECT_EQ(5, item->_minIndex);
 	EXPECT_EQ(13, item->_maxIndex);
-	EXPECT_EQ(Loc(0,18), item->_baseLoc);
-	EXPECT_EQ(Loc(1,-1), item->_offsetPerIndex);
+	EXPECT_EQ(Loc(0,0), item->_baseLoc);
+	EXPECT_EQ(Loc(1,1), item->_offsetPerIndex);
 }
-#endif

@@ -2,7 +2,7 @@
 #define _LOC_H
 
 typedef unsigned char Coord;
-typedef unsigned short CompressedLoc;
+typedef short CompressedLoc;
 
 #define MAX_LOCS (19 * 32)
 
@@ -11,7 +11,7 @@ class Loc
 public:
 	Loc(Coord x, Coord y) : _value(y * 32 + x) {}
 	Loc(CompressedLoc v) : _value(v) {}
-	Loc() : _value(-1) {}
+	Loc() : _value(Loc::INVALID._value) {}
 	bool operator ==(const Loc &other) const { return _value == other._value; }
 	bool operator <(const Loc &other) const { return _value < other._value; }
 	Coord operator [](int dim) const

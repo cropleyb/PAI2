@@ -70,10 +70,41 @@ void buildNSpanTable(BoardWidth boardSize)
 	}
 }
 
+void buildNESpanTable(BoardWidth boardSize)
+{
+	for (BoardWidth x=0; x<boardSize; x+=1)
+	{
+		for (BoardWidth y=0; y<boardSize; y+=1)
+		{
+			Loc l(x,y);
+			SpanEntry *e = &(spanLookupTable[NE_DIR][l._value]);
+
+			BoardWidth strip = boardSize + x - y - 1;
+
+			BoardWidth minInd = 0;
+			BoardWidth maxInd = strip;
+
+			if (strip >= boardSize)
+			{
+				minInd = strip-boardSize+1;
+				maxInd = boardSize-1;
+			}
+
+			e->_strip = strip;
+			e->_locIndex = x;
+			e->_minIndex = std::max((BoardWidth)(x-4), minInd);
+			e->_maxIndex = std::min((BoardWidth)(x+4), maxInd);
+			e->_baseLoc = Loc(0,boardSize - strip - 1);
+			e->_offsetPerIndex = Loc(1,1);
+		}
+	}
+}
+
 void buildSpanTable(BoardWidth boardSize)
 {
 	buildESpanTable(boardSize);
 	buildSESpanTable(boardSize);
 	buildNSpanTable(boardSize);
+	buildNESpanTable(boardSize);
 }
 

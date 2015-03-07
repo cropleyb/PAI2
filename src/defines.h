@@ -26,7 +26,7 @@ enum DirectionType
 	E_DIR=0,
 	SE_DIR=1,
 	N_DIR=2,
-	SW_DIR=3,
+	NE_DIR=3,
 	MAX_DIR
 };
 

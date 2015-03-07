@@ -1,3 +1,3 @@
 #include "loc.h"
 
-Loc Loc::INVALID;
+Loc Loc::INVALID(-18,-18);
