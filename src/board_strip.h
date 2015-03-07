@@ -6,7 +6,7 @@
 #define FIVE_OCCS_MASK (4 * 4 * 4 * 4 * 4 - 1)
 
 template <class REPORTER>
-void matchRange(U64 occs, BoardWidth minInd, BoardWidth maxInd, REPORTER &reporter)
+void matchRange(U64 occs, BoardWidth minInd, BoardWidth maxInd, REPORTER &reporter, int inc)
 {
 	for (BoardWidth ind=minInd; ind<=maxInd-4; ind++)
 	{
@@ -26,7 +26,7 @@ void matchRange(U64 occs, BoardWidth minInd, BoardWidth maxInd, REPORTER &report
 		{
 			candInd += ind;
 		}
-		reporter.report(toReport);
+		reporter.report(toReport, inc);
 
 		if (found->_patternType != Threat) continue;
 
@@ -43,7 +43,7 @@ void matchRange(U64 occs, BoardWidth minInd, BoardWidth maxInd, REPORTER &report
 		{
 			candInd += ind;
 		}
-		reporter.report(toReport2);
+		reporter.report(toReport2, inc);
 	}
 }
 
