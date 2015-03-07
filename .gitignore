@@ -5,3 +5,4 @@ lib
 release
 setup.sh
 *.swp
+*bak
