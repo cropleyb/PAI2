@@ -15,12 +15,12 @@ void matchRange(U64 occs, BoardWidth minInd, BoardWidth maxInd, REPORTER &report
         U64 mask = (occs >> shift) & FIVE_OCCS_MASK;
 
         // Now see if it's in our lookup table
-		const LineTableItem *found = &lengthLookup[mask];
+		const LinePattern *found = &lengthLookup[mask];
 		
 		if (found->_matchType == NoMatch) continue;
 
         // Report it
-		LineTableItem toReport = *found;
+		LinePattern toReport = *found;
 
 		for (Breadth &candInd: toReport._candInds)
 		{
@@ -37,7 +37,7 @@ void matchRange(U64 occs, BoardWidth minInd, BoardWidth maxInd, REPORTER &report
 		if (found->_matchType == NoMatch) continue;
 
         // Report it too
-		LineTableItem toReport2 = *found;
+		LinePattern toReport2 = *found;
 
 		for (Breadth &candInd: toReport2._candInds)
 		{

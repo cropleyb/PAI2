@@ -3,8 +3,8 @@
 
 #include "line_lookup_table.h"
 
-LineTableItem lengthLookup[MaxSpanMask];
-LineTableItem threatLookup[MaxSpanMask];
+LinePattern lengthLookup[MaxSpanMask];
+LinePattern threatLookup[MaxSpanMask];
 
 bool initialised=false;
 
@@ -20,9 +20,9 @@ of the row of 5 positions that we are currently looking at.
 Breadth candidateLookup[5] {3,1,0,2,4};
 
 // Fwd decl.
-void buildAndStoreLineValues(int levelsDone, Mask occVal, LineTableItem lti);
+void buildAndStoreLineValues(int levelsDone, Mask occVal, LinePattern lti);
 
-void extendAndStoreLineLookups(Colour occ, int levelsDone,  Mask occVal, LineTableItem lti)
+void extendAndStoreLineLookups(Colour occ, int levelsDone,  Mask occVal, LinePattern lti)
 {
     /*
     occ is the colour of the stone (or EMPTY) that we are extending by
@@ -64,7 +64,7 @@ void extendAndStoreLineLookups(Colour occ, int levelsDone,  Mask occVal, LineTab
 }
 
 
-void buildAndStoreLineValues(int levelsDone, Mask occVal, LineTableItem lti)
+void buildAndStoreLineValues(int levelsDone, Mask occVal, LinePattern lti)
 {
     // Add one stone or empty place
 
@@ -101,7 +101,7 @@ void buildAndStoreEndedTakes(Colour c, bool side)
 	Breadth candInd = 0;
 	if (side) candInd = 3;
 
-	LineTableItem lti;
+	LinePattern lti;
 	lti._colour = c;
 	lti._matchType = Take;
 
@@ -137,7 +137,7 @@ void buildAndStoreEndedThreats(Colour c)
 	else
 		occVal = P2_THREAT_PATTERN;
 
-	LineTableItem lti;
+	LinePattern lti;
 	lti._colour = c;
 	lti._matchType = Threat;
 	lti._candInds.push_back(0);
@@ -188,7 +188,7 @@ void buildAndStoreBlocked(Colour c, bool side)
 	Breadth candInd = 0;
 	if (side) candInd = 3;
 
-	LineTableItem lti;
+	LinePattern lti;
 	lti._colour = c;
 	lti._matchType = Blocked;
 	lengthLookup[occVal] = lti;
@@ -208,7 +208,7 @@ void buildAll()
     // We only care about stretches of 5 with one colour and empties in it.
 	if (initialised) return;
 	initialised = true;
-	LineTableItem lti;
+	LinePattern lti;
 	lti._colour = P1;
     buildAndStoreLineValues(0, 0, lti);
 	lti._colour = P2;
@@ -220,7 +220,7 @@ void buildAll()
 }
 
 // For debugging only
-string LineTableItem::to_str() const
+string LinePattern::to_str() const
 {
 	ostringstream ss;
 	ss << "Colour: " << (int)_colour
@@ -235,7 +235,7 @@ string LineTableItem::to_str() const
 	return ss.str();
 }
 
-std::ostream & operator<<(std::ostream &os, const LineTableItem& lti)
+std::ostream & operator<<(std::ostream &os, const LinePattern& lti)
 {
     return os << lti.to_str();
 }

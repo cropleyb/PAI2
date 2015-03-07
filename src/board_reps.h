@@ -8,7 +8,7 @@
 
 class PositionStats;
 class SpanEntry;
-class LineTableItem; // TODO Rename to PatternEntry
+class LinePattern;
 
 class BoardReps
 {
@@ -20,7 +20,7 @@ public:
 
 private:
 	void reportPattern(
-		const LineTableItem *patternEntry, const SpanEntry *item, int inc);
+		const LinePattern *patternEntry, const SpanEntry *item, int inc);
 
 	PositionStats &_posStats;
 

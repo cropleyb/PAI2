@@ -36,7 +36,7 @@ class MockReporter
 public:
 	MockReporter() {}
 
-    MOCK_METHOD1(report, void(const LineTableItem &));
+    MOCK_METHOD1(report, void(const LinePattern &));
 };
 
 using ::testing::AtLeast;
@@ -55,19 +55,19 @@ public:
 		matchRange(occs, leftInd, rightInd, mr);
 	}
 
-	void expectCandInd(LineTableItem &)
+	void expectCandInd(LinePattern &)
 	{
 	}
 
 	template<typename ... Types>
-	void expectCandInd(LineTableItem &lti, BoardWidth cand, Types ... rest)
+	void expectCandInd(LinePattern &lti, BoardWidth cand, Types ... rest)
 	{
 		lti._candInds.push_back(cand);
 		expectCandInd(lti, rest...);
 	}
 
 	template<typename ... Types>
-	void expectCandInds(LineTableItem &lti, Types ... rest)
+	void expectCandInds(LinePattern &lti, Types ... rest)
 	{
 		lti._candInds.clear();
 		expectCandInd(lti, rest...);
@@ -82,7 +82,7 @@ TEST_F(BoardStripFixture, NoLocsYet) {
 }
 
 TEST_F(BoardStripFixture, OneMatch) {
-	LineTableItem lti;
+	LinePattern lti;
 	lti._colour = P1;
 	lti._matchType = Line1;
 	expectCandInds(lti, 1,2,3,4);
@@ -91,7 +91,7 @@ TEST_F(BoardStripFixture, OneMatch) {
 }
 
 TEST_F(BoardStripFixture, TwoMatches) {
-	LineTableItem lti;
+	LinePattern lti;
 	lti._colour = P2;
 	lti._matchType = Line1;
 	expectCandInds(lti, 0,2,3,4);
@@ -102,7 +102,7 @@ TEST_F(BoardStripFixture, TwoMatches) {
 }
 
 TEST_F(BoardStripFixture, FourMatches) {
-	LineTableItem lti;
+	LinePattern lti;
 	lti._colour = P1;
 	lti._matchType = Line2;
 
@@ -121,7 +121,7 @@ TEST_F(BoardStripFixture, FourMatches) {
 }
 
 TEST_F(BoardStripFixture, ThreatMatches) {
-	LineTableItem lti;
+	LinePattern lti;
 	lti._colour = P2;
 	lti._matchType = Threat;
 
@@ -144,7 +144,7 @@ TEST_F(BoardStripFixture, ThreatMatches) {
 }
 
 TEST_F(BoardStripFixture, ThreatMatchesRightEdge) {
-	LineTableItem lti;
+	LinePattern lti;
 	lti._colour = P1;
 	lti._matchType = Line1;
 
@@ -166,7 +166,7 @@ TEST_F(BoardStripFixture, ThreatMatchesRightEdge) {
 }
 
 TEST_F(BoardStripFixture, TakeMatchesRightEdge) {
-	LineTableItem lti;
+	LinePattern lti;
 	lti._matchType = Take;
 	lti._colour = P2;
 	expectCandInds(lti, 8);
@@ -175,7 +175,7 @@ TEST_F(BoardStripFixture, TakeMatchesRightEdge) {
 }
 
 TEST_F(BoardStripFixture, BlockedMatchesRightEdge) {
-	LineTableItem lti;
+	LinePattern lti;
 	lti._matchType = Blocked;
 	lti._colour = P1;
 	expectCandInds(lti);
@@ -184,7 +184,7 @@ TEST_F(BoardStripFixture, BlockedMatchesRightEdge) {
 }
 
 TEST_F(BoardStripFixture, ThreatButNotTwoRightEdge) {
-	LineTableItem lti;
+	LinePattern lti;
 	lti._matchType = Threat;
 	lti._colour = P2;
 	expectCandInds(lti,3,6);
@@ -193,7 +193,7 @@ TEST_F(BoardStripFixture, ThreatButNotTwoRightEdge) {
 }
 
 TEST_F(BoardStripFixture, ThreatButNotTwoLeftEdge) {
-	LineTableItem lti;
+	LinePattern lti;
 	lti._matchType = Threat;
 	lti._colour = P1;
 	expectCandInds(lti,0,3);

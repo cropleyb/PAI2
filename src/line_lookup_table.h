@@ -30,19 +30,19 @@ using std::string;
 using std::endl;
 using std::ostringstream;
 
-class LineTableItem
+class LinePattern
 {
 public:
-	LineTableItem() : _colour(EMPTY), _matchType(NoMatch) {}
+	LinePattern() : _colour(EMPTY), _matchType(NoMatch) {}
 
-	bool operator ==(const LineTableItem &other) const
+	bool operator ==(const LinePattern &other) const
 	{ return (_colour == other._colour) &&
 		     (_matchType == other._matchType) &&
 			 (_candInds == other._candInds); }
 
 	// For debugging only
     string to_str() const;
-	friend std::ostream & operator<<(std::ostream &os, const LineTableItem& lti);
+	friend std::ostream & operator<<(std::ostream &os, const LinePattern& lti);
 
 	Colour _colour;
 	MatchType _matchType;
@@ -53,9 +53,9 @@ const int MaxSpanMask = 4 * 4 * 4 * 4 * 4;
 
 // The lengthLookup (and its contained class) is the only
 // public scope variable, and only to LengthLookup.cpp (hopefully :) )
-extern LineTableItem lengthLookup[MaxSpanMask];
+extern LinePattern lengthLookup[MaxSpanMask];
 // Threats are usually also Line2s - this is a secondary table for the
 // original Line2s.
-extern LineTableItem threatLookup[MaxSpanMask];
+extern LinePattern threatLookup[MaxSpanMask];
 
 #endif
