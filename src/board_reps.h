@@ -3,8 +3,6 @@
 
 #include "loc.h"
 #include "defines.h"
-//#include "span_lookup_table.h"
-//#include "line_lookup_table.h"
 
 class PositionStats;
 class SpanEntry;
