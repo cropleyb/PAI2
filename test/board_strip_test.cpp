@@ -36,7 +36,7 @@ class MockReporter
 public:
 	MockReporter() {}
 
-    MOCK_METHOD2(report, void(const LinePattern &, int));
+    MOCK_METHOD2(report, void(const LinePattern &, int inc));
 };
 
 using ::testing::AtLeast;
@@ -52,7 +52,9 @@ public:
 	void processOccString(const string &occStr, BoardWidth leftInd, BoardWidth rightInd) 
 	{
 		U64 occs = occStringToBs(occStr);
-		matchRange(occs, leftInd, rightInd, mr, 1);
+		mockSpan._minIndex = leftInd;
+		mockSpan._maxIndex = rightInd;
+		matchRange(occs, mockSpan, mr, 1);
 	}
 
 	void expectCandInd(LinePattern &)
@@ -74,6 +76,7 @@ public:
 	}
 
 	MockReporter mr;
+	SpanEntry mockSpan;
 };
 
 

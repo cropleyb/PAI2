@@ -2,12 +2,16 @@
 #define _board_strip_h
 
 #include "defines.h"
+#include "span_lookup_table.h"
 
 #define FIVE_OCCS_MASK (4 * 4 * 4 * 4 * 4 - 1)
 
 template <class REPORTER>
-void matchRange(U64 occs, BoardWidth minInd, BoardWidth maxInd, REPORTER &reporter, int inc)
+void matchRange(U64 occs, const SpanEntry &span, REPORTER &reporter, int inc)
 {
+	BoardWidth minInd = span._minIndex;
+	BoardWidth maxInd = span._maxIndex;
+
 	for (BoardWidth ind=minInd; ind<=maxInd-4; ind++)
 	{
         // Extract just the 5 * 2 bits that we're currently interested in.
