@@ -7,12 +7,12 @@
 class SpanEntry
 {
 public:
-	// DSIndex _dsInd; should know this already in caller code?
-    BoardWidth _minIndex;
-	BoardWidth _maxIndex;
-	BoardWidth _locIndex;
-	Loc _baseLoc;
-	Loc _offsetPerIndex;
+	BoardWidth _strip;    // Ind for strip number of a known direction
+	BoardWidth _locIndex; // Index of this loc
+    BoardWidth _minIndex; // Min index for updating this loc
+	BoardWidth _maxIndex; // Max index for updating this loc
+	Loc _baseLoc;         // Base location for this strip
+	Loc _offsetPerIndex;  // Offset per index val for this strip
 };
 
 extern SpanEntry spanLookupTable[4][MAX_LOCS];

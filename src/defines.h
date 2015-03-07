@@ -25,7 +25,7 @@ enum DirectionType
 {
 	E_DIR=0,
 	SE_DIR=1,
-	S_DIR=2,
+	N_DIR=2,
 	SW_DIR=3,
 	MAX_DIR
 };
@@ -34,7 +34,6 @@ enum DirectionType
 #define MAX_CANDS 20
 #define MAX_DEPTH 20
 #define MAX_WIDTH 19
-#define MAX_LOCS (MAX_WIDTH*MAX_WIDTH)
 
 #define otherPlayer(p) (p==P1?P2:P1)
 

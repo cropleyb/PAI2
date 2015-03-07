@@ -4,6 +4,8 @@
 typedef unsigned char Coord;
 typedef unsigned short CompressedLoc;
 
+#define MAX_LOCS (19 * 32)
+
 class Loc
 {
 public:
