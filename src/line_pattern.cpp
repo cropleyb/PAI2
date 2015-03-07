@@ -1,8 +1,9 @@
 
-#include <stdint.h>
+//#include <stdint.h>
 
-#include "line_lookup_table.h"
+#include "line_pattern.h"
 
+#if 0
 LinePattern lengthLookup[MaxSpanMask];
 LinePattern threatLookup[MaxSpanMask];
 
@@ -217,5 +218,32 @@ void buildAll()
     buildAndStoreAllTakes();
     buildAndStoreAllThreats();
     buildAndStoreAllBlocked();
+}
+#endif
+
+#include <sstream>
+using std::string;
+using std::endl;
+using std::ostringstream;
+
+// For debugging only
+string toStr(const LinePattern &pattern)
+{
+	ostringstream ss;
+	ss << "Colour: " << (int)pattern._colour
+	   << " Match type: " << pattern._matchType;
+	if (!pattern._candInds.empty())
+	{
+		ss << " Cands: ";
+		std::copy(pattern._candInds.begin(), pattern._candInds.end(),
+			std::ostream_iterator<int>(ss, ","));
+	}
+	ss << endl;
+	return ss.str();
+}
+
+std::ostream & operator<<(std::ostream &os, const LinePattern& lp)
+{
+    return os << toStr(lp);
 }
 
