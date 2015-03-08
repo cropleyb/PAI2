@@ -20,6 +20,25 @@ include_directories(${GMOCK_ROOT}/gtest/include)
 ###############################################################################
 set(EXECUTABLE_NAME "program")
 
+# Valgrind
+###############################################################################
+function(add_memcheck_test name binary)
+  set(memcheck_command "${CMAKE_MEMORYCHECK_COMMAND} ${CMAKE_MEMORYCHECK_COMMAND_OPTIONS}")
+  separate_arguments(memcheck_command)
+  add_test(${name} ${binary} ${ARGN})
+  add_test(memcheck_${name} ${memcheck_command} ./${binary} ${ARGN})
+endfunction(add_memcheck_test)
+
+function(set_memcheck_test_properties name)
+  set_tests_properties(${name} ${ARGN})
+  set_tests_properties(memcheck_${name} ${ARGN})
+endfunction(set_memcheck_test_properties)
+
+# cmake -G ... (to configure your build)
+# ctest -D ExperimentalBuild (this will build your code)
+# ctest -R testName -D ExperimentalTest (just runs the test)
+# ctest -R testName -D ExperimentalMemCheck (to run the test under valgrind)
+
 # Source files
 file(GLOB SRC_FILES "src/*.cpp")
 
@@ -43,6 +62,7 @@ file(GLOB MAIN_SRC "src/Main.cpp")
 list(REMOVE_ITEM SRC_FILES ${MAIN_SRC})
 
 add_executable("${TEST_EXECUTABLE_NAME}" ${TEST_FILES} ${SRC_FILES})
+add_memcheck_test("${MEMCHECK_TEST_EXECUTABLE_NAME}" ${TEST_FILES} ${SRC_FILES})
 
 # Set link libraries (order matters)
 target_link_libraries("${TEST_EXECUTABLE_NAME}" gmock gtest pthread)
