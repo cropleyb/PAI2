@@ -4,6 +4,9 @@
 #include "priority_level.h"
 #include "defines.h"
 
+class SpanEntry;
+class LinePattern;
+
 class PositionStats
 {
 public:
@@ -53,6 +56,8 @@ public:
 	}
 
 	// TODO: checkerboardStats
+	
+	void report(const SpanEntry &spanEntry, const LinePattern &patternEntry, int inc);
 	
 private:
 	PriorityLevel _levels[3][6];

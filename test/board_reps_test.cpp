@@ -6,10 +6,16 @@
 #include "position_stats.h"
 #include "board_reps.h"
 #include "bdebug.h"
+#include "span_lookup_table.h"
+#include "line_lookup_table.h"
 
 class BoardRepsFixture : public testing::Test {
 public:
-	BoardRepsFixture() : br(ps) {}
+	BoardRepsFixture() : br(19, ps)
+	{
+		buildAll(); // TODO rename
+		buildSpanTable(19);
+	}
 
     PositionStats ps;
     BoardReps br;
@@ -41,6 +47,13 @@ TEST_F(BoardRepsFixture, GetAndSet23) {
 	EXPECT_EQ(P2, c);
 }
 
+TEST_F(BoardRepsFixture, GetAndSet1515) {
+	br.setOcc(Loc(15,15), P2);
+
+	Colour c = br.getOcc(Loc(15,15));
+	EXPECT_EQ(P2, c);
+}
+
 TEST_F(BoardRepsFixture, GetAndSetMaxMax) {
 	br.setOcc(Loc(18,18), P2);
 
@@ -48,14 +61,14 @@ TEST_F(BoardRepsFixture, GetAndSetMaxMax) {
 	EXPECT_EQ(P2, c);
 }
 
-#if 0
-// TODO
 
 //////////////////////////////
 // Reporting to PositionStats
 //////////////////////////////
 
+#if 0
 TEST_F(BoardRepsFixture, CheckLine1s) {
+	buildSpanTable(19);
 	br.setOcc(Loc(0,0), P1);
 
 	const PriorityLevel &pl = ps.getLengthPriorityLevel(P1, 1);

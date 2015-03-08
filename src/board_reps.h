@@ -11,15 +11,12 @@ class LinePattern;
 class BoardReps
 {
 public:
-	BoardReps(PositionStats &posStats);
+	BoardReps(BoardWidth boardSize, PositionStats &posStats);
 
     void setOcc(Loc l, Colour c);
     Colour getOcc(Loc l);
 
 private:
-	void reportPattern(
-		const LinePattern *patternEntry, const SpanEntry *item, int inc);
-
 	PositionStats &_posStats;
 
 	U64 _boardStrips[MAX_DIR][2*MAX_WIDTH];

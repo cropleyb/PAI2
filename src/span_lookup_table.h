@@ -44,10 +44,16 @@ public:
 	BoardWidth _maxIndex; // Max index for updating this loc
 	Loc _baseLoc;         // Base location for this strip
 	Loc _offsetPerIndex;  // Offset per index val for this strip
+
+	Loc convertIndToLoc(BoardWidth ind) const {
+		CompressedLoc ret = _baseLoc._value + ind * _offsetPerIndex._value;
+		return Loc(ret);
+	}
+
 };
 
-extern SpanEntry spanLookupTable[4][MAX_LOCS];
+extern SpanEntry spanLookupTable[MAX_DIR][MAX_LOCS];
 
-void buildSpanTable(BoardWidth boardSize);
+bool buildSpanTable(BoardWidth boardSize);
 
 #endif

@@ -13,10 +13,10 @@ enum PatternType
 	NoPattern=0,
 	Line1=1,
 	Line2=2,
-	Line3=3,
-	Line4=4,
-	Threat=5,
-	Take=6,
+	Threat=3,
+	Line3=4,
+	Take=5,
+	Line4=6,
 	Blocked=7,
 	MAX_PATTERN_TYPE
 };
