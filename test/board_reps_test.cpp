@@ -13,7 +13,7 @@ class BoardRepsFixture : public testing::Test {
 public:
 	BoardRepsFixture() : br(19, ps)
 	{
-		buildAll(); // TODO rename
+		buildLineLookupTable();
 		buildSpanTable(19);
 	}
 

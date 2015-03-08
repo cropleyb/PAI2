@@ -8,7 +8,7 @@
  * The LineLookupTable maps lengths of 5 to significant pattern types.
  */
 
-void buildAll();
+void buildLineLookupTable();
 
 const int MaxSpanMask = 4 * 4 * 4 * 4 * 4;
 

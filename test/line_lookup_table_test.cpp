@@ -33,7 +33,7 @@ class LineLookupTableFixture : public testing::Test {
 public:
 	LinePattern *processMaskString(const string &occStr) 
 	{
-		buildAll();
+		buildLineLookupTable();
 		Mask occs = maskStringToBs(occStr);
 		return &lengthLookup[occs];
 	}

@@ -46,7 +46,7 @@ using ::testing::InSequence;
 class BoardStripFixture : public testing::Test {
 public:
 	BoardStripFixture() {
-		buildAll();
+		buildLineLookupTable();
 	}
 
 	void processOccString(const string &occStr, BoardWidth leftInd, BoardWidth rightInd) 

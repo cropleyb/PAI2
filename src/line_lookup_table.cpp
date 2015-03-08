@@ -203,7 +203,7 @@ void buildAndStoreAllBlocked()
 }
 
 /* Build the entire lookup table */
-void buildAll()
+void buildLineLookupTable()
 {
     // We only care about stretches of 5 with one colour and empties in it.
 	if (initialised) return;
