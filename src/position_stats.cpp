@@ -4,14 +4,14 @@
 #include "line_pattern.h"
 #include "span_lookup_table.h" // TODO: separate out span_entry
 
-// Testing only
+// Test code only
 void PositionStats::reportCandidate(Colour colour, PatternType pt, Loc loc, Step inc)
 {
 	PriorityLevel &level = _levels[colour][pt];
 	level.addOrRemoveCandidate(loc, inc);
 }
 
-// Testing only
+// Test code only
 void PositionStats::reportCandidates(Colour colour, PatternType pt, const vector<Loc> &locArr, Step inc)
 {
 	PriorityLevel &level = _levels[colour][pt];
@@ -21,6 +21,8 @@ void PositionStats::reportCandidates(Colour colour, PatternType pt, const vector
 	}
 }
 
+// Convert each of the indices in patternEntry into Locs using span
+// and update appropriately
 void PositionStats::report(const SpanEntry &spanEntry, const LinePattern &patternEntry, int inc)
 {
 	Colour c = patternEntry._colour;
@@ -31,7 +33,4 @@ void PositionStats::report(const SpanEntry &spanEntry, const LinePattern &patter
 		Loc loc = spanEntry.convertIndToLoc(b);
 		level.addOrRemoveCandidate(loc, inc);
 	}
-	    //vector<Breadth> _candInds;
-	// Convert each of the indices in patternEntry into Locs using span
-	// and report appropriately
 }
