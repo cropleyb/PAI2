@@ -36,7 +36,7 @@ class MockReporter
 public:
 	MockReporter() {}
 
-    MOCK_METHOD2(report, void(const LinePattern &, int inc));
+    MOCK_METHOD3(report, void(const SpanEntry &, const LinePattern &, int inc));
 };
 
 using ::testing::AtLeast;
@@ -52,9 +52,9 @@ public:
 	void processOccString(const string &occStr, BoardWidth leftInd, BoardWidth rightInd) 
 	{
 		U64 occs = occStringToBs(occStr);
-		mockSpan._minIndex = leftInd;
-		mockSpan._maxIndex = rightInd;
-		matchRange(occs, mockSpan, mr, 1);
+		span._minIndex = leftInd;
+		span._maxIndex = rightInd;
+		matchRange(occs, span, mr, 1);
 	}
 
 	void expectCandInd(LinePattern &)
@@ -76,7 +76,7 @@ public:
 	}
 
 	MockReporter mr;
-	SpanEntry mockSpan;
+	SpanEntry span;
 };
 
 
@@ -89,7 +89,7 @@ TEST_F(BoardStripFixture, OneMatch) {
 	lti._colour = P1;
 	lti._patternType = Line1;
 	expectCandInds(lti, 1,2,3,4);
-	EXPECT_CALL(mr, report(lti,1));
+	EXPECT_CALL(mr, report(span, lti, 1));
 	processOccString("B       |", 0, 8);
 }
 
@@ -98,9 +98,9 @@ TEST_F(BoardStripFixture, TwoMatches) {
 	lti._colour = P2;
 	lti._patternType = Line1;
 	expectCandInds(lti, 0,2,3,4);
-	EXPECT_CALL(mr, report(lti, 1));
+	EXPECT_CALL(mr, report(span, lti, 1));
 	expectCandInds(lti, 2,3,4,5);
-	EXPECT_CALL(mr, report(lti, 1));
+	EXPECT_CALL(mr, report(span, lti, 1));
 	processOccString(" W      |", 0, 8);
 }
 
@@ -110,15 +110,15 @@ TEST_F(BoardStripFixture, FourMatches) {
 	lti._patternType = Line2;
 
 	expectCandInds(lti, 0,2,4);
-	EXPECT_CALL(mr, report(lti, 1));
+	EXPECT_CALL(mr, report(span, lti, 1));
 	expectCandInds(lti, 2,4,5);
-	EXPECT_CALL(mr, report(lti, 1));
+	EXPECT_CALL(mr, report(span, lti, 1));
 
 	lti._patternType = Line1;
 	expectCandInds(lti, 2,4,5,6);
-	EXPECT_CALL(mr, report(lti, 1));
+	EXPECT_CALL(mr, report(span, lti, 1));
 	expectCandInds(lti, 4,5,6,7);
-	EXPECT_CALL(mr, report(lti, 1));
+	EXPECT_CALL(mr, report(span, lti, 1));
 
 	processOccString(" B B    |", 0, 8);
 }
@@ -129,19 +129,19 @@ TEST_F(BoardStripFixture, ThreatMatches) {
 	lti._patternType = Threat;
 
 	expectCandInds(lti, 0,3);
-	EXPECT_CALL(mr, report(lti, 1));
+	EXPECT_CALL(mr, report(span, lti, 1));
 
 	lti._colour = P1;
 	lti._patternType = Line2;
 	expectCandInds(lti, 0,3,4);
-	EXPECT_CALL(mr, report(lti, 1));
+	EXPECT_CALL(mr, report(span, lti, 1));
 
 	expectCandInds(lti, 3,4,5);
-	EXPECT_CALL(mr, report(lti, 1));
+	EXPECT_CALL(mr, report(span, lti, 1));
 
 	lti._patternType = Line1;
 	expectCandInds(lti, 3,4,5,6);
-	EXPECT_CALL(mr, report(lti, 1));
+	EXPECT_CALL(mr, report(span, lti, 1));
 
 	processOccString(" BB     |", 0, 8);
 }
@@ -152,19 +152,19 @@ TEST_F(BoardStripFixture, ThreatMatchesRightEdge) {
 	lti._patternType = Line1;
 
 	expectCandInds(lti, 2,3,4,5);
-	EXPECT_CALL(mr, report(lti, 1));
+	EXPECT_CALL(mr, report(span, lti, 1));
 
 	lti._patternType = Line2;
 	expectCandInds(lti, 3,4,5);
-	EXPECT_CALL(mr, report(lti, 1));
+	EXPECT_CALL(mr, report(span, lti, 1));
 
 	expectCandInds(lti, 4,5,8);
-	EXPECT_CALL(mr, report(lti, 1));
+	EXPECT_CALL(mr, report(span, lti, 1));
 
 	lti._patternType = Threat;
 	lti._colour = P2;
 	expectCandInds(lti, 5,8);
-	EXPECT_CALL(mr, report(lti, 1));
+	EXPECT_CALL(mr, report(span, lti, 1));
 	processOccString("      BB |", 0, 9);
 }
 
@@ -173,7 +173,7 @@ TEST_F(BoardStripFixture, TakeMatchesRightEdge) {
 	lti._patternType = Take;
 	lti._colour = P2;
 	expectCandInds(lti, 8);
-	EXPECT_CALL(mr, report(lti, 1));
+	EXPECT_CALL(mr, report(span, lti, 1));
 	processOccString("     WBB |", 4, 9);
 }
 
@@ -182,7 +182,7 @@ TEST_F(BoardStripFixture, BlockedMatchesRightEdge) {
 	lti._patternType = Blocked;
 	lti._colour = P1;
 	expectCandInds(lti);
-	EXPECT_CALL(mr, report(lti, 1));
+	EXPECT_CALL(mr, report(span, lti, 1));
 	processOccString("    WBBBB|", 2, 9);
 }
 
@@ -191,7 +191,7 @@ TEST_F(BoardStripFixture, ThreatButNotTwoRightEdge) {
 	lti._patternType = Threat;
 	lti._colour = P2;
 	expectCandInds(lti,3,6);
-	EXPECT_CALL(mr, report(lti, 1));
+	EXPECT_CALL(mr, report(span, lti, 1));
 	processOccString("  W BB |", 0, 7);
 }
 
@@ -200,7 +200,7 @@ TEST_F(BoardStripFixture, ThreatButNotTwoLeftEdge) {
 	lti._patternType = Threat;
 	lti._colour = P1;
 	expectCandInds(lti,0,3);
-	EXPECT_CALL(mr, report(lti, 1));
+	EXPECT_CALL(mr, report(span, lti, 1));
 	processOccString(" WW B |", 0, 7);
 }
 

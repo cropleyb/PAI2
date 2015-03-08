@@ -30,7 +30,7 @@ void matchRange(U64 occs, const SpanEntry &span, REPORTER &reporter, int inc)
 		{
 			candInd += ind;
 		}
-		reporter.report(toReport, inc);
+		reporter.report(span, toReport, inc);
 
 		if (found->_patternType != Threat) continue;
 
@@ -47,7 +47,7 @@ void matchRange(U64 occs, const SpanEntry &span, REPORTER &reporter, int inc)
 		{
 			candInd += ind;
 		}
-		reporter.report(toReport2, inc);
+		reporter.report(span, toReport2, inc);
 	}
 }
 
