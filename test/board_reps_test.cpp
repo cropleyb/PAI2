@@ -66,13 +66,44 @@ TEST_F(BoardRepsFixture, GetAndSetMaxMax) {
 // Reporting to PositionStats
 //////////////////////////////
 
-#if 0
 TEST_F(BoardRepsFixture, CheckLine1s) {
 	buildSpanTable(19);
 	br.setOcc(Loc(0,0), P1);
 
-	const PriorityLevel &pl = ps.getLengthPriorityLevel(P1, 1);
+	const PriorityLevel &pl = ps.getPriorityLevel(P1, Line1);
+
+	EXPECT_EQ(12, pl.getNumCands());
+}
+
+TEST_F(BoardRepsFixture, CheckLine2s) {
+	buildSpanTable(19);
+	br.setOcc(Loc(0,0), P1);
+	br.setOcc(Loc(1,0), P1);
+
+	const PriorityLevel &pl = ps.getPriorityLevel(P1, Line2);
 
 	EXPECT_EQ(3, pl.getNumCands());
+}
+
+#if 0
+TEST_F(BoardRepsFixture, CheckLine3s) {
+	buildSpanTable(19);
+	br.setOcc(Loc(0,0), P1);
+	br.setOcc(Loc(1,0), P1);
+	br.setOcc(Loc(2,0), P1);
+
+	const PriorityLevel &pl = ps.getPriorityLevel(P1, Line3);
+
+	EXPECT_EQ(2, pl.getNumCands());
+}
+
+TEST_F(BoardRepsFixture, CheckThreat) {
+	buildSpanTable(19);
+	br.setOcc(Loc(1,0), P2);
+	br.setOcc(Loc(2,0), P2);
+
+	const PriorityLevel &pl = ps.getPriorityLevel(P1, Threat);
+
+	EXPECT_EQ(2, pl.getNumCands());
 }
 #endif

@@ -1,9 +1,10 @@
 
 #include "move_suggester.h"
-#include "position_stats.h"
 #include "candidate_cache.h"
 #include "defines.h"
 #include "bdebug.h"
+#include "line_pattern.h"
+#include "position_stats.h"
 
 MoveSuggester::MoveSuggester(PositionStats &ps, CandidateCache &cc)
 	: _posStats(ps), _candCache(cc)
@@ -34,7 +35,8 @@ bool MoveSuggester::getPriorityLevels(Colour ourColour)
 	Colour theirColour = otherPlayer(ourColour);
 
 	const PriorityLevel &ourFours
-		= _posStats.getLengthPriorityLevel(ourColour, 4);
+		//= _posStats.getLengthPriorityLevel(ourColour, 4);
+		= _posStats.getPriorityLevel(ourColour, Line4);
 	if (ourFours.getNumCands() > 0)
 	{
 		// This will win
@@ -46,7 +48,7 @@ bool MoveSuggester::getPriorityLevels(Colour ourColour)
 
 	CapCount ourCaptureCount = _posStats.getCaptured(ourColour);
 	const PriorityLevel &ourTakes
-		= _posStats.getTakesPriorityLevel(ourColour);
+		= _posStats.getPriorityLevel(ourColour, Take);
 
 	if (ourCaptureCount >= 8 and ourTakes.getNumCands() > 0) {
 		// This will win too
@@ -59,7 +61,7 @@ bool MoveSuggester::getPriorityLevels(Colour ourColour)
 
 	CapCount theirCaptureCount = _posStats.getCaptured(theirColour);
 	const PriorityLevel &theirTakes
-		= _posStats.getTakesPriorityLevel(theirColour);
+		= _posStats.getPriorityLevel(theirColour, Take);
 
 	if (theirCaptureCount >= 8 and theirTakes.getNumCands() > 0) {
 		// Block their takes, or capture one of the ends of an
@@ -74,7 +76,7 @@ bool MoveSuggester::getPriorityLevels(Colour ourColour)
 	}
 
 	const PriorityLevel &theirFours
-		= _posStats.getLengthPriorityLevel(theirColour, 4);
+		= _posStats.getPriorityLevel(theirColour, Line4);
 
 	if (theirFours.getNumCands() > 0) {
 		if (theirFours.getNumCands() > 1) {
@@ -111,23 +113,25 @@ bool MoveSuggester::getPriorityLevels(Colour ourColour)
 	return onePoss;
 }
 
-#define GETTAKES(C) &_posStats.getTakesPriorityLevel(C)
-#define GETTHREATS(C) &_posStats.getThreatsPriorityLevel(C)
-#define GETLEVEL(C,L) &_posStats.getLengthPriorityLevel(C,L)
+#define GETTAKES(C) &_posStats.getPriorityLevel(C,Take)
+#define GETTHREATS(C) &_posStats.getPriorityLevel(C,Threat)
+#define GETLEVEL(C,L) &_posStats.getPriorityLevel(C,L)
 
 // TODO This could be cached.
 void MoveSuggester::fillPriorityLevels(Colour ourColour, Colour theirColour)
 {
+#if 1
 	_toSearchLevels[0] = GETTAKES(ourColour);
 	_toSearchLevels[1] = GETTAKES(theirColour);
-	_toSearchLevels[2] = GETLEVEL(ourColour, 3);
-	_toSearchLevels[3] = GETLEVEL(theirColour, 3);
+	_toSearchLevels[2] = GETLEVEL(ourColour, Line3);
+	_toSearchLevels[3] = GETLEVEL(theirColour, Line3);
 	_toSearchLevels[4] = GETTHREATS(ourColour);
 	_toSearchLevels[5] = GETTHREATS(theirColour);
-	_toSearchLevels[6] = GETLEVEL(ourColour, 2);
-	_toSearchLevels[7] = GETLEVEL(theirColour, 2);
-	_toSearchLevels[8] = GETLEVEL(ourColour, 1);
-	_toSearchLevels[9] = GETLEVEL(theirColour, 1);
+	_toSearchLevels[6] = GETLEVEL(ourColour, Line2);
+	_toSearchLevels[7] = GETLEVEL(theirColour, Line2);
+	_toSearchLevels[8] = GETLEVEL(ourColour, Line1);
+	_toSearchLevels[9] = GETLEVEL(theirColour, Line1);
+#endif
 }
 
 Breadth MoveSuggester::filterCandidates(Loc *moveBuffer, Depth depth, Breadth maxMoves, Colour ourColour)

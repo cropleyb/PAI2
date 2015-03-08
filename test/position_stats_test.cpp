@@ -20,7 +20,7 @@ using std::vector;
 typedef vector<Loc> LocArr;
 
 TEST_F(PositionStatsFixture, NoStatsYet) {
-	const PriorityLevel &pl = ps.getLengthPriorityLevel(P1, 1);
+	const PriorityLevel &pl = ps.getPriorityLevel(P1, Line1);
 	EXPECT_EQ(0, pl.getNumCands());
 
 	Ind found = pl.getCands(locBuffer, 4);
@@ -31,9 +31,9 @@ TEST_F(PositionStatsFixture, AddSingleP1) {
 	LocArr ll;
 	Loc l1(5,2);
 	ll.push_back(l1);
-	ps.reportLengthCandidates(P1, 1, ll, 1); // length 1, inc
+	ps.reportCandidates(P1, Line1, ll, 1); // length 1, inc
 
-	const PriorityLevel &pl = ps.getLengthPriorityLevel(P1, 1);
+	const PriorityLevel &pl = ps.getPriorityLevel(P1, Line1);
 	EXPECT_EQ(1, pl.getNumCands());
 
 	Ind found = pl.getCands(locBuffer, 4); // Max
@@ -49,11 +49,11 @@ TEST_F(PositionStatsFixture, AddThreeP2s) {
 	ll.push_back(l1);
 	ll.push_back(l2);
 	ll.push_back(l3);
-	ps.reportLengthCandidates(P2, 2, ll, 1); // length 1, inc
+	ps.reportCandidates(P2, Line2, ll, 1); // length 1, inc
 
-	const PriorityLevel &pl1 = ps.getLengthPriorityLevel(P1, 1);
+	const PriorityLevel &pl1 = ps.getPriorityLevel(P1, Line1);
 	EXPECT_EQ(0, pl1.getNumCands());
-	const PriorityLevel &pl2 = ps.getLengthPriorityLevel(P2, 2);
+	const PriorityLevel &pl2 = ps.getPriorityLevel(P2, Line2);
 
 	Ind found = pl2.getCands(locBuffer, 4); // Max
 	EXPECT_EQ(3, found);
@@ -68,10 +68,10 @@ TEST_F(PositionStatsFixture, AddAndRemoveSingleP1) {
 	LocArr ll;
 	Loc l1(5,2);
 	ll.push_back(l1);
-	ps.reportLengthCandidates(P1, 1, ll, 1); // length 1, inc
-	ps.reportLengthCandidates(P1, 1, ll, -1); // length 1, dec
+	ps.reportCandidates(P1, Line1, ll, 1); // length 1, inc
+	ps.reportCandidates(P1, Line1, ll, -1); // length 1, dec
 
-	const PriorityLevel &pl = ps.getLengthPriorityLevel(P1, 1);
+	const PriorityLevel &pl = ps.getPriorityLevel(P1, Line1);
 	EXPECT_EQ(0, pl.getNumCands());
 
 	Ind found = pl.getCands(locBuffer, 4); // Max
@@ -100,40 +100,40 @@ TEST_F(PositionStatsFixture, AddAndRemoveP2Captured) {
 
 TEST_F(PositionStatsFixture, AddP1Take) {
 	Loc l1(5,2);
-	ps.reportTake(P1, l1, 1);
+	ps.reportCandidate(P1, Take, l1, 1);
 
-	const PriorityLevel &pl1 = ps.getTakesPriorityLevel(P1);
+	const PriorityLevel &pl1 = ps.getPriorityLevel(P1, Take);
 	EXPECT_EQ(1, pl1.getNumCands());
-	const PriorityLevel &pl2 = ps.getTakesPriorityLevel(P2);
+	const PriorityLevel &pl2 = ps.getPriorityLevel(P2, Take);
 	EXPECT_EQ(0, pl2.getNumCands());
 }
 
 TEST_F(PositionStatsFixture, AddP2Take) {
 	Loc l1(5,2);
-	ps.reportTake(P2, l1, 1);
+	ps.reportCandidate(P2, Take, l1, 1);
 
-	const PriorityLevel &pl2 = ps.getTakesPriorityLevel(P2);
+	const PriorityLevel &pl2 = ps.getPriorityLevel(P2, Take);
 	EXPECT_EQ(1, pl2.getNumCands());
-	const PriorityLevel &pl1 = ps.getTakesPriorityLevel(P1);
+	const PriorityLevel &pl1 = ps.getPriorityLevel(P1, Take);
 	EXPECT_EQ(0, pl1.getNumCands());
 }
 
 TEST_F(PositionStatsFixture, AddP1Threat) {
 	Loc l1(5,2);
-	ps.reportThreat(P1, l1, 1);
+	ps.reportCandidate(P1, Threat, l1, 1);
 
-	const PriorityLevel &pl1 = ps.getThreatsPriorityLevel(P1);
+	const PriorityLevel &pl1 = ps.getPriorityLevel(P1, Threat);
 	EXPECT_EQ(1, pl1.getNumCands());
-	const PriorityLevel &pl2 = ps.getThreatsPriorityLevel(P2);
+	const PriorityLevel &pl2 = ps.getPriorityLevel(P2, Threat);
 	EXPECT_EQ(0, pl2.getNumCands());
 }
 
 TEST_F(PositionStatsFixture, AddP2Threat) {
 	Loc l1(5,2);
-	ps.reportThreat(P2, l1, 1);
+	ps.reportCandidate(P2, Threat, l1, 1);
 
-	const PriorityLevel &pl2 = ps.getThreatsPriorityLevel(P2);
+	const PriorityLevel &pl2 = ps.getPriorityLevel(P2, Threat);
 	EXPECT_EQ(1, pl2.getNumCands());
-	const PriorityLevel &pl1 = ps.getThreatsPriorityLevel(P1);
+	const PriorityLevel &pl1 = ps.getPriorityLevel(P1, Threat);
 	EXPECT_EQ(0, pl1.getNumCands());
 }

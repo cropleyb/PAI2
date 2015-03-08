@@ -3,9 +3,10 @@
 
 #include "priority_level.h"
 #include "defines.h"
+#include "line_pattern.h"
 
 class SpanEntry;
-class LinePattern;
+//class LinePattern;
 
 class PositionStats
 {
@@ -18,21 +19,14 @@ public:
 		_captured[2] = 0;
 	}
 
-	void reportLengthCandidates(Colour colour, Length length, const vector<Loc> &locArr, Step inc);
+	// Test code only?
+	void reportCandidate(Colour colour, PatternType pt, Loc loc, Step inc);
+	void reportCandidates(Colour colour, PatternType pt, const vector<Loc> &locArr, Step inc);
+#if 0
 
 	const PriorityLevel &getLengthPriorityLevel(Colour colour, Length length) const
 	{
 		return _levels[colour][length];
-	}
-
-	void reportCaptured(Colour c, CapCount count, int inc)
-	{
-		_captured[c] += count * inc;
-	}
-
-	CapCount getCaptured(Colour c) const
-	{
-		return _captured[c];
 	}
 
 	void reportTake(Colour c, Loc l, int inc)
@@ -54,16 +48,30 @@ public:
 	{
 		return _threats[colour];
 	}
+#endif
+	void reportCaptured(Colour c, CapCount count, int inc)
+	{
+		_captured[c] += count * inc;
+	}
+
+	CapCount getCaptured(Colour c) const
+	{
+		return _captured[c];
+	}
+
 
 	// TODO: checkerboardStats
 	
 	void report(const SpanEntry &spanEntry, const LinePattern &patternEntry, int inc);
+
+	const PriorityLevel &getPriorityLevel(Colour c, PatternType pattern) const
+	{
+		return _levels[c][pattern];
+	}
 	
 private:
-	PriorityLevel _levels[3][6];
+	PriorityLevel _levels[3][10];
 	CapCount _captured[3];
-	PriorityLevel _takes[3];
-	PriorityLevel _threats[3];
 };
 
 #endif
