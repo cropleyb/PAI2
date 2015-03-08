@@ -39,7 +39,7 @@ void BoardReps::setOcc(Loc l, Colour c)
 	}
 }
 
-Colour BoardReps::getOcc(Loc l)
+Colour BoardReps::getOcc(Loc l) const
 {
 	const SpanEntry *spanEntry = &spanLookupTable[E_DIR][l._value];
 
