@@ -106,7 +106,7 @@ TEST_F(BoardRepsFixture, CheckThreatIsAlsoTwo) {
 	EXPECT_EQ(Loc(0,0), locBuffer[3]);
 }
 
-TEST_F(BoardRepsFixture, CheckFarEdgeThreat) {
+TEST_F(BoardRepsFixture, CheckFarEdgeThreatE) {
 	br.setOcc(Loc(16,0), P1);
 	br.setOcc(Loc(17,0), P1);
 
@@ -119,4 +119,45 @@ TEST_F(BoardRepsFixture, CheckFarEdgeThreat) {
 	EXPECT_EQ(2, numCands); // as above
 	EXPECT_EQ(Loc(18,0), locBuffer[0]);
 	EXPECT_EQ(Loc(15,0), locBuffer[1]);
+}
+
+TEST_F(BoardRepsFixture, CheckFarEdgeThreatSE_lower) {
+	br.setOcc(Loc(8,2), P1);
+	br.setOcc(Loc(9,1), P1);
+
+	const PriorityLevel &pl = ps.getPriorityLevel(P2, Threat);
+	EXPECT_EQ(2, pl.getNumCands());
+}
+
+TEST_F(BoardRepsFixture, CheckFarEdgeThreatSE_RIGHT) {
+	br.setOcc(Loc(16,5), P1);
+	br.setOcc(Loc(17,4), P1);
+
+	const PriorityLevel &pl = ps.getPriorityLevel(P2, Threat);
+	EXPECT_EQ(2, pl.getNumCands());
+}
+
+TEST_F(BoardRepsFixture, CheckFarEdgeThreatN) {
+	br.setOcc(Loc(16,16), P1);
+	br.setOcc(Loc(16,17), P1);
+
+	// Check threat count
+	const PriorityLevel &pl = ps.getPriorityLevel(P2, Threat);
+	EXPECT_EQ(2, pl.getNumCands());
+}
+
+TEST_F(BoardRepsFixture, CheckFarEdgeThreatNE_UPPER) {
+	br.setOcc(Loc(8,16), P1);
+	br.setOcc(Loc(9,17), P1);
+
+	const PriorityLevel &pl = ps.getPriorityLevel(P2, Threat);
+	EXPECT_EQ(2, pl.getNumCands());
+}
+
+TEST_F(BoardRepsFixture, CheckFarEdgeThreatNE_RIGHT) {
+	br.setOcc(Loc(16,4), P1);
+	br.setOcc(Loc(17,5), P1);
+
+	const PriorityLevel &pl = ps.getPriorityLevel(P2, Threat);
+	EXPECT_EQ(2, pl.getNumCands());
 }
