@@ -1,11 +1,9 @@
-#ifndef _span_lookup_table_h
-#define _span_lookup_table_h
+#ifndef _span_entry_h
+#define _span_entry_h
 
-#include "span_entry.h"
 #include "defines.h"
 #include "loc.h"
 
-#if 0
 class SpanEntry
 {
 public:
@@ -53,10 +51,5 @@ public:
 	}
 
 };
-#endif
-
-extern SpanEntry spanLookupTable[MAX_DIR][MAX_LOCS];
-
-bool buildSpanTable(BoardWidth boardSize);
 
 #endif
