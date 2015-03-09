@@ -39,7 +39,9 @@ void extendAndStoreLineLookups(Colour occ, int levelsDone,  Mask occVal, LinePat
         occVal += lti._colour << (levelsDone * 2);
 
         // add one to length
-        lti._patternType = (PatternType)((int)lti._patternType + 1);
+        int ptRaw = lti._patternType + 1;
+		if (ptRaw == Threat || ptRaw == Take) ptRaw++;
+        lti._patternType = (PatternType)((int)ptRaw);
 	} else {
 		lti._candInds.push_back(levelsDone);
 	}

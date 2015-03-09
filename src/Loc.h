@@ -4,19 +4,25 @@
 typedef unsigned char Coord;
 typedef short CompressedLoc;
 
-#define MAX_LOCS (20 * 32)
+// max x * max y * 2 (2 for diagonals)
+#define MAX_LOCS (20 * 32 * 2)
 
 #include <assert.h>
+
+// #include <iostream>
 
 class Loc
 {
 public:
-	Loc(Coord x, Coord y) : _value(y * 32 + x) {}
+	Loc(Coord x, Coord y) : _value((int)y * 32 + x) {}
 	Loc(CompressedLoc v) : _value(v)
 	{
-		if (v < MAX_LOCS) {
+#if 0
+		if (v >= MAX_LOCS) {
+			std::cout << "Boom: " << (int)v << std::endl;
 			v = v + 0;
 		}
+#endif
 		assert(v < MAX_LOCS); assert(v>=-100);
 	}
 	Loc() : _value(Loc::INVALID._value) {}

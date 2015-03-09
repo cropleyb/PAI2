@@ -95,7 +95,6 @@ TEST_F(BoardRepsFixture, GetAndSetMaxMax) {
 // Reporting to PositionStats
 //////////////////////////////
 
-#if 0
 TEST_F(BoardRepsFixture, CheckLine1s) {
 	buildSpanTable(19);
 	br.setOcc(Loc(0,0), P1);
@@ -126,13 +125,13 @@ TEST_F(BoardRepsFixture, CheckLine3s) {
 	EXPECT_EQ(2, pl.getNumCands());
 }
 
-TEST_F(BoardRepsFixture, CheckThreat) {
+TEST_F(BoardRepsFixture, CheckThreatIsAlsoTwo) {
 	buildSpanTable(19);
 	br.setOcc(Loc(1,0), P2);
 	br.setOcc(Loc(2,0), P2);
 
 	const PriorityLevel &pl = ps.getPriorityLevel(P1, Threat);
-
 	EXPECT_EQ(2, pl.getNumCands());
+	const PriorityLevel &pl2 = ps.getPriorityLevel(P2, Line2);
+	EXPECT_EQ(3+1, pl2.getNumCands()); // Two of the candidates are repeated
 }
-#endif

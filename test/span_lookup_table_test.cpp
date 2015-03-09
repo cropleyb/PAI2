@@ -255,8 +255,8 @@ TEST_F(SpanLookupTableFixture, OneZeroNE) {
 	EXPECT_EQ(1, item->_locIndex);
 	EXPECT_EQ(1, item->_minIndex);
 	EXPECT_EQ(5, item->_maxIndex);
-	EXPECT_EQ(Loc(0,-1), item->_baseLoc);
-	EXPECT_EQ(Loc(1,1), item->_offsetPerIndex);
+	EXPECT_EQ(-32, item->_baseLoc);
+	EXPECT_EQ(33, item->_offsetPerIndex);
 }
 
 TEST_F(SpanLookupTableFixture, ZeroOneNE) {

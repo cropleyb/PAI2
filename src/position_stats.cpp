@@ -22,7 +22,7 @@ void PositionStats::reportCandidates(Colour colour, PatternType pt, const vector
 }
 
 #include <assert.h>
-#include <iostream>
+//#include <iostream>
 
 // Convert each of the indices in patternEntry into Locs using span
 // and update appropriately
@@ -34,8 +34,13 @@ void PositionStats::report(const SpanEntry &spanEntry, const LinePattern &patter
 	PriorityLevel &level = _levels[c][(int)levelNum];
 	for (Breadth b : patternEntry._candInds)
 	{
+#if 0
+		std::cout << "Attempting loc conv" << (int)b << " with base "
+		   	<< (int)spanEntry._baseLoc
+		   	<< " offset " << (int)spanEntry._offsetPerIndex << std::endl;
+#endif
 		Loc loc = spanEntry.convertIndToLoc(b);
-		std::cout << "Reporting loc" << loc._value << std::endl;
+		// std::cout << "Reporting loc" << loc._value << std::endl;
 		level.addOrRemoveCandidate(loc, inc);
 	}
 }
