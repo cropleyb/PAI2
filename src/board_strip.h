@@ -2,7 +2,7 @@
 #define _board_strip_h
 
 #include "defines.h"
-#include "span_lookup_table.h"
+#include "span_entry.h"
 
 #define FIVE_OCCS_MASK (4 * 4 * 4 * 4 * 4 - 1)
 
