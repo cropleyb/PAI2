@@ -19,6 +19,7 @@ public:
 
     PositionStats ps;
     BoardReps br;
+	Loc locBuffer[MAX_CANDS];
 };
 
 TEST_F(BoardRepsFixture, EmptyBoardGetZZEmpty) {
@@ -130,8 +131,25 @@ TEST_F(BoardRepsFixture, CheckThreatIsAlsoTwo) {
 	br.setOcc(Loc(1,0), P2);
 	br.setOcc(Loc(2,0), P2);
 
+	// Check threat count
 	const PriorityLevel &pl = ps.getPriorityLevel(P1, Threat);
 	EXPECT_EQ(2, pl.getNumCands());
+
+	// Check threat candidates
+	int numCands = pl.getCands(locBuffer, 5);
+	EXPECT_EQ(2, numCands); // as above
+	EXPECT_EQ(Loc(3,0), locBuffer[0]);
+	EXPECT_EQ(Loc(0,0), locBuffer[1]);
+	
+	// Check 2->3 length cand. count
 	const PriorityLevel &pl2 = ps.getPriorityLevel(P2, Line2);
 	EXPECT_EQ(3+1, pl2.getNumCands()); // Two of the candidates are repeated
+
+	// Check 2->3 length candidates
+	numCands = pl2.getCands(locBuffer, 5);
+	EXPECT_EQ(3+1, numCands); // Count should be the same
+	EXPECT_EQ(Loc(5,0), locBuffer[0]);
+	EXPECT_EQ(Loc(4,0), locBuffer[1]);
+	EXPECT_EQ(Loc(3,0), locBuffer[2]);
+	EXPECT_EQ(Loc(0,0), locBuffer[3]);
 }
