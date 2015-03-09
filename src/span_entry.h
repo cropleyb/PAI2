@@ -28,6 +28,7 @@ public:
 	bool operator ==(const SpanEntry& other) const {
 		// TEMP? Hack!
 		return true;
+	}
 #if 0
 		return _strip == other._strip &&
 			   _locIndex == other._locIndex &&
@@ -36,6 +37,10 @@ public:
 			   _baseLoc == other._baseLoc &&
 			   _offsetPerIndex == other._offsetPerIndex;
 #endif
+
+	Loc convertIndToLoc(BoardWidth ind) const {
+		CompressedLoc ret = (long)_baseLoc._value + (long)ind * _offsetPerIndex;
+		return Loc(ret);
 	}
 
 	BoardWidth _strip;    // Ind for strip number of a known direction
@@ -43,13 +48,7 @@ public:
     BoardWidth _minIndex; // Min index for updating this loc
 	BoardWidth _maxIndex; // Max index for updating this loc
 	Loc _baseLoc;         // Base location for this strip
-	Loc _offsetPerIndex;  // Offset per index val for this strip
-
-	Loc convertIndToLoc(BoardWidth ind) const {
-		CompressedLoc ret = _baseLoc._value + ind * _offsetPerIndex._value;
-		return Loc(ret);
-	}
-
+	int _offsetPerIndex;  // Offset per index val for this strip
 };
 
 #endif

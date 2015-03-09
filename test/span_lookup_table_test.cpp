@@ -108,7 +108,6 @@ TEST_F(SpanLookupTableFixture, ZeroZeroSE) {
 	EXPECT_EQ(0, item->_minIndex);
 	EXPECT_EQ(0, item->_maxIndex);
 	EXPECT_EQ(l, item->_baseLoc);
-	EXPECT_EQ(Loc(1,-1), item->_offsetPerIndex);
 }
 
 TEST_F(SpanLookupTableFixture, OneZeroSE) {
@@ -119,7 +118,6 @@ TEST_F(SpanLookupTableFixture, OneZeroSE) {
 	EXPECT_EQ(0, item->_minIndex);
 	EXPECT_EQ(1, item->_maxIndex);
 	EXPECT_EQ(Loc(0,1), item->_baseLoc);
-	EXPECT_EQ(Loc(1,-1), item->_offsetPerIndex);
 }
 
 TEST_F(SpanLookupTableFixture, ZeroOneSE) {
@@ -130,7 +128,6 @@ TEST_F(SpanLookupTableFixture, ZeroOneSE) {
 	EXPECT_EQ(0, item->_minIndex);
 	EXPECT_EQ(1, item->_maxIndex);
 	EXPECT_EQ(Loc(0,1), item->_baseLoc);
-	EXPECT_EQ(Loc(1,-1), item->_offsetPerIndex);
 }
 
 TEST_F(SpanLookupTableFixture, TwoThreeSE) {
@@ -141,7 +138,6 @@ TEST_F(SpanLookupTableFixture, TwoThreeSE) {
 	EXPECT_EQ(0, item->_minIndex);
 	EXPECT_EQ(5, item->_maxIndex);
 	EXPECT_EQ(Loc(0,5), item->_baseLoc);
-	EXPECT_EQ(Loc(1,-1), item->_offsetPerIndex);
 }
 
 TEST_F(SpanLookupTableFixture, MaxMaxSE) {
@@ -152,7 +148,6 @@ TEST_F(SpanLookupTableFixture, MaxMaxSE) {
 	EXPECT_EQ(18, item->_minIndex);
 	EXPECT_EQ(18, item->_maxIndex);
 	EXPECT_EQ(Loc(0,36), item->_baseLoc);
-	EXPECT_EQ(Loc(1,-1), item->_offsetPerIndex);
 }
 
 TEST_F(SpanLookupTableFixture, MidMidSE) {
@@ -163,7 +158,6 @@ TEST_F(SpanLookupTableFixture, MidMidSE) {
 	EXPECT_EQ(5, item->_minIndex);
 	EXPECT_EQ(13, item->_maxIndex);
 	EXPECT_EQ(Loc(0,18), item->_baseLoc);
-	EXPECT_EQ(Loc(1,-1), item->_offsetPerIndex);
 }
 
 /////////////////////////////////////////////////////////
@@ -307,4 +301,22 @@ TEST_F(SpanLookupTableFixture, MidMidNE) {
 	EXPECT_EQ(13, item->_maxIndex);
 	EXPECT_EQ(Loc(0,0), item->_baseLoc);
 	EXPECT_EQ(Loc(1,1), item->_offsetPerIndex);
+}
+
+TEST_F(SpanLookupTableFixture, ConvertIndToLocMid) {
+	Loc l(9,9);
+	SpanEntry &item = spanLookupTable[NE_DIR][l._value];
+
+	Loc genLoc = item.convertIndToLoc(0);
+
+	EXPECT_EQ(Loc(0,0), genLoc);
+}
+
+TEST_F(SpanLookupTableFixture, ConvertIndToLocBad) {
+	Loc l(14,14);
+	SpanEntry &item = spanLookupTable[SE_DIR][l._value];
+
+	Loc genLoc = item.convertIndToLoc(18);
+
+	EXPECT_EQ(Loc(18,10), genLoc);
 }
