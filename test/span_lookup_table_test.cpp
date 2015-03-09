@@ -72,7 +72,7 @@ TEST_F(SpanLookupTableFixture, MaxMaxE) {
 	EXPECT_EQ(18, item->_strip);
 	EXPECT_EQ(18, item->_locIndex);
 	EXPECT_EQ(14, item->_minIndex);
-	EXPECT_EQ(18, item->_maxIndex);
+	EXPECT_EQ(19, item->_maxIndex);
 	EXPECT_EQ(Loc(0,18), item->_baseLoc);
 	EXPECT_EQ(Loc(1,0), item->_offsetPerIndex);
 }
@@ -106,7 +106,7 @@ TEST_F(SpanLookupTableFixture, ZeroZeroSE) {
 	EXPECT_EQ(0, item->_strip);
 	EXPECT_EQ(0, item->_locIndex);
 	EXPECT_EQ(0, item->_minIndex);
-	EXPECT_EQ(0, item->_maxIndex);
+	EXPECT_EQ(1, item->_maxIndex);
 	EXPECT_EQ(l, item->_baseLoc);
 }
 
@@ -116,7 +116,7 @@ TEST_F(SpanLookupTableFixture, OneZeroSE) {
 	EXPECT_EQ(1, item->_strip);
 	EXPECT_EQ(1, item->_locIndex);
 	EXPECT_EQ(0, item->_minIndex);
-	EXPECT_EQ(1, item->_maxIndex);
+	EXPECT_EQ(2, item->_maxIndex);
 	EXPECT_EQ(Loc(0,1), item->_baseLoc);
 }
 
@@ -126,7 +126,7 @@ TEST_F(SpanLookupTableFixture, ZeroOneSE) {
 	EXPECT_EQ(1, item->_strip);
 	EXPECT_EQ(0, item->_locIndex);
 	EXPECT_EQ(0, item->_minIndex);
-	EXPECT_EQ(1, item->_maxIndex);
+	EXPECT_EQ(2, item->_maxIndex);
 	EXPECT_EQ(Loc(0,1), item->_baseLoc);
 }
 
@@ -136,7 +136,7 @@ TEST_F(SpanLookupTableFixture, TwoThreeSE) {
 	EXPECT_EQ(5, item->_strip);
 	EXPECT_EQ(2, item->_locIndex);
 	EXPECT_EQ(0, item->_minIndex);
-	EXPECT_EQ(5, item->_maxIndex);
+	EXPECT_EQ(6, item->_maxIndex);
 	EXPECT_EQ(Loc(0,5), item->_baseLoc);
 }
 
@@ -146,7 +146,7 @@ TEST_F(SpanLookupTableFixture, MaxMaxSE) {
 	EXPECT_EQ(36, item->_strip);
 	EXPECT_EQ(18, item->_locIndex);
 	EXPECT_EQ(18, item->_minIndex);
-	EXPECT_EQ(18, item->_maxIndex);
+	EXPECT_EQ(19, item->_maxIndex);
 	EXPECT_EQ(Loc(0,36), item->_baseLoc);
 }
 
@@ -210,7 +210,7 @@ TEST_F(SpanLookupTableFixture, MaxMaxN) {
 	EXPECT_EQ(18, item->_strip);
 	EXPECT_EQ(18, item->_locIndex);
 	EXPECT_EQ(14, item->_minIndex);
-	EXPECT_EQ(18, item->_maxIndex);
+	EXPECT_EQ(19, item->_maxIndex);
 	EXPECT_EQ(Loc(18,0), item->_baseLoc);
 	EXPECT_EQ(Loc(0,1), item->_offsetPerIndex);
 }
@@ -287,7 +287,7 @@ TEST_F(SpanLookupTableFixture, MaxMaxNE) {
 	EXPECT_EQ(18, item->_strip);
 	EXPECT_EQ(18, item->_locIndex);
 	EXPECT_EQ(14, item->_minIndex);
-	EXPECT_EQ(18, item->_maxIndex);
+	EXPECT_EQ(19, item->_maxIndex);
 	EXPECT_EQ(Loc(0,0), item->_baseLoc);
 	EXPECT_EQ(Loc(1,1), item->_offsetPerIndex);
 }

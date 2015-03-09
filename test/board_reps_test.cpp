@@ -153,3 +153,19 @@ TEST_F(BoardRepsFixture, CheckThreatIsAlsoTwo) {
 	EXPECT_EQ(Loc(3,0), locBuffer[2]);
 	EXPECT_EQ(Loc(0,0), locBuffer[3]);
 }
+
+TEST_F(BoardRepsFixture, CheckFarEdgeThreat) {
+	buildSpanTable(19);
+	br.setOcc(Loc(16,0), P1);
+	br.setOcc(Loc(17,0), P1);
+
+	// Check threat count
+	const PriorityLevel &pl = ps.getPriorityLevel(P2, Threat);
+	EXPECT_EQ(2, pl.getNumCands());
+
+	// Check threat candidates
+	int numCands = pl.getCands(locBuffer, 5);
+	EXPECT_EQ(2, numCands); // as above
+	EXPECT_EQ(Loc(18,0), locBuffer[0]);
+	EXPECT_EQ(Loc(15,0), locBuffer[1]);
+}

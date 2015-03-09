@@ -1,5 +1,6 @@
 #include "span_lookup_table.h"
 
+
 SpanEntry spanLookupTable[MAX_DIR][MAX_LOCS];
 
 void buildESpanTable(BoardWidth boardSize)
@@ -14,7 +15,7 @@ void buildESpanTable(BoardWidth boardSize)
 			e._strip = y;
 			e._locIndex = x;
 			e._minIndex = std::max(x-4, 0);
-			e._maxIndex = std::min(x+4, (boardSize-1));
+			e._maxIndex = std::min(x+4, (int)boardSize);
 			e._baseLoc = Loc(0,y)._value;
 			e._offsetPerIndex = Loc(1,0)._value;
 		}
@@ -33,12 +34,12 @@ void buildSESpanTable(BoardWidth boardSize)
 			BoardWidth strip = x+y;
 
 			BoardWidth minInd = 0;
-			BoardWidth maxInd = strip;
+			BoardWidth maxInd = strip + 1; // EDGE?
 
 			if (strip >= boardSize)
 			{
 				minInd = strip-boardSize+1;
-				maxInd = boardSize-1;
+				maxInd = boardSize;
 			}
 
 			e._strip = strip;
@@ -63,7 +64,7 @@ void buildNSpanTable(BoardWidth boardSize)
 			e._strip = x;
 			e._locIndex = y;
 			e._minIndex = std::max(y-4, 0);
-			e._maxIndex = std::min(y+4, (boardSize-1));
+			e._maxIndex = std::min(y+4, (int)boardSize);
 			e._baseLoc = Loc(x,0)._value;
 			e._offsetPerIndex = Loc(0,1)._value;
 		}
@@ -82,12 +83,12 @@ void buildNESpanTable(BoardWidth boardSize)
 			BoardWidth strip = boardSize + x - y - 1;
 
 			BoardWidth minInd = 0;
-			BoardWidth maxInd = strip;
+			BoardWidth maxInd = strip + 1; // include the EDGE
 
 			if (strip >= boardSize)
 			{
 				minInd = strip-boardSize+1;
-				maxInd = boardSize-1;
+				maxInd = boardSize; // include the EDGE
 			}
 
 			e._strip = strip;
