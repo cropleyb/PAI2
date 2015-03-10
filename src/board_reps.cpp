@@ -4,26 +4,70 @@
 #include "board_strip.h"
 #include "position_stats.h"
 
-BoardReps::BoardReps(BoardWidth boardSize, PositionStats &posStats) : _posStats(posStats)
+BoardReps::BoardReps(BoardWidth boardSize, PositionStats &posStats) :
+    _posStats(posStats),
+	_boardSize(boardSize)
 {
-	U64 emptyLine = EDGE >> (2 * boardSize);
+	buildSpanTable(boardSize);
+	clear();
+}
 
+void BoardReps::clear()
+{
+	for (int dir=0; dir<MAX_DIR; dir++)
+	{
+		for (int strip=0; strip<2*MAX_WIDTH; strip++)
+		{
+			_boardStrips[dir][strip] = (U64)0;
+		}
+	}
+
+	initEdges();
+}
+
+void
+BoardReps::initEdges()
+{
 	for (int dir=E_DIR; dir<MAX_DIR; dir++)
 	{
-		for (BoardWidth strip=0; strip<2*boardSize; strip++)
+		for (BoardWidth i=0; i<_boardSize; i+=1)
 		{
-			U64 &val = _boardStrips[dir][strip];
-			val = emptyLine;
+			initEdgeVal(dir, Loc(0, i));
+			initEdgeVal(dir, Loc(i, 0));
+			initEdgeVal(dir, Loc(_boardSize-1, i));
+			initEdgeVal(dir, Loc(i, _boardSize-1));
 		}
 	}
 }
+
+void BoardReps::initEdgeVal(int dir, Loc l)
+{
+	const SpanEntry &e = spanLookupTable[dir][l._value];
+	U64 shift = (U64)1 << (2 * e._stripMax);
+	U64 &val = _boardStrips[dir][e._strip];
+	val &= ~(shift + (shift << 1));
+	val |= (EDGE * shift);
+	if (_boardStrips[0][0] % 2 == 1)
+	{
+		int x=15;
+	}
+}
+
 
 void BoardReps::setOcc(Loc l, Colour c)
 {
 	for (int dir=E_DIR; dir<MAX_DIR; dir++)
 	{
+		assert(dir>=0);
+		assert(dir<MAX_DIR);
+		assert(l._value>=0);
+		assert(l._value<=MAX_LOCS);
+
 		// Find the en/decoding info for that loc in the given direction
 		const SpanEntry &span = spanLookupTable[dir][l._value];
+
+		assert(span._strip >= 0);
+		assert(span._strip < 3*MAX_WIDTH);
 
 		// val represents an entire board line that intersects the given loc
 		U64 &val = _boardStrips[dir][span._strip];

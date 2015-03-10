@@ -26,6 +26,12 @@ class LinePattern
 public:
 	LinePattern() : _colour(EMPTY), _patternType(NoPattern) {}
 
+	LinePattern(const LinePattern &orig) :
+		_colour(orig._colour),
+		_patternType(orig._patternType),
+	    _candInds(orig._candInds)
+	{}
+
 	bool operator ==(const LinePattern &other) const
 	{ return (_colour == other._colour) &&
 		     (_patternType == other._patternType) &&

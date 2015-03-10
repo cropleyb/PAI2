@@ -22,6 +22,7 @@ public:
 	BoardWidth _locIndex; // Index of this loc
     BoardWidth _minIndex; // Min index for updating this loc
 	BoardWidth _maxIndex; // Max index for updating this loc
+	BoardWidth _stripMax; // Max index for the entire strip
 	int _baseLoc;         // Base location for this strip
 	int _offsetPerIndex;  // Offset per index val for this strip
 };

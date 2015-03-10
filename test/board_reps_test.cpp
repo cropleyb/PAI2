@@ -22,6 +22,10 @@ public:
 	Loc locBuffer[MAX_CANDS];
 };
 
+////////////////////////////////////////////////////////
+// Set/Get tests
+////////////////////////////////////////////////////////
+
 TEST_F(BoardRepsFixture, EmptyBoardGetZZEmpty) {
 	Colour c = br.getOcc(Loc(0,0));
 	EXPECT_EQ(EMPTY, c);
@@ -35,6 +39,9 @@ TEST_F(BoardRepsFixture, GetAndSetZZ) {
 }
 
 TEST_F(BoardRepsFixture, GetAndSet11) {
+	Colour cOrig = br.getOcc(Loc(0,0));
+	EXPECT_EQ(EMPTY, cOrig);
+
 	br.setOcc(Loc(1,1), P1);
 
 	Colour c = br.getOcc(Loc(1,1));
@@ -106,6 +113,10 @@ TEST_F(BoardRepsFixture, CheckThreatIsAlsoTwo) {
 	EXPECT_EQ(Loc(0,0), locBuffer[3]);
 }
 
+////////////////////////////////////////////////////////
+// Edge threat tests
+////////////////////////////////////////////////////////
+
 TEST_F(BoardRepsFixture, CheckFarEdgeThreatE) {
 	br.setOcc(Loc(16,0), P1);
 	br.setOcc(Loc(17,0), P1);
@@ -121,7 +132,7 @@ TEST_F(BoardRepsFixture, CheckFarEdgeThreatE) {
 	EXPECT_EQ(Loc(15,0), locBuffer[1]);
 }
 
-TEST_F(BoardRepsFixture, CheckFarEdgeThreatSE_lower) {
+TEST_F(BoardRepsFixture, CheckFarEdgeThreatSE_LOWER) {
 	br.setOcc(Loc(8,2), P1);
 	br.setOcc(Loc(9,1), P1);
 
@@ -160,4 +171,32 @@ TEST_F(BoardRepsFixture, CheckFarEdgeThreatNE_RIGHT) {
 
 	const PriorityLevel &pl = ps.getPriorityLevel(P2, Threat);
 	EXPECT_EQ(2, pl.getNumCands());
+}
+
+////////////////////////////////////////////////////////
+// Edge line tests
+////////////////////////////////////////////////////////
+
+TEST_F(BoardRepsFixture, CheckFarEdgeLineE) {
+	br.setOcc(Loc(16,8), P2);
+	br.setOcc(Loc(18,8), P2);
+
+	const PriorityLevel &pl = ps.getPriorityLevel(P2, Line2);
+	EXPECT_EQ(3, pl.getNumCands());
+}
+
+TEST_F(BoardRepsFixture, CheckFarEdgeLineSE_LOWER) {
+	br.setOcc(Loc(7,2), P1);
+	br.setOcc(Loc(9,0), P1);
+
+	const PriorityLevel &pl = ps.getPriorityLevel(P1, Line2);
+	EXPECT_EQ(3, pl.getNumCands());
+}
+
+TEST_F(BoardRepsFixture, CheckFarEdgeLineSE_RIGHT) {
+	br.setOcc(Loc(16,7), P1);
+	br.setOcc(Loc(18,5), P1);
+
+	const PriorityLevel &pl = ps.getPriorityLevel(P1, Line2);
+	EXPECT_EQ(3, pl.getNumCands());
 }
