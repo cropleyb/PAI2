@@ -39,12 +39,10 @@ Game::make move
 			convert indices to Locs
 			update move suggestor/utility data
 
-BoardLine
- - max index
- - min index?
- - Left edge start Loc?
 /LengthLookupTable
-BoardDirectionRep (=old DirectionStrips)
+ - TODO: Rename to PatternLookupTable
+ - add support for takes, threats, half-blocked 4s
+BoardDirectionRep
  - array of BoardLines
  - bit representation of whole board
  - direction (Loc offset)
@@ -70,8 +68,62 @@ PositionStats
  /- max depth * max breadth array of Locs
  /- max depth * number of Locs
  /- max depth * next Loc index
-- MoveSuggestor = old PriorityFilter
+/ MoveSuggestor = old PriorityFilter
+ /- All except PL sorting
 /AlphaBeta
  /- first cut
 
-	
+BoardStrip indices to Locs during pattern reporting
+---------------------------------------------------
+- PatternLookupTable passed to matching loop.
+  contains entries for each pattern (pre-built)
+  same length (5) for everything
+  duplicate entries for "don't care" points
+  edge matching?
+  - struct for LineEntry?
+  - LinePattern types (cands): Take (1), Threat (2), Length (5-n), HalfBlocked4 (0)
+  - array of indices of candidates?
+- ind2loc func passed into matcher too? No, one level up.
+- array of Locs passed to reporting function
+- Matcher templated on Reporter, contains one instance
+- Reporter takes conversion func/obj in each reporting method, passed from match()
+- is this a DirectionStrip?
+
+Game.makeMove(Loc)
+    checkForCaptures(Loc)
+	for each direction
+		(DirectionStrip)
+		captures.extend(process_direction_captures(ds, move_pos, MC)
+	for each direction
+		(DirectionStrip)
+        lookup Span in array by Loc: ds index, min, max, loc index, base loc, direction loc per index val
+		before set occ
+		    (LineMatcher)
+		    match(U64, ds, span, inc = -1)
+			    (Uses singleton? LineLookupTable)
+			    for each match
+			        reporter.report(LineEntry, index offset, ds, inc)
+					    (Reporter)
+						Use ds to convert indices to Locs
+						switch on LineEntry type
+						PositionStats.report*(Locs)
+		set occ(from span, colour)
+		after set occ
+		    match(inc = 1)
+			    (as above)
+		    
+
+Threats & Line2s
+How to deal with threats in the lookup table?
+Most (but not all) threats are also Line2s.
+Lookup a second table if we detect a Threat, and report that too.
+
+Edges for diagonal reps need different length EDGEs.
+Iterate through each strip. Iterate around the 4 edges to get all the
+SpanEntries. Lookup _maxIndex, and call setOcc(EDGE)
+
+empty board is not empty - (0,0) is P1 (?)
+Line1 is being subtracted from first.
+dir not incrementing in span_lookup_table loop???
+which dir is causing the problem?
+
