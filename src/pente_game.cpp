@@ -11,6 +11,9 @@ PenteGame::PenteGame()
 
 void PenteGame::makeMove(Loc l, Colour p)
 {
+	const PriorityLevel &pl = _posStats.getPriorityLevel(p, Take);
+	// if (pl.
+	// const PriorityLevel &getPriorityLevel(Colour c, PatternType pattern) const
 	_boardReps.setOcc(l, p);
 }
 

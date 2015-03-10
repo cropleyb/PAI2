@@ -51,3 +51,14 @@ TEST_F(PenteGameFixture, MakeTakeInCentre) {
 	const PriorityLevel &pl = ps.getPriorityLevel(P2, Take);
 	EXPECT_EQ(1, pl.getNumCands());
 }
+
+TEST_F(PenteGameFixture, CaptureInCentre) {
+	g.makeMove(Loc(9,9), P1);
+	g.makeMove(Loc(7,7), P2);
+	g.makeMove(Loc(8,8), P1);
+	g.makeMove(Loc(10,10), P2);
+
+	CapCount cc = ps.getCaptured(P2);
+	EXPECT_EQ(2, cc);
+}
+

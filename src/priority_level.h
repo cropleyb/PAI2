@@ -53,6 +53,7 @@ public:
 
 	Ind getCands(Loc *locBuffer, Ind max) const;
 	Ind getNumCands() const;
+	Ind getCount(Loc l) const;
 	void addOrRemoveCandidate(Loc l, int inc=1);
 
 private:

@@ -8,7 +8,7 @@ class SpanEntry
 {
 public:
 
-	bool operator ==(const SpanEntry& other) const {
+	bool operator ==(const SpanEntry& /*other*/) const {
 		// TEMP? Hack!
 		return true;
 	}
