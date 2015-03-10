@@ -5,6 +5,8 @@
 using std::cout;
 using std::endl;
 
+//#define DEBUG
+
 #ifdef DEBUG 
 #define BD(x) x
 #else 
