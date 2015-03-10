@@ -3,14 +3,13 @@
 
 class PositionStats;
 class CandidateCache;
-//class PriorityLevel;
-
-#include "priority_level.h"
+class PriorityLevel;
 
 class MoveSuggester
 {
 public:
-	MoveSuggester(PositionStats &ps, CandidateCache &cc);
+	MoveSuggester(PositionStats &ps);
+	~MoveSuggester();
 
 	Loc getNextMove(Depth d);
 
@@ -20,8 +19,8 @@ private:
 
 	void fillPriorityLevels(Colour ourColour, Colour theirColour);
 
+	CandidateCache *_candCache;
 	PositionStats &_posStats;
-	CandidateCache &_candCache;
 	
 	// This could be on the stack really
 	const PriorityLevel *_toSearchLevels[MAX_CANDS];

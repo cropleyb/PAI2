@@ -6,26 +6,32 @@
 #include "line_pattern.h"
 #include "position_stats.h"
 
-MoveSuggester::MoveSuggester(PositionStats &ps, CandidateCache &cc)
-	: _posStats(ps), _candCache(cc)
+MoveSuggester::MoveSuggester(PositionStats &ps)
+	: _posStats(ps)
 {
+	_candCache = new CandidateCache();
+}
+
+MoveSuggester::~MoveSuggester()
+{
+	delete _candCache;
 }
 
 Loc MoveSuggester::getNextMove(Depth depth)
 {
-	if (_candCache.needsFilling(depth))
+	if (_candCache->needsFilling(depth))
 	{
-		Loc *moveBuffer = _candCache.getBuffer(depth);
+		Loc *moveBuffer = _candCache->getBuffer(depth);
 
 		Breadth maxMoves = 9;
 		if (depth > 3) maxMoves = 4;
 
 		Breadth moveCount = filterCandidates(moveBuffer, depth, maxMoves, P1); // FIXME - our real colour
 		BD(cout << "Setting depth moves for depth " << (int)depth << " to " << (int)moveCount << endl;)
-		_candCache.setDepthMoves(depth, moveCount);
+		_candCache->setDepthMoves(depth, moveCount);
 	}
 
-	return _candCache.getNextMove(depth);
+	return _candCache->getNextMove(depth);
 }
 
 bool MoveSuggester::getPriorityLevels(Colour ourColour)

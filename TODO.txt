@@ -39,14 +39,14 @@ Game::make move
 			convert indices to Locs
 			update move suggestor/utility data
 
-/LengthLookupTable
- - TODO: Rename to PatternLookupTable
- - add support for takes, threats, half-blocked 4s
+/LengthLookupTable -> LineLookupTable
+ / lineLookupTable is a raw array of LinePatterns, keyed on 10 bit patterns
+ / add support for takes, threats, half-blocked 4s
 BoardDirectionRep
- - array of BoardLines
+ - 2d array of U64[MAX_DIRS][2*MAX_CANDS]
  - bit representation of whole board
  - direction (Loc offset)
- - convert from ind to Loc and back
+ - convert from ind to Loc and back (via SpanEntry)
  - beforeSetOcc(loc, colour, posStats)
  - afterSetOcc(loc, colour, posStats)
  - Uses lengthLookupTable
@@ -62,6 +62,7 @@ Game
 PositionStats
  /- PriorityLevel * 4 for line lengths
  /- PriorityLevel * 2 for takes and threats
+ /- report(span, pattern, colour) converts pattern indices to locs
  /- Captured counts
  - Chessboard counts
 /CandidateCache
@@ -72,6 +73,10 @@ PositionStats
  /- All except PL sorting
 /AlphaBeta
  /- first cut
+/SpanLookupTable
+ /- Array of SpanEntries (1 per Loc on the board)
+ /- Each describes the line that the Loc is on (strip, min, max, etc.)
+ /- Converts between index on that line and Locs
 
 BoardStrip indices to Locs during pattern reporting
 ---------------------------------------------------
@@ -126,4 +131,9 @@ empty board is not empty - (0,0) is P1 (?)
 Line1 is being subtracted from first.
 dir not incrementing in span_lookup_table loop???
 which dir is causing the problem?
+- turns out that the board strips were not being initialised in the constructor.
 
+How to create a PenteGame instance
+----------------------------------
+Alph-Beta just needs to know about the PG instance, not the other way around.
+PG contains BoardReps, PositionStats, MoveSuggester, MoveHistory

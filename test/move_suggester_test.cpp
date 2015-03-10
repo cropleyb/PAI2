@@ -25,10 +25,9 @@ public:
 class MoveSuggesterFixture : public testing::Test {
 public:
 	PositionStats ps;
-	CandidateCache cc;
 	MoveSuggester ms;
 
-	MoveSuggesterFixture() : ms(ps, cc) {}
+	MoveSuggesterFixture() : ms(ps) {}
 
 	LocArr getLocsInOrder(Depth d)
 	{
@@ -56,7 +55,6 @@ public:
 		LocArr ll;
 		addLocs(ll, rest...);
 		ps.reportCandidates(c, l, ll, inc);
-		//void report(const SpanEntry &spanEntry, const LinePattern &patternEntry, int inc);
 	}
 
 	// Hack for testing...
@@ -64,18 +62,6 @@ public:
 	{
 		ps._captured[colour] = count;
 	}
-
-#if 0
-    void arTake(Colour c, int inc, Loc l)
-	{
-		ps._takes[c].addOrRemoveCandidate(l, inc);
-	}
-
-    void arThreat(Colour c, int inc, Loc l)
-	{
-		ps._threats[c].addOrRemoveCandidate(l, inc);
-	}
-#endif
 };
 
 using ::testing::InSequence;
