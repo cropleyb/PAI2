@@ -173,6 +173,16 @@ TEST_F(BoardRepsFixture, CheckFarEdgeThreatNE_RIGHT) {
 	EXPECT_EQ(2, pl.getNumCands());
 }
 
+TEST_F(BoardRepsFixture, CheckAtEdgeNoThreatE) {
+	br.setOcc(Loc(18,0), P1);
+	br.setOcc(Loc(17,0), P1);
+
+	// Check threat count
+	const PriorityLevel &pl = ps.getPriorityLevel(P2, Threat);
+	EXPECT_EQ(0, pl.getNumCands());
+}
+
+
 ////////////////////////////////////////////////////////
 // Edge line tests
 ////////////////////////////////////////////////////////
@@ -196,6 +206,30 @@ TEST_F(BoardRepsFixture, CheckFarEdgeLineSE_LOWER) {
 TEST_F(BoardRepsFixture, CheckFarEdgeLineSE_RIGHT) {
 	br.setOcc(Loc(16,7), P1);
 	br.setOcc(Loc(18,5), P1);
+
+	const PriorityLevel &pl = ps.getPriorityLevel(P1, Line2);
+	EXPECT_EQ(3, pl.getNumCands());
+}
+
+TEST_F(BoardRepsFixture, CheckFarEdgeLineN) {
+	br.setOcc(Loc(8,16), P1);
+	br.setOcc(Loc(8,18), P1);
+
+	const PriorityLevel &pl = ps.getPriorityLevel(P1, Line2);
+	EXPECT_EQ(3, pl.getNumCands());
+}
+
+TEST_F(BoardRepsFixture, CheckFarEdgeLineNE_UPPER) {
+	br.setOcc(Loc(7,16), P1);
+	br.setOcc(Loc(9,18), P1);
+
+	const PriorityLevel &pl = ps.getPriorityLevel(P1, Line2);
+	EXPECT_EQ(3, pl.getNumCands());
+}
+
+TEST_F(BoardRepsFixture, CheckFarEdgeLineNE_RIGHT) {
+	br.setOcc(Loc(18,7), P1);
+	br.setOcc(Loc(16,5), P1);
 
 	const PriorityLevel &pl = ps.getPriorityLevel(P1, Line2);
 	EXPECT_EQ(3, pl.getNumCands());
