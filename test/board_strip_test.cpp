@@ -80,6 +80,10 @@ public:
 };
 
 
+//////////////////////////////////////
+// Main pattern recognition
+//////////////////////////////////////
+
 TEST_F(BoardStripFixture, NoLocsYet) {
 	processOccString("         |", 0, 9);
 }
@@ -204,3 +208,14 @@ TEST_F(BoardStripFixture, ThreatButNotTwoLeftEdge) {
 	processOccString(" WW B |", 0, 7);
 }
 
+/////////////////////////////////////////////////////////////////
+// Capture recognition (only triggered by end of pair placement)
+/////////////////////////////////////////////////////////////////
+
+#if 0
+// TODO
+TEST_F(BoardStripFixture, ReportCapture) {
+	EXPECT_CALL(mr, reportCapture(span, E_DIR));
+	processCapString(" WWB BW|", 0, span);
+}
+#endif

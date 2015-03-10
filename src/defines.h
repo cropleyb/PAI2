@@ -15,6 +15,7 @@ typedef char Depth;
 typedef unsigned char Breadth;
 typedef char CapCount;
 typedef signed char BoardWidth;
+typedef unsigned char CaptureDirections;
 
 const Colour EMPTY = 0;
 const Colour P1 = 1;
@@ -27,7 +28,11 @@ enum DirectionType
 	SE_DIR=1,
 	N_DIR=2,
 	NE_DIR=3,
-	MAX_DIR
+	MAX_DIR=4,
+	W_DIR=4,
+	NW_DIR=5,
+	S_DIR=6,
+	SW_DIR=7
 };
 
 #define WIN_LENGTH 5

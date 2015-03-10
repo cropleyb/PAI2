@@ -137,3 +137,13 @@ How to create a PenteGame instance
 ----------------------------------
 Alph-Beta just needs to know about the PG instance, not the other way around.
 PG contains BoardReps, PositionStats, MoveSuggester, MoveHistory
+
+Capture flow
+------------
+PenteGame makeMove
+  short circuit - must be a Take for that Loc in the PositionStats
+  checks for pattern match in each direction
+  report to PositionStats in same way as for Line1 etc.?
+  Must also report or return the captures back to PenteGame to call setOcc and update the MoveHistory.
+  MH needs the Locs, PosStats only needs a total count, so PG should do the conversions to Locs, and report to the PosStats.
+  Or PG should pass in a Loc buffer (from MH) to BoardReps for it to populate.

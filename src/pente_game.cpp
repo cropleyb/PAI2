@@ -12,9 +12,16 @@ PenteGame::PenteGame()
 void PenteGame::makeMove(Loc l, Colour p)
 {
 	const PriorityLevel &pl = _posStats.getPriorityLevel(p, Take);
-	// if (pl.
-	// const PriorityLevel &getPriorityLevel(Colour c, PatternType pattern) const
+	if (pl.getCount(l) > 0) {
+		setAndRecordCaptures(l, p);
+	}
+
 	_boardReps.setOcc(l, p);
+}
+
+void PenteGame::setAndRecordCaptures(Loc l, Colour p)
+{
+	// TODO
 }
 
 #if 0

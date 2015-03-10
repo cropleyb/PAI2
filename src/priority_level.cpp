@@ -30,8 +30,7 @@ PriorityLevel::PriorityLevel()
             self.add_or_remove_candidate(cand_loc, inc)
 #endif
 
-void
-PriorityLevel::addOrRemoveCandidate(Loc candLoc, int inc)
+void PriorityLevel::addOrRemoveCandidate(Loc candLoc, int inc)
 {
 	BD(cout << "ARC: " << (void *)this << "----------------" << endl);
 
@@ -127,14 +126,19 @@ PriorityLevel::addOrRemoveCandidate(Loc candLoc, int inc)
 	}
 }
 
-Ind
-PriorityLevel::getNumCands() const
+Ind PriorityLevel::getNumCands() const
 {
 	return _numCands;
 }
 
-Ind
-PriorityLevel::getCands(Loc *locBuffer, Ind max) const
+Ind PriorityLevel::getCount(Loc l) const
+{
+	Ind nodeInd = _nodeIndByLoc[l._value];
+	const DLNode &node = _dlNodes[nodeInd];
+	return node._count;
+}
+
+Ind PriorityLevel::getCands(Loc *locBuffer, Ind max) const
 {
 	BD(cout << "getCands top - " << (void *)this << endl);
 	BD(cout << "getCands 1 - _dlHeadInd" << _dlHeadInd << endl);

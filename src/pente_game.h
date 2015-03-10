@@ -28,6 +28,8 @@ public:
     void isCutoff(Depth depth);
 
 private:
+	void setAndRecordCaptures(Loc l, Colour p);
+
 	BoardReps _boardReps;
 	PositionStats _posStats;
 	// MoveHistory _moveHist;
