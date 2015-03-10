@@ -24,9 +24,30 @@ public:
 ////////////////////////////////////////////////////////
 
 TEST_F(PenteGameFixture, MakeMoveInCentre) {
-	//Loc centre(9,9);
-	//g.makeMove(centre);
-	//Colour c = br.getOcc(Loc(0,0));
-	//EXPECT_EQ(EMPTY, c);
+	Loc centre(9,9);
+	g.makeMove(centre, P1);
+
+	Colour c = br.getOcc(centre);
+	EXPECT_EQ(P1, c);
+
+	const PriorityLevel &pl = ps.getPriorityLevel(P1, Line1);
+	EXPECT_EQ(32, pl.getNumCands());
 }
 
+TEST_F(PenteGameFixture, MakeThreatInCentre) {
+	g.makeMove(Loc(9,9), P1);
+	g.makeMove(Loc(3,5), P2);
+	g.makeMove(Loc(9,8), P1);
+
+	const PriorityLevel &pl = ps.getPriorityLevel(P2, Threat);
+	EXPECT_EQ(2, pl.getNumCands());
+}
+
+TEST_F(PenteGameFixture, MakeTakeInCentre) {
+	g.makeMove(Loc(9,9), P1);
+	g.makeMove(Loc(7,7), P2);
+	g.makeMove(Loc(8,8), P1);
+
+	const PriorityLevel &pl = ps.getPriorityLevel(P2, Take);
+	EXPECT_EQ(1, pl.getNumCands());
+}

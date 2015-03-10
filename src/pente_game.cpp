@@ -9,13 +9,17 @@ PenteGame::PenteGame()
 	buildSpanTable(19);
 }
 
+void PenteGame::makeMove(Loc l, Colour p)
+{
+	_boardReps.setOcc(l, p);
+}
+
 #if 0
 class PenteGame
 {
 public:
 	PenteGame();
 
-	void makeMove(Loc);
     void undo();
 
     bool isOneMove() const;

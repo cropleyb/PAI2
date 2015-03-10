@@ -14,7 +14,7 @@ class PenteGame
 public:
 	PenteGame();
 
-	void makeMove(Loc);
+	void makeMove(Loc l, Colour p);
     void undo();
 
     bool isOneMove() const;
