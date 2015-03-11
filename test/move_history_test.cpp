@@ -21,13 +21,30 @@ public:
 
 TEST_F(MoveHistoryFixture, MakeMoveInCentre) {
 	Loc centre(9,9);
-	mh.saveMove(centre, P1, 0);
+	MoveNumber mn = mh.saveMove(centre, P1, 0);
+	EXPECT_EQ(1, mn);
 
-#if 0
-	Colour c = br.getOcc(centre);
-	EXPECT_EQ(P1, c);
+	Loc moved = mh.getMoved(0);
+	EXPECT_EQ(centre, moved);
 
-	const PriorityLevel &pl = ps.getPriorityLevel(P1, Line1);
-	EXPECT_EQ(32, pl.getNumCands());
-#endif
+	CaptureDirs cap = mh.getCapDirs(0);
+	EXPECT_EQ(0, cap);
+}
+
+TEST_F(MoveHistoryFixture, MakeTwoMoves) {
+	Loc m1(9,9);
+	Loc m2(8,8);
+	MoveNumber mn1 = mh.saveMove(m1, P1, 13);
+	MoveNumber mn2 = mh.saveMove(m2, P2, 24);
+	EXPECT_EQ(2, mn2);
+
+	Loc moved1 = mh.getMoved(0);
+	EXPECT_EQ(m1, moved1);
+	Loc moved2 = mh.getMoved(1);
+	EXPECT_EQ(m2, moved2);
+
+	CaptureDirs cap1 = mh.getCapDirs(0);
+	EXPECT_EQ(13, cap1);
+	CaptureDirs cap2 = mh.getCapDirs(1);
+	EXPECT_EQ(24, cap2);
 }

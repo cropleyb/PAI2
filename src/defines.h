@@ -11,11 +11,12 @@ typedef unsigned char Length;
 typedef signed char Step;
 typedef unsigned short Mask;
 typedef unsigned char Colour;
+typedef unsigned short MoveNumber;
 typedef char Depth;
 typedef unsigned char Breadth;
 typedef char CapCount;
 typedef signed char BoardWidth;
-typedef unsigned char CaptureDirections;
+typedef unsigned char CaptureDirs;
 
 const Colour EMPTY = 0;
 const Colour P1 = 1;
