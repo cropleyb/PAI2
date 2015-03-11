@@ -19,6 +19,7 @@ void buildESpanTable(BoardWidth boardSize)
 			e._maxIndex = std::min(x+4, (int)boardSize);
 			e._baseLoc = Loc(0,y)._value;
 			e._offsetPerIndex = Loc(1,0)._value;
+			e._direction = E_DIR;
 		}
 	}
 }
@@ -49,6 +50,7 @@ void buildSESpanTable(BoardWidth boardSize)
 			e._maxIndex = std::min((BoardWidth)(x+4), e._stripMax);
 			e._baseLoc = Loc(0,strip)._value;
 			e._offsetPerIndex = 1 - 32; // Work around prevention of neg. Loc
+			e._direction = SE_DIR;
 		}
 	}
 }
@@ -69,6 +71,7 @@ void buildNSpanTable(BoardWidth boardSize)
 			e._maxIndex = std::min(y+4, (int)boardSize);
 			e._baseLoc = Loc(x,0)._value;
 			e._offsetPerIndex = Loc(0,1)._value;
+			e._direction = N_DIR;
 		}
 	}
 }
@@ -99,6 +102,7 @@ void buildNESpanTable(BoardWidth boardSize)
 			e._maxIndex = std::min((BoardWidth)(x+4), e._stripMax);
 			e._baseLoc = 32 * ((int)y-(int)x);
 			e._offsetPerIndex = Loc(1,1)._value;
+			e._direction = NE_DIR;
 			assert(e._baseLoc < 700);
 		}
 	}

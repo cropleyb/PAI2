@@ -25,6 +25,7 @@ public:
 	BoardWidth _stripMax; // Max index for the entire strip
 	int _baseLoc;         // Base location for this strip
 	int _offsetPerIndex;  // Offset per index val for this strip
+	DirectionType _direction; // Direction that this strip goes
 };
 
 #endif

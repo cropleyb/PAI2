@@ -37,6 +37,7 @@ public:
 	MockReporter() {}
 
     MOCK_METHOD3(report, void(const SpanEntry &, const LinePattern &, int inc));
+    MOCK_METHOD2(reportCapture, void(const SpanEntry &, bool right));
 };
 
 using ::testing::AtLeast;
@@ -52,6 +53,7 @@ public:
 	void processOccString(const string &occStr, BoardWidth leftInd, BoardWidth rightInd) 
 	{
 		U64 occs = occStringToBs(occStr);
+		span._direction = E_DIR;
 		span._minIndex = leftInd;
 		span._maxIndex = rightInd;
 		matchRange(occs, span, mr, 1);
@@ -73,6 +75,15 @@ public:
 	{
 		lti._candInds.clear();
 		expectCandInd(lti, rest...);
+	}
+
+	// void processOccString(const string &occStr, BoardWidth leftInd, BoardWidth rightInd) 
+	void processCapString(const string &occStr, BoardWidth move, Colour p)
+	{
+		U64 occs = occStringToBs(occStr);
+		span._minIndex = 0;
+		span._maxIndex = occStr.length() - 1;
+		matchCaptures(occs, span, mr, move, p);
 	}
 
 	MockReporter mr;
@@ -212,10 +223,13 @@ TEST_F(BoardStripFixture, ThreatButNotTwoLeftEdge) {
 // Capture recognition (only triggered by end of pair placement)
 /////////////////////////////////////////////////////////////////
 
-#if 0
 // TODO
-TEST_F(BoardStripFixture, ReportCapture) {
-	EXPECT_CALL(mr, reportCapture(span, E_DIR));
-	processCapString(" WWB BW|", 0, span);
+TEST_F(BoardStripFixture, ReportRCapture) {
+	EXPECT_CALL(mr, reportCapture(span, false));
+	processCapString(" WWB BW|", 0, P1);
 }
-#endif
+
+TEST_F(BoardStripFixture, ReportLCapture) {
+	EXPECT_CALL(mr, reportCapture(span, true));
+	processCapString("BWW  BW|", 3, P1);
+}
