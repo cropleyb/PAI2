@@ -63,6 +63,105 @@ TEST_F(PenteGameFixture, CaptureInCentre) {
 
 	Colour c1 = br.getOcc(Loc(9,9));
 	EXPECT_EQ(EMPTY, c1);
-	Colour c2 = br.getOcc(Loc(9,9));
+	Colour c2 = br.getOcc(Loc(8,8));
 	EXPECT_EQ(EMPTY, c2);
+}
+
+TEST_F(PenteGameFixture, CaptureByP1) {
+	g.makeMove(Loc(9,9), P2);
+	g.makeMove(Loc(7,7), P1);
+	g.makeMove(Loc(8,8), P2);
+	g.makeMove(Loc(10,10), P1);
+
+	CapCount cc = ps.getCaptured(P1);
+	EXPECT_EQ(2, cc);
+
+	Colour c1 = br.getOcc(Loc(9,9));
+	EXPECT_EQ(EMPTY, c1);
+	Colour c2 = br.getOcc(Loc(8,8));
+	EXPECT_EQ(EMPTY, c2);
+}
+
+TEST_F(PenteGameFixture, CaptureToLeft) {
+	g.makeMove(Loc(9,9), P2);
+	g.makeMove(Loc(10,10), P1);
+	g.makeMove(Loc(8,8), P2);
+	g.makeMove(Loc(7,7), P1);
+
+	CapCount cc = ps.getCaptured(P1);
+	EXPECT_EQ(2, cc);
+
+	Colour c1 = br.getOcc(Loc(9,9));
+	EXPECT_EQ(EMPTY, c1);
+	Colour c2 = br.getOcc(Loc(8,8));
+	EXPECT_EQ(EMPTY, c2);
+}
+
+TEST_F(PenteGameFixture, CaptureOnLowerEdge) {
+	g.makeMove(Loc(3,2), P2);
+	g.makeMove(Loc(3,3), P1);
+	g.makeMove(Loc(3,1), P2);
+	g.makeMove(Loc(3,0), P1);
+
+	CapCount cc = ps.getCaptured(P1);
+	EXPECT_EQ(2, cc);
+
+	Colour c1 = br.getOcc(Loc(3,2));
+	EXPECT_EQ(EMPTY, c1);
+	Colour c2 = br.getOcc(Loc(3,1));
+	EXPECT_EQ(EMPTY, c2);
+}
+
+TEST_F(PenteGameFixture, CaptureInBigCorner) {
+	g.makeMove(Loc(16,16), P2);
+	g.makeMove(Loc(15,15), P1);
+	g.makeMove(Loc(17,17), P2);
+	g.makeMove(Loc(18,18), P1);
+
+	CapCount cc = ps.getCaptured(P1);
+	EXPECT_EQ(2, cc);
+
+	Colour c1 = br.getOcc(Loc(16,16));
+	EXPECT_EQ(EMPTY, c1);
+	Colour c2 = br.getOcc(Loc(17,17));
+	EXPECT_EQ(EMPTY, c2);
+}
+
+TEST_F(PenteGameFixture, CaptureTwoEdges) {
+	g.makeMove(Loc(16,17), P1);
+	g.makeMove(Loc(15,18), P2);
+	g.makeMove(Loc(17,16), P1);
+	g.makeMove(Loc(18,15), P2);
+
+	CapCount cc = ps.getCaptured(P2);
+	EXPECT_EQ(2, cc);
+
+	Colour c1 = br.getOcc(Loc(16,17));
+	EXPECT_EQ(EMPTY, c1);
+	Colour c2 = br.getOcc(Loc(17,16));
+	EXPECT_EQ(EMPTY, c2);
+}
+
+TEST_F(PenteGameFixture, CaptureTwoPairs) {
+	g.makeMove(Loc(16,17), P1);
+	g.makeMove(Loc(15,18), P2);
+	g.makeMove(Loc(17,16), P1);
+
+	g.makeMove(Loc(18,17), P1);
+	g.makeMove(Loc(18,18), P2);
+	g.makeMove(Loc(18,16), P1);
+
+	g.makeMove(Loc(18,15), P2);
+
+	CapCount cc = ps.getCaptured(P2);
+	EXPECT_EQ(4, cc);
+
+	Colour c1 = br.getOcc(Loc(16,17));
+	EXPECT_EQ(EMPTY, c1);
+	Colour c2 = br.getOcc(Loc(17,16));
+	EXPECT_EQ(EMPTY, c2);
+	Colour c3 = br.getOcc(Loc(18,17));
+	EXPECT_EQ(EMPTY, c3);
+	Colour c4 = br.getOcc(Loc(18,16));
+	EXPECT_EQ(EMPTY, c4);
 }

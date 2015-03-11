@@ -54,13 +54,13 @@ void matchRange(U64 occs, const SpanEntry &span, REPORTER &reporter, int inc)
 #define FOUR_OCCS_MASK (4 * 4 * 4 * 4 - 1)
 
 // BWWx
-const U64 P1_CAPTURE_RIGHT_PATTERN = P1 + (4 * P2) + (16 * P2); // + (64 * 0)
+const U64 P1_CAPTURE_LEFT_PATTERN = P1 + (4 * P2) + (16 * P2); // + (64 * 0)
 // WBBx
-const U64 P2_CAPTURE_RIGHT_PATTERN = P2 + (4 * P1) + (16 * P1); // + (64 * 0)
+const U64 P2_CAPTURE_LEFT_PATTERN = P2 + (4 * P1) + (16 * P1); // + (64 * 0)
 // xWWB
-const U64 P1_CAPTURE_LEFT_PATTERN = (P2 + (4 * P2) + (16 * P1)) * 4;
+const U64 P1_CAPTURE_RIGHT_PATTERN = (P2 + (4 * P2) + (16 * P1)) * 4;
 // xBBW
-const U64 P2_CAPTURE_LEFT_PATTERN = (P1 + (4 * P1) + (16 * P2)) * 4;
+const U64 P2_CAPTURE_RIGHT_PATTERN = (P1 + (4 * P1) + (16 * P2)) * 4;
 
 
 template <class REPORTER>
@@ -73,10 +73,10 @@ void matchCaptures(U64 occs, const SpanEntry &span, REPORTER &mr, Colour p)
 	// Test for capture on the right side of a line.
 	if (moveIndex >= minInd + 3 && moveIndex <= maxInd)
 	{
-		U64 pattern = P1_CAPTURE_RIGHT_PATTERN;
+		U64 pattern = P1_CAPTURE_LEFT_PATTERN;
 		if (p == P2) 
 		{
-			pattern = P2_CAPTURE_RIGHT_PATTERN;
+			pattern = P2_CAPTURE_LEFT_PATTERN;
 		}
 
 		BoardWidth ind = moveIndex - 3;
@@ -91,10 +91,10 @@ void matchCaptures(U64 occs, const SpanEntry &span, REPORTER &mr, Colour p)
 	// Test for capture on the left side of a line.
 	if (moveIndex >= minInd && moveIndex <= maxInd - 3)
 	{
-		U64 pattern = P1_CAPTURE_LEFT_PATTERN;
+		U64 pattern = P1_CAPTURE_RIGHT_PATTERN;
 		if (p == P2)
 		{
-			pattern = P2_CAPTURE_LEFT_PATTERN;
+			pattern = P2_CAPTURE_RIGHT_PATTERN;
 		}
 
 		BoardWidth ind = moveIndex;
