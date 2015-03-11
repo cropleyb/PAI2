@@ -21,11 +21,16 @@ public:
 	// Returns the next move number
     MoveNumber saveMove(Loc move, Colour p, CaptureDirs cd)
 	{
-		assert(_moveNumber % 2 == (int)p - 1);
+		//assert(_moveNumber % 2 == (int)p - 1);
 		_moveHist[_moveNumber] = move;
 		_capHist[_moveNumber] = cd;
 		_moveNumber++;
 		return _moveNumber;
+	}
+
+	void undoLastMove()
+	{
+		_moveNumber--;
 	}
 
 	Loc getMoved(MoveNumber mn) const
@@ -36,6 +41,11 @@ public:
 	CaptureDirs getCapDirs(MoveNumber mn) const
 	{
 		return _capHist[mn];
+	}
+
+	MoveNumber getLastMoveNumber() const
+	{
+		return _moveNumber - 1;
 	}
 		
 private:

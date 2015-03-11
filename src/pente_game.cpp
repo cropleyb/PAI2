@@ -12,20 +12,22 @@ PenteGame::PenteGame()
 
 void PenteGame::makeMove(Loc l, Colour p)
 {
+	_captureDirs = 0;
+
 	const PriorityLevel &pl = _posStats.getPriorityLevel(p, Take);
 	if (pl.getCount(l) > 0) {
 		setAndRecordCaptures(l, p);
 	}
 
 	_boardReps.setOcc(l, p);
+	_moveHist.saveMove(l, p, _captureDirs);
 }
 
 void PenteGame::setAndRecordCaptures(Loc l, Colour p)
 {
-	// TODO
 	for (int dir=0; dir<MAX_DIR; dir++)
 	{
-		SpanEntry span = spanLookupTable[dir][l._value];
+		const SpanEntry &span = spanLookupTable[dir][l._value];
 		U64 occs = _boardReps._boardStrips[dir][span._strip];
 		matchCaptures(occs, span, *this, p);
 	}
@@ -33,7 +35,6 @@ void PenteGame::setAndRecordCaptures(Loc l, Colour p)
 
 void PenteGame::reportCapture(const SpanEntry &span, bool left, Colour p)
 {
-	// TODO: move history
 	_posStats.reportCaptured(p, 2, 1);
 
 	// Get the indices of the captured pieces
@@ -49,6 +50,58 @@ void PenteGame::reportCapture(const SpanEntry &span, bool left, Colour p)
 	
 	_boardReps.setOcc(capLoc1, EMPTY);
 	_boardReps.setOcc(capLoc2, EMPTY);
+
+	int fullCircleDir = span._direction;
+	if (left)
+	{
+		fullCircleDir += 4;
+	}
+	_captureDirs |= 1 << fullCircleDir;
+}
+
+void PenteGame::undoLastMove()
+{
+	MoveNumber mn = _moveHist.getLastMoveNumber();
+	
+	Loc l = _moveHist.getMoved(mn);
+	CaptureDirs cd = _moveHist.getCapDirs(mn);
+	_moveHist.undoLastMove();
+
+	_boardReps.setOcc(l, EMPTY);
+
+	if (cd)
+	{
+		Colour capturedPlayer = 1 + (mn + 1) % 2;
+
+		// Must undo some captures
+		for (int dir=0; dir<8; dir++)
+		{
+			if (cd & (1 << dir))
+			{
+				int realDir=dir;
+				bool left = false;
+				if (dir >= 4)
+				{
+					left = true;
+					realDir -= 4;
+				}
+				const SpanEntry &span = spanLookupTable[realDir][l._value];
+
+				BoardWidth moveInd = span._locIndex;
+				int inc = 1;
+				if (left)
+				{
+					inc = -1;
+				}
+
+				Loc capLoc1 = span.convertIndToLoc(moveInd + inc);
+				Loc capLoc2 = span.convertIndToLoc(moveInd + inc + inc);
+				
+				_boardReps.setOcc(capLoc1, capturedPlayer);
+				_boardReps.setOcc(capLoc2, capturedPlayer);
+			}
+		}
+	}
 }
 
 #if 0
@@ -56,8 +109,6 @@ class PenteGame
 {
 public:
 	PenteGame();
-
-    void undo();
 
     bool isOneMove() const;
     Loc getOnlyMove();

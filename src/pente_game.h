@@ -1,7 +1,7 @@
 #ifndef _pente_game_h
 #define _pente_game_h
 
-//#include "move_history.h"
+#include "move_history.h"
 #include "move_suggester.h"
 #include "board_reps.h"
 #include "position_stats.h"
@@ -16,7 +16,6 @@ public:
 	PenteGame();
 
 	void makeMove(Loc l, Colour p);
-    void undo();
 
     bool isOneMove() const;
     Loc getOnlyMove();
@@ -34,9 +33,10 @@ private:
 
 	BoardReps _boardReps;
 	PositionStats _posStats;
-	// MoveHistory _moveHist;
+	MoveHistory _moveHist;
     MoveSuggester _moveSuggester;
 	// UtilityCalculator _utilCalc;
+	CaptureDirs _captureDirs;
 };
 
 #endif
