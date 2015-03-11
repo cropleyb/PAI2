@@ -31,9 +31,24 @@ void PenteGame::setAndRecordCaptures(Loc l, Colour p)
 	}
 }
 
-void PenteGame::reportCapture(const SpanEntry &span, bool right, Colour p)
+void PenteGame::reportCapture(const SpanEntry &span, bool left, Colour p)
 {
+	// TODO: move history
 	_posStats.reportCaptured(p, 2, 1);
+
+	// Get the indices of the captured pieces
+	BoardWidth moveInd = span._locIndex;
+	int inc = 1;
+	if (left)
+	{
+		inc = -1;
+	}
+
+	Loc capLoc1 = span.convertIndToLoc(moveInd + inc);
+	Loc capLoc2 = span.convertIndToLoc(moveInd + inc + inc);
+	
+	_boardReps.setOcc(capLoc1, EMPTY);
+	_boardReps.setOcc(capLoc2, EMPTY);
 }
 
 #if 0

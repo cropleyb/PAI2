@@ -60,4 +60,9 @@ TEST_F(PenteGameFixture, CaptureInCentre) {
 
 	CapCount cc = ps.getCaptured(P2);
 	EXPECT_EQ(2, cc);
+
+	Colour c1 = br.getOcc(Loc(9,9));
+	EXPECT_EQ(EMPTY, c1);
+	Colour c2 = br.getOcc(Loc(9,9));
+	EXPECT_EQ(EMPTY, c2);
 }
