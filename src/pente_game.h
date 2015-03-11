@@ -8,6 +8,7 @@
 //#include "utility_calculator.h"
 
 class BoardReps;
+class SpanEntry;
 
 class PenteGame
 {
@@ -27,6 +28,7 @@ public:
     void undoLastMove();
     void isCutoff(Depth depth);
 
+	void reportCapture(const SpanEntry &span, bool right, Colour p);
 private:
 	void setAndRecordCaptures(Loc l, Colour p);
 

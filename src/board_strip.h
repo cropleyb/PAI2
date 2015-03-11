@@ -64,10 +64,11 @@ const U64 P2_CAPTURE_LEFT_PATTERN = (P1 + (4 * P1) + (16 * P2)) * 4;
 
 
 template <class REPORTER>
-void matchCaptures(U64 occs, const SpanEntry &span, REPORTER &mr, BoardWidth moveIndex, Colour p)
+void matchCaptures(U64 occs, const SpanEntry &span, REPORTER &mr, Colour p)
 {
 	BoardWidth minInd = span._minIndex;
 	BoardWidth maxInd = span._maxIndex;
+	BoardWidth moveIndex = span._locIndex;
 
 	// Test for capture on the right side of a line.
 	if (moveIndex >= minInd + 3 && moveIndex <= maxInd)
@@ -83,7 +84,7 @@ void matchCaptures(U64 occs, const SpanEntry &span, REPORTER &mr, BoardWidth mov
         U64 mask = (occs >> shift) & FOUR_OCCS_MASK;
 		if (mask == pattern)
 		{
-			mr.reportCapture(span, true);
+			mr.reportCapture(span, true, p);
 		}
 	}
 
@@ -101,7 +102,7 @@ void matchCaptures(U64 occs, const SpanEntry &span, REPORTER &mr, BoardWidth mov
         U64 mask = (occs >> shift) & FOUR_OCCS_MASK;
 		if (mask == pattern)
 		{
-			mr.reportCapture(span, false);
+			mr.reportCapture(span, false, p);
 		}
 	}
 }

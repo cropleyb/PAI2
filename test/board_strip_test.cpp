@@ -37,7 +37,7 @@ public:
 	MockReporter() {}
 
     MOCK_METHOD3(report, void(const SpanEntry &, const LinePattern &, int inc));
-    MOCK_METHOD2(reportCapture, void(const SpanEntry &, bool right));
+    MOCK_METHOD3(reportCapture, void(const SpanEntry &, bool right, Colour p));
 };
 
 using ::testing::AtLeast;
@@ -81,9 +81,10 @@ public:
 	void processCapString(const string &occStr, BoardWidth move, Colour p)
 	{
 		U64 occs = occStringToBs(occStr);
+		span._locIndex = move;
 		span._minIndex = 0;
 		span._maxIndex = occStr.length() - 1;
-		matchCaptures(occs, span, mr, move, p);
+		matchCaptures(occs, span, mr, p);
 	}
 
 	MockReporter mr;
@@ -225,11 +226,11 @@ TEST_F(BoardStripFixture, ThreatButNotTwoLeftEdge) {
 
 // TODO
 TEST_F(BoardStripFixture, ReportRCapture) {
-	EXPECT_CALL(mr, reportCapture(span, false));
+	EXPECT_CALL(mr, reportCapture(span, false, P1));
 	processCapString(" WWB BW|", 0, P1);
 }
 
 TEST_F(BoardStripFixture, ReportLCapture) {
-	EXPECT_CALL(mr, reportCapture(span, true));
+	EXPECT_CALL(mr, reportCapture(span, true, P1));
 	processCapString("BWW  BW|", 3, P1);
 }

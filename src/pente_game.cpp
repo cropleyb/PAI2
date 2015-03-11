@@ -1,6 +1,7 @@
 #include "pente_game.h"
 #include "line_lookup_table.h"
 #include "span_lookup_table.h"
+#include "board_strip.h"
 
 PenteGame::PenteGame()
 	: _moveSuggester(_posStats), _boardReps(19,_posStats)
@@ -22,6 +23,17 @@ void PenteGame::makeMove(Loc l, Colour p)
 void PenteGame::setAndRecordCaptures(Loc l, Colour p)
 {
 	// TODO
+	for (int dir=0; dir<MAX_DIR; dir++)
+	{
+		SpanEntry span = spanLookupTable[dir][l._value];
+		U64 occs = _boardReps._boardStrips[dir][span._strip];
+		matchCaptures(occs, span, *this, p);
+	}
+}
+
+void PenteGame::reportCapture(const SpanEntry &span, bool right, Colour p)
+{
+	_posStats.reportCaptured(p, 2, 1);
 }
 
 #if 0

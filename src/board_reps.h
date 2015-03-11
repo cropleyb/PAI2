@@ -18,6 +18,8 @@ public:
     void setOcc(Loc l, Colour c);
     Colour getOcc(Loc l) const;
 
+	friend class PenteGame;
+
 private:
 	void initEdges();
 	void initEdgeVal(int dir, Loc l);
