@@ -224,6 +224,10 @@ TEST_F(PenteGameFixture, UndoCapture) {
 
 	const PriorityLevel &pl = ps.getPriorityLevel(P2, Take);
 	EXPECT_EQ(1, pl.getNumCands());
+
+	CapCount cc2 = ps.getCaptured(P2);
+	EXPECT_EQ(0, cc2);
+
 }
 
 

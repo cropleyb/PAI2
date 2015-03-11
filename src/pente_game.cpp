@@ -71,6 +71,7 @@ void PenteGame::undoLastMove()
 
 	if (cd)
 	{
+		Colour capturingPlayer = 1 + (mn) % 2;
 		Colour capturedPlayer = 1 + (mn + 1) % 2;
 
 		// Must undo some captures
@@ -78,6 +79,8 @@ void PenteGame::undoLastMove()
 		{
 			if (cd & (1 << dir))
 			{
+				_posStats.reportCaptured(capturingPlayer, 2, -1);
+
 				int realDir=dir;
 				bool left = false;
 				if (dir >= 4)
