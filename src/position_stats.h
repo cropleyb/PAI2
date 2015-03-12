@@ -54,7 +54,7 @@ private:
 	void reportCandidates(Colour colour, PatternType pt, const vector<Loc> &locArr, Step inc);
 
 	PriorityLevel _levels[3][MAX_PATTERN_TYPE];
-	short _patternCounts[3][MAX_PATTERN_TYPE];
+	PattCount _patternCounts[3][MAX_PATTERN_TYPE];
 	CapCount _captured[3];
 };
 

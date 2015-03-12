@@ -10,6 +10,7 @@
 
 class MockPositionStats
 {
+public:
 	CapCount getCaptured(Colour c) const
 	{
 		return _captured[c];
@@ -17,21 +18,23 @@ class MockPositionStats
 
 	// TODO: checkerboardStats
 	
-#if 0
-	const PriorityLevel &getPriorityLevel(Colour c, PatternType pattern) const
-	{
-		return _levels[c][pattern];
-	}
-#endif
-
 	CapCount _captured[3];
-	short _patternCounts[MAX_PATTERN_TYPE][3];
+	PattCount _patternCounts[3][MAX_PATTERN_TYPE];
 };
 
 class UtilityCalcFixture : public testing::Test {
 public:
 	UtilityCalcFixture() : uc(ps)
 	{
+	}
+
+	void setLineCounts(Colour p, int line1, int line2, int line3, int line4, int line5)
+	{
+		ps._patternCounts[p][0] = line1;
+		ps._patternCounts[p][1] = line2;
+		ps._patternCounts[p][3] = line3;
+		ps._patternCounts[p][5] = line4;
+		ps._patternCounts[p][6] = line5;
 	}
 
     MockPositionStats ps;
@@ -42,23 +45,71 @@ public:
 // 
 ////////////////////////////////////////////////////////
 
-TEST_F(UtilityCalcFixture, OneIsBetterThanNothing) {
-	//set_counts(P1, [20,0,0,0,0]);
-	//set_counts(P2, [0,0,0,0,0]);
-	//u = self.utility()
-	//self.assertGreater(u, 0)
+TEST_F(UtilityCalcFixture, AOneIsBetterThanNothing) {
+	setLineCounts(P1, 1,0,0,0,0);
+	setLineCounts(P2, 0,0,0,0,0);
+	UtilityValue u = uc.calcUtility(P1, P1);
+//UtilityValue UtilityCalc<PS>::calcUtility(Colour turnColour, Colour searchColour) const
+	EXPECT_LT(0, u);
+}
+
+TEST_F(UtilityCalcFixture, ATwoIsBetterThanNothing) {
+	setLineCounts(P1, 0,1,0,0,0);
+	setLineCounts(P2, 0,0,0,0,0);
+	UtilityValue u = uc.calcUtility(P1, P1);
+	EXPECT_LT(0, u);
+}
+
+TEST_F(UtilityCalcFixture, AThreeIsBetterThanNothing) {
+	setLineCounts(P1, 0,0,1,0,0);
+	setLineCounts(P2, 0,0,0,0,0);
+	UtilityValue u = uc.calcUtility(P1, P1);
+	EXPECT_LT(0, u);
+}
+
+TEST_F(UtilityCalcFixture, AFourIsBetterThanNothing) {
+	setLineCounts(P1, 0,0,0,1,0);
+	setLineCounts(P2, 0,0,0,0,0);
+	UtilityValue u = uc.calcUtility(P1, P1);
+	EXPECT_LT(0, u);
+}
+
+TEST_F(UtilityCalcFixture, TheirOneIsWorseThanNothing) {
+	setLineCounts(P1, 0,0,0,0,0);
+	setLineCounts(P2, 1,0,0,0,0);
+	UtilityValue u = uc.calcUtility(P1, P1);
+	EXPECT_GT(0, u);
+}
+
+TEST_F(UtilityCalcFixture, TheirTwoIsWorseThanNothing) {
+	setLineCounts(P1, 0,0,0,0,0);
+	setLineCounts(P2, 0,1,0,0,0);
+	UtilityValue u = uc.calcUtility(P1, P1);
+	EXPECT_GT(0, u);
+}
+
+TEST_F(UtilityCalcFixture, TheirThreeIsWorseThanNothing) {
+	setLineCounts(P1, 0,0,0,0,0);
+	setLineCounts(P2, 0,0,1,0,0);
+	UtilityValue u = uc.calcUtility(P1, P1);
+	EXPECT_GT(0, u);
+}
+
+TEST_F(UtilityCalcFixture, TheirFourIsWorseThanNothing) {
+	setLineCounts(P1, 0,0,0,0,0);
+	setLineCounts(P2, 0,0,0,1,0);
+	UtilityValue u = uc.calcUtility(P1, P1);
+	EXPECT_GT(0, u);
+}
 
 #if 0
-	Loc centre(9,9);
-	g.makeMove(centre, P1);
-
-	Colour c = br.getOcc(centre);
-	EXPECT_EQ(P1, c);
-
-	const PriorityLevel &pl = ps.getPriorityLevel(P1, Line1);
-	EXPECT_EQ(32, pl.getNumCands());
-#endif
+TEST_F(UtilityCalcFixture, AFiveWins) {
+	setLineCounts(P1, 0,0,0,0,1);
+	setLineCounts(P2, 0,0,0,0,0);
+	UtilityValue u = uc.calcUtility(P1, P1);
+	EXPECT_LT(SMALL_INF, u);
 }
+#endif
 
 #if 0
 

@@ -14,7 +14,7 @@ typedef unsigned char Colour;
 typedef unsigned short MoveNumber;
 typedef char Depth;
 typedef unsigned char Breadth;
-typedef char CapCount;
+typedef signed char CapCount;
 typedef signed char BoardWidth;
 typedef unsigned char CaptureDirs;
 typedef unsigned char PattCount;
