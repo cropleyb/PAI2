@@ -137,3 +137,11 @@ TEST_F(PositionStatsFixture, AddP2Threat) {
 	const PriorityLevel &pl1 = ps.getPriorityLevel(P1, Threat);
 	EXPECT_EQ(0, pl1.getNumCands());
 }
+
+TEST_F(PositionStatsFixture, TestPatternCount) {
+	Loc l1(5,2);
+	ps.reportCandidate(P2, Threat, l1, 1);
+
+	PattCount c = ps.getNumPatterns(P2, Threat);
+	EXPECT_EQ(1, c);
+}

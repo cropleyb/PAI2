@@ -13,10 +13,14 @@ class PositionStats
 public:
 	PositionStats()
 	{
-		// TODO Ugly as.
-		_captured[0] = 0;
-		_captured[1] = 0;
-		_captured[2] = 0;
+		for (int c=0; c<3; c++)
+		{
+			_captured[c] = 0;
+			for (int p=0; p<MAX_PATTERN_TYPE; p++)
+			{
+				_patternCounts[c][p] = 0;
+			}
+		}
 	}
 
 	void reportCaptured(Colour c, CapCount count, int inc)
@@ -39,13 +43,18 @@ public:
 		return _levels[c][pattern];
 	}
 	
+	PattCount getNumPatterns(Colour c, PatternType pattern) const
+	{
+		return _patternCounts[c][pattern];
+	}
+
 private:
 	// Test code only
 	void reportCandidate(Colour colour, PatternType pt, Loc loc, Step inc);
 	void reportCandidates(Colour colour, PatternType pt, const vector<Loc> &locArr, Step inc);
 
-	//PriorityLevel _levels[3][10];
 	PriorityLevel _levels[3][MAX_PATTERN_TYPE];
+	short _patternCounts[3][MAX_PATTERN_TYPE];
 	CapCount _captured[3];
 };
 

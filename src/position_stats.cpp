@@ -7,6 +7,8 @@
 // Test code only
 void PositionStats::reportCandidate(Colour colour, PatternType pt, Loc loc, Step inc)
 {
+	_patternCounts[colour][pt] += inc;
+
 	PriorityLevel &level = _levels[colour][pt];
 	level.addOrRemoveCandidate(loc, inc);
 }
@@ -14,6 +16,8 @@ void PositionStats::reportCandidate(Colour colour, PatternType pt, Loc loc, Step
 // Test code only
 void PositionStats::reportCandidates(Colour colour, PatternType pt, const vector<Loc> &locArr, Step inc)
 {
+	_patternCounts[colour][pt] += inc;
+
 	PriorityLevel &level = _levels[colour][pt];
 	for(Loc loc : locArr)
 	{
@@ -22,7 +26,6 @@ void PositionStats::reportCandidates(Colour colour, PatternType pt, const vector
 }
 
 #include <assert.h>
-//#include <iostream>
 
 // Convert each of the indices in patternEntry into Locs using span
 // and update appropriately
@@ -31,16 +34,13 @@ void PositionStats::report(const SpanEntry &spanEntry, const LinePattern &patter
 	Colour c = patternEntry._colour;
 	int levelNum = (int)patternEntry._patternType;
 	assert(levelNum < MAX_PATTERN_TYPE);
-	PriorityLevel &level = _levels[c][(int)levelNum];
+
+	_patternCounts[c][levelNum] += inc;
+
+	PriorityLevel &level = _levels[c][levelNum];
 	for (Breadth b : patternEntry._candInds)
 	{
-#if 0
-		std::cout << "Attempting loc conv" << (int)b << " with base "
-		   	<< (int)spanEntry._baseLoc
-		   	<< " offset " << (int)spanEntry._offsetPerIndex << std::endl;
-#endif
 		Loc loc = spanEntry.convertIndToLoc(b);
-		// std::cout << "Reporting loc" << loc._value << std::endl;
 		level.addOrRemoveCandidate(loc, inc);
 	}
 }
