@@ -10,21 +10,45 @@ template <class PS>
 class UtilityCalc
 {
 public:
-	UtilityCalc(const PS &ps) : _posStats(ps)
+	UtilityCalc(const PS &ps) : _posStats(ps),
+        _capturesScale {1, 1, 1, 2, 4, 8},
+        _patternScale {1, 1, 1, 1, 1, 1, 1, 1}
 	{
-		_moveFactor = 45.0; // TEMP until we have an equiv. to ai_genome
+		// TEMP until we have an equiv. to ai_genome
+		_moveFactor = 45.0;
+        _calcMode = 1;
+        _captureScoreBase = 300;
+        _takeScoreBase = 80;
+        _threatScoreBase = 20;
+        _enclosedFourBase = 400;
+        _useNetCaptures = true;
+        _lengthFactor = 35;
+        _forceDepth = 0;
+        _judgement = 100;
+        _checkerboardValue = 35;
 	}
 
 	UtilityValue calcUtility(Colour turnColour, Colour searchColour) const;
 
 private:
-UtilityValue utilityScore(Colour evalColour, Colour turnColour) const;
+	UtilityValue utilityScore(Colour evalColour, Colour turnColour) const;
 
 	const PS &_posStats;
 
 	double _moveFactor;
-	double _lengthFactor;
 	double _patternScale[MAX_PATTERN_TYPE];
+	int _calcMode;
+	int _captureScoreBase;
+	int _takeScoreBase;
+	int _threatScoreBase;
+	int _enclosedFourBase;
+	bool _useNetCaptures;
+	int _capturesScale[6];
+	// _lengthScale;
+	int _lengthFactor;
+	int _forceDepth;
+	int _judgement;
+	int _checkerboardValue;
 };
 
 template <class PS>
@@ -53,6 +77,12 @@ UtilityValue UtilityCalc<PS>::calcUtility(Colour turnColour, Colour searchColour
 	UtilityValue ourScore = utilScores[turnColour];
 	UtilityValue theirScore = utilScores[otherColour];
 
+	UtilityValue ret = ourScore - theirScore;
+
+	if (searchColour != turnColour)
+		ret = theirScore - ourScore;
+
+	return ret;
 }
 
 template <class PS>
@@ -171,16 +201,6 @@ UtilityValue UtilityCalc<PS>::utilityScore(Colour evalColour, Colour turnColour)
 
         our_score = util_scores[turn_colour]
         their_score = util_scores[other_colour]
-
-        if self.scale_pob and move_number < 10:
-            # Scale by the pieces on the board (pob)
-            eval_captured = state.get_captured(eval_colour)
-            other_colour = opposite_colour(eval_colour)
-            other_captured = state.get_captured(other_colour)
-            our_pob = (1+move_number) / 2 - other_captured
-            other_pob = (1+move_number) / 2 - eval_captured
-            our_score *= our_pob
-            their_score *= other_pob
 
         if self.calc_mode == 1:
             if search_colour == turn_colour:
