@@ -272,256 +272,236 @@ TEST_F(UtilityCalcFixture, testOneTakeWithTheMoveIsWorthMoreThanOneThree) {
 	setLineCounts(P1, 0,0,0,0,0);
 	setLineCounts(P2, 0,0,1,0,0);
 	setTakes(1, 0);
+
 	UtilityValue u = uc.calcUtility(P1, P1, 1);
+	EXPECT_GT(u, 0);
+}
+
+TEST_F(UtilityCalcFixture, testOneThreeWithTheMoveIsWorthMoreThanOneTake) {
+	setLineCounts(P1, 0,0,0,0,0);
+	setLineCounts(P2, 0,0,1,0,0);
+	setTakes(1, 0);
+
+	UtilityValue u = uc.calcUtility(P2, P1, 1);
+	EXPECT_LT(u, 0);
+}
+
+TEST_F(UtilityCalcFixture, testFourCapturesWorthMoreThan3Threes) {
+	setLineCounts(P1, 0,0,0,0,0);
+	setLineCounts(P2, 0,0,3,0,0);
+	setCaptured(8, 0);
+
+	UtilityValue u = uc.calcUtility(P1, P1, 1);
+	EXPECT_GT(u, 0);
+}
+
+TEST_F(UtilityCalcFixture, testFourInARowWithTheMoveIsAWin) {
+	setLineCounts(P1, 0,0,0,1,0);
+	setLineCounts(P2, 0,0,0,0,0);
+
+	UtilityValue u = uc.calcUtility(P1, P1, 1);
+	EXPECT_GT(u, SMALL_INF);
+}
+
+TEST_F(UtilityCalcFixture, testFourInARowWithoutTheMoveIsNotWon) {
+	setLineCounts(P1, 0,0,0,1,0);
+	setLineCounts(P2, 0,0,0,0,0);
+
+	UtilityValue u = uc.calcUtility(P2, P1, 1);
+	EXPECT_LT(u, SMALL_INF);
+}
+
+TEST_F(UtilityCalcFixture, testFourInARowForOppositionWithTheMoveIsALoss) {
+	setLineCounts(P1, 0,0,0,0,0);
+	setLineCounts(P2, 0,0,0,1,0);
+
+	UtilityValue u = uc.calcUtility(P2, P1, 1);
+	EXPECT_LT(u, -SMALL_INF);
+}
+
+TEST_F(UtilityCalcFixture, testFourCapturesAndAThreatWithTheMoveIsAWin) {
+	// setSearchPlayerColour(P1)
+	// setTurnPlayerColour(P1)
+
+	setCaptured(8, 0);
+	setTakes(1, 0);
+	UtilityValue u = uc.calcUtility(P1, P1, 1);
+	EXPECT_GT(u, SMALL_INF);
+}
+
+TEST_F(UtilityCalcFixture, testFourCapturesWithNoThreatsWithTheMoveIsNotAWin) {
+	// setSearchPlayerColour(P1)
+	// setTurnPlayerColour(P1)
+
+	setCaptured(8, 0);
+	setTakes(0, 0);
+	UtilityValue u = uc.calcUtility(P1, P1, 1);
+	EXPECT_LT(u, SMALL_INF);
+}
+
+TEST_F(UtilityCalcFixture, testFourCapturesAndAThreatForOppenentWithTheMoveIsALoss) {
+	// setSearchPlayerColour(P1)
+	// setTurnPlayerColour(P2)
+
+	setCaptured(0, 8);
+	setTakes(0, 1);
+	UtilityValue u = uc.calcUtility(P2, P1, 1);
+	EXPECT_LT(u, -SMALL_INF);
+}
+
+TEST_F(UtilityCalcFixture, testThreeCapturesAndAThreatForOppenentWithTheMoveIsNotALoss) {
+	// setSearchPlayerColour(P1)
+	// setTurnPlayerColour(P2)
+
+	setCaptured(0, 6);
+	setTakes(0, 1);
+	UtilityValue u = uc.calcUtility(P2, P1, 1);
+	EXPECT_GT(u, -SMALL_INF);
+}
+
+TEST_F(UtilityCalcFixture, testTakeHasAValue) {
+	// setSearchPlayerColour(P1)
+	// setTurnPlayerColour(P2)
+
+	setTakes(1, 0);
+	UtilityValue u = uc.calcUtility(P2, P1, 1);
+	EXPECT_GT(u, 0);
+}
+
+TEST_F(UtilityCalcFixture, testThreatHasAValue) {
+	// setSearchPlayerColour(P1)
+	// setTurnPlayerColour(P2)
+
+	setThreats(1, 0);
+	UtilityValue u = uc.calcUtility(P2, P1, 1);
 	EXPECT_GT(u, 0);
 }
 
 #if 0
 
-
-######################
-
-
-###########
-
-
-
-##############
-
-
-TEST_F(UtilityCalcFixture, testOneThreeWithTheMoveIsWorthMoreThanOneTake) {
-	setSearchPlayerColour(P1)
-	setTurnPlayerColour(P2)
-
-	setLineCounts(P1, 0,0,0,0,0);
-	setLineCounts(P2, 0,0,1,0,0);
-	setTakes(1, 0);
-	u = utility();
-	EXPECT_LT(u, 0);
-}
-
-TEST_F(UtilityCalcFixture, testFourCapturesWorthMoreThan3Threes) {
-	setSearchPlayerColour(P1)
-	setTurnPlayerColour(P1)
-
-	setLineCounts(P1, 0,0,0,0,0);
-	setLineCounts(P2, 0,0,3,0,0);
-	setCaptured(8, 0);
-	u = utility();
-	EXPECT_GT(u, 0);
-}
-
-TEST_F(UtilityCalcFixture, testFourInARowWithTheMoveIsAWin) {
-	setSearchPlayerColour(P1)
-	setTurnPlayerColour(P1)
-
-	setLineCounts(P1, 0,0,0,1,0);
-	setLineCounts(P2, 0,0,0,0,0);
-	u = utility();
-	EXPECT_GT(u, inf)
-}
-
-TEST_F(UtilityCalcFixture, testFourInARowWithoutTheMoveIsNotWon) {
-	setSearchPlayerColour(P1)
-	setTurnPlayerColour(P2)
-
-	setLineCounts(P1, 0,0,0,1,0);
-	setLineCounts(P2, 0,0,0,0,0);
-	u = utility();
-	EXPECT_LT(u, inf);
-}
-
-TEST_F(UtilityCalcFixture, testFourInARowForOppositionWithTheMoveIsALoss) {
-	setSearchPlayerColour(P1)
-	setTurnPlayerColour(P2)
-
-	setLineCounts(P1, 0,0,0,0,0);
-	setLineCounts(P2, 0,0,0,1,0);
-	u = utility();
-	EXPECT_LT(u, -inf);
-}
-
-TEST_F(UtilityCalcFixture, testFourCapturesAndAThreatWithTheMoveIsAWin) {
-	setSearchPlayerColour(P1)
-	setTurnPlayerColour(P1)
-
-	setCaptured(8, 0);
-	setTakes(1, 0)
-	u = utility()
-	EXPECT_GT(u, inf)
-}
-
-TEST_F(UtilityCalcFixture, testFourCapturesWithNoThreatsWithTheMoveIsNotAWin) {
-	setSearchPlayerColour(P1)
-	setTurnPlayerColour(P1)
-
-	setCaptured(8, 0);
-	setTakes(0, 0)
-	u = utility()
-	EXPECT_LT(u, inf)
-}
-
-TEST_F(UtilityCalcFixture, testFourCapturesAndAThreatForOppenentWithTheMoveIsALoss) {
-	setSearchPlayerColour(P1)
-	setTurnPlayerColour(P2)
-
-	setCaptured(0, 8);
-	setTakes(0, 1)
-	u = utility()
-	EXPECT_LT(u, -inf)
-}
-
-TEST_F(UtilityCalcFixture, testThreeCapturesAndAThreatForOppenentWithTheMoveIsNotALoss) {
-	setSearchPlayerColour(P1)
-	setTurnPlayerColour(P2)
-
-	setCaptured(0, 6);
-	setTakes(0, 1)
-	u = utility()
-	EXPECT_GT(u, -inf)
-}
-
-TEST_F(UtilityCalcFixture, testTakeHasAValue) {
-	setSearchPlayerColour(P1)
-	setTurnPlayerColour(P2)
-
-	setTakes(1, 0)
-	u = utility()
-	EXPECT_GT(u, 0)
-}
-
-TEST_F(UtilityCalcFixture, testThreatHasAValue) {
-	setSearchPlayerColour(P1)
-	setTurnPlayerColour(P2)
-
-	setThreats(1, 0);
-	u = utility()
-	EXPECT_GT(u, 0)
-}
-
 TEST_F(UtilityCalcFixture, testTwoFoursWithNoDangerOfBeingCapturedIsAWin) {
-	setSearchPlayerColour(P1)
-	setTurnPlayerColour(P2)
+	// setSearchPlayerColour(P1)
+	// setTurnPlayerColour(P2)
 
 	setLineCounts(P1, 0,0,0,2,0);
 	setTakes(0, 0)
-	u = utility()
-	EXPECT_GT(u, inf);
+	UtilityValue u = uc.calcUtility(P2, P1, 1);
+	EXPECT_GT(u, SMALL_INF);
 }
 
 TEST_F(UtilityCalcFixture, testFourPairsCapturedAndThreeTakesWillWin) {
-	setSearchPlayerColour(P1)
-	setTurnPlayerColour(P2)
+	// setSearchPlayerColour(P1)
+	// setTurnPlayerColour(P2)
 
 	setCaptured(8, 0);
 	setTakes(3, 0)
-	u = utility()
-	EXPECT_GT(u, inf);
+	UtilityValue u = uc.calcUtility(P2, P1, 1);
+	EXPECT_GT(u, SMALL_INF);
 }
 
 TEST_F(UtilityCalcFixture, atestFourPairsCapturedAndThreeTakesWillWin) {
-	setSearchPlayerColour(P1)
-	setTurnPlayerColour(P2)
+	// setSearchPlayerColour(P1)
+	// setTurnPlayerColour(P2)
 
 	setLineCounts(P1, 0,0,3,0,0);
 	setLineCounts(P2, 0,0,0,0,0);
 	setCaptured(0, 2);
 	setTakes(0, 0)
 
-	u = utility()
-	EXPECT_GT(u, inf);
+	UtilityValue u = uc.calcUtility(P2, P1, 1);
+	EXPECT_GT(u, SMALL_INF);
 }
 
 ######################################################
 
 TEST_F(UtilityCalcFixture, testTrickyPos1) {
-	setSearchPlayerColour(P1)
-	setTurnPlayerColour(P2)
+	// setSearchPlayerColour(P1)
+	// setTurnPlayerColour(P2)
 
 	setCaptured(4, 4);
 	setTakes(0, 0)
 	setThreats(0, 0);
 	setLineCounts(P1, 78, 9, 1, 1, 0);
 	setLineCounts(P2, 36, 2, 0, 0, 0);
-	u1= utility()
+	UtilityValue u = uc.calcUtility(P2, P1, 1);
 
 	setCaptured(0, 0);
 	setTakes(0, 0)
 	setThreats(2, 2);
 	setLineCounts(P1, 51, 8, 0, 0, 0);
 	setLineCounts(P2, 28, 3, 1, 0, 0);
-	u2= utility()
+	UtilityValue u = uc.calcUtility(P2, P1, 1);
 
 	EXPECT_GT(u1, u2);
 }
 
 TEST_F(UtilityCalcFixture, testTrickyPos2) {
-	setSearchPlayerColour(P1)
-	setTurnPlayerColour(P1)
+	// setSearchPlayerColour(P1)
+	// setTurnPlayerColour(P1)
 
 	setCaptured(0, 0);
 	setTakes(0, 1)
 	setThreats(0, 0);
 	setLineCounts(P1, 34, 5, 1, 0, 0);
 	setLineCounts(P2, 49, 6, 0, 0, 0);
-	u1= utility()
+	UtilityValue u = uc.calcUtility(P2, P1, 1);
 
 	setCaptured(2, 2);
 	setTakes(0, 0)
 	setThreats(2, 0);
 	setLineCounts(P1, 49, 4, 0, 0, 0);
 	setLineCounts(P2, 48, 5, 1, 0, 0);
-	u2= utility()
+	UtilityValue u = uc.calcUtility(P2, P1, 1);
 
 	EXPECT_GT(u1, u2);
 }
 
 TEST_F(UtilityCalcFixture, testStrange) {
-	setSearchPlayerColour(P2)
-	setTurnPlayerColour(P2)
+	// setSearchPlayerColour(P2)
+	// setTurnPlayerColour(P2)
 
 	setCaptured(2, 2);
 	setTakes(0, 0)
 	setThreats(0, 0);
 	setLineCounts(P1, 29, 2, 0, 0, 0);
 	setLineCounts(P2, 33, 1, 0, 0, 0);
-	u1= utility()
+	UtilityValue u = uc.calcUtility(P2, P1, 1);
 
 	setCaptured(2, 0);
 	setTakes(0, 1)
 	setThreats(0, 0);
 	setLineCounts(P1, 53, 3, 0, 0, 0);
 	setLineCounts(P2, 24, 3, 0, 0, 0);
-	u2= utility()
+	UtilityValue u = uc.calcUtility(P2, P1, 1);
 
 	EXPECT_GT(u1, u2);
 }
 
 TEST_F(UtilityCalcFixture, atestTrickyPos2b) {
 	# TODO
-	setSearchPlayerColour(P1)
-	setTurnPlayerColour(P1)
+	// setSearchPlayerColour(P1)
+	// setTurnPlayerColour(P1)
 
 	setCaptured(2, 2);
 	setTakes(0, 0)
 	setThreats(0, 0);
 	setLineCounts(P1, 59, 4, 0, 0, 0);
 	setLineCounts(P2, 61, 3, 1, 0, 0);
-	u1= utility()
+	UtilityValue u = uc.calcUtility(P2, P1, 1);
 
 	setCaptured(2, 2);
 	setTakes(0, 0)
 	setThreats(2, 0);
 	setLineCounts(P1, 49, 4, 0, 0, 0);
 	setLineCounts(P2, 48, 5, 1, 0, 0);
-	u2= utility()
+	UtilityValue u = uc.calcUtility(P2, P1, 1);
 
 	EXPECT_GT(u1, u2);
 }
 
 TEST_F(UtilityCalcFixture, testYetAnother) {
-	setSearchPlayerColour(P1)
-	setTurnPlayerColour(P1)
+	// setSearchPlayerColour(P1)
+	// setTurnPlayerColour(P1)
 
 	'''
 This should have got the highest score
@@ -541,14 +521,14 @@ Utility for 14: (-22938, 0) (Lines: [None, [26, 8, 0, 0, 0], [49, 1, 0, 0, 0]], 
 	self.setMoveNumber(14)
 	self.setLineCounts(P1, 38, 5, 0, 0, 0);
 	self.setLineCounts(P2, 29, 0, 0, 0, 0);
-	u1= self.utility()
+	UtilityValue u = uc.calcUtility(P2, P1, 1);
 
 	self.setCaptured(2, 4);
 	self.setTakes(1, 0)
 	self.setThreats(0, 4);
 	self.setLineCounts(P1, 26, 8, 0, 0, 0);
 	self.setLineCounts(P2, 49, 1, 0, 0, 0);
-	u2= self.utility()
+	UtilityValue u = uc.calcUtility(P2, P1, 1);
 
 	self.EXPECT_GT(u1, u2);
 }
@@ -605,8 +585,8 @@ class UtilityTest(unittest.TestCase):
             "getRules":self.rules}) 
         self.gs.board = bM.Board(13)
         self.gs.game = self.game
-        self.setTurnPlayerColour(P1)
-        self.setSearchPlayerColour(P1)
+        // self.setTurnPlayerColour(P1)
+        // self.setSearchPlayerColour(P1)
         self.s.setState(self.gs)
 
     def utility(self):
@@ -661,8 +641,8 @@ TEST_F(UtilityCalcFixture, testWhiteNoWinByCapturesForFiveInARow) {
 	assertEqual(u, 0)
 
 TEST_F(UtilityCalcFixture, atestOneTakeIsWorthLessThanThreeThrees) {
-	setSearchPlayerColour(P1)
-	setTurnPlayerColour(P1)
+	// setSearchPlayerColour(P1)
+	// setTurnPlayerColour(P1)
 
 	setLineCounts(P1, 0,0,0,0,0);
 	setLineCounts(P2, 0,0,3,0,0);
