@@ -137,10 +137,7 @@ TEST_F(UtilityCalcFixture, P1WinByCaptures) {
 	EXPECT_LT(SMALL_INF, u);
 }
 
-
 TEST_F(UtilityCalcFixture, testWonGameShortening) {
-	//setSearchPlayerColour(P1)
-	//setTurnPlayerColour(P2)
 	setLineCounts(P1, 0,0,0,4,0);
 
 	UtilityValue u1 = uc.calcUtility(P1, P1, 10);
@@ -168,32 +165,34 @@ TEST_F(UtilityCalcFixture, testOneCaptureWorthMoreThanAThree) {
 	setLineCounts(P1, 0,0,0,0,0);
 	setLineCounts(P2, 0,0,1,0,0);
 	setCaptured(2, 0);
+
 	UtilityValue u = uc.calcUtility(P1, P1, 1);
 	EXPECT_GT(u, 0);
 }
 
+TEST_F(UtilityCalcFixture, testOneCaptureWorthLessThanAFour) {
+	setLineCounts(P1, 0,0,0,0,0);
+	setLineCounts(P2, 0,0,0,1,0);
+	setCaptured(2, 0);
 
+	UtilityValue u = uc.calcUtility(P2, P1, 1);
+	EXPECT_LE(u, 0);
+}
+
+TEST_F(UtilityCalcFixture, testP2Search) {
+	// Search by P2
+	setLineCounts(P1, 0,0,0,0,0);
+	setLineCounts(P2, 0,0,1,0,0);
+	UtilityValue u = uc.calcUtility(P1, P2, 1);
+	EXPECT_GE(u, 0);
+}
 
 
 #if 0
 
-TEST_F(UtilityCalcFixture, testOneCaptureWorthLessThanAFour) {
-	setLineCounts(P1, 0,0,0,0,0);
-	setLineCounts(P2, 0,0,0,1,0);
-	setTurnPlayerColour(P2)
-	setCaptured(2, 0)
-	u = utility()
-	assertLessEqual(u, 0)
 
 ######################
 
-TEST_F(UtilityCalcFixture, testWhiteSearch) {
-	""" Search by white """
-	setSearchPlayerColour(P2)
-	setLineCounts(P1, 0,0,0,0,0);
-	setLineCounts(P2, 0,0,1,0,0);
-	u = utility()
-	assertGreaterEqual(u, 0)
 
 TEST_F(UtilityCalcFixture, testWhiteCapture) {
 	""" Search by white """
@@ -202,7 +201,7 @@ TEST_F(UtilityCalcFixture, testWhiteCapture) {
 	setLineCounts(P2, 0,0,0,0,0);
 	setCaptured(0, 2)
 	u = utility()
-	assertGreaterEqual(u, 0)
+	EXPECT_GE(u, 0)
 
 TEST_F(UtilityCalcFixture, testBlackToMoveAdvantage) {
 	""" Search by white """
@@ -211,7 +210,7 @@ TEST_F(UtilityCalcFixture, testBlackToMoveAdvantage) {
 	setLineCounts(P1, 1,0,0,0,0);
 	setLineCounts(P2, 1,0,0,0,0);
 	u = utility()
-	assertLessEqual(u, 0)
+	EXPECT_LE(u, 0)
 
 ###########
 
