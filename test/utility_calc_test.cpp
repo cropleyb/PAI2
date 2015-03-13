@@ -259,13 +259,21 @@ TEST_F(UtilityCalcFixture, testOneTakeIsWorthMoreThanAFewPairs) {
 }
 
 TEST_F(UtilityCalcFixture, testOneTakeIsWorthMoreThanTwoThrees) {
-	// I'm still not sure about this one
 	setLineCounts(P1, 0,0,0,0,0);
 	setLineCounts(P2, 0,0,2,0,0);
 	setTakes(1, 0);
 
 	UtilityValue u = uc.calcUtility(P1, P1, 1);
 	EXPECT_GT(u, 0);
+}
+
+TEST_F(UtilityCalcFixture, testOneTakeIsWorthLessThanThreeThrees) {
+	setLineCounts(P1, 0,0,0,0,0);
+	setLineCounts(P2, 0,0,3,0,0);
+	setTakes(1, 0);
+
+	UtilityValue u = uc.calcUtility(P1, P1, 14);
+	EXPECT_LT(u, 0);
 }
 
 TEST_F(UtilityCalcFixture, testOneTakeWithTheMoveIsWorthMoreThanOneThree) {
@@ -320,138 +328,101 @@ TEST_F(UtilityCalcFixture, testFourInARowForOppositionWithTheMoveIsALoss) {
 }
 
 TEST_F(UtilityCalcFixture, testFourCapturesAndAThreatWithTheMoveIsAWin) {
-	// setSearchPlayerColour(P1)
-	// setTurnPlayerColour(P1)
-
 	setCaptured(8, 0);
 	setTakes(1, 0);
+
 	UtilityValue u = uc.calcUtility(P1, P1, 1);
 	EXPECT_GT(u, SMALL_INF);
 }
 
 TEST_F(UtilityCalcFixture, testFourCapturesWithNoThreatsWithTheMoveIsNotAWin) {
-	// setSearchPlayerColour(P1)
-	// setTurnPlayerColour(P1)
-
 	setCaptured(8, 0);
 	setTakes(0, 0);
+
 	UtilityValue u = uc.calcUtility(P1, P1, 1);
 	EXPECT_LT(u, SMALL_INF);
 }
 
 TEST_F(UtilityCalcFixture, testFourCapturesAndAThreatForOppenentWithTheMoveIsALoss) {
-	// setSearchPlayerColour(P1)
-	// setTurnPlayerColour(P2)
-
 	setCaptured(0, 8);
 	setTakes(0, 1);
+
 	UtilityValue u = uc.calcUtility(P2, P1, 1);
 	EXPECT_LT(u, -SMALL_INF);
 }
 
 TEST_F(UtilityCalcFixture, testThreeCapturesAndAThreatForOppenentWithTheMoveIsNotALoss) {
-	// setSearchPlayerColour(P1)
-	// setTurnPlayerColour(P2)
-
 	setCaptured(0, 6);
 	setTakes(0, 1);
+
 	UtilityValue u = uc.calcUtility(P2, P1, 1);
 	EXPECT_GT(u, -SMALL_INF);
 }
 
 TEST_F(UtilityCalcFixture, testTakeHasAValue) {
-	// setSearchPlayerColour(P1)
-	// setTurnPlayerColour(P2)
-
 	setTakes(1, 0);
+
 	UtilityValue u = uc.calcUtility(P2, P1, 1);
 	EXPECT_GT(u, 0);
 }
 
 TEST_F(UtilityCalcFixture, testThreatHasAValue) {
-	// setSearchPlayerColour(P1)
-	// setTurnPlayerColour(P2)
-
 	setThreats(1, 0);
+
 	UtilityValue u = uc.calcUtility(P2, P1, 1);
 	EXPECT_GT(u, 0);
 }
 
-#if 0
-
 TEST_F(UtilityCalcFixture, testTwoFoursWithNoDangerOfBeingCapturedIsAWin) {
-	// setSearchPlayerColour(P1)
 	// setTurnPlayerColour(P2)
 
 	setLineCounts(P1, 0,0,0,2,0);
-	setTakes(0, 0)
+	setTakes(0, 0);
 	UtilityValue u = uc.calcUtility(P2, P1, 1);
 	EXPECT_GT(u, SMALL_INF);
 }
 
 TEST_F(UtilityCalcFixture, testFourPairsCapturedAndThreeTakesWillWin) {
-	// setSearchPlayerColour(P1)
-	// setTurnPlayerColour(P2)
-
 	setCaptured(8, 0);
-	setTakes(3, 0)
+	setTakes(3, 0);
 	UtilityValue u = uc.calcUtility(P2, P1, 1);
 	EXPECT_GT(u, SMALL_INF);
 }
 
-TEST_F(UtilityCalcFixture, atestFourPairsCapturedAndThreeTakesWillWin) {
-	// setSearchPlayerColour(P1)
-	// setTurnPlayerColour(P2)
-
-	setLineCounts(P1, 0,0,3,0,0);
-	setLineCounts(P2, 0,0,0,0,0);
-	setCaptured(0, 2);
-	setTakes(0, 0)
-
-	UtilityValue u = uc.calcUtility(P2, P1, 1);
-	EXPECT_GT(u, SMALL_INF);
-}
-
-######################################################
+//######################################################
 
 TEST_F(UtilityCalcFixture, testTrickyPos1) {
-	// setSearchPlayerColour(P1)
-	// setTurnPlayerColour(P2)
-
 	setCaptured(4, 4);
-	setTakes(0, 0)
+	setTakes(0, 0);
 	setThreats(0, 0);
 	setLineCounts(P1, 78, 9, 1, 1, 0);
 	setLineCounts(P2, 36, 2, 0, 0, 0);
-	UtilityValue u = uc.calcUtility(P2, P1, 1);
+	UtilityValue u1 = uc.calcUtility(P2, P1, 1);
 
 	setCaptured(0, 0);
-	setTakes(0, 0)
+	setTakes(0, 0);
 	setThreats(2, 2);
 	setLineCounts(P1, 51, 8, 0, 0, 0);
 	setLineCounts(P2, 28, 3, 1, 0, 0);
-	UtilityValue u = uc.calcUtility(P2, P1, 1);
+	UtilityValue u2 = uc.calcUtility(P2, P1, 1);
 
 	EXPECT_GT(u1, u2);
 }
 
 TEST_F(UtilityCalcFixture, testTrickyPos2) {
-	// setSearchPlayerColour(P1)
-	// setTurnPlayerColour(P1)
-
 	setCaptured(0, 0);
-	setTakes(0, 1)
+	setTakes(0, 1);
 	setThreats(0, 0);
 	setLineCounts(P1, 34, 5, 1, 0, 0);
 	setLineCounts(P2, 49, 6, 0, 0, 0);
-	UtilityValue u = uc.calcUtility(P2, P1, 1);
+	UtilityValue u1 = uc.calcUtility(P2, P1, 1);
 
 	setCaptured(2, 2);
-	setTakes(0, 0)
+	setTakes(0, 0);
 	setThreats(2, 0);
 	setLineCounts(P1, 49, 4, 0, 0, 0);
 	setLineCounts(P2, 48, 5, 1, 0, 0);
-	UtilityValue u = uc.calcUtility(P2, P1, 1);
+	UtilityValue u2 = uc.calcUtility(P2, P1, 1);
 
 	EXPECT_GT(u1, u2);
 }
@@ -461,49 +432,48 @@ TEST_F(UtilityCalcFixture, testStrange) {
 	// setTurnPlayerColour(P2)
 
 	setCaptured(2, 2);
-	setTakes(0, 0)
+	setTakes(0, 0);
 	setThreats(0, 0);
 	setLineCounts(P1, 29, 2, 0, 0, 0);
 	setLineCounts(P2, 33, 1, 0, 0, 0);
-	UtilityValue u = uc.calcUtility(P2, P1, 1);
+	UtilityValue u1 = uc.calcUtility(P2, P2, 1);
 
 	setCaptured(2, 0);
-	setTakes(0, 1)
+	setTakes(0, 1);
 	setThreats(0, 0);
 	setLineCounts(P1, 53, 3, 0, 0, 0);
 	setLineCounts(P2, 24, 3, 0, 0, 0);
-	UtilityValue u = uc.calcUtility(P2, P1, 1);
+	UtilityValue u2 = uc.calcUtility(P2, P2, 1);
 
 	EXPECT_GT(u1, u2);
 }
 
+#if 0
 TEST_F(UtilityCalcFixture, atestTrickyPos2b) {
-	# TODO
+	// TODO
 	// setSearchPlayerColour(P1)
 	// setTurnPlayerColour(P1)
 
 	setCaptured(2, 2);
-	setTakes(0, 0)
+	setTakes(0, 0);
 	setThreats(0, 0);
 	setLineCounts(P1, 59, 4, 0, 0, 0);
 	setLineCounts(P2, 61, 3, 1, 0, 0);
-	UtilityValue u = uc.calcUtility(P2, P1, 1);
+	UtilityValue u1 = uc.calcUtility(P1, P1, 1);
 
 	setCaptured(2, 2);
-	setTakes(0, 0)
+	setTakes(0, 0);
 	setThreats(2, 0);
 	setLineCounts(P1, 49, 4, 0, 0, 0);
 	setLineCounts(P2, 48, 5, 1, 0, 0);
-	UtilityValue u = uc.calcUtility(P2, P1, 1);
+	UtilityValue u2 = uc.calcUtility(P1, P1, 1);
 
 	EXPECT_GT(u1, u2);
 }
+#endif
 
 TEST_F(UtilityCalcFixture, testYetAnother) {
-	// setSearchPlayerColour(P1)
-	// setTurnPlayerColour(P1)
-
-	'''
+	/*
 This should have got the highest score
 ((-55692, 0), ((9, 6), 14. Lines: [None, [38, 5, 0, 0, 0], [29, 0, 0, 0, 0]], Takes: [0, 0, 0], Threats: [0, 0, 2], Best: [{}, {}, {}] Captures: [0, 4, 4]))
 
@@ -514,122 +484,32 @@ But these all scored much higher
 ((82186, 0), ((6, 7), 14. Lines: [None, [26, 8, 0, 0, 0], [49, 1, 0, 0, 0]], Takes: [0, 1, 0], Threats: [0, 0, 4], Best: [{}, {}, {}] Captures: [0, 2, 4]))
 
 Utility for 14: (-22938, 0) (Lines: [None, [26, 8, 0, 0, 0], [49, 1, 0, 0, 0]], Takes: [0, 1, 0], Threats: [0, 0, 4], Best: NullFilter)
-	'''
-	self.setCaptured(4, 4);
-	self.setTakes(0, 0)
-	self.setThreats(0, 2);
-	self.setMoveNumber(14)
-	self.setLineCounts(P1, 38, 5, 0, 0, 0);
-	self.setLineCounts(P2, 29, 0, 0, 0, 0);
-	UtilityValue u = uc.calcUtility(P2, P1, 1);
+	*/
+	setCaptured(4, 4);
+	setTakes(0, 0);
+	setThreats(0, 2);
+	setLineCounts(P1, 38, 5, 0, 0, 0);
+	setLineCounts(P2, 29, 0, 0, 0, 0);
+	UtilityValue u1 = uc.calcUtility(P1, P1, 14);
 
-	self.setCaptured(2, 4);
-	self.setTakes(1, 0)
-	self.setThreats(0, 4);
-	self.setLineCounts(P1, 26, 8, 0, 0, 0);
-	self.setLineCounts(P2, 49, 1, 0, 0, 0);
-	UtilityValue u = uc.calcUtility(P2, P1, 1);
+	setCaptured(2, 4);
+	setTakes(1, 0);
+	setThreats(0, 4);
+	setLineCounts(P1, 26, 8, 0, 0, 0);
+	setLineCounts(P2, 49, 1, 0, 0, 0);
+	UtilityValue u2 = uc.calcUtility(P1, P1, 14);
 
-	self.EXPECT_GT(u1, u2);
+	EXPECT_GT(u1, u2);
 }
 
-if Name == "Main":
-    unittest.main()
-
-
-#!/usr/bin/env python
-
-import unittest
-
-#from pentai.base.player import *
-#import pentai.base.gameState
-import pentai.base.board as bM
-from pentai.base.mock import *
-
-from pentai.ai.lengthLookupTable import *
-import pentai.ai.abState as absM
-import pentai.ai.utilityCalculator as ucM
-import pentai.ai.utilityStats as usM
-import pentai.ai.priorityFilter as pfM # TODO: NullFilter
-import pentai.ai.aiGenome as aigM
-import pentai.db.aiFactory as aifM # Hmmm. Shouldn't need to use this here
-
-import itertools
-
-inf = INFINITY / 1000
-
-class UtilityTest(unittest.TestCase):
-    def setUp(self):
-
-        self.searchFilter = pfM.PriorityFilter()
-        self.utilCalc = ucM.UtilityCalculator()
-
-        # Set defaults for utility calculation
-        player = Mock({"getUtilityCalculator":self.utilCalc})
-        genome = aigM.AIGenome("Irrelevant")
-        aif = aifM.AIFactory()
-        aif.setUtilityConfig(genome, player)
-
-        self.s = absM.ABState(searchFilter=self.searchFilter,
-                utilityCalculator=self.utilCalc)
-        self.us = usM.UtilityStats()
-        self.rules = Mock()
-        self.rules.stonesForCaptureWin = 10
-        self.rules.canCapturePairs = True
-        self.game = Mock()
-        self.captured = [0, 0, 0] # This is individual stones, E/B/W
-        self.gs = Mock({"getAllCaptured": self.captured,
-            "getMoveNumber": 10,
-            "game":self.game,
-            "getWonBy": EMPTY,
-            "getRules":self.rules}) 
-        self.gs.board = bM.Board(13)
-        self.gs.game = self.game
-        // self.setTurnPlayerColour(P1)
-        // self.setSearchPlayerColour(P1)
-        self.s.setState(self.gs)
-
-    def utility(self):
-        util = self.s.utility()
-        return util
-
-    def setLines(self, pn, lines):
-        us = self.s.utilityStats
-        us.lines[pn] = lines
-
-    def setBlackLines(self, lines):
-        self.setLines(P1, lines)
-
-    def setWhiteLines(self, lines):
-        self.setLines(P2, lines)
-
-    def setTakes(self, blackTakes, whiteTakes):
-        self.s.utilityStats.takes = [0, blackTakes, whiteTakes]
-
-    def setThreats(self, blackThreats, whiteThreats):
-        self.s.utilityStats.threats = [0, blackThreats, whiteThreats]
-
-    def setCaptured(self, blackCaptures, whiteCaptures):
-        self.captured[P1] = blackCaptures
-        self.captured[P2] = whiteCaptures
-
-    def setTurnPlayerColour(self, turnPlayerColour):
-        // Set whose move it is at the leaf state 
-        self.gs.mockAddReturnValues(toMoveColour=turnPlayerColour)
-        
-    def setSearchPlayerColour(self, searchPlayerColour):
-        // Set whose move it is at the leaf state 
-        self.game.mockAddReturnValues(toMoveColour=searchPlayerColour)
-
-    def setMoveNumber(self, mn):
-        self.gs.mockAddReturnValues(getMoveNumber=mn)
+#if 0
 
 TEST_F(UtilityCalcFixture, testBlackNoWinByCapturesForFiveInARow) {
 	setLineCounts(P1, 0,0,0,0,0);
 	setLineCounts(P2, 0,0,0,0,0);
 	setCaptured(10, 0)
 	rules.stonesForCaptureWin = 0
-	u = utility()
+	UtilityValue u = uc.calcUtility(P1, P1, 14);
 	assertEqual(u, 0)
 
 TEST_F(UtilityCalcFixture, testWhiteNoWinByCapturesForFiveInARow) {
@@ -637,19 +517,9 @@ TEST_F(UtilityCalcFixture, testWhiteNoWinByCapturesForFiveInARow) {
 	setLineCounts(P2, 0,0,0,0,0);
 	setCaptured(0, 10)
 	rules.stonesForCaptureWin = 0
-	u = utility()
+	UtilityValue u = uc.calcUtility(P1, P1, 14);
 	assertEqual(u, 0)
 
-TEST_F(UtilityCalcFixture, atestOneTakeIsWorthLessThanThreeThrees) {
-	// setSearchPlayerColour(P1)
-	// setTurnPlayerColour(P1)
-
-	setLineCounts(P1, 0,0,0,0,0);
-	setLineCounts(P2, 0,0,3,0,0);
-	setTakes(1, 0);
-	u = utility();
-	EXPECT_LT(u, 0);
-}
-
 #endif
+
 
