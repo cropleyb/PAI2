@@ -249,20 +249,20 @@ bool UtilityCalc<PS>::oneTurnWin(Colour evalColour, Colour turnColour) const
 			//if ccp:
 			if (_posStats._patternCounts[otherPlayer(evalColour)][Take] == 0)
 				return true;
+	}
 
-		// if ccp and sfcw > 0:
-		// Can win by captures
-		CapCount myTakes = evalLines[Take];
-		if (evalColour == turnColour)
-		{
-			if ((10 - evalCaptured) <= 2 and myTakes > 0)
-				// evalColour can take the last pair for a win
-				return true;
-		} else {
-			if ((10 - evalCaptured) <= 2 and myTakes > 2)
-				// evalColour can take the last pair for a win
-				return true;
-		}
+	// if ccp and sfcw > 0:
+	// Can win by captures
+	CapCount myTakes = evalLines[Take];
+	if (evalColour == turnColour)
+	{
+		if ((10 - evalCaptured) <= 2 and myTakes > 0)
+			// evalColour can take the last pair for a win
+			return true;
+	} else {
+		if ((10 - evalCaptured) <= 2 and myTakes > 2)
+			// evalColour can take the last pair for a win
+			return true;
 	}
 	return false;
 }
