@@ -8,6 +8,8 @@
 #include "defines.h"
 #include "bdebug.h"
 
+#define SMALL_INF 1e+15
+
 class MockPositionStats
 {
 public:
@@ -20,11 +22,6 @@ public:
 				_patternCounts[c][patt] = 0;
 			}
 		}
-	}
-
-	CapCount getCaptured(Colour c) const
-	{
-		return _captured[c];
 	}
 
 	// TODO: checkerboardStats
@@ -48,6 +45,12 @@ public:
 		ps._patternCounts[p][Line5] = line5;
 	}
 
+    void setCaptured(CapCount p1caps, CapCount p2caps)
+	{
+		ps._captured[P1] = p1caps;
+		ps._captured[P2] = p2caps;
+	}
+
     MockPositionStats ps;
 	UtilityCalc<MockPositionStats> uc;
 };
@@ -58,35 +61,35 @@ public:
 TEST_F(UtilityCalcFixture, AOneIsBetterThanNothing) {
 	setLineCounts(P1, 1,0,0,0,0);
 	setLineCounts(P2, 0,0,0,0,0);
-	UtilityValue u = uc.calcUtility(P1, P1);
+	UtilityValue u = uc.calcUtility(P1, P1, 1);
 	EXPECT_LT(0, u);
 }
 
 TEST_F(UtilityCalcFixture, ATwoIsBetterThanNothing) {
 	setLineCounts(P1, 0,1,0,0,0);
 	setLineCounts(P2, 0,0,0,0,0);
-	UtilityValue u = uc.calcUtility(P1, P1);
+	UtilityValue u = uc.calcUtility(P1, P1, 1);
 	EXPECT_LT(0, u);
 }
 
 TEST_F(UtilityCalcFixture, AThreeIsBetterThanNothing) {
 	setLineCounts(P1, 0,0,1,0,0);
 	setLineCounts(P2, 0,0,0,0,0);
-	UtilityValue u = uc.calcUtility(P1, P1);
+	UtilityValue u = uc.calcUtility(P1, P1, 1);
 	EXPECT_LT(0, u);
 }
 
 TEST_F(UtilityCalcFixture, AFourIsBetterThanNothing) {
 	setLineCounts(P1, 0,0,0,1,0);
 	setLineCounts(P2, 0,0,0,0,0);
-	UtilityValue u = uc.calcUtility(P1, P1);
+	UtilityValue u = uc.calcUtility(P1, P1, 1);
 	EXPECT_LT(0, u);
 }
 
 TEST_F(UtilityCalcFixture, TheirOneIsWorseThanNothing) {
 	setLineCounts(P1, 0,0,0,0,0);
 	setLineCounts(P2, 1,0,0,0,0);
-	UtilityValue u = uc.calcUtility(P1, P1);
+	UtilityValue u = uc.calcUtility(P1, P1, 1);
 	EXPECT_GT(0, u);
 }
 // (MockPositionStats *) $22 = 0x00000001004118e0
@@ -95,32 +98,45 @@ TEST_F(UtilityCalcFixture, TheirOneIsWorseThanNothing) {
 TEST_F(UtilityCalcFixture, TheirTwoIsWorseThanNothing) {
 	setLineCounts(P1, 0,0,0,0,0);
 	setLineCounts(P2, 0,1,0,0,0);
-	UtilityValue u = uc.calcUtility(P1, P1);
+	UtilityValue u = uc.calcUtility(P1, P1, 1);
 	EXPECT_GT(0, u);
 }
 
 TEST_F(UtilityCalcFixture, TheirThreeIsWorseThanNothing) {
 	setLineCounts(P1, 0,0,0,0,0);
 	setLineCounts(P2, 0,0,1,0,0);
-	UtilityValue u = uc.calcUtility(P1, P1);
+	UtilityValue u = uc.calcUtility(P1, P1, 1);
 	EXPECT_GT(0, u);
 }
 
 TEST_F(UtilityCalcFixture, TheirFourIsWorseThanNothing) {
 	setLineCounts(P1, 0,0,0,0,0);
 	setLineCounts(P2, 0,0,0,1,0);
-	UtilityValue u = uc.calcUtility(P1, P1);
+	UtilityValue u = uc.calcUtility(P1, P1, 1);
 	EXPECT_GT(0, u);
 }
 
-#if 0
 TEST_F(UtilityCalcFixture, AFiveWins) {
 	setLineCounts(P1, 0,0,0,0,1);
 	setLineCounts(P2, 0,0,0,0,0);
-	UtilityValue u = uc.calcUtility(P1, P1);
+	UtilityValue u = uc.calcUtility(P1, P1, 1);
 	EXPECT_LT(SMALL_INF, u);
 }
-#endif
+
+TEST_F(UtilityCalcFixture, TheirFiveLoses) {
+	setLineCounts(P1, 0,0,0,0,0);
+	setLineCounts(P2, 0,0,0,0,1);
+	UtilityValue u = uc.calcUtility(P1, P1, 1);
+	EXPECT_GT(-SMALL_INF, u);
+}
+
+TEST_F(UtilityCalcFixture, P1WinByCaptures) {
+	setLineCounts(P1, 0,0,0,0,0);
+	setLineCounts(P2, 0,0,0,0,0);
+    setCaptured(10, 0);
+	UtilityValue u = uc.calcUtility(P1, P1, 1);
+	EXPECT_LT(SMALL_INF, u);
+}
 
 #if 0
 
@@ -290,6 +306,8 @@ class UtilityTest(unittest.TestCase):
         self.set_captured(10, 0)
         u = self.utility()
         self.assertGreaterEqual(u, inf)
+
+	HERE
 
     def test_black_no_win_by_captures_for_five_in_a_row(self):
         self.set_black_lines([0,0,0,0,0])
