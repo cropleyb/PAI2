@@ -4,6 +4,8 @@
 #include "defines.h"
 #include "line_pattern.h"
 
+#define BIG_NUM 1e+18
+
 typedef double UtilityValue;
 
 template <class PS>
@@ -83,12 +85,12 @@ UtilityValue UtilityCalc<PS>::calcUtility(Colour turnColour, Colour searchColour
 				if (searchColour == evalColour)
 				{
 					// If the winner is us then / by move number.
-					return INFINITY * 100.0 / (moveNumber*moveNumber);
+					return BIG_NUM * 100.0 / (moveNumber*moveNumber);
 					// TODO: Sadistic mode for Rich
 					// - multiply by move number ;)
 				} else {
 					// If the winner is not us then also / by moveNumber
-					return -INFINITY * 100.0 / (moveNumber*moveNumber);
+					return -BIG_NUM * 100.0 / (moveNumber*moveNumber);
 				}
 			}
 		}
@@ -183,39 +185,37 @@ bool UtilityCalc<PS>::zeroTurnWin(Colour evalColour, Colour turnColour) const
 template <class PS>
 bool UtilityCalc<PS>::oneTurnWin(Colour evalColour, Colour turnColour) const
 {
-#if 0
-        // Detect a forceable win after one turn each
-        rules = self.rules
-        sfcw = rules.stones_for_capture_win
-        ccp = rules.can_capture_pairs
-        eval_captured = state.get_captured(eval_colour)
-        eval_lines = state.utility_stats.lines[eval_colour]
+	// Detect a forceable win after one turn each
+	CapCount evalCaptured = _posStats._captured[evalColour];
+	const PattCount *evalLines = _posStats._patternCounts[evalColour];
 
-        if eval_lines[3] > 0:
-            if eval_colour == turn_colour:
-                // An unanswered line of four out of five will win
-                return True
+	if (evalLines[Line4] > 0)
+	{
+		if (evalColour == turnColour)
+			// An unanswered line of four out of five will win
+			return true;
 
-            if eval_lines[3] > 1:
-                // Two or more lines of four, with no danger of being
-                // captured is a win.
-                if ccp:
-                    if state.get_takes()[opposite_colour(eval_colour)] == 0:
-                        return True
+		if (evalLines[Line4] > 1)
+			// Two or more lines of four, with no danger of being
+			// captured is a win.
+			//if ccp:
+			if (_posStats._patternCounts[otherPlayer(evalColour)][Take] == 0)
+				return true;
 
-        if ccp and sfcw > 0:
-            // Can win by captures
-            my_takes = state.get_takes()[eval_colour]
-            if eval_colour == turn_colour:
-                if (sfcw - eval_captured) <= 2 and my_takes > 0:
-                    // eval_colour can take the last pair for a win
-                    return True
-            else:
-                if (sfcw - eval_captured) <= 2 and my_takes > 2:
-                    // eval_colour can take the last pair for a win
-                    return True
-
-#endif
+		// if ccp and sfcw > 0:
+		// Can win by captures
+		CapCount myTakes = evalLines[Take];
+		if (evalColour == turnColour)
+		{
+			if ((10 - evalCaptured) <= 2 and myTakes > 0)
+				// evalColour can take the last pair for a win
+				return true;
+		} else {
+			if ((10 - evalCaptured) <= 2 and myTakes > 2)
+				// evalColour can take the last pair for a win
+				return true;
+		}
+	}
 	return false;
 }
 

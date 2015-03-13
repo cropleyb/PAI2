@@ -21,6 +21,7 @@ public:
 			{
 				_patternCounts[c][patt] = 0;
 			}
+			_captured[c] = 0;
 		}
 	}
 
@@ -138,551 +139,463 @@ TEST_F(UtilityCalcFixture, P1WinByCaptures) {
 	EXPECT_LT(SMALL_INF, u);
 }
 
+
+TEST_F(UtilityCalcFixture, testWonGameShortening) {
+	//setSearchPlayerColour(P1)
+	//setTurnPlayerColour(P2)
+	setLineCounts(P1, 0,0,0,4,0);
+
+	UtilityValue u1 = uc.calcUtility(P1, P1, 10);
+	UtilityValue u2 = uc.calcUtility(P1, P1, 11);
+
+	EXPECT_GT(u1, u2);
+}
+
 #if 0
-
-#!/usr/bin/env python
-
-import unittest
-
-#from pentai.base.player import *
-#import pentai.base.game_state
-import pentai.base.board as b_m
-from pentai.base.mock import *
-
-from pentai.ai.length_lookup_table import *
-import pentai.ai.ab_state as abs_m
-import pentai.ai.utility_calculator as uc_m
-import pentai.ai.utility_stats as us_m
-import pentai.ai.priority_filter as pf_m # TODO: NullFilter
-import pentai.ai.ai_genome as aig_m
-import pentai.db.ai_factory as aif_m # Hmmm. Shouldn't need to use this here
-
-import itertools
-
-inf = INFINITY / 1000
-
-class UtilityTest(unittest.TestCase):
-    def setUp(self):
-
-        self.search_filter = pf_m.PriorityFilter()
-        self.util_calc = uc_m.UtilityCalculator()
-
-        # Set defaults for utility calculation
-        player = Mock({"get_utility_calculator":self.util_calc})
-        genome = aig_m.AIGenome("Irrelevant")
-        aif = aif_m.AIFactory()
-        aif.set_utility_config(genome, player)
-
-        self.s = abs_m.ABState(search_filter=self.search_filter,
-                utility_calculator=self.util_calc)
-        self.us = us_m.UtilityStats()
-        self.rules = Mock()
-        self.rules.stones_for_capture_win = 10
-        self.rules.can_capture_pairs = True
-        self.game = Mock()
-        self.captured = [0, 0, 0] # This is individual stones, E/B/W
-        self.gs = Mock({"get_all_captured": self.captured,
-            "get_move_number": 10,
-            "game":self.game,
-            "get_won_by": EMPTY,
-            "get_rules":self.rules}) 
-        self.gs.board = b_m.Board(13)
-        self.gs.game = self.game
-        self.set_turn_player_colour(P1)
-        self.set_search_player_colour(P1)
-        self.s.set_state(self.gs)
-
-    def utility(self):
-        util = self.s.utility()
-        return util
-
-    def set_lines(self, pn, lines):
-        us = self.s.utility_stats
-        us.lines[pn] = lines
-
-    def set_black_lines(self, lines):
-        self.set_lines(P1, lines)
-
-    def set_white_lines(self, lines):
-        self.set_lines(P2, lines)
-
-    def set_takes(self, black_takes, white_takes):
-        self.s.utility_stats.takes = [0, black_takes, white_takes]
-
-    def set_threats(self, black_threats, white_threats):
-        self.s.utility_stats.threats = [0, black_threats, white_threats]
-
-    def set_captured(self, black_captures, white_captures):
-        self.captured[P1] = black_captures
-        self.captured[P2] = white_captures
-
-    def set_turn_player_colour(self, turn_player_colour):
-        """ Set whose move it is at the leaf state """
-        self.gs.mockAddReturnValues(to_move_colour=turn_player_colour)
-        
-    def set_search_player_colour(self, search_player_colour):
-        """ Set whose move it is at the leaf state """
-        self.game.mockAddReturnValues(to_move_colour=search_player_colour)
-
-    def set_move_number(self, mn):
-        self.gs.mockAddReturnValues(get_move_number=mn)
-        
-    def test_won_game_shortening(self):
-        self.set_search_player_colour(P1)
-        self.set_turn_player_colour(P2)
-        self.set_black_lines([0,0,0,4,0])
-
-        self.set_move_number(10)
-        u1 = self.utility()
-
-        self.set_move_number(11)
-        u2 = self.utility()
-        self.assertGreater(u1, u2)
-
-    def test_lost_game_lengthening(self):
-        self.set_search_player_colour(P1)
-        self.set_turn_player_colour(P2)
-        self.set_white_lines([0,0,0,4,0])
-
-        self.set_move_number(10)
-        u1 = self.utility()
-
-        self.set_move_number(11)
-        u2 = self.utility()
-        self.assertGreater(u2, u1)
-
-    # !python ./pentai/ai/t_utility.py UtilityTest.test_utility_single_stone_better_than_none
-    def test_utility_single_stone_better_than_none(self):
-        self.set_black_lines([20,0,0,0,0])
-        self.set_white_lines([0,0,0,0,0])
-        u = self.utility()
-        self.assertGreater(u, 0)
-
-    def test_utility_more_singles_is_better(self):
-        self.set_black_lines([1,0,0,0,0])
-        self.set_white_lines([0,0,0,0,0])
-        u = self.utility()
-        self.assertGreater(u, 0)
-
-    def test_utility_more_twos_is_better(self):
-        self.set_black_lines([0,1,0,0,0])
-        self.set_white_lines([0,0,0,0,0])
-        u = self.utility()
-        self.assertGreater(u, 0)
-
-    def test_utility_more_threes_is_better(self):
-        self.set_black_lines([0,0,1,0,0])
-        self.set_white_lines([0,0,0,0,0])
-        u = self.utility()
-        self.assertGreater(u, 0)
-
-    def test_utility_more_fours_is_better(self):
-        self.set_black_lines([0,0,0,1,0])
-        self.set_white_lines([0,0,0,0,0])
-        u = self.utility()
-        self.assertGreater(u, 0)
-
-    def test_utility_less_ones_is_worse(self):
-        self.set_black_lines([0,0,0,0,0])
-        self.set_white_lines([1,0,0,0,0])
-        u = self.utility()
-        self.assertLess(u, 0)
-
-    def test_utility_less_ones_is_worse(self):
-        self.set_black_lines([0,0,0,0,0])
-        self.set_white_lines([1,0,0,0,0])
-        u = self.utility()
-        self.assertLess(u, 0)
-
-    def test_utility_five_is_a_win(self):
-        self.set_black_lines([0,0,0,0,1])
-        self.set_white_lines([99,99,99,99,0])
-        u = self.utility()
-        self.assertGreaterEqual(u, inf)
-
-    def test_black_win_by_captures(self):
-        self.set_black_lines([0,0,0,0,0])
-        self.set_white_lines([0,0,0,0,0])
-        self.set_captured(10, 0)
-        u = self.utility()
-        self.assertGreaterEqual(u, inf)
-
-	HERE
-
-    def test_black_no_win_by_captures_for_five_in_a_row(self):
-        self.set_black_lines([0,0,0,0,0])
-        self.set_white_lines([0,0,0,0,0])
-        self.set_captured(10, 0)
-        self.rules.stones_for_capture_win = 0
-        u = self.utility()
-        self.assertEqual(u, 0)
-
-    def test_white_win_by_captures(self):
-        self.set_black_lines([0,0,0,0,0])
-        self.set_white_lines([0,0,0,0,0])
-        self.set_captured(0, 10)
-        u = self.utility()
-        self.assertLessEqual(u, -inf)
-
-    def test_white_no_win_by_captures_for_five_in_a_row(self):
-        self.set_black_lines([0,0,0,0,0])
-        self.set_white_lines([0,0,0,0,0])
-        self.set_captured(0, 10)
-        self.rules.stones_for_capture_win = 0
-        u = self.utility()
-        self.assertEqual(u, 0)
-
-    def test_one_capture_worth_more_than_a_three(self):
-        self.set_black_lines([0,0,0,0,0])
-        self.set_white_lines([0,0,1,0,0])
-        self.set_captured(2, 0)
-        u = self.utility()
-        self.assertGreaterEqual(u, 0)
-
-    def test_one_capture_worth_less_than_a_four(self):
-        self.set_black_lines([0,0,0,0,0])
-        self.set_white_lines([0,0,0,1,0])
-        self.set_turn_player_colour(P2)
-        self.set_captured(2, 0)
-        u = self.utility()
-        self.assertLessEqual(u, 0)
-
-    ######################
-
-    def test_white_search(self):
-        """ Search by white """
-        self.set_search_player_colour(P2)
-        self.set_black_lines([0,0,0,0,0])
-        self.set_white_lines([0,0,1,0,0])
-        u = self.utility()
-        self.assertGreaterEqual(u, 0)
-
-    def test_white_capture(self):
-        """ Search by white """
-        self.set_search_player_colour(P2)
-        self.set_black_lines([0,0,0,0,0])
-        self.set_white_lines([0,0,0,0,0])
-        self.set_captured(0, 2)
-        u = self.utility()
-        self.assertGreaterEqual(u, 0)
-
-    def test_black_to_move_advantage(self):
-        """ Search by white """
-        self.set_turn_player_colour(P1)
-        self.set_search_player_colour(P2)
-        self.set_black_lines([1,0,0,0,0])
-        self.set_white_lines([1,0,0,0,0])
-        u = self.utility()
-        self.assertLessEqual(u, 0)
-
-    ###########
-
-    def test_white_having_the_move_gets_a_higher_util(self):
-        """ Search by white """
-        self.set_search_player_colour(P2)
-
-        self.set_black_lines([1,0,0,0,0])
-        self.set_white_lines([2,0,0,0,0])
-
-        self.set_turn_player_colour(P2)
-        u_with_move = self.utility()
-
-        self.set_turn_player_colour(P1)
-        u_not_to_move = self.utility()
-
-        self.assertGreater(u_with_move, u_not_to_move)
-
-    def test_black_having_the_move_gets_a_higher_util(self):
-        """ Search by black """
-        self.set_black_lines([1,0,0,0,0])
-        self.set_white_lines([2,0,0,0,0])
-
-        self.set_turn_player_colour(P1)
-        u_with_move = self.utility()
-
-        self.set_turn_player_colour(P2)
-        self.set_search_player_colour(P1)
-        u_not_to_move = self.utility()
-
-        self.assertGreater(u_with_move, u_not_to_move)
-
-    def test_next_to_middle_is_better(self):
-        """ Search by white """
-        self.set_turn_player_colour(P1)
-        self.set_search_player_colour(P2)
-
-        # (-783, [16, 0, 0, 0, 0][11, 0, 0, 0, 0] - (3, 3) next to 4,4
-        self.set_black_lines([16,0,0,0,0])
-        self.set_white_lines([11,0,0,0,0])
-        u_adjacent = self.utility()
-
-        # (-588, [17, 0, 0, 0, 0][7, 0, 0, 0, 0] - (6, 6) with a gap
-        self.set_black_lines([17,0,0,0,0])
-        self.set_white_lines([7,0,0,0,0])
-        u_dist = self.utility()
-
-        self.assertGreater(u_adjacent, u_dist)
-
-    ##############
-
-    def test_one_take_is_worth_more_than_a_few_pairs(self):
-        self.set_search_player_colour(P1)
-        self.set_turn_player_colour(P1)
-
-        self.set_black_lines([0,0,0,0,0])
-        self.set_white_lines([11,3,0,0,0])
-        self.set_takes(1, 0)
-        u = self.utility()
-        self.assertGreater(u, 0)
-
-    def test_one_take_is_worth_more_than_two_threes(self):
-        # I'm not sure about this one
-        self.set_search_player_colour(P1)
-        self.set_turn_player_colour(P1)
-
-        self.set_black_lines([0,0,0,0,0])
-        self.set_white_lines([0,0,2,0,0])
-        self.set_takes(1, 0)
-        u = self.utility()
-        self.assertGreater(u, 0)
-
-    def atest_one_take_is_worth_less_than_three_threes(self):
-        self.set_search_player_colour(P1)
-        self.set_turn_player_colour(P1)
-
-        self.set_black_lines([0,0,0,0,0])
-        self.set_white_lines([0,0,3,0,0])
-        self.set_takes(1, 0)
-        u = self.utility()
-        self.assertLess(u, 0)
-
-    def test_one_take_with_the_move_is_worth_more_than_one_three(self):
-        self.set_search_player_colour(P1)
-        self.set_turn_player_colour(P1)
-
-        self.set_black_lines([0,0,0,0,0])
-        self.set_white_lines([0,0,1,0,0])
-        self.set_takes(1, 0)
-        u = self.utility()
-        self.assertGreater(u, 0)
-
-    def test_one_three_with_the_move_is_worth_more_than_one_take(self):
-        self.set_search_player_colour(P1)
-        self.set_turn_player_colour(P2)
-
-        self.set_black_lines([0,0,0,0,0])
-        self.set_white_lines([0,0,1,0,0])
-        self.set_takes(1, 0)
-        u = self.utility()
-        self.assertLess(u, 0)
-
-    def test_four_captures_worth_more_than_3_threes(self):
-        self.set_search_player_colour(P1)
-        self.set_turn_player_colour(P1)
-
-        self.set_black_lines([0,0,0,0,0])
-        self.set_white_lines([0,0,3,0,0])
-        self.set_captured(8, 0)
-        u = self.utility()
-        self.assertGreater(u, 0)
-
-    def test_four_in_a_row_with_the_move_is_a_win(self):
-        self.set_search_player_colour(P1)
-        self.set_turn_player_colour(P1)
-
-        self.set_black_lines([0,0,0,1,0])
-        self.set_white_lines([0,0,0,0,0])
-        u = self.utility()
-        self.assertGreater(u, inf)
-
-    def test_four_in_a_row_without_the_move_is_not_won(self):
-        self.set_search_player_colour(P1)
-        self.set_turn_player_colour(P2)
-
-        self.set_black_lines([0,0,0,1,0])
-        self.set_white_lines([0,0,0,0,0])
-        u = self.utility()
-        self.assertLess(u, inf)
-
-    def test_four_in_a_row_for_opposition_with_the_move_is_a_loss(self):
-        self.set_search_player_colour(P1)
-        self.set_turn_player_colour(P2)
-
-        self.set_black_lines([0,0,0,0,0])
-        self.set_white_lines([0,0,0,1,0])
-        u = self.utility()
-        self.assertLess(u, -inf)
-
-    def test_four_captures_and_a_threat_with_the_move_is_a_win(self):
-        self.set_search_player_colour(P1)
-        self.set_turn_player_colour(P1)
-
-        self.set_captured(8, 0)
-        self.set_takes(1, 0)
-        u = self.utility()
-        self.assertGreater(u, inf)
-
-    def test_four_captures_with_no_threats_with_the_move_is_not_a_win(self):
-        self.set_search_player_colour(P1)
-        self.set_turn_player_colour(P1)
-
-        self.set_captured(8, 0)
-        self.set_takes(0, 0)
-        u = self.utility()
-        self.assertLess(u, inf)
-
-    def test_four_captures_and_a_threat_for_oppenent_with_the_move_is_a_loss(self):
-        self.set_search_player_colour(P1)
-        self.set_turn_player_colour(P2)
-
-        self.set_captured(0, 8)
-        self.set_takes(0, 1)
-        u = self.utility()
-        self.assertLess(u, -inf)
-
-    def test_three_captures_and_a_threat_for_oppenent_with_the_move_is_not_a_loss(self):
-        self.set_search_player_colour(P1)
-        self.set_turn_player_colour(P2)
-
-        self.set_captured(0, 6)
-        self.set_takes(0, 1)
-        u = self.utility()
-        self.assertGreater(u, -inf)
-
-    def test_take_has_a_value(self):
-        self.set_search_player_colour(P1)
-        self.set_turn_player_colour(P2)
-
-        self.set_takes(1, 0)
-        u = self.utility()
-        self.assertGreater(u, 0)
-
-    def test_threat_has_a_value(self):
-        self.set_search_player_colour(P1)
-        self.set_turn_player_colour(P2)
-
-        self.set_threats(1, 0)
-        u = self.utility()
-        self.assertGreater(u, 0)
-
-    def test_two_fours_with_no_danger_of_being_captured_is_a_win(self):
-        self.set_search_player_colour(P1)
-        self.set_turn_player_colour(P2)
-
-        self.set_black_lines([0,0,0,2,0])
-        self.set_takes(0, 0)
-        u = self.utility()
-        self.assertGreater(u, inf)
-
-    def test_four_pairs_captured_and_three_takes_will_win(self):
-        self.set_search_player_colour(P1)
-        self.set_turn_player_colour(P2)
-
-        self.set_captured(8, 0)
-        self.set_takes(3, 0)
-        u = self.utility()
-        self.assertGreater(u, inf)
-
-    def atest_four_pairs_captured_and_three_takes_will_win(self):
-        self.set_search_player_colour(P1)
-        self.set_turn_player_colour(P2)
-
-        self.set_black_lines([0,0,3,0,0])
-        self.set_white_lines([0,0,0,0,0])
-        self.set_captured(0, 2)
-        self.set_takes(0, 0)
-
-        u = self.utility()
-        self.assertGreater(u, inf)
-
-    ######################################################
-
-    def test_tricky_pos_1(self):
-        self.set_search_player_colour(P1)
-        self.set_turn_player_colour(P2)
-
-        self.set_captured(4, 4)
-        self.set_takes(0, 0)
-        self.set_threats(0, 0)
-        self.set_black_lines([78, 9, 1, 1, 0])
-        self.set_white_lines([36, 2, 0, 0, 0])
-        u1= self.utility()
-
-        self.set_captured(0, 0)
-        self.set_takes(0, 0)
-        self.set_threats(2, 2)
-        self.set_black_lines([51, 8, 0, 0, 0])
-        self.set_white_lines([28, 3, 1, 0, 0])
-        u2= self.utility()
-
-        self.assertGreater(u1, u2)
-
-    def test_tricky_pos_2(self):
-        self.set_search_player_colour(P1)
-        self.set_turn_player_colour(P1)
-
-        self.set_captured(0, 0)
-        self.set_takes(0, 1)
-        self.set_threats(0, 0)
-        self.set_black_lines([34, 5, 1, 0, 0])
-        self.set_white_lines([49, 6, 0, 0, 0])
-        u1= self.utility()
-
-        self.set_captured(2, 2)
-        self.set_takes(0, 0)
-        self.set_threats(2, 0)
-        self.set_black_lines([49, 4, 0, 0, 0])
-        self.set_white_lines([48, 5, 1, 0, 0])
-        u2= self.utility()
-
-        self.assertGreater(u1, u2)
-
-    def test_strange(self):
-        self.set_search_player_colour(P2)
-        self.set_turn_player_colour(P2)
-
-        self.set_captured(2, 2)
-        self.set_takes(0, 0)
-        self.set_threats(0, 0)
-        self.set_black_lines([29, 2, 0, 0, 0])
-        self.set_white_lines([33, 1, 0, 0, 0])
-        u1= self.utility()
-
-        self.set_captured(2, 0)
-        self.set_takes(0, 1)
-        self.set_threats(0, 0)
-        self.set_black_lines([53, 3, 0, 0, 0])
-        self.set_white_lines([24, 3, 0, 0, 0])
-        u2= self.utility()
-
-        self.assertGreater(u1, u2)
-
-    def atest_tricky_pos_2b(self):
-        # TODO
-        self.set_search_player_colour(P1)
-        self.set_turn_player_colour(P1)
-
-        self.set_captured(2, 2)
-        self.set_takes(0, 0)
-        self.set_threats(0, 0)
-        self.set_black_lines([59, 4, 0, 0, 0])
-        self.set_white_lines([61, 3, 1, 0, 0])
-        u1= self.utility()
-
-        self.set_captured(2, 2)
-        self.set_takes(0, 0)
-        self.set_threats(2, 0)
-        self.set_black_lines([49, 4, 0, 0, 0])
-        self.set_white_lines([48, 5, 1, 0, 0])
-        u2= self.utility()
-
-        self.assertGreater(u1, u2)
-
-    def test_yet_another(self):
-        self.set_search_player_colour(P1)
-        self.set_turn_player_colour(P1)
-
-        '''
+TEST_F(UtilityCalcFixture, testLostGameLengthening) {
+	setSearchPlayerColour(P1)
+	setTurnPlayerColour(P2)
+	setWhiteLines([0,0,0,4,0])
+
+	setMoveNumber(10)
+	u1 = utility()
+
+	setMoveNumber(11)
+	u2 = utility()
+	EXPECT_GT(u2, u1)
+
+# !python ./pentai/ai/tUtility.py UtilityTest.testUtilitySingleStoneBetterThanNone
+TEST_F(UtilityCalcFixture, testUtilitySingleStoneBetterThanNone) {
+	setBlackLines([20,0,0,0,0])
+	setWhiteLines([0,0,0,0,0])
+	u = utility()
+	EXPECT_GT(u, 0)
+
+TEST_F(UtilityCalcFixture, testUtilityMoreSinglesIsBetter) {
+	setBlackLines([1,0,0,0,0])
+	setWhiteLines([0,0,0,0,0])
+	u = utility()
+	EXPECT_GT(u, 0)
+
+TEST_F(UtilityCalcFixture, testUtilityMoreTwosIsBetter) {
+	setBlackLines([0,1,0,0,0])
+	setWhiteLines([0,0,0,0,0])
+	u = utility()
+	EXPECT_GT(u, 0)
+
+TEST_F(UtilityCalcFixture, testUtilityMoreThreesIsBetter) {
+	setBlackLines([0,0,1,0,0])
+	setWhiteLines([0,0,0,0,0])
+	u = utility()
+	EXPECT_GT(u, 0)
+
+TEST_F(UtilityCalcFixture, testUtilityMoreFoursIsBetter) {
+	setBlackLines([0,0,0,1,0])
+	setWhiteLines([0,0,0,0,0])
+	u = utility()
+	EXPECT_GT(u, 0)
+
+TEST_F(UtilityCalcFixture, testUtilityLessOnesIsWorse) {
+	setBlackLines([0,0,0,0,0])
+	setWhiteLines([1,0,0,0,0])
+	u = utility()
+	EXPECT_LT(u, 0)
+
+TEST_F(UtilityCalcFixture, testUtilityLessOnesIsWorse) {
+	setBlackLines([0,0,0,0,0])
+	setWhiteLines([1,0,0,0,0])
+	u = utility()
+	EXPECT_LT(u, 0)
+
+TEST_F(UtilityCalcFixture, testUtilityFiveIsAWin) {
+	setBlackLines([0,0,0,0,1])
+	setWhiteLines([99,99,99,99,0])
+	u = utility()
+	assertGreaterEqual(u, inf)
+
+TEST_F(UtilityCalcFixture, testBlackWinByCaptures) {
+	setBlackLines([0,0,0,0,0])
+	setWhiteLines([0,0,0,0,0])
+	setCaptured(10, 0)
+	u = utility()
+	assertGreaterEqual(u, inf)
+
+HERE
+
+TEST_F(UtilityCalcFixture, testBlackNoWinByCapturesForFiveInARow) {
+	setBlackLines([0,0,0,0,0])
+	setWhiteLines([0,0,0,0,0])
+	setCaptured(10, 0)
+	rules.stonesForCaptureWin = 0
+	u = utility()
+	assertEqual(u, 0)
+
+TEST_F(UtilityCalcFixture, testWhiteWinByCaptures) {
+	setBlackLines([0,0,0,0,0])
+	setWhiteLines([0,0,0,0,0])
+	setCaptured(0, 10)
+	u = utility()
+	assertLessEqual(u, -inf)
+
+TEST_F(UtilityCalcFixture, testWhiteNoWinByCapturesForFiveInARow) {
+	setBlackLines([0,0,0,0,0])
+	setWhiteLines([0,0,0,0,0])
+	setCaptured(0, 10)
+	rules.stonesForCaptureWin = 0
+	u = utility()
+	assertEqual(u, 0)
+
+TEST_F(UtilityCalcFixture, testOneCaptureWorthMoreThanAThree) {
+	setBlackLines([0,0,0,0,0])
+	setWhiteLines([0,0,1,0,0])
+	setCaptured(2, 0)
+	u = utility()
+	assertGreaterEqual(u, 0)
+
+TEST_F(UtilityCalcFixture, testOneCaptureWorthLessThanAFour) {
+	setBlackLines([0,0,0,0,0])
+	setWhiteLines([0,0,0,1,0])
+	setTurnPlayerColour(P2)
+	setCaptured(2, 0)
+	u = utility()
+	assertLessEqual(u, 0)
+
+######################
+
+TEST_F(UtilityCalcFixture, testWhiteSearch) {
+	""" Search by white """
+	setSearchPlayerColour(P2)
+	setBlackLines([0,0,0,0,0])
+	setWhiteLines([0,0,1,0,0])
+	u = utility()
+	assertGreaterEqual(u, 0)
+
+TEST_F(UtilityCalcFixture, testWhiteCapture) {
+	""" Search by white """
+	setSearchPlayerColour(P2)
+	setBlackLines([0,0,0,0,0])
+	setWhiteLines([0,0,0,0,0])
+	setCaptured(0, 2)
+	u = utility()
+	assertGreaterEqual(u, 0)
+
+TEST_F(UtilityCalcFixture, testBlackToMoveAdvantage) {
+	""" Search by white """
+	setTurnPlayerColour(P1)
+	setSearchPlayerColour(P2)
+	setBlackLines([1,0,0,0,0])
+	setWhiteLines([1,0,0,0,0])
+	u = utility()
+	assertLessEqual(u, 0)
+
+###########
+
+TEST_F(UtilityCalcFixture, testWhiteHavingTheMoveGetsAHigherUtil) {
+	""" Search by white """
+	setSearchPlayerColour(P2)
+
+	setBlackLines([1,0,0,0,0])
+	setWhiteLines([2,0,0,0,0])
+
+	setTurnPlayerColour(P2)
+	uWithMove = utility()
+
+	setTurnPlayerColour(P1)
+	uNotToMove = utility()
+
+	EXPECT_GT(uWithMove, uNotToMove)
+
+TEST_F(UtilityCalcFixture, testBlackHavingTheMoveGetsAHigherUtil) {
+	""" Search by black """
+	setBlackLines([1,0,0,0,0])
+	setWhiteLines([2,0,0,0,0])
+
+	setTurnPlayerColour(P1)
+	uWithMove = utility()
+
+	setTurnPlayerColour(P2)
+	setSearchPlayerColour(P1)
+	uNotToMove = utility()
+
+	EXPECT_GT(uWithMove, uNotToMove)
+
+TEST_F(UtilityCalcFixture, testNextToMiddleIsBetter) {
+	""" Search by white """
+	setTurnPlayerColour(P1)
+	setSearchPlayerColour(P2)
+
+	# (-783, [16, 0, 0, 0, 0][11, 0, 0, 0, 0] - (3, 3) next to 4,4
+	setBlackLines([16,0,0,0,0])
+	setWhiteLines([11,0,0,0,0])
+	uAdjacent = utility()
+
+	# (-588, [17, 0, 0, 0, 0][7, 0, 0, 0, 0] - (6, 6) with a gap
+	setBlackLines([17,0,0,0,0])
+	setWhiteLines([7,0,0,0,0])
+	uDist = utility()
+
+	EXPECT_GT(uAdjacent, uDist)
+
+##############
+
+TEST_F(UtilityCalcFixture, testOneTakeIsWorthMoreThanAFewPairs) {
+	setSearchPlayerColour(P1)
+	setTurnPlayerColour(P1)
+
+	setBlackLines([0,0,0,0,0])
+	setWhiteLines([11,3,0,0,0])
+	setTakes(1, 0)
+	u = utility()
+	EXPECT_GT(u, 0)
+
+TEST_F(UtilityCalcFixture, testOneTakeIsWorthMoreThanTwoThrees) {
+	# I'm not sure about this one
+	setSearchPlayerColour(P1)
+	setTurnPlayerColour(P1)
+
+	setBlackLines([0,0,0,0,0])
+	setWhiteLines([0,0,2,0,0])
+	setTakes(1, 0)
+	u = utility()
+	EXPECT_GT(u, 0)
+
+TEST_F(UtilityCalcFixture, atestOneTakeIsWorthLessThanThreeThrees) {
+	setSearchPlayerColour(P1)
+	setTurnPlayerColour(P1)
+
+	setBlackLines([0,0,0,0,0])
+	setWhiteLines([0,0,3,0,0])
+	setTakes(1, 0)
+	u = utility()
+	EXPECT_LT(u, 0)
+
+TEST_F(UtilityCalcFixture, testOneTakeWithTheMoveIsWorthMoreThanOneThree) {
+	setSearchPlayerColour(P1)
+	setTurnPlayerColour(P1)
+
+	setBlackLines([0,0,0,0,0])
+	setWhiteLines([0,0,1,0,0])
+	setTakes(1, 0)
+	u = utility()
+	EXPECT_GT(u, 0)
+
+TEST_F(UtilityCalcFixture, testOneThreeWithTheMoveIsWorthMoreThanOneTake) {
+	setSearchPlayerColour(P1)
+	setTurnPlayerColour(P2)
+
+	setBlackLines([0,0,0,0,0])
+	setWhiteLines([0,0,1,0,0])
+	setTakes(1, 0)
+	u = utility()
+	EXPECT_LT(u, 0)
+
+TEST_F(UtilityCalcFixture, testFourCapturesWorthMoreThan3Threes) {
+	setSearchPlayerColour(P1)
+	setTurnPlayerColour(P1)
+
+	setBlackLines([0,0,0,0,0])
+	setWhiteLines([0,0,3,0,0])
+	setCaptured(8, 0)
+	u = utility()
+	EXPECT_GT(u, 0)
+
+TEST_F(UtilityCalcFixture, testFourInARowWithTheMoveIsAWin) {
+	setSearchPlayerColour(P1)
+	setTurnPlayerColour(P1)
+
+	setBlackLines([0,0,0,1,0])
+	setWhiteLines([0,0,0,0,0])
+	u = utility()
+	EXPECT_GT(u, inf)
+
+TEST_F(UtilityCalcFixture, testFourInARowWithoutTheMoveIsNotWon) {
+	setSearchPlayerColour(P1)
+	setTurnPlayerColour(P2)
+
+	setBlackLines([0,0,0,1,0])
+	setWhiteLines([0,0,0,0,0])
+	u = utility()
+	EXPECT_LT(u, inf)
+
+TEST_F(UtilityCalcFixture, testFourInARowForOppositionWithTheMoveIsALoss) {
+	setSearchPlayerColour(P1)
+	setTurnPlayerColour(P2)
+
+	setBlackLines([0,0,0,0,0])
+	setWhiteLines([0,0,0,1,0])
+	u = utility()
+	EXPECT_LT(u, -inf)
+
+TEST_F(UtilityCalcFixture, testFourCapturesAndAThreatWithTheMoveIsAWin) {
+	setSearchPlayerColour(P1)
+	setTurnPlayerColour(P1)
+
+	setCaptured(8, 0)
+	setTakes(1, 0)
+	u = utility()
+	EXPECT_GT(u, inf)
+
+TEST_F(UtilityCalcFixture, testFourCapturesWithNoThreatsWithTheMoveIsNotAWin) {
+	setSearchPlayerColour(P1)
+	setTurnPlayerColour(P1)
+
+	setCaptured(8, 0)
+	setTakes(0, 0)
+	u = utility()
+	EXPECT_LT(u, inf)
+
+TEST_F(UtilityCalcFixture, testFourCapturesAndAThreatForOppenentWithTheMoveIsALoss) {
+	setSearchPlayerColour(P1)
+	setTurnPlayerColour(P2)
+
+	setCaptured(0, 8)
+	setTakes(0, 1)
+	u = utility()
+	EXPECT_LT(u, -inf)
+
+TEST_F(UtilityCalcFixture, testThreeCapturesAndAThreatForOppenentWithTheMoveIsNotALoss) {
+	setSearchPlayerColour(P1)
+	setTurnPlayerColour(P2)
+
+	setCaptured(0, 6)
+	setTakes(0, 1)
+	u = utility()
+	EXPECT_GT(u, -inf)
+
+TEST_F(UtilityCalcFixture, testTakeHasAValue) {
+	setSearchPlayerColour(P1)
+	setTurnPlayerColour(P2)
+
+	setTakes(1, 0)
+	u = utility()
+	EXPECT_GT(u, 0)
+
+TEST_F(UtilityCalcFixture, testThreatHasAValue) {
+	setSearchPlayerColour(P1)
+	setTurnPlayerColour(P2)
+
+	setThreats(1, 0)
+	u = utility()
+	EXPECT_GT(u, 0)
+
+TEST_F(UtilityCalcFixture, testTwoFoursWithNoDangerOfBeingCapturedIsAWin) {
+	setSearchPlayerColour(P1)
+	setTurnPlayerColour(P2)
+
+	setBlackLines([0,0,0,2,0])
+	setTakes(0, 0)
+	u = utility()
+	EXPECT_GT(u, inf)
+
+TEST_F(UtilityCalcFixture, testFourPairsCapturedAndThreeTakesWillWin) {
+	setSearchPlayerColour(P1)
+	setTurnPlayerColour(P2)
+
+	setCaptured(8, 0)
+	setTakes(3, 0)
+	u = utility()
+	EXPECT_GT(u, inf)
+
+TEST_F(UtilityCalcFixture, atestFourPairsCapturedAndThreeTakesWillWin) {
+	setSearchPlayerColour(P1)
+	setTurnPlayerColour(P2)
+
+	setBlackLines([0,0,3,0,0])
+	setWhiteLines([0,0,0,0,0])
+	setCaptured(0, 2)
+	setTakes(0, 0)
+
+	u = utility()
+	EXPECT_GT(u, inf)
+
+######################################################
+
+TEST_F(UtilityCalcFixture, testTrickyPos1) {
+	setSearchPlayerColour(P1)
+	setTurnPlayerColour(P2)
+
+	setCaptured(4, 4)
+	setTakes(0, 0)
+	setThreats(0, 0)
+	setBlackLines([78, 9, 1, 1, 0])
+	setWhiteLines([36, 2, 0, 0, 0])
+	u1= utility()
+
+	setCaptured(0, 0)
+	setTakes(0, 0)
+	setThreats(2, 2)
+	setBlackLines([51, 8, 0, 0, 0])
+	setWhiteLines([28, 3, 1, 0, 0])
+	u2= utility()
+
+	EXPECT_GT(u1, u2)
+
+TEST_F(UtilityCalcFixture, testTrickyPos2) {
+	setSearchPlayerColour(P1)
+	setTurnPlayerColour(P1)
+
+	setCaptured(0, 0)
+	setTakes(0, 1)
+	setThreats(0, 0)
+	setBlackLines([34, 5, 1, 0, 0])
+	setWhiteLines([49, 6, 0, 0, 0])
+	u1= utility()
+
+	setCaptured(2, 2)
+	setTakes(0, 0)
+	setThreats(2, 0)
+	setBlackLines([49, 4, 0, 0, 0])
+	setWhiteLines([48, 5, 1, 0, 0])
+	u2= utility()
+
+	EXPECT_GT(u1, u2)
+
+TEST_F(UtilityCalcFixture, testStrange) {
+	setSearchPlayerColour(P2)
+	setTurnPlayerColour(P2)
+
+	setCaptured(2, 2)
+	setTakes(0, 0)
+	setThreats(0, 0)
+	setBlackLines([29, 2, 0, 0, 0])
+	setWhiteLines([33, 1, 0, 0, 0])
+	u1= utility()
+
+	setCaptured(2, 0)
+	setTakes(0, 1)
+	setThreats(0, 0)
+	setBlackLines([53, 3, 0, 0, 0])
+	setWhiteLines([24, 3, 0, 0, 0])
+	u2= utility()
+
+	EXPECT_GT(u1, u2)
+
+TEST_F(UtilityCalcFixture, atestTrickyPos2b) {
+	# TODO
+	setSearchPlayerColour(P1)
+	setTurnPlayerColour(P1)
+
+	setCaptured(2, 2)
+	setTakes(0, 0)
+	setThreats(0, 0)
+	setBlackLines([59, 4, 0, 0, 0])
+	setWhiteLines([61, 3, 1, 0, 0])
+	u1= utility()
+
+	setCaptured(2, 2)
+	setTakes(0, 0)
+	setThreats(2, 0)
+	setBlackLines([49, 4, 0, 0, 0])
+	setWhiteLines([48, 5, 1, 0, 0])
+	u2= utility()
+
+	EXPECT_GT(u1, u2)
+
+TEST_F(UtilityCalcFixture, testYetAnother) {
+	setSearchPlayerColour(P1)
+	setTurnPlayerColour(P1)
+
+	'''
 This should have got the highest score
 ((-55692, 0), ((9, 6), 14. Lines: [None, [38, 5, 0, 0, 0], [29, 0, 0, 0, 0]], Takes: [0, 0, 0], Threats: [0, 0, 2], Best: [{}, {}, {}] Captures: [0, 4, 4]))
 
@@ -693,28 +606,114 @@ But these all scored much higher
 ((82186, 0), ((6, 7), 14. Lines: [None, [26, 8, 0, 0, 0], [49, 1, 0, 0, 0]], Takes: [0, 1, 0], Threats: [0, 0, 4], Best: [{}, {}, {}] Captures: [0, 2, 4]))
 
 Utility for 14: (-22938, 0) (Lines: [None, [26, 8, 0, 0, 0], [49, 1, 0, 0, 0]], Takes: [0, 1, 0], Threats: [0, 0, 4], Best: NullFilter)
-        '''
-        self.set_captured(4, 4)
-        self.set_takes(0, 0)
-        self.set_threats(0, 2)
-        self.set_move_number(14)
-        self.set_black_lines([38, 5, 0, 0, 0])
-        self.set_white_lines([29, 0, 0, 0, 0])
-        u1= self.utility()
+	'''
+	self.setCaptured(4, 4)
+	self.setTakes(0, 0)
+	self.setThreats(0, 2)
+	self.setMoveNumber(14)
+	self.setBlackLines([38, 5, 0, 0, 0])
+	self.setWhiteLines([29, 0, 0, 0, 0])
+	u1= self.utility()
 
-        self.set_captured(2, 4)
-        self.set_takes(1, 0)
-        self.set_threats(0, 4)
-        self.set_black_lines([26, 8, 0, 0, 0])
-        self.set_white_lines([49, 1, 0, 0, 0])
-        u2= self.utility()
+	self.setCaptured(2, 4)
+	self.setTakes(1, 0)
+	self.setThreats(0, 4)
+	self.setBlackLines([26, 8, 0, 0, 0])
+	self.setWhiteLines([49, 1, 0, 0, 0])
+	u2= self.utility()
 
-        self.assertGreater(u1, u2)
+	self.EXPECT_GT(u1, u2)
 
-if __name__ == "__main__":
+if Name == "Main":
     unittest.main()
 
 
+#!/usr/bin/env python
+
+import unittest
+
+#from pentai.base.player import *
+#import pentai.base.gameState
+import pentai.base.board as bM
+from pentai.base.mock import *
+
+from pentai.ai.lengthLookupTable import *
+import pentai.ai.abState as absM
+import pentai.ai.utilityCalculator as ucM
+import pentai.ai.utilityStats as usM
+import pentai.ai.priorityFilter as pfM # TODO: NullFilter
+import pentai.ai.aiGenome as aigM
+import pentai.db.aiFactory as aifM # Hmmm. Shouldn't need to use this here
+
+import itertools
+
+inf = INFINITY / 1000
+
+class UtilityTest(unittest.TestCase):
+    def setUp(self):
+
+        self.searchFilter = pfM.PriorityFilter()
+        self.utilCalc = ucM.UtilityCalculator()
+
+        # Set defaults for utility calculation
+        player = Mock({"getUtilityCalculator":self.utilCalc})
+        genome = aigM.AIGenome("Irrelevant")
+        aif = aifM.AIFactory()
+        aif.setUtilityConfig(genome, player)
+
+        self.s = absM.ABState(searchFilter=self.searchFilter,
+                utilityCalculator=self.utilCalc)
+        self.us = usM.UtilityStats()
+        self.rules = Mock()
+        self.rules.stonesForCaptureWin = 10
+        self.rules.canCapturePairs = True
+        self.game = Mock()
+        self.captured = [0, 0, 0] # This is individual stones, E/B/W
+        self.gs = Mock({"getAllCaptured": self.captured,
+            "getMoveNumber": 10,
+            "game":self.game,
+            "getWonBy": EMPTY,
+            "getRules":self.rules}) 
+        self.gs.board = bM.Board(13)
+        self.gs.game = self.game
+        self.setTurnPlayerColour(P1)
+        self.setSearchPlayerColour(P1)
+        self.s.setState(self.gs)
+
+    def utility(self):
+        util = self.s.utility()
+        return util
+
+    def setLines(self, pn, lines):
+        us = self.s.utilityStats
+        us.lines[pn] = lines
+
+    def setBlackLines(self, lines):
+        self.setLines(P1, lines)
+
+    def setWhiteLines(self, lines):
+        self.setLines(P2, lines)
+
+    def setTakes(self, blackTakes, whiteTakes):
+        self.s.utilityStats.takes = [0, blackTakes, whiteTakes]
+
+    def setThreats(self, blackThreats, whiteThreats):
+        self.s.utilityStats.threats = [0, blackThreats, whiteThreats]
+
+    def setCaptured(self, blackCaptures, whiteCaptures):
+        self.captured[P1] = blackCaptures
+        self.captured[P2] = whiteCaptures
+
+    def setTurnPlayerColour(self, turnPlayerColour):
+        """ Set whose move it is at the leaf state """
+        self.gs.mockAddReturnValues(toMoveColour=turnPlayerColour)
+        
+    def setSearchPlayerColour(self, searchPlayerColour):
+        """ Set whose move it is at the leaf state """
+        self.game.mockAddReturnValues(toMoveColour=searchPlayerColour)
+
+    def setMoveNumber(self, mn):
+        self.gs.mockAddReturnValues(getMoveNumber=mn)
 
 #endif
 
