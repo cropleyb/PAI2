@@ -188,7 +188,7 @@ TEST_F(UtilityCalcFixture, testP2Search) {
 }
 
 TEST_F(UtilityCalcFixture, testP2CaptureSearch) {
-	// Search by P2 after capture """
+	// Search by P2 after capture 
 	setCaptured(0, 2);
 	UtilityValue u = uc.calcUtility(P1, P2, 1);
 	EXPECT_GE(u, 0);
@@ -201,6 +201,41 @@ TEST_F(UtilityCalcFixture, testP1ToMoveAdvantageAgainstP2Search) {
 	EXPECT_LE(u, 0);
 }
 
+TEST_F(UtilityCalcFixture, testWhiteHavingTheMoveGetsAHigherUtil) {
+	setLineCounts(P1, 1,0,0,0,0);
+	setLineCounts(P2, 2,0,0,0,0);
+
+	UtilityValue uWithMove = uc.calcUtility(P2, P2, 1);
+	UtilityValue uNotToMove = uc.calcUtility(P1, P2, 1);
+
+	EXPECT_GT(uWithMove, uNotToMove);
+}
+
+TEST_F(UtilityCalcFixture, testBlackHavingTheMoveGetsAHigherUtil) {
+	// Search by black 
+	setLineCounts(P1, 1,0,0,0,0);
+	setLineCounts(P2, 2,0,0,0,0);
+
+	UtilityValue uWithMove = uc.calcUtility(P1, P1, 1);
+	UtilityValue uNotToMove = uc.calcUtility(P2, P1, 1);
+
+	EXPECT_GT(uWithMove, uNotToMove);
+}
+
+TEST_F(UtilityCalcFixture, testNextToMiddleIsBetter) {
+	// Search by P2
+	// (-783, [16, 0, 0, 0, 0][11, 0, 0, 0, 0] - (3, 3) next to 4,4
+	setLineCounts(P1, 16,0,0,0,0);
+	setLineCounts(P2, 11,0,0,0,0);
+	UtilityValue uAdjacent = uc.calcUtility(P1, P2, 1);
+
+	// (-588, [17, 0, 0, 0, 0][7, 0, 0, 0, 0] - (6, 6) with a gap
+	setLineCounts(P1, 17,0,0,0,0);
+	setLineCounts(P2, 7,0,0,0,0);
+	UtilityValue uDist = uc.calcUtility(P1, P2, 1);
+
+	EXPECT_GT(uAdjacent, uDist);
+}
 
 #if 0
 
@@ -210,54 +245,7 @@ TEST_F(UtilityCalcFixture, testP1ToMoveAdvantageAgainstP2Search) {
 
 ###########
 
-TEST_F(UtilityCalcFixture, testWhiteHavingTheMoveGetsAHigherUtil) {
-	""" Search by white """
-	setSearchPlayerColour(P2)
 
-	setLineCounts(P1, 1,0,0,0,0);
-	setLineCounts(P2, 2,0,0,0,0);
-
-	setTurnPlayerColour(P2);
-	uWithMove = utility();
-
-	setTurnPlayerColour(P1);
-	uNotToMove = utility();
-
-	EXPECT_GT(uWithMove, uNotToMove);
-}
-
-TEST_F(UtilityCalcFixture, testBlackHavingTheMoveGetsAHigherUtil) {
-	""" Search by black """
-	setLineCounts(P1, 1,0,0,0,0);
-	setLineCounts(P2, 2,0,0,0,0);
-
-	setTurnPlayerColour(P1);
-	uWithMove = utility();
-
-	setTurnPlayerColour(P2);
-	setSearchPlayerColour(P1);
-	uNotToMove = utility();
-
-	EXPECT_GT(uWithMove, uNotToMove)
-}
-
-TEST_F(UtilityCalcFixture, testNextToMiddleIsBetter) {
-	""" Search by white """
-	setTurnPlayerColour(P1)
-	setSearchPlayerColour(P2)
-
-	# (-783, [16, 0, 0, 0, 0][11, 0, 0, 0, 0] - (3, 3) next to 4,4
-	setLineCounts(P1, 16,0,0,0,0);
-	setLineCounts(P2, 11,0,0,0,0);
-	uAdjacent = utility()
-
-	# (-588, [17, 0, 0, 0, 0][7, 0, 0, 0, 0] - (6, 6) with a gap
-	setLineCounts(P1, 17,0,0,0,0);
-	setLineCounts(P2, 7,0,0,0,0);
-	uDist = utility();
-
-	EXPECT_GT(uAdjacent, uDist);
-}
 
 ##############
 
@@ -651,11 +639,11 @@ class UtilityTest(unittest.TestCase):
         self.captured[P2] = whiteCaptures
 
     def setTurnPlayerColour(self, turnPlayerColour):
-        """ Set whose move it is at the leaf state """
+        // Set whose move it is at the leaf state 
         self.gs.mockAddReturnValues(toMoveColour=turnPlayerColour)
         
     def setSearchPlayerColour(self, searchPlayerColour):
-        """ Set whose move it is at the leaf state """
+        // Set whose move it is at the leaf state 
         self.game.mockAddReturnValues(toMoveColour=searchPlayerColour)
 
     def setMoveNumber(self, mn):
