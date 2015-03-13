@@ -104,7 +104,7 @@ UtilityValue UtilityCalc<PS>::utilityScore(Colour evalColour, Colour turnColour)
 
 	const PattCount *evalLines = _posStats._patternCounts[evalColour];
 
-	for (int i=MAX_PATTERN_TYPE-1; i>=0; i-=1)
+	for (int i=MAX_PATTERN_TYPE-1; i>0; i-=1)
 	{
 		score *= _lengthFactor;
 		score += evalLines[i] * _patternScale[i];

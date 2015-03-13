@@ -26,15 +26,21 @@ class UtilityCalcFixture : public testing::Test {
 public:
 	UtilityCalcFixture() : uc(ps)
 	{
+		for (int c=P1; c<=P2; c+=1)
+		{
+			ps._patternCounts[P1][NoPattern] = 0;
+			ps._patternCounts[P1][Threat] = 0;
+			ps._patternCounts[P1][Take] = 0;
+		}
 	}
 
 	void setLineCounts(Colour p, int line1, int line2, int line3, int line4, int line5)
 	{
-		ps._patternCounts[p][0] = line1;
-		ps._patternCounts[p][1] = line2;
-		ps._patternCounts[p][3] = line3;
-		ps._patternCounts[p][5] = line4;
-		ps._patternCounts[p][6] = line5;
+		ps._patternCounts[p][Line1] = line1;
+		ps._patternCounts[p][Line2] = line2;
+		ps._patternCounts[p][Line3] = line3;
+		ps._patternCounts[p][Line4] = line4;
+		ps._patternCounts[p][Line5] = line5;
 	}
 
     MockPositionStats ps;
@@ -80,6 +86,8 @@ TEST_F(UtilityCalcFixture, TheirOneIsWorseThanNothing) {
 	UtilityValue u = uc.calcUtility(P1, P1);
 	EXPECT_GT(0, u);
 }
+// (MockPositionStats *) $22 = 0x00000001004118e0
+
 
 TEST_F(UtilityCalcFixture, TheirTwoIsWorseThanNothing) {
 	setLineCounts(P1, 0,0,0,0,0);

@@ -17,8 +17,9 @@ enum PatternType
 	Line3=4,
 	Take=5,
 	Line4=6,
-	Blocked=7,
-	MAX_PATTERN_TYPE
+    Line5=7,
+	Blocked=8,
+	MAX_PATTERN_TYPE=9
 };
 
 class LinePattern
