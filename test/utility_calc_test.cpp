@@ -11,6 +11,17 @@
 class MockPositionStats
 {
 public:
+    MockPositionStats()
+	{
+		for (int c=P1; c<=P2; c+=1)
+		{
+			for (int patt=0; patt<MAX_PATTERN_TYPE; patt+=1)
+			{
+				_patternCounts[c][patt] = 0;
+			}
+		}
+	}
+
 	CapCount getCaptured(Colour c) const
 	{
 		return _captured[c];
@@ -26,12 +37,6 @@ class UtilityCalcFixture : public testing::Test {
 public:
 	UtilityCalcFixture() : uc(ps)
 	{
-		for (int c=P1; c<=P2; c+=1)
-		{
-			ps._patternCounts[P1][NoPattern] = 0;
-			ps._patternCounts[P1][Threat] = 0;
-			ps._patternCounts[P1][Take] = 0;
-		}
 	}
 
 	void setLineCounts(Colour p, int line1, int line2, int line3, int line4, int line5)
@@ -50,12 +55,10 @@ public:
 ////////////////////////////////////////////////////////
 // 
 ////////////////////////////////////////////////////////
-
 TEST_F(UtilityCalcFixture, AOneIsBetterThanNothing) {
 	setLineCounts(P1, 1,0,0,0,0);
 	setLineCounts(P2, 0,0,0,0,0);
 	UtilityValue u = uc.calcUtility(P1, P1);
-//UtilityValue UtilityCalc<PS>::calcUtility(Colour turnColour, Colour searchColour) const
 	EXPECT_LT(0, u);
 }
 

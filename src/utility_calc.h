@@ -60,7 +60,6 @@ UtilityValue UtilityCalc<PS>::calcUtility(Colour turnColour, Colour searchColour
 	// evalColour is the colour that we are assessing
 	// the utility value for - we do both for each call to utility
 	Colour otherColour = otherPlayer(turnColour);
-	//return 3.0;
 	
 	// No forceable win has been found, so fudge up a score
 	UtilityValue utilScores[3] = {0.0, 0.0, 0.0};
