@@ -38,6 +38,10 @@ private:
 	bool zeroTurnWin(Colour evalColour, Colour turnColour) const;
 	bool oneTurnWin(Colour evalColour, Colour turnColour) const;
 
+	UtilityValue capturedContrib(CapCount captures) const;
+	UtilityValue takeContrib(CapCount takes, CapCount captures) const;
+	UtilityValue threatContrib(CapCount threats, CapCount captures) const;
+
 	const PS &_posStats;
 
 	double _moveFactor;
@@ -131,22 +135,66 @@ UtilityValue UtilityCalc<PS>::utilityScore(Colour evalColour, Colour turnColour)
 	Colour otherColour = otherPlayer(evalColour);
 	Colour otherCaptured = _posStats._captured[otherColour];
 	
-	CapCount captured = evalCaptured - otherCaptured;
+	// CapCount captured = evalCaptured - otherCaptured; // TODO: Test use_net_captures again.
+	CapCount captured = evalCaptured;
 
 	UtilityValue score = 0.0;
 
-	// UtilityValue lf = self.length_factor;
-
 	const PattCount *evalLines = _posStats._patternCounts[evalColour];
 
-	for (int i=MAX_PATTERN_TYPE-1; i>0; i-=1)
+	for (int i=Line4; i>0; i-=1)
 	{
+		if (i == Take || i == Threat) continue;
 		score *= _lengthFactor;
 		score += evalLines[i] * _patternScale[i];
 	}
 
+	// Unless we're playing keryo, capturesScale only needs to operate
+	// on pairs
+	captured /= 2;
+
+	UtilityValue cc = capturedContrib(captured);
+	score += cc;
+
+	// Give takes and threats some value for their ability to help
+	// get 5 in a row.
+	UtilityValue tc;
+	tc  = takeContrib(_posStats._patternCounts[evalColour][Take], captured);
+	score += tc;
+
+	tc = threatContrib(_posStats._patternCounts[evalColour][Threat], captured);
+	score += tc;
+
 	return score;
 }
+
+// Captures become increasingly important as we approach 5
+template <class PS>
+UtilityValue UtilityCalc<PS>::capturedContrib(CapCount captures) const
+{
+	UtilityValue contrib = captures * _captureScoreBase * \
+			_capturesScale[captures];
+	return contrib;
+}
+
+template <class PS>
+UtilityValue UtilityCalc<PS>::takeContrib(CapCount takes, CapCount captures) const
+{
+	// takes become increasingly important as we approach 5 captures
+	UtilityValue contrib = takes * _takeScoreBase * \
+			_capturesScale[captures];
+	return contrib;
+}
+
+template <class PS>
+UtilityValue UtilityCalc<PS>::threatContrib(CapCount threats, CapCount captures) const
+{
+	// threats become increasingly important as we approach 5 captures
+	UtilityValue contrib = threats * _threatScoreBase * \
+			_capturesScale[captures];
+	return contrib;
+}
+
 
 template <class PS>
 bool UtilityCalc<PS>::zeroTurnWin(Colour evalColour, Colour turnColour) const

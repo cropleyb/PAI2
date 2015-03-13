@@ -158,99 +158,28 @@ TEST_F(UtilityCalcFixture, testLostGameLengthening) {
 	EXPECT_GT(u2, u1);
 }
 
-#if 0
-
-# !python ./pentai/ai/tUtility.py UtilityTest.testUtilitySingleStoneBetterThanNone
-TEST_F(UtilityCalcFixture, testUtilitySingleStoneBetterThanNone) {
-	setBlackLines([20,0,0,0,0])
-	setLineCounts(P2, 0,0,0,0,0])
-	u = utility()
-	EXPECT_GT(u, 0)
-
-TEST_F(UtilityCalcFixture, testUtilityMoreSinglesIsBetter) {
-	setBlackLines([1,0,0,0,0])
-	setLineCounts(P2, 0,0,0,0,0])
-	u = utility()
-	EXPECT_GT(u, 0)
-
-TEST_F(UtilityCalcFixture, testUtilityMoreTwosIsBetter) {
-	setBlackLines([0,1,0,0,0])
-	setLineCounts(P2, 0,0,0,0,0])
-	u = utility()
-	EXPECT_GT(u, 0)
-
-TEST_F(UtilityCalcFixture, testUtilityMoreThreesIsBetter) {
-	setBlackLines([0,0,1,0,0])
-	setLineCounts(P2, 0,0,0,0,0])
-	u = utility()
-	EXPECT_GT(u, 0)
-
-TEST_F(UtilityCalcFixture, testUtilityMoreFoursIsBetter) {
-	setBlackLines([0,0,0,1,0])
-	setLineCounts(P2, 0,0,0,0,0])
-	u = utility()
-	EXPECT_GT(u, 0)
-
-TEST_F(UtilityCalcFixture, testUtilityLessOnesIsWorse) {
-	setBlackLines([0,0,0,0,0])
-	setLineCounts(P2, 1,0,0,0,0])
-	u = utility()
-	EXPECT_LT(u, 0)
-
-TEST_F(UtilityCalcFixture, testUtilityLessOnesIsWorse) {
-	setBlackLines([0,0,0,0,0])
-	setLineCounts(P2, 1,0,0,0,0])
-	u = utility()
-	EXPECT_LT(u, 0)
-
-TEST_F(UtilityCalcFixture, testUtilityFiveIsAWin) {
-	setBlackLines([0,0,0,0,1])
-	setLineCounts(P2, 99,99,99,99,0])
-	u = utility()
-	assertGreaterEqual(u, inf)
-
-TEST_F(UtilityCalcFixture, testBlackWinByCaptures) {
-	setBlackLines([0,0,0,0,0])
-	setLineCounts(P2, 0,0,0,0,0])
-	setCaptured(10, 0)
-	u = utility()
-	assertGreaterEqual(u, inf)
-
-HERE
-
-TEST_F(UtilityCalcFixture, testBlackNoWinByCapturesForFiveInARow) {
-	setBlackLines([0,0,0,0,0])
-	setLineCounts(P2, 0,0,0,0,0])
-	setCaptured(10, 0)
-	rules.stonesForCaptureWin = 0
-	u = utility()
-	assertEqual(u, 0)
-
-TEST_F(UtilityCalcFixture, testWhiteWinByCaptures) {
-	setBlackLines([0,0,0,0,0])
-	setLineCounts(P2, 0,0,0,0,0])
-	setCaptured(0, 10)
-	u = utility()
-	assertLessEqual(u, -inf)
-
-TEST_F(UtilityCalcFixture, testWhiteNoWinByCapturesForFiveInARow) {
-	setBlackLines([0,0,0,0,0])
-	setLineCounts(P2, 0,0,0,0,0])
-	setCaptured(0, 10)
-	rules.stonesForCaptureWin = 0
-	u = utility()
-	assertEqual(u, 0)
+TEST_F(UtilityCalcFixture, testP2WinByCaptures) {
+	setCaptured(0, 10);
+	UtilityValue u = uc.calcUtility(P1, P1, 1);
+	EXPECT_LE(u, -SMALL_INF);
+}
 
 TEST_F(UtilityCalcFixture, testOneCaptureWorthMoreThanAThree) {
-	setBlackLines([0,0,0,0,0])
-	setLineCounts(P2, 0,0,1,0,0])
-	setCaptured(2, 0)
-	u = utility()
-	assertGreaterEqual(u, 0)
+	setLineCounts(P1, 0,0,0,0,0);
+	setLineCounts(P2, 0,0,1,0,0);
+	setCaptured(2, 0);
+	UtilityValue u = uc.calcUtility(P1, P1, 1);
+	EXPECT_GT(u, 0);
+}
+
+
+
+
+#if 0
 
 TEST_F(UtilityCalcFixture, testOneCaptureWorthLessThanAFour) {
-	setBlackLines([0,0,0,0,0])
-	setLineCounts(P2, 0,0,0,1,0])
+	setLineCounts(P1, 0,0,0,0,0);
+	setLineCounts(P2, 0,0,0,1,0);
 	setTurnPlayerColour(P2)
 	setCaptured(2, 0)
 	u = utility()
@@ -261,16 +190,16 @@ TEST_F(UtilityCalcFixture, testOneCaptureWorthLessThanAFour) {
 TEST_F(UtilityCalcFixture, testWhiteSearch) {
 	""" Search by white """
 	setSearchPlayerColour(P2)
-	setBlackLines([0,0,0,0,0])
-	setLineCounts(P2, 0,0,1,0,0])
+	setLineCounts(P1, 0,0,0,0,0);
+	setLineCounts(P2, 0,0,1,0,0);
 	u = utility()
 	assertGreaterEqual(u, 0)
 
 TEST_F(UtilityCalcFixture, testWhiteCapture) {
 	""" Search by white """
 	setSearchPlayerColour(P2)
-	setBlackLines([0,0,0,0,0])
-	setLineCounts(P2, 0,0,0,0,0])
+	setLineCounts(P1, 0,0,0,0,0);
+	setLineCounts(P2, 0,0,0,0,0);
 	setCaptured(0, 2)
 	u = utility()
 	assertGreaterEqual(u, 0)
@@ -279,8 +208,8 @@ TEST_F(UtilityCalcFixture, testBlackToMoveAdvantage) {
 	""" Search by white """
 	setTurnPlayerColour(P1)
 	setSearchPlayerColour(P2)
-	setBlackLines([1,0,0,0,0])
-	setLineCounts(P2, 1,0,0,0,0])
+	setLineCounts(P1, 1,0,0,0,0);
+	setLineCounts(P2, 1,0,0,0,0);
 	u = utility()
 	assertLessEqual(u, 0)
 
@@ -290,8 +219,8 @@ TEST_F(UtilityCalcFixture, testWhiteHavingTheMoveGetsAHigherUtil) {
 	""" Search by white """
 	setSearchPlayerColour(P2)
 
-	setBlackLines([1,0,0,0,0])
-	setLineCounts(P2, 2,0,0,0,0])
+	setLineCounts(P1, 1,0,0,0,0);
+	setLineCounts(P2, 2,0,0,0,0);
 
 	setTurnPlayerColour(P2)
 	uWithMove = utility()
@@ -303,8 +232,8 @@ TEST_F(UtilityCalcFixture, testWhiteHavingTheMoveGetsAHigherUtil) {
 
 TEST_F(UtilityCalcFixture, testBlackHavingTheMoveGetsAHigherUtil) {
 	""" Search by black """
-	setBlackLines([1,0,0,0,0])
-	setLineCounts(P2, 2,0,0,0,0])
+	setLineCounts(P1, 1,0,0,0,0);
+	setLineCounts(P2, 2,0,0,0,0);
 
 	setTurnPlayerColour(P1)
 	uWithMove = utility()
@@ -321,13 +250,13 @@ TEST_F(UtilityCalcFixture, testNextToMiddleIsBetter) {
 	setSearchPlayerColour(P2)
 
 	# (-783, [16, 0, 0, 0, 0][11, 0, 0, 0, 0] - (3, 3) next to 4,4
-	setBlackLines([16,0,0,0,0])
-	setLineCounts(P2, 11,0,0,0,0])
+	setLineCounts(P1, 16,0,0,0,0);
+	setLineCounts(P2, 11,0,0,0,0);
 	uAdjacent = utility()
 
 	# (-588, [17, 0, 0, 0, 0][7, 0, 0, 0, 0] - (6, 6) with a gap
-	setBlackLines([17,0,0,0,0])
-	setLineCounts(P2, 7,0,0,0,0])
+	setLineCounts(P1, 17,0,0,0,0);
+	setLineCounts(P2, 7,0,0,0,0);
 	uDist = utility()
 
 	EXPECT_GT(uAdjacent, uDist)
@@ -338,8 +267,8 @@ TEST_F(UtilityCalcFixture, testOneTakeIsWorthMoreThanAFewPairs) {
 	setSearchPlayerColour(P1)
 	setTurnPlayerColour(P1)
 
-	setBlackLines([0,0,0,0,0])
-	setLineCounts(P2, 11,3,0,0,0])
+	setLineCounts(P1, 0,0,0,0,0);
+	setLineCounts(P2, 11,3,0,0,0);
 	setTakes(1, 0)
 	u = utility()
 	EXPECT_GT(u, 0)
@@ -349,8 +278,8 @@ TEST_F(UtilityCalcFixture, testOneTakeIsWorthMoreThanTwoThrees) {
 	setSearchPlayerColour(P1)
 	setTurnPlayerColour(P1)
 
-	setBlackLines([0,0,0,0,0])
-	setLineCounts(P2, 0,0,2,0,0])
+	setLineCounts(P1, 0,0,0,0,0);
+	setLineCounts(P2, 0,0,2,0,0);
 	setTakes(1, 0)
 	u = utility()
 	EXPECT_GT(u, 0)
@@ -359,8 +288,8 @@ TEST_F(UtilityCalcFixture, atestOneTakeIsWorthLessThanThreeThrees) {
 	setSearchPlayerColour(P1)
 	setTurnPlayerColour(P1)
 
-	setBlackLines([0,0,0,0,0])
-	setLineCounts(P2, 0,0,3,0,0])
+	setLineCounts(P1, 0,0,0,0,0);
+	setLineCounts(P2, 0,0,3,0,0);
 	setTakes(1, 0)
 	u = utility()
 	EXPECT_LT(u, 0)
@@ -369,8 +298,8 @@ TEST_F(UtilityCalcFixture, testOneTakeWithTheMoveIsWorthMoreThanOneThree) {
 	setSearchPlayerColour(P1)
 	setTurnPlayerColour(P1)
 
-	setBlackLines([0,0,0,0,0])
-	setLineCounts(P2, 0,0,1,0,0])
+	setLineCounts(P1, 0,0,0,0,0);
+	setLineCounts(P2, 0,0,1,0,0);
 	setTakes(1, 0)
 	u = utility()
 	EXPECT_GT(u, 0)
@@ -379,8 +308,8 @@ TEST_F(UtilityCalcFixture, testOneThreeWithTheMoveIsWorthMoreThanOneTake) {
 	setSearchPlayerColour(P1)
 	setTurnPlayerColour(P2)
 
-	setBlackLines([0,0,0,0,0])
-	setLineCounts(P2, 0,0,1,0,0])
+	setLineCounts(P1, 0,0,0,0,0);
+	setLineCounts(P2, 0,0,1,0,0);
 	setTakes(1, 0)
 	u = utility()
 	EXPECT_LT(u, 0)
@@ -389,8 +318,8 @@ TEST_F(UtilityCalcFixture, testFourCapturesWorthMoreThan3Threes) {
 	setSearchPlayerColour(P1)
 	setTurnPlayerColour(P1)
 
-	setBlackLines([0,0,0,0,0])
-	setLineCounts(P2, 0,0,3,0,0])
+	setLineCounts(P1, 0,0,0,0,0);
+	setLineCounts(P2, 0,0,3,0,0);
 	setCaptured(8, 0)
 	u = utility()
 	EXPECT_GT(u, 0)
@@ -399,8 +328,8 @@ TEST_F(UtilityCalcFixture, testFourInARowWithTheMoveIsAWin) {
 	setSearchPlayerColour(P1)
 	setTurnPlayerColour(P1)
 
-	setBlackLines([0,0,0,1,0])
-	setLineCounts(P2, 0,0,0,0,0])
+	setLineCounts(P1, 0,0,0,1,0);
+	setLineCounts(P2, 0,0,0,0,0);
 	u = utility()
 	EXPECT_GT(u, inf)
 
@@ -408,8 +337,8 @@ TEST_F(UtilityCalcFixture, testFourInARowWithoutTheMoveIsNotWon) {
 	setSearchPlayerColour(P1)
 	setTurnPlayerColour(P2)
 
-	setBlackLines([0,0,0,1,0])
-	setLineCounts(P2, 0,0,0,0,0])
+	setLineCounts(P1, 0,0,0,1,0);
+	setLineCounts(P2, 0,0,0,0,0);
 	u = utility()
 	EXPECT_LT(u, inf)
 
@@ -417,8 +346,8 @@ TEST_F(UtilityCalcFixture, testFourInARowForOppositionWithTheMoveIsALoss) {
 	setSearchPlayerColour(P1)
 	setTurnPlayerColour(P2)
 
-	setBlackLines([0,0,0,0,0])
-	setLineCounts(P2, 0,0,0,1,0])
+	setLineCounts(P1, 0,0,0,0,0);
+	setLineCounts(P2, 0,0,0,1,0);
 	u = utility()
 	EXPECT_LT(u, -inf)
 
@@ -478,7 +407,7 @@ TEST_F(UtilityCalcFixture, testTwoFoursWithNoDangerOfBeingCapturedIsAWin) {
 	setSearchPlayerColour(P1)
 	setTurnPlayerColour(P2)
 
-	setBlackLines([0,0,0,2,0])
+	setLineCounts(P1, 0,0,0,2,0);
 	setTakes(0, 0)
 	u = utility()
 	EXPECT_GT(u, inf)
@@ -496,8 +425,8 @@ TEST_F(UtilityCalcFixture, atestFourPairsCapturedAndThreeTakesWillWin) {
 	setSearchPlayerColour(P1)
 	setTurnPlayerColour(P2)
 
-	setBlackLines([0,0,3,0,0])
-	setLineCounts(P2, 0,0,0,0,0])
+	setLineCounts(P1, 0,0,3,0,0);
+	setLineCounts(P2, 0,0,0,0,0);
 	setCaptured(0, 2)
 	setTakes(0, 0)
 
@@ -513,15 +442,15 @@ TEST_F(UtilityCalcFixture, testTrickyPos1) {
 	setCaptured(4, 4)
 	setTakes(0, 0)
 	setThreats(0, 0)
-	setBlackLines([78, 9, 1, 1, 0])
-	setLineCounts(P2, 36, 2, 0, 0, 0])
+	setLineCounts(P1, 78, 9, 1, 1, 0);
+	setLineCounts(P2, 36, 2, 0, 0, 0);
 	u1= utility()
 
 	setCaptured(0, 0)
 	setTakes(0, 0)
 	setThreats(2, 2)
-	setBlackLines([51, 8, 0, 0, 0])
-	setLineCounts(P2, 28, 3, 1, 0, 0])
+	setLineCounts(P1, 51, 8, 0, 0, 0);
+	setLineCounts(P2, 28, 3, 1, 0, 0);
 	u2= utility()
 
 	EXPECT_GT(u1, u2)
@@ -533,15 +462,15 @@ TEST_F(UtilityCalcFixture, testTrickyPos2) {
 	setCaptured(0, 0)
 	setTakes(0, 1)
 	setThreats(0, 0)
-	setBlackLines([34, 5, 1, 0, 0])
-	setLineCounts(P2, 49, 6, 0, 0, 0])
+	setLineCounts(P1, 34, 5, 1, 0, 0);
+	setLineCounts(P2, 49, 6, 0, 0, 0);
 	u1= utility()
 
 	setCaptured(2, 2)
 	setTakes(0, 0)
 	setThreats(2, 0)
-	setBlackLines([49, 4, 0, 0, 0])
-	setLineCounts(P2, 48, 5, 1, 0, 0])
+	setLineCounts(P1, 49, 4, 0, 0, 0);
+	setLineCounts(P2, 48, 5, 1, 0, 0);
 	u2= utility()
 
 	EXPECT_GT(u1, u2)
@@ -553,15 +482,15 @@ TEST_F(UtilityCalcFixture, testStrange) {
 	setCaptured(2, 2)
 	setTakes(0, 0)
 	setThreats(0, 0)
-	setBlackLines([29, 2, 0, 0, 0])
-	setLineCounts(P2, 33, 1, 0, 0, 0])
+	setLineCounts(P1, 29, 2, 0, 0, 0);
+	setLineCounts(P2, 33, 1, 0, 0, 0);
 	u1= utility()
 
 	setCaptured(2, 0)
 	setTakes(0, 1)
 	setThreats(0, 0)
-	setBlackLines([53, 3, 0, 0, 0])
-	setLineCounts(P2, 24, 3, 0, 0, 0])
+	setLineCounts(P1, 53, 3, 0, 0, 0);
+	setLineCounts(P2, 24, 3, 0, 0, 0);
 	u2= utility()
 
 	EXPECT_GT(u1, u2)
@@ -574,15 +503,15 @@ TEST_F(UtilityCalcFixture, atestTrickyPos2b) {
 	setCaptured(2, 2)
 	setTakes(0, 0)
 	setThreats(0, 0)
-	setBlackLines([59, 4, 0, 0, 0])
-	setLineCounts(P2, 61, 3, 1, 0, 0])
+	setLineCounts(P1, 59, 4, 0, 0, 0);
+	setLineCounts(P2, 61, 3, 1, 0, 0);
 	u1= utility()
 
 	setCaptured(2, 2)
 	setTakes(0, 0)
 	setThreats(2, 0)
-	setBlackLines([49, 4, 0, 0, 0])
-	setLineCounts(P2, 48, 5, 1, 0, 0])
+	setLineCounts(P1, 49, 4, 0, 0, 0);
+	setLineCounts(P2, 48, 5, 1, 0, 0);
 	u2= utility()
 
 	EXPECT_GT(u1, u2)
@@ -607,15 +536,15 @@ Utility for 14: (-22938, 0) (Lines: [None, [26, 8, 0, 0, 0], [49, 1, 0, 0, 0]], 
 	self.setTakes(0, 0)
 	self.setThreats(0, 2)
 	self.setMoveNumber(14)
-	self.setBlackLines([38, 5, 0, 0, 0])
-	self.setLineCounts(P2, 29, 0, 0, 0, 0])
+	self.setLineCounts(P1, 38, 5, 0, 0, 0);
+	self.setLineCounts(P2, 29, 0, 0, 0, 0);
 	u1= self.utility()
 
 	self.setCaptured(2, 4)
 	self.setTakes(1, 0)
 	self.setThreats(0, 4)
-	self.setBlackLines([26, 8, 0, 0, 0])
-	self.setLineCounts(P2, 49, 1, 0, 0, 0])
+	self.setLineCounts(P1, 26, 8, 0, 0, 0);
+	self.setLineCounts(P2, 49, 1, 0, 0, 0);
 	u2= self.utility()
 
 	self.EXPECT_GT(u1, u2)
@@ -710,6 +639,22 @@ class UtilityTest(unittest.TestCase):
 
     def setMoveNumber(self, mn):
         self.gs.mockAddReturnValues(getMoveNumber=mn)
+
+TEST_F(UtilityCalcFixture, testBlackNoWinByCapturesForFiveInARow) {
+	setLineCounts(P1, 0,0,0,0,0);
+	setLineCounts(P2, 0,0,0,0,0);
+	setCaptured(10, 0)
+	rules.stonesForCaptureWin = 0
+	u = utility()
+	assertEqual(u, 0)
+
+TEST_F(UtilityCalcFixture, testWhiteNoWinByCapturesForFiveInARow) {
+	setLineCounts(P1, 0,0,0,0,0);
+	setLineCounts(P2, 0,0,0,0,0);
+	setCaptured(0, 10)
+	rules.stonesForCaptureWin = 0
+	u = utility()
+	assertEqual(u, 0)
 
 #endif
 
