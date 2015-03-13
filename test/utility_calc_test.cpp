@@ -52,6 +52,18 @@ public:
 		ps._captured[P2] = p2caps;
 	}
 
+	void setTakes(PattCount t1, PattCount t2)
+	{
+		ps._patternCounts[P1][Take] = t1;
+		ps._patternCounts[P2][Take] = t2;
+	}
+
+	void setThreats(PattCount t1, PattCount t2)
+	{
+		ps._patternCounts[P1][Threat] = t1;
+		ps._patternCounts[P2][Threat] = t2;
+	}
+
     MockPositionStats ps;
 	UtilityCalc<MockPositionStats> uc;
 };
@@ -237,6 +249,33 @@ TEST_F(UtilityCalcFixture, testNextToMiddleIsBetter) {
 	EXPECT_GT(uAdjacent, uDist);
 }
 
+TEST_F(UtilityCalcFixture, testOneTakeIsWorthMoreThanAFewPairs) {
+	setLineCounts(P1, 0,0,0,0,0);
+	setLineCounts(P2, 11,3,0,0,0);
+	setTakes(1, 0);
+
+	UtilityValue u = uc.calcUtility(P1, P1, 1);
+	EXPECT_GT(u, 0);
+}
+
+TEST_F(UtilityCalcFixture, testOneTakeIsWorthMoreThanTwoThrees) {
+	// I'm still not sure about this one
+	setLineCounts(P1, 0,0,0,0,0);
+	setLineCounts(P2, 0,0,2,0,0);
+	setTakes(1, 0);
+
+	UtilityValue u = uc.calcUtility(P1, P1, 1);
+	EXPECT_GT(u, 0);
+}
+
+TEST_F(UtilityCalcFixture, testOneTakeWithTheMoveIsWorthMoreThanOneThree) {
+	setLineCounts(P1, 0,0,0,0,0);
+	setLineCounts(P2, 0,0,1,0,0);
+	setTakes(1, 0);
+	UtilityValue u = uc.calcUtility(P1, P1, 1);
+	EXPECT_GT(u, 0);
+}
+
 #if 0
 
 
@@ -249,50 +288,6 @@ TEST_F(UtilityCalcFixture, testNextToMiddleIsBetter) {
 
 ##############
 
-TEST_F(UtilityCalcFixture, testOneTakeIsWorthMoreThanAFewPairs) {
-	setSearchPlayerColour(P1)
-	setTurnPlayerColour(P1)
-
-	setLineCounts(P1, 0,0,0,0,0);
-	setLineCounts(P2, 11,3,0,0,0);
-	setTakes(1, 0);
-	u = utility();
-	EXPECT_GT(u, 0);
-}
-
-TEST_F(UtilityCalcFixture, testOneTakeIsWorthMoreThanTwoThrees) {
-	# I'm not sure about this one
-	setSearchPlayerColour(P1)
-	setTurnPlayerColour(P1)
-
-	setLineCounts(P1, 0,0,0,0,0);
-	setLineCounts(P2, 0,0,2,0,0);
-	setTakes(1, 0);
-	u = utility();
-	EXPECT_GT(u, 0);
-}
-
-TEST_F(UtilityCalcFixture, atestOneTakeIsWorthLessThanThreeThrees) {
-	setSearchPlayerColour(P1)
-	setTurnPlayerColour(P1)
-
-	setLineCounts(P1, 0,0,0,0,0);
-	setLineCounts(P2, 0,0,3,0,0);
-	setTakes(1, 0);
-	u = utility();
-	EXPECT_LT(u, 0);
-}
-
-TEST_F(UtilityCalcFixture, testOneTakeWithTheMoveIsWorthMoreThanOneThree) {
-	setSearchPlayerColour(P1)
-	setTurnPlayerColour(P1)
-
-	setLineCounts(P1, 0,0,0,0,0);
-	setLineCounts(P2, 0,0,1,0,0);
-	setTakes(1, 0);
-	u = utility();
-	EXPECT_GT(u, 0);
-}
 
 TEST_F(UtilityCalcFixture, testOneThreeWithTheMoveIsWorthMoreThanOneTake) {
 	setSearchPlayerColour(P1)
@@ -664,6 +659,17 @@ TEST_F(UtilityCalcFixture, testWhiteNoWinByCapturesForFiveInARow) {
 	rules.stonesForCaptureWin = 0
 	u = utility()
 	assertEqual(u, 0)
+
+TEST_F(UtilityCalcFixture, atestOneTakeIsWorthLessThanThreeThrees) {
+	setSearchPlayerColour(P1)
+	setTurnPlayerColour(P1)
+
+	setLineCounts(P1, 0,0,0,0,0);
+	setLineCounts(P2, 0,0,3,0,0);
+	setTakes(1, 0);
+	u = utility();
+	EXPECT_LT(u, 0);
+}
 
 #endif
 
