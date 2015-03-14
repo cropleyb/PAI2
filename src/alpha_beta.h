@@ -19,7 +19,7 @@ public:
 
 	virtual Loc makeNextMove() =0;
 	virtual void undoLastMove() =0;
-    virtual bool isCutoff(Depth depth) const =0;
+    virtual bool isCutoff() const =0;
 };
 
 class AlphaBeta
