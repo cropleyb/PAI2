@@ -19,7 +19,7 @@ public:
 	}
 
 	// Returns the next move number
-    MoveNumber saveMove(Loc move, Colour p, CaptureDirs cd)
+    MoveNumber saveMove(Loc move, Colour /* p */, CaptureDirs cd)
 	{
 		//assert(_moveNumber % 2 == (int)p - 1);
 		_moveHist[_moveNumber] = move;
