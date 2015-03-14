@@ -119,25 +119,15 @@ bool MoveSuggester::getPriorityLevels(Colour ourColour)
 	return onePoss;
 }
 
-#define GETTAKES(C) &_posStats.getPriorityLevel(C,Take)
-#define GETTHREATS(C) &_posStats.getPriorityLevel(C,Threat)
-#define GETLEVEL(C,L) &_posStats.getPriorityLevel(C,L)
-
 // TODO This could be cached.
 void MoveSuggester::fillPriorityLevels(Colour ourColour, Colour theirColour)
 {
-#if 1
-	_toSearchLevels[0] = GETTAKES(ourColour);
-	_toSearchLevels[1] = GETTAKES(theirColour);
-	_toSearchLevels[2] = GETLEVEL(ourColour, Line3);
-	_toSearchLevels[3] = GETLEVEL(theirColour, Line3);
-	_toSearchLevels[4] = GETTHREATS(ourColour);
-	_toSearchLevels[5] = GETTHREATS(theirColour);
-	_toSearchLevels[6] = GETLEVEL(ourColour, Line2);
-	_toSearchLevels[7] = GETLEVEL(theirColour, Line2);
-	_toSearchLevels[8] = GETLEVEL(ourColour, Line1);
-	_toSearchLevels[9] = GETLEVEL(theirColour, Line1);
-#endif
+	int i=0;
+	for (int level=Take; level>=Line1; level--)
+	{
+		_toSearchLevels[i++] = &_posStats.getPriorityLevel(ourColour, (PatternType)level);
+		_toSearchLevels[i++] = &_posStats.getPriorityLevel(theirColour, (PatternType)level);
+	}
 }
 
 Breadth MoveSuggester::filterCandidates(Loc *moveBuffer, Depth depth, Breadth maxMoves, Colour ourColour)
