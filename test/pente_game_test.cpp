@@ -316,9 +316,8 @@ TEST_F(PenteGameFixture, SuggestTake) {
 	g.makeMove(Loc(9,8), P2);
 	g.makeMove(Loc(9,10), P1);
 
-	g.makeNextMove();
+	Loc loc = g.makeNextMove();
 
-	Loc loc = g.getLastMove();
 	EXPECT_EQ(Loc(9,11), loc);
 
 	CapCount cc = ps.getCaptured(P2);

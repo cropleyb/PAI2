@@ -23,8 +23,7 @@ public:
     // Why do we need it to return the move?
 	// std::pair<UtilityValue, Loc>() getUtilityAndMove();
 
-    void makeNextMove();
-	Loc getLastMove() { return _lastMove; }
+    Loc makeNextMove();
     void undoLastMove();
     void isCutoff(Depth depth);
 

@@ -107,11 +107,12 @@ void PenteGame::undoLastMove()
 	}
 }
 
-void
+Loc
 PenteGame::makeNextMove()
 {
-    _lastMove = _moveSuggester.getNextMove(0);
-	makeMove(_lastMove, P2);
+    Loc move = _moveSuggester.getNextMove(0);
+	makeMove(move, P2);
+	return move;
 }
 
 #if 0
