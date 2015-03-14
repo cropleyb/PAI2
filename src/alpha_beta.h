@@ -1,7 +1,11 @@
 #include "loc.h"
-#include "ab_utility.h"
 #include "defines.h"
 #include <utility>
+
+typedef double UtilityValue;
+
+#define INF 1e40
+#define NEGINF -1e40
 
 class IABBridge
 {

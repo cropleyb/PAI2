@@ -50,9 +50,9 @@ BoardDirectionRep
  - beforeSetOcc(loc, colour, posStats)
  - afterSetOcc(loc, colour, posStats)
  - Uses lengthLookupTable
-BoardReps
- - 4x BoardDirectionReps
- - setOcc(loc, colour, posStats)
+// BoardReps
+ // - 4x BoardDirectionReps
+ // - setOcc(loc, colour, posStats)
 Game
  - BoardRep
 /PriorityLevel
@@ -153,3 +153,4 @@ UtilCalc accessing PS
 Template UC on PS - so we can mock PS for unit tests
 But how will UC use PS? friend class?
 UC (currently) just uses the counts of patterns for each player
+
