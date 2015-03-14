@@ -37,8 +37,9 @@ std::pair<UtilityValue, Loc> AlphaBeta::maxValue(UtilityValue alpha, UtilityValu
 
     while (true)
     {
-        // TODO: optimise out maintainence of move suggester for 2nd
-        // deepest level moves. This probably goes in the bridge though
+        // TODO: optimise out maintainence of move suggester info 
+		// within PositionStats for 2nd deepest level moves.
+		// This probably goes in the bridge though.
 
 		BD(cout << "4 in maxValue" << endl);
         // Make and locally store the next suggested move
