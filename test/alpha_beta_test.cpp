@@ -75,9 +75,11 @@ TEST_F(AlphaBetaFixture, FindFromTwoOptions) {
 	MockBridge mb;
 	
     Loc locFromBridge1(2,3);
-    std::pair<UtilityValue, Loc> ulpair1(20.5, locFromBridge1);
+	UtilityValue valFromBridge1 = 20.5;
+    std::pair<UtilityValue, Loc> ulpair1(valFromBridge1, locFromBridge1);
     Loc locFromBridge2(4,5);
-    std::pair<UtilityValue, Loc> ulpair2(48.2, locFromBridge2);
+	UtilityValue valFromBridge2 = 48.2;
+    std::pair<UtilityValue, Loc> ulpair2(valFromBridge2, locFromBridge2);
 
 	InSequence dummy;
 
@@ -130,9 +132,11 @@ TEST_F(AlphaBetaFixture, FindFromTwoOptionsReversed) {
 	MockBridge mb;
 	
     Loc locFromBridge1(2,3);
-    std::pair<UtilityValue, Loc> ulpair1(20.5, locFromBridge1);
+	UtilityValue valFromBridge1 = 20.5;
+    std::pair<UtilityValue, Loc> ulpair1(valFromBridge1, locFromBridge1);
     Loc locFromBridge2(4,5);
-    std::pair<UtilityValue, Loc> ulpair2(17.2, locFromBridge2);
+	UtilityValue valFromBridge2 = 17.2;
+    std::pair<UtilityValue, Loc> ulpair2(valFromBridge2, locFromBridge2);
 
 	InSequence dummy;
 
@@ -185,13 +189,17 @@ TEST_F(AlphaBetaFixture, OpponentChoosesBadMoveForUs) {
 	MockBridge mb;
 
     Loc loc1(1,1);
-    std::pair<UtilityValue, Loc> ulpair1(1.0, loc1);
+	UtilityValue valFromBridge1 = 1.0;
+    std::pair<UtilityValue, Loc> ulpair1(valFromBridge1, loc1);
     Loc loc2(2,2);
-    std::pair<UtilityValue, Loc> ulpair2(2.0, loc2);
+	UtilityValue valFromBridge2 = 2.0;
+    std::pair<UtilityValue, Loc> ulpair2(valFromBridge2, loc2);
     Loc loc3(3,3);
-    std::pair<UtilityValue, Loc> ulpair3(3.0, loc3);
+	UtilityValue valFromBridge3 = 3.0;
+    std::pair<UtilityValue, Loc> ulpair3(valFromBridge3, loc3);
     Loc loc4(4,4);
-    std::pair<UtilityValue, Loc> ulpair4(4.0, loc4);
+	UtilityValue valFromBridge4 = 4.0;
+    std::pair<UtilityValue, Loc> ulpair4(valFromBridge4, loc4);
 
 	InSequence dummy;
 
