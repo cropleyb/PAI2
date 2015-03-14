@@ -13,11 +13,11 @@ public:
 	IABBridge() {}
 	virtual ~IABBridge() {}
 
-    virtual bool isOneMove() const =0;
-    virtual Loc getOnlyMove() =0;
+    virtual bool isOnlyOneMove() const =0;
 	virtual UtilityValue getUtility() =0;
 
-	virtual Loc makeNextMove() =0;
+	virtual Loc makeNextMove() =0;// Get it and do it on the board
+	virtual Loc getNextMove() =0; // Get it without performing it
 	virtual void undoLastMove() =0;
     virtual bool isCutoff() const =0;
 };

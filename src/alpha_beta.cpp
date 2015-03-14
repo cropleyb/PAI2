@@ -4,11 +4,11 @@
 Loc AlphaBeta::getBestMove()
 {
 	BD(cout << "1 getBestMove" << endl);
-    if (_bridge.isOneMove())
+    if (_bridge.isOnlyOneMove())
     {
 		BD(cout << "2 getBestMove" << endl);
         // Optimisation: one move, don't search
-        Loc theMove = _bridge.getOnlyMove();
+        Loc theMove = _bridge.getNextMove();
         return theMove;
     }
 

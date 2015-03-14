@@ -5,7 +5,7 @@
 #include "move_suggester.h"
 #include "board_reps.h"
 #include "position_stats.h"
-//#include "utility_calculator.h"
+#include "utility_calc.h"
 
 class BoardReps;
 class SpanEntry;
@@ -16,15 +16,12 @@ public:
 	PenteGame();
 
 	void makeMove(Loc l, Colour p);
+    void undoLastMove();
 
     bool isOnlyOneMove() { return _moveSuggester.isOnlyOneMove(_currDepth); }
-
-    // Why do we need it to return the move?
-	// std::pair<UtilityValue, Loc>() getUtilityAndMove();
-
     Loc makeNextMove();
-    void undoLastMove();
-    void isCutoff(Depth depth);
+    bool isCutoff() const;
+	UtilityValue getUtility();
 
 	Depth getCurrDepth() { return _currDepth; }
 

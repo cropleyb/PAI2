@@ -16,10 +16,10 @@ class MockBridge : public IABBridge
 public:
 	MockBridge() : IABBridge() {}
 
-    MOCK_CONST_METHOD0(isOneMove, bool());
-    MOCK_METHOD0(getOnlyMove, Loc());
+    MOCK_CONST_METHOD0(isOnlyOneMove, bool());
 	MOCK_METHOD0(getUtility, UtilityValue());
     MOCK_METHOD0(makeNextMove, Loc());
+    MOCK_METHOD0(getNextMove, Loc());
     MOCK_METHOD0(undoLastMove, void());
     MOCK_CONST_METHOD0(isCutoff, bool());
 };
@@ -33,10 +33,10 @@ TEST_F(AlphaBetaFixture, NoOptions) {
 	// - should return an invalid Loc instance
 	MockBridge mb;
 	
-	EXPECT_CALL(mb, isOneMove())
+	EXPECT_CALL(mb, isOnlyOneMove())
       .WillOnce(Return(true))
       ;
-	EXPECT_CALL(mb, getOnlyMove())
+	EXPECT_CALL(mb, getNextMove())
       .WillOnce(Return(Loc::INVALID))
       ;
 
@@ -54,10 +54,10 @@ TEST_F(AlphaBetaFixture, FindFromOnlyOneOption) {
 	MockBridge mb;
 	
     Loc locFromBridge(2,3);
-	EXPECT_CALL(mb, isOneMove())
+	EXPECT_CALL(mb, isOnlyOneMove())
       .WillOnce(Return(true))
       ;
-	EXPECT_CALL(mb, getOnlyMove())
+	EXPECT_CALL(mb, getNextMove())
       .WillOnce(Return(locFromBridge))
       ;
 
@@ -81,7 +81,7 @@ TEST_F(AlphaBetaFixture, FindFromTwoOptions) {
 
 	InSequence dummy;
 
-	EXPECT_CALL(mb, isOneMove())
+	EXPECT_CALL(mb, isOnlyOneMove())
       .WillOnce(Return(false))
       ;
 	EXPECT_CALL(mb, isCutoff())
@@ -137,7 +137,7 @@ TEST_F(AlphaBetaFixture, FindFromTwoOptionsReversed) {
 
 	InSequence dummy;
 
-	EXPECT_CALL(mb, isOneMove())
+	EXPECT_CALL(mb, isOnlyOneMove())
       .WillOnce(Return(false))
       ;
 	EXPECT_CALL(mb, isCutoff())
@@ -197,7 +197,7 @@ TEST_F(AlphaBetaFixture, OpponentChoosesBadMoveForUs) {
 	InSequence dummy;
 
 	// This code is indented with the depth of the search.
-	EXPECT_CALL(mb, isOneMove())
+	EXPECT_CALL(mb, isOnlyOneMove())
       .WillOnce(Return(false))
       ;
 	EXPECT_CALL(mb, isCutoff())
