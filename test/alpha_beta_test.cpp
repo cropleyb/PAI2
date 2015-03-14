@@ -18,7 +18,7 @@ public:
 
     MOCK_CONST_METHOD0(isOneMove, bool());
     MOCK_METHOD0(getOnlyMove, Loc());
-	MOCK_METHOD0(getUtilityAndMove, std::pair<UtilityValue, Loc>());
+	MOCK_METHOD0(getUtility, UtilityValue());
     MOCK_METHOD0(makeNextMove, Loc());
     MOCK_METHOD0(undoLastMove, void());
     MOCK_CONST_METHOD0(isCutoff, bool());
@@ -76,10 +76,8 @@ TEST_F(AlphaBetaFixture, FindFromTwoOptions) {
 	
     Loc locFromBridge1(2,3);
 	UtilityValue valFromBridge1 = 20.5;
-    std::pair<UtilityValue, Loc> ulpair1(valFromBridge1, locFromBridge1);
     Loc locFromBridge2(4,5);
 	UtilityValue valFromBridge2 = 48.2;
-    std::pair<UtilityValue, Loc> ulpair2(valFromBridge2, locFromBridge2);
 
 	InSequence dummy;
 
@@ -95,8 +93,8 @@ TEST_F(AlphaBetaFixture, FindFromTwoOptions) {
 	EXPECT_CALL(mb, isCutoff())
       .WillOnce(Return(true))
       ;
-	EXPECT_CALL(mb, getUtilityAndMove())
-      .WillOnce(Return(ulpair1))
+	EXPECT_CALL(mb, getUtility())
+      .WillOnce(Return(valFromBridge1))
       ;
 	EXPECT_CALL(mb, undoLastMove())
       ;
@@ -106,8 +104,8 @@ TEST_F(AlphaBetaFixture, FindFromTwoOptions) {
 	EXPECT_CALL(mb, isCutoff())
       .WillOnce(Return(true))
       ;
-	EXPECT_CALL(mb, getUtilityAndMove())
-      .WillOnce(Return(ulpair2))
+	EXPECT_CALL(mb, getUtility())
+      .WillOnce(Return(valFromBridge2))
       ;
 	EXPECT_CALL(mb, undoLastMove())
       ;
@@ -121,6 +119,7 @@ TEST_F(AlphaBetaFixture, FindFromTwoOptions) {
 	Loc move = ab.getBestMove();
 	BD(cout << "x after getBestMove, (" << (int)move[0] << ',' << (int)move[1] << ')' << endl);
 	BD(cout << "expected: " << locFromBridge2._value << endl);
+
 	EXPECT_TRUE(move.isValid());
 	EXPECT_EQ(locFromBridge2, move);
 }
@@ -133,10 +132,8 @@ TEST_F(AlphaBetaFixture, FindFromTwoOptionsReversed) {
 	
     Loc locFromBridge1(2,3);
 	UtilityValue valFromBridge1 = 20.5;
-    std::pair<UtilityValue, Loc> ulpair1(valFromBridge1, locFromBridge1);
     Loc locFromBridge2(4,5);
 	UtilityValue valFromBridge2 = 17.2;
-    std::pair<UtilityValue, Loc> ulpair2(valFromBridge2, locFromBridge2);
 
 	InSequence dummy;
 
@@ -152,8 +149,8 @@ TEST_F(AlphaBetaFixture, FindFromTwoOptionsReversed) {
 	EXPECT_CALL(mb, isCutoff())
       .WillOnce(Return(true))
       ;
-	EXPECT_CALL(mb, getUtilityAndMove())
-      .WillOnce(Return(ulpair1))
+	EXPECT_CALL(mb, getUtility())
+      .WillOnce(Return(valFromBridge1))
       ;
 	EXPECT_CALL(mb, undoLastMove())
       ;
@@ -163,8 +160,8 @@ TEST_F(AlphaBetaFixture, FindFromTwoOptionsReversed) {
 	EXPECT_CALL(mb, isCutoff())
       .WillOnce(Return(true))
       ;
-	EXPECT_CALL(mb, getUtilityAndMove())
-      .WillOnce(Return(ulpair2))
+	EXPECT_CALL(mb, getUtility())
+      .WillOnce(Return(valFromBridge2))
       ;
 	EXPECT_CALL(mb, undoLastMove())
       ;
@@ -190,16 +187,12 @@ TEST_F(AlphaBetaFixture, OpponentChoosesBadMoveForUs) {
 
     Loc loc1(1,1);
 	UtilityValue valFromBridge1 = 1.0;
-    std::pair<UtilityValue, Loc> ulpair1(valFromBridge1, loc1);
     Loc loc2(2,2);
 	UtilityValue valFromBridge2 = 2.0;
-    std::pair<UtilityValue, Loc> ulpair2(valFromBridge2, loc2);
     Loc loc3(3,3);
 	UtilityValue valFromBridge3 = 3.0;
-    std::pair<UtilityValue, Loc> ulpair3(valFromBridge3, loc3);
     Loc loc4(4,4);
 	UtilityValue valFromBridge4 = 4.0;
-    std::pair<UtilityValue, Loc> ulpair4(valFromBridge4, loc4);
 
 	InSequence dummy;
 
@@ -222,8 +215,8 @@ TEST_F(AlphaBetaFixture, OpponentChoosesBadMoveForUs) {
 			EXPECT_CALL(mb, isCutoff())
 			  .WillOnce(Return(true))
 			  ;
-			EXPECT_CALL(mb, getUtilityAndMove())
-			  .WillOnce(Return(ulpair3))
+			EXPECT_CALL(mb, getUtility())
+			  .WillOnce(Return(valFromBridge3))
 			  ;
 		EXPECT_CALL(mb, undoLastMove())
 		  ;
@@ -233,8 +226,8 @@ TEST_F(AlphaBetaFixture, OpponentChoosesBadMoveForUs) {
 			EXPECT_CALL(mb, isCutoff())
 			  .WillOnce(Return(true))
 			  ;
-			EXPECT_CALL(mb, getUtilityAndMove())
-			  .WillOnce(Return(ulpair4))
+			EXPECT_CALL(mb, getUtility())
+			  .WillOnce(Return(valFromBridge4))
 			  ;
 		EXPECT_CALL(mb, undoLastMove())
 		  ;
@@ -249,8 +242,8 @@ TEST_F(AlphaBetaFixture, OpponentChoosesBadMoveForUs) {
 		EXPECT_CALL(mb, isCutoff())
 		  .WillOnce(Return(true))
 		  ;
-		EXPECT_CALL(mb, getUtilityAndMove())
-		  .WillOnce(Return(ulpair2))
+		EXPECT_CALL(mb, getUtility())
+		  .WillOnce(Return(valFromBridge2))
 		  ;
 	EXPECT_CALL(mb, undoLastMove())
       ;
@@ -264,7 +257,7 @@ TEST_F(AlphaBetaFixture, OpponentChoosesBadMoveForUs) {
 	Loc move = ab.getBestMove();
 	BD(cout << "x after getBestMove, (" << (int)move[0] << ',' << (int)move[1] << ')' << endl);
 	EXPECT_TRUE(move.isValid());
-	EXPECT_EQ(loc3, move);
+	EXPECT_EQ(loc1, move);
 }
 
 #if 0

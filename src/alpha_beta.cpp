@@ -16,24 +16,25 @@ Loc AlphaBeta::getBestMove()
     UtilityValue beta = INF;
 
 	BD(cout << "3 getBestMove");
-    std::pair<UtilityValue, Loc> val = maxValue(alpha, beta, 0);
+    UtilityValue val = maxValue(alpha, beta, 0);
 	BD(cout << "4 getBestMove: " << val.first << endl);
-    return val.second;
+    return _bestTopLevelMove;
 }
 
-std::pair<UtilityValue, Loc> AlphaBeta::maxValue(UtilityValue alpha, UtilityValue beta, Depth depth)
+UtilityValue AlphaBeta::maxValue(UtilityValue alpha, UtilityValue beta, Depth depth)
 {
 	BD(cout << "1 in maxValue - depth: " << (int)depth << endl);
     if (_bridge.isCutoff())
     {
-        std::pair<UtilityValue, Loc> utilMove = _bridge.getUtilityAndMove();
-		BD(cout << "2 in maxValue - getUtilityAndMove gave: " << utilMove.first << endl);
-        return utilMove;
+        UtilityValue util = _bridge.getUtility();
+		BD(cout << "2 in maxValue - getUtility gave: " << utilMove << endl);
+        return util;
     }
 
 	BD(cout << "3 in maxValue" << endl);
-    std::pair<UtilityValue,Loc> best(200*NEGINF, Loc(-1,-1));
-    std::pair<UtilityValue,Loc> curr;
+    UtilityValue bestVal(200*NEGINF);
+    UtilityValue currVal;
+	Loc bestMove;
 
     while (true)
     {
@@ -43,10 +44,10 @@ std::pair<UtilityValue, Loc> AlphaBeta::maxValue(UtilityValue alpha, UtilityValu
 
 		BD(cout << "4 in maxValue" << endl);
         // Make and locally store the next suggested move
-        Loc move = _bridge.makeNextMove();
+        Loc currMove = _bridge.makeNextMove();
 
         // No more moves at this level
-        if (!move.isValid())
+        if (!currMove.isValid())
         {
 			BD(cout << "5 in maxValue" << endl);
             break;
@@ -55,21 +56,24 @@ std::pair<UtilityValue, Loc> AlphaBeta::maxValue(UtilityValue alpha, UtilityValu
 		BD(cout << "6 in maxValue" << endl);
         // Recursively calculate the worst forcible utility value
         // for the resultant position
-        curr = minValue(alpha, beta, depth+1);
+        currVal = minValue(alpha, beta, depth+1);
 
 		BD(cout << "7 in maxValue" << endl);
-        // Undo the move made above
+        // Undo the currMove made above
         _bridge.undoLastMove();
 		BD(cout << "undo to depth " << (int)depth << " in maxValue" << endl);
 
-        UtilityValue val = curr.first;
+        UtilityValue val = currVal;
 		BD(cout << "7.5 in maxValue - val: " << val << endl);
 
-        if (val > best.first)
+        if (val > bestVal)
         {
-			BD(cout << "8 in maxValue - update best to: " << val << endl);
-            best.first = val;
-            best.second = curr.second;
+			BD(cout << "8 in maxValue - update bestVal to: " << val << endl);
+            bestVal = val;
+			if (depth == 0)
+			{
+				bestMove = currMove;
+			}
         }
         if (val >= beta)
 		{
@@ -95,21 +99,25 @@ std::pair<UtilityValue, Loc> AlphaBeta::maxValue(UtilityValue alpha, UtilityValu
     // game.save_utility(state, depth, v)
 #endif
 	BD(cout << "14 in maxValue" << endl);
-    return best;
+	if (depth == 0)
+	{
+		_bestTopLevelMove = bestMove;
+	}
+    return bestVal;
 }
 
-std::pair<UtilityValue, Loc> AlphaBeta::minValue(UtilityValue alpha, UtilityValue beta, Depth depth)
+UtilityValue AlphaBeta::minValue(UtilityValue alpha, UtilityValue beta, Depth depth)
 {
 	BD(cout << "1 in minValue - depth: " << (int)depth << endl);
     if (_bridge.isCutoff())
     {
 		BD(cout << "2 in minValue" << endl);
-        std::pair<UtilityValue, Loc> utilMove = _bridge.getUtilityAndMove();
-        return utilMove;
+        UtilityValue util = _bridge.getUtility();
+        return util;
     }
 	BD(cout << "3 in minValue" << endl);
-    std::pair<UtilityValue,Loc> best(200*INF, Loc(-1,-1));
-    std::pair<UtilityValue,Loc> curr;
+    UtilityValue bestVal(200*INF);
+    UtilityValue currVal;
 
     while (true)
     {
@@ -118,10 +126,10 @@ std::pair<UtilityValue, Loc> AlphaBeta::minValue(UtilityValue alpha, UtilityValu
 
 		BD(cout << "4 in minValue" << endl);
         // Make and locally store the next suggested move
-        Loc move = _bridge.makeNextMove();
+        Loc currMove = _bridge.makeNextMove();
 
         // No more moves at this level
-        if (!move.isValid())
+        if (!currMove.isValid())
         {
 			BD(cout << "5 in minValue" << endl);
             break;
@@ -130,21 +138,20 @@ std::pair<UtilityValue, Loc> AlphaBeta::minValue(UtilityValue alpha, UtilityValu
 		BD(cout << "6 in minValue" << endl);
         // Recursively calculate the worst forcible utility value
         // for the resultant position
-        curr = maxValue(alpha, beta, depth+1);
+        currVal = maxValue(alpha, beta, depth+1);
 
 		BD(cout << "7 in minValue" << endl);
-        // Undo the move made above
+        // Undo the currMove made above
         _bridge.undoLastMove();
 
 		BD(cout << "undo to depth " << (int)depth << " in minValue" << endl);
 
-        UtilityValue val = curr.first;
+        UtilityValue val = currVal;
 		BD(cout << "7.5 in minValue - val: " << val << endl);
-        if (val < best.first)
+        if (val < bestVal)
         {
 			BD(cout << "8 in minValue - update best to: " << val << endl);
-            best.first = val;
-            best.second = curr.second;
+            bestVal = val;
         }
         if (val <= alpha)
 		{
@@ -166,6 +173,6 @@ std::pair<UtilityValue, Loc> AlphaBeta::minValue(UtilityValue alpha, UtilityValu
 		BD(cout << "13 in minValue" << endl);
     }
 	BD(cout << "14 in minValue" << endl);
-    return best;
+    return bestVal;
 }
 

@@ -15,7 +15,7 @@ public:
 
     virtual bool isOneMove() const =0;
     virtual Loc getOnlyMove() =0;
-	virtual std::pair<UtilityValue, Loc> getUtilityAndMove() =0;
+	virtual UtilityValue getUtility() =0;
 
 	virtual Loc makeNextMove() =0;
 	virtual void undoLastMove() =0;
@@ -30,9 +30,10 @@ public:
 	Loc getBestMove();
 
 private:
-    std::pair<UtilityValue, Loc> maxValue(UtilityValue alpha, UtilityValue beta, Depth depth);
-    std::pair<UtilityValue, Loc> minValue(UtilityValue alpha, UtilityValue beta, Depth depth);
+    UtilityValue maxValue(UtilityValue alpha, UtilityValue beta, Depth depth);
+    UtilityValue minValue(UtilityValue alpha, UtilityValue beta, Depth depth);
 
 	IABBridge &_bridge;
+    Loc _bestTopLevelMove;
 };
 
