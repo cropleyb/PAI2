@@ -17,8 +17,7 @@ public:
 
 	void makeMove(Loc l, Colour p);
 
-    bool isOneMove() const;
-    Loc getOnlyMove();
+    bool isOnlyOneMove() { return _moveSuggester.isOnlyOneMove(_currDepth); }
 
     // Why do we need it to return the move?
 	// std::pair<UtilityValue, Loc>() getUtilityAndMove();

@@ -40,6 +40,11 @@ public:
 		return _moveCount[d] == 0;
 	}
 
+	Breadth getNumMoves(Depth d) const
+	{
+		return _moveCount[d];
+	}
+
 private:
 	Loc _bigBuffer[MAX_DEPTH][MAX_CANDS];
 	Breadth _moveCount[MAX_DEPTH];

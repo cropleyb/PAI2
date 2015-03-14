@@ -12,12 +12,14 @@ public:
 	~MoveSuggester();
 
 	Loc getNextMove(Depth d);
+	bool isOnlyOneMove(Depth d);
 
 private:
 	bool getPriorityLevels(Colour ourColour);
 	Breadth filterCandidates(Loc *moveBuffer, Depth d, Breadth maxMoves, Colour ourColour);
 
 	void fillPriorityLevels(Colour ourColour, Colour theirColour);
+	void fillCache(Depth depth);
 
 	CandidateCache *_candCache;
 	PositionStats &_posStats;

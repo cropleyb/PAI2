@@ -323,7 +323,7 @@ TEST_F(PenteGameFixture, SuggestTake) {
 	EXPECT_EQ(2, cc);
 }
 
-TEST_F(PenteGameFixture, SuggestTwoMoves) {
+TEST_F(PenteGameFixture, SuggestAndUndoTwoMoves) {
 	g.makeMove(Loc(9,9), P1);
 	g.makeMove(Loc(9,8), P2);
 	g.makeMove(Loc(9,10), P1);
@@ -340,9 +340,26 @@ TEST_F(PenteGameFixture, SuggestTwoMoves) {
 
 	g.undoLastMove();
 	EXPECT_EQ(0, g.getCurrDepth());
+}
 
-	//CapCount cc = ps.getCaptured(P2);
-	//EXPECT_EQ(2, cc);
+TEST_F(PenteGameFixture, OnlyOneMove) {
+	g.makeMove(Loc(9,9), P1);
+	g.makeMove(Loc(9,7), P2);
+	g.makeMove(Loc(9,8), P1);
+	g.makeMove(Loc(9,10), P1);
+	g.makeMove(Loc(9,11), P1);
+
+    bool oneMove = g.isOnlyOneMove();
+	EXPECT_EQ(true, oneMove);
+}
+
+TEST_F(PenteGameFixture, NotOnlyOneMove) {
+	g.makeMove(Loc(9,9), P1);
+	g.makeMove(Loc(9,8), P2);
+	g.makeMove(Loc(9,10), P1);
+
+    bool oneMove = g.isOnlyOneMove();
+	EXPECT_EQ(false, oneMove);
 }
 
 #if 0

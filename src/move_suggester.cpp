@@ -17,21 +17,36 @@ MoveSuggester::~MoveSuggester()
 	delete _candCache;
 }
 
+bool MoveSuggester::isOnlyOneMove(Depth depth)
+{
+	if (_candCache->needsFilling(depth))
+	{
+		fillCache(depth);
+	}
+
+	return _candCache->getNumMoves(depth) == 1;
+}
+
 Loc MoveSuggester::getNextMove(Depth depth)
 {
 	if (_candCache->needsFilling(depth))
 	{
-		Loc *moveBuffer = _candCache->getBuffer(depth);
-
-		Breadth maxMoves = 9;
-		if (depth > 3) maxMoves = 4;
-
-		Breadth moveCount = filterCandidates(moveBuffer, depth, maxMoves, P1); // FIXME - our real colour
-		BD(cout << "Setting depth moves for depth " << (int)depth << " to " << (int)moveCount << endl;)
-		_candCache->setDepthMoves(depth, moveCount);
+		fillCache(depth);
 	}
 
 	return _candCache->getNextMove(depth);
+}
+
+void MoveSuggester::fillCache(Depth depth)
+{
+	Loc *moveBuffer = _candCache->getBuffer(depth);
+
+	Breadth maxMoves = 9;
+	if (depth > 3) maxMoves = 4;
+
+	Breadth moveCount = filterCandidates(moveBuffer, depth, maxMoves, P1); // FIXME - our real colour
+	BD(cout << "Setting depth moves for depth " << (int)depth << " to " << (int)moveCount << endl;)
+	_candCache->setDepthMoves(depth, moveCount);
 }
 
 bool MoveSuggester::getPriorityLevels(Colour ourColour)

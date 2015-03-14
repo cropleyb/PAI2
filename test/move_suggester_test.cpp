@@ -467,6 +467,17 @@ TEST_F(MoveSuggesterFixture, test_choose_the_only_winner)
 	EXPECT_EQ(Loc(5,7), la[0]);
 }
 
+TEST_F(MoveSuggesterFixture, test_only_one_option)
+{
+	arcs(P1, Line4, 1, Loc(4,6));
+	
+	bool onlyOne = ms.isOnlyOneMove(0);
+	EXPECT_EQ(true, onlyOne);
+	LocArr la = getLocsInOrder(0);
+	EXPECT_EQ(1, la.size());
+	EXPECT_EQ(Loc(4,6), la[0]);
+}
+
 #if TODO
 TEST_F(MoveSuggesterFixture, test_one_opponent_double_three_must_be_block_cap_or_threatened)
 {
