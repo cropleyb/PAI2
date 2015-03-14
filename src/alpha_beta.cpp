@@ -1,6 +1,9 @@
 #include "alpha_beta.h"
 #include "bdebug.h"
 
+#define INF 1e40
+#define NEGINF -1e40
+
 Loc AlphaBeta::getBestMove()
 {
 	BD(cout << "1 getBestMove" << endl);

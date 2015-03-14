@@ -4,7 +4,11 @@
 #include "board_strip.h"
 
 PenteGame::PenteGame()
-	: _moveSuggester(_posStats), _boardReps(19,_posStats), _currDepth(0)
+	: _moveSuggester(_posStats),
+	  _boardReps(19,_posStats),
+	  _utilCalc(_posStats),
+	  _currDepth(0),
+	  _maxDepth(4)
 {
 	buildLineLookupTable();
 	buildSpanTable(19);
@@ -116,28 +120,20 @@ PenteGame::makeNextMove()
 	return move;
 }
 
-#if 0
-class PenteGame
+Loc
+PenteGame::getNextMove()
 {
-public:
-	PenteGame();
+    Loc move = _moveSuggester.getNextMove(_currDepth);
+	return move;
+}
 
-    bool isOneMove() const;
-    Loc getOnlyMove();
+bool PenteGame::isCutoff() const
+{
+	return _currDepth >= _maxDepth;
+}
 
-    // Why do we need it to return the move?
-	// std::pair<UtilityValue, Loc>() getUtilityAndMove();
+UtilityValue PenteGame::getUtility()
+{
+	return _currDepth >= _maxDepth;
+}
 
-    void makeNextMove();
-    void undoLastMove();
-    void isCutoff(Depth depth);
-
-private:
-	BoardReps _boardReps;
-	PositionStats _posStats;
-	// MoveHistory _moveHist;
-    MoveSuggester _moveSuggester;
-	// UtilityCalculator _utilCalc;
-};
-
-#endif
