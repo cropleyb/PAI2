@@ -4,7 +4,7 @@
 #include "board_strip.h"
 
 PenteGame::PenteGame()
-	: _moveSuggester(_posStats), _boardReps(19,_posStats)
+	: _moveSuggester(_posStats), _boardReps(19,_posStats), _currDepth(0)
 {
 	buildLineLookupTable();
 	buildSpanTable(19);
@@ -62,6 +62,7 @@ void PenteGame::reportCapture(const SpanEntry &span, bool left, Colour p)
 void PenteGame::undoLastMove()
 {
 	MoveNumber mn = _moveHist.getLastMoveNumber();
+	_currDepth--;
 	
 	Loc l = _moveHist.getMoved(mn);
 	CaptureDirs cd = _moveHist.getCapDirs(mn);
@@ -110,8 +111,8 @@ void PenteGame::undoLastMove()
 Loc
 PenteGame::makeNextMove()
 {
-    Loc move = _moveSuggester.getNextMove(0);
-	makeMove(move, P2);
+    Loc move = _moveSuggester.getNextMove(_currDepth);
+	makeMove(move, (1 + ++_currDepth % 2));
 	return move;
 }
 

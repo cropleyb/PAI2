@@ -27,6 +27,8 @@ public:
     void undoLastMove();
     void isCutoff(Depth depth);
 
+	Depth getCurrDepth() { return _currDepth; }
+
 	void reportCapture(const SpanEntry &span, bool right, Colour p);
 private:
 	void setAndRecordCaptures(Loc l, Colour p);
@@ -37,7 +39,7 @@ private:
     MoveSuggester _moveSuggester;
 	// UtilityCalculator _utilCalc;
 	CaptureDirs _captureDirs;
-	Loc _lastMove;
+	Depth _currDepth;
 };
 
 #endif

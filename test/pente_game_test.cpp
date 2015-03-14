@@ -317,11 +317,32 @@ TEST_F(PenteGameFixture, SuggestTake) {
 	g.makeMove(Loc(9,10), P1);
 
 	Loc loc = g.makeNextMove();
-
 	EXPECT_EQ(Loc(9,11), loc);
 
 	CapCount cc = ps.getCaptured(P2);
 	EXPECT_EQ(2, cc);
+}
+
+TEST_F(PenteGameFixture, SuggestTwoMoves) {
+	g.makeMove(Loc(9,9), P1);
+	g.makeMove(Loc(9,8), P2);
+	g.makeMove(Loc(9,10), P1);
+
+	Loc loc1 = g.makeNextMove();
+	EXPECT_EQ(Loc(9,11), loc1);
+	EXPECT_EQ(1, g.getCurrDepth());
+
+	Loc loc2 = g.makeNextMove(); // Should block the Line2 after the capture.
+	EXPECT_EQ(2, g.getCurrDepth());
+
+	g.undoLastMove();
+	EXPECT_EQ(1, g.getCurrDepth());
+
+	g.undoLastMove();
+	EXPECT_EQ(0, g.getCurrDepth());
+
+	//CapCount cc = ps.getCaptured(P2);
+	//EXPECT_EQ(2, cc);
 }
 
 #if 0
