@@ -307,3 +307,26 @@ TEST_F(PenteGameFixture, UndoDoubleCaptureAgain) {
 	EXPECT_EQ(0, cc2);
 }
 
+////////////////////////////////////////////////////////
+// Suggester tests
+////////////////////////////////////////////////////////
+
+TEST_F(PenteGameFixture, SuggestTake) {
+	g.makeMove(Loc(9,9), P1);
+	g.makeMove(Loc(9,8), P2);
+	g.makeMove(Loc(9,10), P1);
+
+	g.makeNextMove();
+
+	Loc loc = g.getLastMove();
+	EXPECT_EQ(Loc(9,11), loc);
+
+	CapCount cc = ps.getCaptured(P2);
+	EXPECT_EQ(2, cc);
+}
+
+#if 0
+	const PriorityLevel &pl = ps.getPriorityLevel(P1, Take);
+	EXPECT_EQ(1, pl.getNumCands()); // Only one candidate move, takes 2 pairs
+#endif
+

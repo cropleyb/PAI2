@@ -24,6 +24,7 @@ public:
 	// std::pair<UtilityValue, Loc>() getUtilityAndMove();
 
     void makeNextMove();
+	Loc getLastMove() { return _lastMove; }
     void undoLastMove();
     void isCutoff(Depth depth);
 
@@ -37,6 +38,7 @@ private:
     MoveSuggester _moveSuggester;
 	// UtilityCalculator _utilCalc;
 	CaptureDirs _captureDirs;
+	Loc _lastMove;
 };
 
 #endif

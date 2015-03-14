@@ -154,3 +154,8 @@ Template UC on PS - so we can mock PS for unit tests
 But how will UC use PS? friend class?
 UC (currently) just uses the counts of patterns for each player
 
+Putting it all together
+-----------------------
+Create ABBridge, which contains the PenteGame.
+Or use PenteGame as the bridge, by deriving it from IABBridge?
+Unit Test get next move, utility etc.
