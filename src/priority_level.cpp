@@ -24,12 +24,6 @@ PriorityLevel::PriorityLevel()
 	_dlNodes[MAX_LOCS-1].setNextInd(-1);
 }
 
-#if 0
-    def add_or_remove_candidates(self, cand_list, inc):
-        for cand_loc in cand_list:
-            self.add_or_remove_candidate(cand_loc, inc)
-#endif
-
 void PriorityLevel::addOrRemoveCandidate(Loc candLoc, int inc)
 {
 	BD(cout << "ARC: " << (void *)this << "----------------" << endl);
