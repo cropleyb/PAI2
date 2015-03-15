@@ -26,6 +26,7 @@ public:
     virtual bool isCutoff() const;
 	virtual UtilityValue getUtility();
 
+	void setMaxDepth(Depth d) { _maxDepth = d; }
 	Depth getCurrDepth() { return _currDepth; }
 
 	void reportCapture(const SpanEntry &span, bool right, Colour p);
