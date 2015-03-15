@@ -131,22 +131,22 @@ UtilityValue UtilityCalc<PS>::utilityScore(Colour evalColour, Colour turnColour)
 	// sfcw = rules.stones_for_capture_win
 	// ccp = rules.can_capture_pairs
 
-	Colour evalCaptured = _posStats._captured[evalColour];
+	Colour evalCaptured = _posStats.getCaptured(evalColour);
 	Colour otherColour = otherPlayer(evalColour);
-	Colour otherCaptured = _posStats._captured[otherColour];
+	Colour otherCaptured = _posStats.getCaptured(otherColour);
 	
 	// CapCount captured = evalCaptured - otherCaptured; // TODO: Test use_net_captures again.
 	CapCount captured = evalCaptured;
 
 	UtilityValue score = 0.0;
 
-	const PattCount *evalLines = _posStats._patternCounts[evalColour];
+	const PattCount *evalPatterns = _posStats.getPatternCounts(evalColour);
 
 	for (int i=Line4; i>0; i-=1)
 	{
 		if (i == Take || i == Threat) continue;
 		score *= _lengthFactor;
-		score += evalLines[i] * _patternScale[i];
+		score += evalPatterns[i] * _patternScale[i];
 	}
 
 	// Unless we're playing keryo, capturesScale only needs to operate
@@ -159,10 +159,10 @@ UtilityValue UtilityCalc<PS>::utilityScore(Colour evalColour, Colour turnColour)
 	// Give takes and threats some value for their ability to help
 	// get 5 in a row.
 	UtilityValue tc;
-	tc  = takeContrib(_posStats._patternCounts[evalColour][Take], captured);
+	tc  = takeContrib(evalPatterns[Take], captured);
 	score += tc;
 
-	tc = threatContrib(_posStats._patternCounts[evalColour][Threat], captured);
+	tc = threatContrib(evalPatterns[Threat], captured);
 	score += tc;
 
 	return score;
@@ -200,10 +200,10 @@ template <class PS>
 bool UtilityCalc<PS>::zeroTurnWin(Colour evalColour, Colour turnColour) const
 {
 	// Detect a win in this position
-	CapCount evalCaptured = _posStats._captured[evalColour];
-	const PattCount *evalLines = _posStats._patternCounts[evalColour];
+	CapCount evalCaptured = _posStats.getCaptured(evalColour);
+	const PattCount *evalPatterns = _posStats.getPatternCounts(evalColour);
 
-	if (evalLines[Line5] > 0)
+	if (evalPatterns[Line5] > 0)
 	{
 		// This position has been won already, mark it as such so
 		// that the search is not continued from this node.
@@ -234,26 +234,26 @@ template <class PS>
 bool UtilityCalc<PS>::oneTurnWin(Colour evalColour, Colour turnColour) const
 {
 	// Detect a forceable win after one turn each
-	CapCount evalCaptured = _posStats._captured[evalColour];
-	const PattCount *evalLines = _posStats._patternCounts[evalColour];
+	CapCount evalCaptured = _posStats.getCaptured(evalColour);
+	const PattCount *evalPatterns = _posStats.getPatternCounts(evalColour);
 
-	if (evalLines[Line4] > 0)
+	if (evalPatterns[Line4] > 0)
 	{
 		if (evalColour == turnColour)
 			// An unanswered line of four out of five will win
 			return true;
 
-		if (evalLines[Line4] > 1)
+		if (evalPatterns[Line4] > 1)
 			// Two or more lines of four, with no danger of being
 			// captured is a win.
 			//if ccp:
-			if (_posStats._patternCounts[otherPlayer(evalColour)][Take] == 0)
+			if (_posStats.getPatternCounts(otherPlayer(evalColour))[Take] == 0)
 				return true;
 	}
 
 	// if ccp and sfcw > 0:
 	// Can win by captures
-	CapCount myTakes = evalLines[Take];
+	CapCount myTakes = evalPatterns[Take];
 	if (evalColour == turnColour)
 	{
 		if ((10 - evalCaptured) <= 2 and myTakes > 0)

@@ -42,6 +42,11 @@ public:
 	{
 		return _levels[c][pattern];
 	}
+
+	const PattCount *getPatternCounts(Colour c) const
+	{
+		return _patternCounts[c];
+	}
 	
 	PattCount getNumPatterns(Colour c, PatternType pattern) const
 	{

@@ -342,6 +342,35 @@ TEST_F(PenteGameFixture, SuggestAndUndoTwoMoves) {
 	EXPECT_EQ(0, g.getCurrDepth());
 }
 
+TEST_F(PenteGameFixture, SuggestBothThreatPoints) {
+	g.makeMove(Loc(9,9), P1);
+	g.makeMove(Loc(7,8), P2);
+	g.makeMove(Loc(9,10), P1);
+
+	Loc loc1 = g.makeNextMove();
+	EXPECT_EQ(Loc(9,11), loc1);
+	g.undoLastMove();
+
+	Loc loc2 = g.makeNextMove(); // Should block the Line2 after the capture.
+	EXPECT_EQ(Loc(9,8), loc2);
+}
+
+TEST_F(PenteGameFixture, SuggestSWCornerBlock) {
+	g.makeMove(Loc(1,1), P1);
+	g.makeMove(Loc(7,8), P2);
+	g.makeMove(Loc(2,2), P1);
+	g.makeMove(Loc(9,11), P2);
+	g.makeMove(Loc(3,3), P1);
+	g.makeMove(Loc(5,5), P2);
+	g.makeMove(Loc(4,4), P1);
+
+    bool oneMove = g.isOnlyOneMove();
+	EXPECT_EQ(true, oneMove);
+
+	Loc loc1 = g.makeNextMove();
+	EXPECT_EQ(Loc(0,0), loc1);
+}
+
 TEST_F(PenteGameFixture, OnlyOneMove) {
 	g.makeMove(Loc(9,9), P1);
 	g.makeMove(Loc(9,7), P2);
@@ -362,8 +391,30 @@ TEST_F(PenteGameFixture, NotOnlyOneMove) {
 	EXPECT_EQ(false, oneMove);
 }
 
+TEST_F(PenteGameFixture, UtilityIsConnected) {
+	g.makeMove(Loc(9,9), P1);
+	UtilityValue uv1 = g.getUtility();
+
+	g.makeMove(Loc(0,0), P2);
+	g.makeMove(Loc(9,7), P1);
+	UtilityValue uv2 = g.getUtility();
+
+	EXPECT_GT(uv2, uv1);
+}
+
 #if 0
+    bool cutoff = isCutoff();
+	EXPECT_EQ(false, cutoff);
+
 	const PriorityLevel &pl = ps.getPriorityLevel(P1, Take);
 	EXPECT_EQ(1, pl.getNumCands()); // Only one candidate move, takes 2 pairs
+
+	void makeMove(Loc l, Colour p);
+    virtual void undoLastMove();
+    virtual bool isOnlyOneMove() { return _moveSuggester.isOnlyOneMove(_currDepth); }
+    virtual Loc makeNextMove();
+	virtual Loc getNextMove(); // Get it without performing it
+    virtual bool isCutoff() const;
+	virtual UtilityValue getUtility();
 #endif
 

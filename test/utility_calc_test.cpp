@@ -26,6 +26,16 @@ public:
 	}
 
 	// TODO: checkerboardStats
+	//
+	CapCount getCaptured(Colour c) const
+	{
+		return _captured[c];
+	}
+
+	const PattCount *getPatternCounts(Colour c) const
+	{
+		return _patternCounts[c];
+	}
 	
 	CapCount _captured[3];
 	PattCount _patternCounts[3][MAX_PATTERN_TYPE];

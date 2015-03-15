@@ -134,6 +134,12 @@ bool PenteGame::isCutoff() const
 
 UtilityValue PenteGame::getUtility()
 {
-	return _currDepth >= _maxDepth;
+	MoveNumber lastMn = _moveHist.getLastMoveNumber();
+	// lastMn 0, sc P1, depth 0 -> tc P1
+	// lastMn 1, sc P2, depth 0 -> tc P2
+	Colour searchColour = 1 + (lastMn % 2); // TODO: Cacheable
+	Colour turnColour = 1 + (lastMn + _currDepth) % 2; // TODO: incremental with otherPlayer.
+	UtilityValue uv = _utilCalc.calcUtility(turnColour, searchColour, lastMn+1);
+	return uv;
 }
 
