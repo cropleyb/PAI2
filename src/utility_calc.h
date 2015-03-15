@@ -125,7 +125,7 @@ UtilityValue UtilityCalc<PS>::calcUtility(Colour turnColour, Colour searchColour
 }
 
 template <class PS>
-UtilityValue UtilityCalc<PS>::utilityScore(Colour evalColour, Colour turnColour) const
+UtilityValue UtilityCalc<PS>::utilityScore(Colour evalColour, Colour /*turnColour*/) const
 {
 	// rules = self.rules
 	// sfcw = rules.stones_for_capture_win
@@ -197,7 +197,7 @@ UtilityValue UtilityCalc<PS>::threatContrib(CapCount threats, CapCount captures)
 
 
 template <class PS>
-bool UtilityCalc<PS>::zeroTurnWin(Colour evalColour, Colour turnColour) const
+bool UtilityCalc<PS>::zeroTurnWin(Colour evalColour, Colour /*turnColour*/) const
 {
 	// Detect a win in this position
 	CapCount evalCaptured = _posStats.getCaptured(evalColour);
