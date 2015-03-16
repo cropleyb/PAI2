@@ -8,14 +8,21 @@ PenteGame::PenteGame()
 	  _boardReps(19,_posStats),
 	  _utilCalc(_posStats),
 	  _currDepth(0),
-	  _maxDepth(4)
+	  _maxDepth(4),
+	  _ourColour(EMPTY)
 {
 	buildLineLookupTable();
 	buildSpanTable(19);
 }
 
+#include <iostream>
+
 void PenteGame::makeMove(Loc l, Colour p)
 {
+	//std::cout << std::endl;
+	//for (int d=0; d<_currDepth; d++)
+		//std::cout << ". ";
+	//std::cout << l;
 	_captureDirs = 0;
 
 	const PriorityLevel &pl = _posStats.getPriorityLevel(p, Take);
@@ -39,6 +46,7 @@ void PenteGame::setAndRecordCaptures(Loc l, Colour p)
 
 void PenteGame::reportCapture(const SpanEntry &span, bool left, Colour p)
 {
+	//std::cout << " (cap) [" << (int)p << ']';
 	_posStats.reportCaptured(p, 2, 1);
 
 	// Get the indices of the captured pieces
@@ -65,6 +73,7 @@ void PenteGame::reportCapture(const SpanEntry &span, bool left, Colour p)
 
 void PenteGame::undoLastMove()
 {
+	//std::cout << " U ";
 	MoveNumber mn = _moveHist.getLastMoveNumber();
 	_currDepth--;
 	
@@ -84,6 +93,8 @@ void PenteGame::undoLastMove()
 		{
 			if (cd & (1 << dir))
 			{
+				//std::cout << " (uncap) [" << (int)capturingPlayer << ']';
+				// THIS IS GIVING THE WRONG COLOUR. OR IS IT THE FORWARD CAP?
 				_posStats.reportCaptured(capturingPlayer, 2, -1);
 
 				int realDir=dir;
@@ -115,15 +126,16 @@ void PenteGame::undoLastMove()
 Loc
 PenteGame::makeNextMove()
 {
-    Loc move = _moveSuggester.getNextMove(_currDepth);
-	makeMove(move, (1 + ++_currDepth % 2));
+    Loc move = _moveSuggester.getNextMove(_currDepth, _ourColour);
+	if (move.isValid())
+		makeMove(move, (1 + (++_currDepth + _ourColour) % 2));
 	return move;
 }
 
 Loc
 PenteGame::getNextMove()
 {
-    Loc move = _moveSuggester.getNextMove(_currDepth);
+    Loc move = _moveSuggester.getNextMove(_currDepth, _ourColour);
 	return move;
 }
 
@@ -137,9 +149,12 @@ UtilityValue PenteGame::getUtility()
 	MoveNumber lastMn = _moveHist.getLastMoveNumber();
 	// lastMn 0, sc P1, depth 0 -> tc P1
 	// lastMn 1, sc P2, depth 0 -> tc P2
-	Colour searchColour = 1 + (lastMn % 2); // TODO: Cacheable
-	Colour turnColour = 1 + (lastMn + _currDepth) % 2; // TODO: incremental with otherPlayer.
+	//Colour searchColour = 1 + (lastMn % 2); // TODO: Cacheable
+	//Colour turnColour = 1 + (lastMn + _currDepth) % 2; // TODO: incremental with otherPlayer.
+	Colour searchColour = _ourColour;
+	Colour turnColour = 1 + (1 + _currDepth + _ourColour) % 2; // TODO: incremental with otherPlayer.
 	UtilityValue uv = _utilCalc.calcUtility(turnColour, searchColour, lastMn+1);
+	// std::cout << uv;
 	return uv;
 }
 

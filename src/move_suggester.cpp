@@ -17,34 +17,34 @@ MoveSuggester::~MoveSuggester()
 	delete _candCache;
 }
 
-bool MoveSuggester::isOnlyOneMove(Depth depth)
+bool MoveSuggester::isOnlyOneMove(Depth depth, Colour searchColour)
 {
 	if (_candCache->needsFilling(depth))
 	{
-		fillCache(depth);
+		fillCache(depth, searchColour);
 	}
 
 	return _candCache->getNumMoves(depth) == 1;
 }
 
-Loc MoveSuggester::getNextMove(Depth depth)
+Loc MoveSuggester::getNextMove(Depth depth, Colour searchColour)
 {
 	if (_candCache->needsFilling(depth))
 	{
-		fillCache(depth);
+		fillCache(depth, searchColour);
 	}
 
 	return _candCache->getNextMove(depth);
 }
 
-void MoveSuggester::fillCache(Depth depth)
+void MoveSuggester::fillCache(Depth depth, Colour searchColour)
 {
 	Loc *moveBuffer = _candCache->getBuffer(depth);
 
 	Breadth maxMoves = 9;
 	if (depth > 3) maxMoves = 4;
 
-	Breadth moveCount = filterCandidates(moveBuffer, depth, maxMoves, P1); // FIXME - our real colour
+	Breadth moveCount = filterCandidates(moveBuffer, depth, maxMoves, searchColour);
 	BD(cout << "Setting depth moves for depth " << (int)depth << " to " << (int)moveCount << endl;)
 	_candCache->setDepthMoves(depth, moveCount);
 }
@@ -150,12 +150,12 @@ Breadth MoveSuggester::filterCandidates(Loc *moveBuffer, Depth depth, Breadth ma
 	Breadth found = 0;
 	bool tried[MAX_LOCS];
 	
-	Colour searchColour = ourColour;
+	Colour turnColour = ourColour;
 	if (depth % 2) {
-		searchColour = otherPlayer(ourColour);
+		turnColour = otherPlayer(ourColour);
 	}
 
-	bool onePoss = getPriorityLevels(searchColour);
+	bool onePoss = getPriorityLevels(turnColour);
 	if (onePoss) {
 		maxMoves = 1;
 	}

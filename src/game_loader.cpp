@@ -43,7 +43,9 @@ void GameLoader::loadStr(PenteGame &g, const string &gameStr)
 		int coord1 = std::atoi(coord1str.c_str());
 		int coord2 = std::atoi(coord2str.c_str());
 		g.makeMove(Loc(coord1,coord2), currColour);
+		std::cout << " P" << (int)currColour;
 		currColour = otherPlayer(currColour);
 	}
+    g.setColour(currColour);
 }
 

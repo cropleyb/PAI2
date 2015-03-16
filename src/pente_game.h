@@ -17,10 +17,12 @@ public:
 	PenteGame();
 	virtual ~PenteGame() {}
 
+	void setColour(Colour ourColour) { _ourColour = ourColour; }
+
 	void makeMove(Loc l, Colour p);
     virtual void undoLastMove();
 
-    virtual bool isOnlyOneMove() { return _moveSuggester.isOnlyOneMove(_currDepth); }
+    virtual bool isOnlyOneMove() { return _moveSuggester.isOnlyOneMove(_currDepth, _ourColour); }
     virtual Loc makeNextMove();
 	virtual Loc getNextMove(); // Get it without performing it
     virtual bool isCutoff() const;
@@ -41,6 +43,7 @@ private:
 	CaptureDirs _captureDirs;
 	Depth _currDepth;
 	Depth _maxDepth;
+	Colour _ourColour;
 };
 
 #endif

@@ -5,6 +5,8 @@
 #include "defines.h"
 #include "line_pattern.h"
 
+#include <iostream>
+
 class SpanEntry;
 //class LinePattern;
 
@@ -26,6 +28,7 @@ public:
 	void reportCaptured(Colour c, CapCount count, int inc)
 	{
 		_captured[c] += count * inc;
+		// std::cout << " -> " << (int)_captured[c];
 	}
 
 	CapCount getCaptured(Colour c) const

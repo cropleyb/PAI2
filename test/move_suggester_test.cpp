@@ -32,7 +32,7 @@ public:
 	LocArr getLocsInOrder(Depth d)
 	{
 		LocArr la;
-		for (Loc loc=ms.getNextMove(d); loc.isValid(); loc=ms.getNextMove(d)) {
+		for (Loc loc=ms.getNextMove(d, P1); loc.isValid(); loc=ms.getNextMove(d, P1)) {
 			la.push_back(loc);
 		}
 		return la;
@@ -67,7 +67,7 @@ public:
 using ::testing::InSequence;
 
 TEST_F(MoveSuggesterFixture, NoMoves) {
-	Loc move = ms.getNextMove(0);
+	Loc move = ms.getNextMove(0, P1);
 
 	EXPECT_EQ(move.isValid(), false);
 }
@@ -76,11 +76,11 @@ TEST_F(MoveSuggesterFixture, OneMove) {
 	Loc l1(1,1);
 	arcs(P2, Line2, 1, l1); // length 2, inc
 
-	Loc move = ms.getNextMove(3); // depth
+	Loc move = ms.getNextMove(3, P2); // depth, search player
 	EXPECT_EQ(move.isValid(), true);
 	EXPECT_EQ(l1, move);
 
-	move = ms.getNextMove(3);
+	move = ms.getNextMove(3, P2);
 	EXPECT_EQ(move.isValid(), false);
 }
 
@@ -89,15 +89,15 @@ TEST_F(MoveSuggesterFixture, TwoMovesSamePL) {
 	Loc l2(2,2);
 	arcs(P1, Line3, 1, l2, l1, l1); // length 2, inc
 
-	Loc move = ms.getNextMove(2);
+	Loc move = ms.getNextMove(2, P1);
 	EXPECT_EQ(move.isValid(), true);
 	EXPECT_EQ(l1, move);
 
-	move = ms.getNextMove(2);
+	move = ms.getNextMove(2, P1);
 	EXPECT_EQ(move.isValid(), true);
 	EXPECT_EQ(l2, move);
 
-	move = ms.getNextMove(2);
+	move = ms.getNextMove(2, P1);
 	EXPECT_EQ(move.isValid(), false);
 }
 
@@ -108,15 +108,15 @@ TEST_F(MoveSuggesterFixture, TwoMovesDiffPL) {
 	Loc l2(1,1);
 	arcs(P1, Line2, 1, l2); // length 2, inc
 
-	Loc move = ms.getNextMove(2);
+	Loc move = ms.getNextMove(2, P1);
 	EXPECT_EQ(move.isValid(), true);
 	EXPECT_EQ(l1, move);
 
-	move = ms.getNextMove(2);
+	move = ms.getNextMove(2, P1);
 	EXPECT_EQ(move.isValid(), true);
 	EXPECT_EQ(l2, move);
 
-	move = ms.getNextMove(2);
+	move = ms.getNextMove(2, P1);
 	EXPECT_EQ(move.isValid(), false);
 }
 
@@ -125,7 +125,7 @@ TEST_F(MoveSuggesterFixture, AddAndThenRemoveSameLoc) {
 	arcs(P1, Line4, 1, l1); // length 4, inc
 	arcs(P1, Line4, -1, l1); // length 4, dec
 
-	Loc move = ms.getNextMove(2);
+	Loc move = ms.getNextMove(2, P2);
 	EXPECT_EQ(move.isValid(), false);
 }
 
@@ -136,15 +136,15 @@ TEST_F(MoveSuggesterFixture, Extend3BeforeExtend2) {
 	Loc l2(2,2);
 	arcs(P1, Line2, 1, l2);
 
-	Loc move = ms.getNextMove(2);
+	Loc move = ms.getNextMove(2, P1);
 	EXPECT_EQ(move.isValid(), true);
 	EXPECT_EQ(l1, move);
 
-	move = ms.getNextMove(2);
+	move = ms.getNextMove(2, P1);
 	EXPECT_EQ(move.isValid(), true);
 	EXPECT_EQ(l2, move);
 
-	move = ms.getNextMove(2);
+	move = ms.getNextMove(2, P1);
 	EXPECT_EQ(move.isValid(), false);
 }
 
@@ -155,15 +155,15 @@ TEST_F(MoveSuggesterFixture, ExtendOursBeforeTheirs) {
 	Loc l2(2,2);
 	arcs(P2, Line3, 1, l2);
 
-	Loc move = ms.getNextMove(0);
+	Loc move = ms.getNextMove(0, P1);
 	EXPECT_EQ(move.isValid(), true);
 	EXPECT_EQ(l1, move);
 
-	move = ms.getNextMove(0);
+	move = ms.getNextMove(0, P1);
 	EXPECT_EQ(move.isValid(), true);
 	EXPECT_EQ(l2, move);
 
-	move = ms.getNextMove(0);
+	move = ms.getNextMove(0, P1);
 	EXPECT_EQ(move.isValid(), false);
 }
 
@@ -174,15 +174,15 @@ TEST_F(MoveSuggesterFixture, ExtendTheirsBeforeOurs) {
 	Loc l2(2,2);
 	arcs(P2, Line3, 1, l2);
 
-	Loc move = ms.getNextMove(1);
+	Loc move = ms.getNextMove(1, P1);
 	EXPECT_EQ(move.isValid(), true);
 	EXPECT_EQ(l2, move);
 
-	move = ms.getNextMove(1);
+	move = ms.getNextMove(1, P1);
 	EXPECT_EQ(move.isValid(), true);
 	EXPECT_EQ(l1, move);
 
-	move = ms.getNextMove(1);
+	move = ms.getNextMove(1, P1);
 	EXPECT_EQ(move.isValid(), false);
 }
 
@@ -193,22 +193,22 @@ TEST_F(MoveSuggesterFixture, IterateTwiceNoChange) {
 	Loc l2(2,2);
 	arcs(P2, Line3, 1, l2);
 
-	Loc move = ms.getNextMove(2);
+	Loc move = ms.getNextMove(2, P1);
 	EXPECT_EQ(l1, move);
 
-	move = ms.getNextMove(2);
+	move = ms.getNextMove(2, P1);
 	EXPECT_EQ(l2, move);
 
-	move = ms.getNextMove(2);
+	move = ms.getNextMove(2, P1);
 	EXPECT_EQ(move.isValid(), false);
 
-	move = ms.getNextMove(2);
+	move = ms.getNextMove(2, P1);
 	EXPECT_EQ(l1, move);
 
-	move = ms.getNextMove(2);
+	move = ms.getNextMove(2, P1);
 	EXPECT_EQ(l2, move);
 
-	move = ms.getNextMove(2);
+	move = ms.getNextMove(2, P1);
 	EXPECT_EQ(move.isValid(), false);
 }
 
@@ -216,15 +216,15 @@ TEST_F(MoveSuggesterFixture, IterateDifferentDepths) {
 	Loc l1(1,1);
 	arcs(P1, Line1, 1, l1);
 
-	Loc move = ms.getNextMove(0);
+	Loc move = ms.getNextMove(0, P1);
 	EXPECT_EQ(move.isValid(), true);
 	EXPECT_EQ(l1, move);
 
-	move = ms.getNextMove(1);
+	move = ms.getNextMove(1, P1);
 	EXPECT_EQ(move.isValid(), true);
 	EXPECT_EQ(l1, move);
 
-	move = ms.getNextMove(2);
+	move = ms.getNextMove(2, P1);
 	EXPECT_EQ(move.isValid(), true);
 	EXPECT_EQ(l1, move);
 }
@@ -471,7 +471,7 @@ TEST_F(MoveSuggesterFixture, test_only_one_option)
 {
 	arcs(P1, Line4, 1, Loc(4,6));
 	
-	bool onlyOne = ms.isOnlyOneMove(0);
+	bool onlyOne = ms.isOnlyOneMove(0, P2);
 	EXPECT_EQ(true, onlyOne);
 	LocArr la = getLocsInOrder(0);
 	EXPECT_EQ(1, la.size());
