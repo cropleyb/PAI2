@@ -47,10 +47,6 @@ void BoardReps::initEdgeVal(int dir, Loc l)
 	U64 &val = _boardStrips[dir][e._strip];
 	val &= ~(shift + (shift << 1));
 	val |= (EDGE * shift);
-	if (_boardStrips[0][0] % 2 == 1)
-	{
-		int x=15;
-	}
 }
 
 
