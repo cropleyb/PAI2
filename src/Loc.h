@@ -8,6 +8,9 @@ typedef short CompressedLoc;
 #define MAX_LOCS (20 * 32 * 2)
 
 #include <assert.h>
+#include <ostream>
+
+using std::ostream;
 
 class Loc
 {
@@ -19,13 +22,18 @@ public:
 	}
 	Loc() : _value(Loc::INVALID._value) {}
 	bool operator ==(const Loc &other) const { return _value == other._value; }
+	bool operator !=(const Loc &other) const { return _value != other._value; }
 	bool operator <(const Loc &other) const { return _value < other._value; }
 	Coord operator [](int dim) const
         { if (dim) return (_value/32); else return (_value&31); }
 
 	bool isValid() const { return _value < (CompressedLoc)(19 * 32); }
-	// TODO: operator <<
-	//string toString() const { return string("(") + (_value/32) + "," + (_value%32) + ")"; }
+
+	friend ostream &operator <<(ostream &output, const Loc &loc)
+	{
+		output << '(' << (int)loc[0] << ',' << (int)loc[1] << ')';
+		return output;
+	}
 
     static Loc INVALID;
 
