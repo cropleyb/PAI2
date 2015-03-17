@@ -476,18 +476,22 @@ TEST_F(PenteGameFixture, UtilityIsConnected) {
 TEST_F(PenteGameFixture, SaveAndUseTranspositionTable) {
 	g.makeMove(Loc(9,9), P1);
 	g.makeMove(Loc(0,0), P2);
+	g.makeMove(Loc(9,8), P1);
+	g.makeMove(Loc(8,4), P2);
 	g.makeMove(Loc(7,9), P1);
 	g.makeMove(Loc(2,0), P2);
 	UtilityValue uv1 = g.getUtility();
-	g.saveInTT(uv1);
 
 	g.makeMove(Loc(9,9), P1);
 	g.makeMove(Loc(2,0), P2);
+	g.makeMove(Loc(9,8), P1);
+	g.makeMove(Loc(8,4), P2);
 	g.makeMove(Loc(7,9), P1);
 	g.makeMove(Loc(0,0), P2);
-	bool isInTT = g.isInTT();
+	EXPECT_EQ(true, g.isInTT());
 
-	EXPECT_EQ(true, isInTT);
+	g.clearTT();
+	EXPECT_EQ(false, g.isInTT());
 }
 
 #if 0

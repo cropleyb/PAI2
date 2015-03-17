@@ -6,6 +6,8 @@
 
 Loc AlphaBeta::getBestMove()
 {
+    _bridge.clearTT();
+
 	BD(cout << "1 getBestMove" << endl);
     if (_bridge.isOnlyOneMove())
     {

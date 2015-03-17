@@ -11,6 +11,7 @@ public:
 	virtual ~IABBridge() {}
 
     virtual bool isOnlyOneMove() =0;
+    virtual void clearTT() =0;
 	virtual UtilityValue getUtility() =0;
 
 	virtual Loc makeNextMove() =0;// Get it and do it on the board

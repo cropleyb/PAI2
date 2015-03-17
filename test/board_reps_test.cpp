@@ -107,9 +107,9 @@ TEST_F(BoardRepsFixture, CheckThreatIsAlsoTwo) {
 	// Check 2->3 length candidates
 	numCands = pl2.getCands(locBuffer, 5);
 	EXPECT_EQ(3+1, numCands); // Count should be the same
-	EXPECT_EQ(Loc(5,0), locBuffer[0]);
-	EXPECT_EQ(Loc(4,0), locBuffer[1]);
-	EXPECT_EQ(Loc(3,0), locBuffer[2]);
+	EXPECT_EQ(Loc(4,0), locBuffer[0]);
+	EXPECT_EQ(Loc(3,0), locBuffer[1]);
+	EXPECT_EQ(Loc(5,0), locBuffer[2]);
 	EXPECT_EQ(Loc(0,0), locBuffer[3]);
 }
 

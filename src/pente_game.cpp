@@ -146,15 +146,29 @@ bool PenteGame::isCutoff() const
 
 UtilityValue PenteGame::getUtility()
 {
+#if 1
+	if (_currDepth > 2)
+	{
+		UtilityValue ttVal;
+		bool isInTT = _transpositionTable.lookup(*this, ttVal);
+		if (isInTT) return ttVal;
+	}
+#endif
+
 	MoveNumber lastMn = _moveHist.getLastMoveNumber();
 	// lastMn 0, sc P1, depth 0 -> tc P1
 	// lastMn 1, sc P2, depth 0 -> tc P2
-	//Colour searchColour = 1 + (lastMn % 2); // TODO: Cacheable
-	//Colour turnColour = 1 + (lastMn + _currDepth) % 2; // TODO: incremental with otherPlayer.
 	Colour searchColour = _ourColour;
-	Colour turnColour = 1 + (1 + _currDepth + _ourColour) % 2; // TODO: incremental with otherPlayer.
+	Colour turnColour = 1 + (1 + _currDepth + _ourColour) % 2; // TODO: incremental with otherPlayer?
 	UtilityValue uv = _utilCalc.calcUtility(turnColour, searchColour, lastMn+1);
 	// std::cout << uv;
+#if 1
+	if (lastMn > 2) // TODO: should be able to use _currDepth
+	{
+		_transpositionTable.savePos(*this, uv);
+	}
+#endif
+
 	return uv;
 }
 

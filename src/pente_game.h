@@ -28,9 +28,9 @@ public:
 	virtual Loc getNextMove(); // Get it without performing it
     virtual bool isCutoff() const;
 	virtual UtilityValue getUtility();
-	virtual void saveInTT(UtilityValue uv) { _transpositionTable.savePos(*this, uv); }
 	// Just for testing...
 	virtual bool isInTT() const { UtilityValue unused; return _transpositionTable.lookup(*this, unused); }
+	virtual void clearTT() { _transpositionTable.clear(); }
 
 	void setMaxDepth(Depth d) { _maxDepth = d; }
 	Depth getCurrDepth() { return _currDepth; }

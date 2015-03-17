@@ -5,6 +5,12 @@ TranspositionTable::TranspositionTable()
 {
 }
 
+void
+TranspositionTable::clear()
+{
+	_transpositionTable.clear();
+}
+
 void TranspositionTable::savePos(const PenteGame &game, UtilityValue storeVal)
 {
 	const U64 *e_orig = game._boardReps._boardStrips[E_DIR];
