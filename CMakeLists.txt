@@ -34,6 +34,8 @@ function(set_memcheck_test_properties name)
   set_tests_properties(memcheck_${name} ${ARGN})
 endfunction(set_memcheck_test_properties)
 
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG -O3")
+
 # cmake -G ... (to configure your build)
 # ctest -D ExperimentalBuild (this will build your code)
 # ctest -R testName -D ExperimentalTest (just runs the test)
