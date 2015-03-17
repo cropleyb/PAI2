@@ -19,6 +19,7 @@ public:
     Colour getOcc(Loc l) const;
 
 	friend class PenteGame;
+	friend class TranspositionTable;
 
 private:
 	void initEdges();

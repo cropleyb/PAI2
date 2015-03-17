@@ -4,8 +4,6 @@
 #include "loc.h"
 #include "defines.h"
 
-typedef double UtilityValue;
-
 class IABBridge
 {
 public:

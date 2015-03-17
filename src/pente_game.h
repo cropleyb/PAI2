@@ -32,6 +32,8 @@ public:
 	Depth getCurrDepth() { return _currDepth; }
 
 	void reportCapture(const SpanEntry &span, bool right, Colour p);
+
+	friend class TranspositionTable;
 private:
 	void setAndRecordCaptures(Loc l, Colour p);
 
