@@ -16,7 +16,7 @@ public:
 
 	void savePos(const PenteGame &game, UtilityValue storeVal);
 
-	bool lookup(const PenteGame &game, UtilityValue &foundVal);
+	bool lookup(const PenteGame &game, UtilityValue &foundVal) const;
 
 private:
 	std::map<std::vector<U64>, UtilityValue> _transpositionTable;

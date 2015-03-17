@@ -462,8 +462,6 @@ TEST_F(PenteGameFixture, NotOnlyOneMove) {
 	EXPECT_EQ(false, oneMove);
 }
 
-#if 0
-FIXME!
 TEST_F(PenteGameFixture, UtilityIsConnected) {
 	g.makeMove(Loc(9,9), P1);
 	UtilityValue uv1 = g.getUtility();
@@ -474,7 +472,23 @@ TEST_F(PenteGameFixture, UtilityIsConnected) {
 
 	EXPECT_GT(uv2, uv1);
 }
-#endif
+
+TEST_F(PenteGameFixture, SaveAndUseTranspositionTable) {
+	g.makeMove(Loc(9,9), P1);
+	g.makeMove(Loc(0,0), P2);
+	g.makeMove(Loc(7,9), P1);
+	g.makeMove(Loc(2,0), P2);
+	UtilityValue uv1 = g.getUtility();
+	g.saveInTT(uv1);
+
+	g.makeMove(Loc(9,9), P1);
+	g.makeMove(Loc(2,0), P2);
+	g.makeMove(Loc(7,9), P1);
+	g.makeMove(Loc(0,0), P2);
+	bool isInTT = g.isInTT();
+
+	EXPECT_EQ(true, isInTT);
+}
 
 #if 0
     bool cutoff = isCutoff();

@@ -7,6 +7,7 @@
 #include "position_stats.h"
 #include "utility_calc.h"
 #include "iab_bridge.h"
+#include "transposition_table.h"
 
 class BoardReps;
 class SpanEntry;
@@ -27,6 +28,9 @@ public:
 	virtual Loc getNextMove(); // Get it without performing it
     virtual bool isCutoff() const;
 	virtual UtilityValue getUtility();
+	virtual void saveInTT(UtilityValue uv) { _transpositionTable.savePos(*this, uv); }
+	// Just for testing...
+	virtual bool isInTT() const { UtilityValue unused; return _transpositionTable.lookup(*this, unused); }
 
 	void setMaxDepth(Depth d) { _maxDepth = d; }
 	Depth getCurrDepth() { return _currDepth; }
@@ -46,6 +50,7 @@ private:
 	Depth _currDepth;
 	Depth _maxDepth;
 	Colour _ourColour;
+	TranspositionTable _transpositionTable;
 };
 
 #endif
