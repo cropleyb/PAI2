@@ -18,7 +18,7 @@ public:
 	Loc(Coord x, Coord y) : _value((int)y * 32 + x) {}
 	Loc(CompressedLoc v) : _value(v)
 	{
-		assert(v < MAX_LOCS); assert(v>=-100);
+		// assert(v < MAX_LOCS); assert(v>=-100);
 	}
 	Loc() : _value(Loc::INVALID._value) {}
 	bool operator ==(const Loc &other) const { return _value == other._value; }
