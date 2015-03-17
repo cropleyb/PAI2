@@ -26,9 +26,9 @@ void matchRange(U64 occs, const SpanEntry &span, REPORTER &reporter, int inc)
         // Report it
 		LinePattern toReport = *found;
 
-		for (Breadth &candInd: toReport._candInds)
+		for (int i=0; i<toReport._numInds; i++)
 		{
-			candInd += ind;
+			toReport._candInds[i] += ind;
 		}
 		reporter.report(span, toReport, inc);
 
@@ -43,9 +43,9 @@ void matchRange(U64 occs, const SpanEntry &span, REPORTER &reporter, int inc)
         // Report it too
 		LinePattern toReport2 = *found;
 
-		for (Breadth &candInd: toReport2._candInds)
+		for (int i=0; i<toReport._numInds; i++)
 		{
-			candInd += ind;
+			toReport2._candInds[i] += ind;
 		}
 		reporter.report(span, toReport2, inc);
 	}

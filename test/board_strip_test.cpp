@@ -66,18 +66,18 @@ public:
 	template<typename ... Types>
 	void expectCandInd(LinePattern &lti, BoardWidth cand, Types ... rest)
 	{
-		lti._candInds.push_back(cand);
+		assert(lti._numInds < 4);
+		lti._candInds[lti._numInds++] = cand;
 		expectCandInd(lti, rest...);
 	}
 
 	template<typename ... Types>
 	void expectCandInds(LinePattern &lti, Types ... rest)
 	{
-		lti._candInds.clear();
+		lti._numInds = 0;
 		expectCandInd(lti, rest...);
 	}
 
-	// void processOccString(const string &occStr, BoardWidth leftInd, BoardWidth rightInd) 
 	void processCapString(const string &occStr, BoardWidth move, Colour p)
 	{
 		U64 occs = occStringToBs(occStr);
@@ -224,7 +224,6 @@ TEST_F(BoardStripFixture, ThreatButNotTwoLeftEdge) {
 // Capture recognition (only triggered by end of pair placement)
 /////////////////////////////////////////////////////////////////
 
-// TODO
 TEST_F(BoardStripFixture, ReportRCapture) {
 	EXPECT_CALL(mr, reportCapture(span, false, P1));
 	processCapString(" WWB BW|", 0, P1);

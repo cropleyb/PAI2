@@ -25,25 +25,35 @@ enum PatternType
 class LinePattern
 {
 public:
-	LinePattern() : _colour(EMPTY), _patternType(NoPattern) {}
+	LinePattern() : _colour(EMPTY), _patternType(NoPattern), _numInds(0) {}
 
 	LinePattern(const LinePattern &orig) :
 		_colour(orig._colour),
 		_patternType(orig._patternType),
-	    _candInds(orig._candInds)
-	{}
+		_numInds(orig._numInds)
+	{
+		for (int i=0; i<_numInds; i++)
+			_candInds[i] = orig._candInds[i];
+	}
 
 	bool operator ==(const LinePattern &other) const
-	{ return (_colour == other._colour) &&
-		     (_patternType == other._patternType) &&
-			 (_candInds == other._candInds); }
+	{
+		if ((_colour != other._colour) ||
+		    (_patternType != other._patternType) ||
+		    (_numInds != other._numInds)) return false;
+		for (int i=0; i<_numInds; i++)
+			if (_candInds[i] != other._candInds[i])
+				return false;
+		return true;
+	}
 
 	// For debugging only
 	friend std::ostream & operator<<(std::ostream &os, const LinePattern& lti);
 
 	Colour _colour;
 	PatternType _patternType;
-	vector<Breadth> _candInds;
+	Breadth _candInds[5];
+    unsigned char _numInds;
 };
 
 #endif

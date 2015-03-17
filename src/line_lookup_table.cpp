@@ -22,6 +22,8 @@ Breadth candidateLookup[5] {3,1,0,2,4};
 // Fwd decl.
 void buildAndStoreLineValues(int levelsDone, Mask occVal, LinePattern lti);
 
+#include <assert.h>
+
 void extendAndStoreLineLookups(Colour occ, int levelsDone,  Mask occVal, LinePattern lti)
 {
     /*
@@ -43,7 +45,8 @@ void extendAndStoreLineLookups(Colour occ, int levelsDone,  Mask occVal, LinePat
 		if (ptRaw == Threat || ptRaw == Take) ptRaw++;
         lti._patternType = (PatternType)((int)ptRaw);
 	} else {
-		lti._candInds.push_back(levelsDone);
+		assert(lti._numInds < 5);
+		lti._candInds[lti._numInds++] = levelsDone;
 	}
 
     if (levelsDone >= 4)
@@ -53,7 +56,7 @@ void extendAndStoreLineLookups(Colour occ, int levelsDone,  Mask occVal, LinePat
             // Add Pattern
             // assert length <= 5
 
-			// TODO in LengthLookup (i.e. caller)
+			// TODO in LengthLookup (i.e. caller)?
             // candidates = [(candidateLookup[i], i) for i in emptyList]
             // candidates.sort()
             // candidates = [i for o,i in candidates]
@@ -69,9 +72,6 @@ void extendAndStoreLineLookups(Colour occ, int levelsDone,  Mask occVal, LinePat
 void buildAndStoreLineValues(int levelsDone, Mask occVal, LinePattern lti)
 {
     // Add one stone or empty place
-
-    // Shift what we've seen so far to the right
-    //occVal *= 4;
 
 	extendAndStoreLineLookups(EMPTY, levelsDone, occVal, lti);
 	extendAndStoreLineLookups(lti._colour, levelsDone, occVal, lti);
@@ -109,8 +109,8 @@ void buildAndStoreEndedTakes(Colour c, bool side)
 
 	for (int lastColumn=EMPTY; lastColumn<=EDGE; lastColumn++)
 	{
-		lti._candInds.clear();
-		lti._candInds.push_back(candInd);
+		lti._numInds = 0;
+		lti._candInds[lti._numInds++] = candInd;
 
 		Mask storeOccVal = occVal + (lastColumn << 8);
 		lengthLookup[storeOccVal] = lti;
@@ -142,8 +142,8 @@ void buildAndStoreEndedThreats(Colour c)
 	LinePattern lti;
 	lti._colour = c;
 	lti._patternType = Threat;
-	lti._candInds.push_back(0);
-	lti._candInds.push_back(3);
+	lti._candInds[lti._numInds++] = 0;
+	lti._candInds[lti._numInds++] = 3;
 
 	for (int lastColumn=EMPTY; lastColumn<=EDGE; lastColumn++)
 	{

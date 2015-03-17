@@ -25,7 +25,7 @@ void PositionStats::reportCandidates(Colour colour, PatternType pt, const vector
 	}
 }
 
-#include <assert.h>
+//#include <assert.h>
 
 // Convert each of the indices in patternEntry into Locs using span
 // and update appropriately
@@ -33,14 +33,14 @@ void PositionStats::report(const SpanEntry &spanEntry, const LinePattern &patter
 {
 	Colour c = patternEntry._colour;
 	int levelNum = (int)patternEntry._patternType;
-	assert(levelNum < MAX_PATTERN_TYPE);
+	//assert(levelNum < MAX_PATTERN_TYPE);
 
 	_patternCounts[c][levelNum] += inc;
 
 	PriorityLevel &level = _levels[c][levelNum];
-	for (Breadth b : patternEntry._candInds)
+	for (int i=0; i<patternEntry._numInds; i++)
 	{
-		Loc loc = spanEntry.convertIndToLoc(b);
+		Loc loc = spanEntry.convertIndToLoc(patternEntry._candInds[i]);
 		level.addOrRemoveCandidate(loc, inc);
 	}
 }

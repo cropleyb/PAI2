@@ -37,6 +37,13 @@ public:
 		Mask occs = maskStringToBs(occStr);
 		return &lengthLookup[occs];
 	}
+	vector<Breadth> inds(LinePattern *lp)
+	{
+		vector<Breadth> res;
+		for (int i=0; i<lp->_numInds; i++)
+			res.push_back(lp->_candInds[i]);
+		return res;
+	}
 };
 
 
@@ -54,27 +61,27 @@ TEST_F(LineLookupTableFixture, CountSingleBlack) {
 	LinePattern *pattern = processMaskString("B    ");
 	EXPECT_EQ(P1, pattern->_colour);
 	EXPECT_EQ(Line1, pattern->_patternType);
-	ASSERT_THAT(pattern->_candInds, ElementsAre(1, 2, 3, 4));
+	ASSERT_THAT(inds(pattern), ElementsAre(1, 2, 3, 4));
 }
 
 TEST_F(LineLookupTableFixture, CountOneBlackOtherEnd) {
 	LinePattern *pattern = processMaskString("    B");
 	EXPECT_EQ(P1, pattern->_colour);
 	EXPECT_EQ(Line1, pattern->_patternType);
-	ASSERT_THAT(pattern->_candInds, ElementsAre(0, 1, 2, 3));
+	ASSERT_THAT(inds(pattern), ElementsAre(0, 1, 2, 3));
 }
 
 TEST_F(LineLookupTableFixture, CountOneWhiteOtherEnd) {
 	LinePattern *pattern = processMaskString("    W");
 	EXPECT_EQ(P2, pattern->_colour);
-	ASSERT_THAT(pattern->_candInds, ElementsAre(0, 1, 2, 3));
+	ASSERT_THAT(inds(pattern), ElementsAre(0, 1, 2, 3));
 }
 
 TEST_F(LineLookupTableFixture, TwoBlacksAtStart) {
 	LinePattern *pattern = processMaskString("BB   ");
 	EXPECT_EQ(P1, pattern->_colour);
 	EXPECT_EQ(Line2, pattern->_patternType);
-	ASSERT_THAT(pattern->_candInds, ElementsAre(2, 3, 4));
+	ASSERT_THAT(inds(pattern), ElementsAre(2, 3, 4));
 }
 
 TEST_F(LineLookupTableFixture, MixedNoMatch) {
@@ -91,35 +98,35 @@ TEST_F(LineLookupTableFixture, BlackTakeLeftEmpty) {
 	LinePattern *pattern = processMaskString("BWW  ");
 	EXPECT_EQ(P1, pattern->_colour);
 	EXPECT_EQ(Take, pattern->_patternType);
-	ASSERT_THAT(pattern->_candInds, ElementsAre(3));
+	ASSERT_THAT(inds(pattern), ElementsAre(3));
 }
 
 TEST_F(LineLookupTableFixture, WhiteTakeRightWhite) {
 	LinePattern *pattern = processMaskString(" BBWW");
 	EXPECT_EQ(P2, pattern->_colour);
 	EXPECT_EQ(Take, pattern->_patternType);
-	ASSERT_THAT(pattern->_candInds, ElementsAre(0));
+	ASSERT_THAT(inds(pattern), ElementsAre(0));
 }
 
 TEST_F(LineLookupTableFixture, WhiteTakeRightBlack) {
 	LinePattern *pattern = processMaskString(" BBWB");
 	EXPECT_EQ(P2, pattern->_colour);
 	EXPECT_EQ(Take, pattern->_patternType);
-	ASSERT_THAT(pattern->_candInds, ElementsAre(0));
+	ASSERT_THAT(inds(pattern), ElementsAre(0));
 }
 
 TEST_F(LineLookupTableFixture, WhiteTakeRightEdge) {
 	LinePattern *pattern = processMaskString(" BBW|");
 	EXPECT_EQ(P2, pattern->_colour);
 	EXPECT_EQ(Take, pattern->_patternType);
-	ASSERT_THAT(pattern->_candInds, ElementsAre(0));
+	ASSERT_THAT(inds(pattern), ElementsAre(0));
 }
 
 TEST_F(LineLookupTableFixture, WhiteTakeLeftEdge) {
 	LinePattern *pattern = processMaskString("WBB |");
 	EXPECT_EQ(P2, pattern->_colour);
 	EXPECT_EQ(Take, pattern->_patternType);
-	ASSERT_THAT(pattern->_candInds, ElementsAre(3));
+	ASSERT_THAT(inds(pattern), ElementsAre(3));
 }
 
 /////////////////////////////////////////////////////
@@ -130,28 +137,28 @@ TEST_F(LineLookupTableFixture, BlackThreatEmpty) {
 	LinePattern *pattern = processMaskString(" WW  ");
 	EXPECT_EQ(P1, pattern->_colour);
 	EXPECT_EQ(Threat, pattern->_patternType);
-	ASSERT_THAT(pattern->_candInds, ElementsAre(0, 3));
+	ASSERT_THAT(inds(pattern), ElementsAre(0, 3));
 }
 
 TEST_F(LineLookupTableFixture, WhiteThreatWhite) {
 	LinePattern *pattern = processMaskString(" BB W");
 	EXPECT_EQ(P2, pattern->_colour);
 	EXPECT_EQ(Threat, pattern->_patternType);
-	ASSERT_THAT(pattern->_candInds, ElementsAre(0, 3));
+	ASSERT_THAT(inds(pattern), ElementsAre(0, 3));
 }
 
 TEST_F(LineLookupTableFixture, WhiteThreatBlack) {
 	LinePattern *pattern = processMaskString(" BB B");
 	EXPECT_EQ(P2, pattern->_colour);
 	EXPECT_EQ(Threat, pattern->_patternType);
-	ASSERT_THAT(pattern->_candInds, ElementsAre(0, 3));
+	ASSERT_THAT(inds(pattern), ElementsAre(0, 3));
 }
 
 TEST_F(LineLookupTableFixture, WhiteThreatEdge) {
 	LinePattern *pattern = processMaskString(" BB |");
 	EXPECT_EQ(P2, pattern->_colour);
 	EXPECT_EQ(Threat, pattern->_patternType);
-	ASSERT_THAT(pattern->_candInds, ElementsAre(0, 3));
+	ASSERT_THAT(inds(pattern), ElementsAre(0, 3));
 }
 
 /////////////////////////////////////////////////////
@@ -162,27 +169,27 @@ TEST_F(LineLookupTableFixture, BlackBlockedRight) {
 	LinePattern *pattern = processMaskString("BBBBW");
 	EXPECT_EQ(P1, pattern->_colour);
 	EXPECT_EQ(Blocked, pattern->_patternType);
-	ASSERT_THAT(pattern->_candInds, ElementsAre());
+	ASSERT_THAT(inds(pattern), ElementsAre());
 }
 
 TEST_F(LineLookupTableFixture, BlackBlockedLeft) {
 	LinePattern *pattern = processMaskString("WBBBB");
 	EXPECT_EQ(P1, pattern->_colour);
 	EXPECT_EQ(Blocked, pattern->_patternType);
-	ASSERT_THAT(pattern->_candInds, ElementsAre());
+	ASSERT_THAT(inds(pattern), ElementsAre());
 }
 
 TEST_F(LineLookupTableFixture, WhiteBlockedRight) {
 	LinePattern *pattern = processMaskString("WWWWB");
 	EXPECT_EQ(P2, pattern->_colour);
 	EXPECT_EQ(Blocked, pattern->_patternType);
-	ASSERT_THAT(pattern->_candInds, ElementsAre());
+	ASSERT_THAT(inds(pattern), ElementsAre());
 }
 
 TEST_F(LineLookupTableFixture, WhiteBlockedLeft) {
 	LinePattern *pattern = processMaskString("BWWWW");
 	EXPECT_EQ(P2, pattern->_colour);
 	EXPECT_EQ(Blocked, pattern->_patternType);
-	ASSERT_THAT(pattern->_candInds, ElementsAre());
+	ASSERT_THAT(inds(pattern), ElementsAre());
 }
 
