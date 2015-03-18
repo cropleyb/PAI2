@@ -6,7 +6,7 @@
 
 typedef short Ind;
 
-// #define MAX_NODES 19*19
+#define MAX_COUNTS 20
 
 class DLNode
 {
@@ -57,15 +57,10 @@ public:
 	void addOrRemoveCandidate(Loc l, int inc=1);
 
 private:
-	// TODO?
-	// void reorderLeft(Ind ind);
-	// void reorderRight(Ind ind);
 
-    Ind _freeListInd = 0;
-    Ind _dlHeadInd = -1;
+    Ind _headByCount[MAX_COUNTS];
     Ind _numCands = 0;
-    DLNode _dlNodes[MAX_LOCS];
-    Ind _nodeIndByLoc[MAX_LOCS];
+    DLNode _nodeByLoc[MAX_LOCS];
 };
 
 #endif

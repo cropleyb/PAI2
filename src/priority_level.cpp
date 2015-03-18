@@ -1,123 +1,24 @@
 #include "priority_level.h"
 #include "bdebug.h"
 
-#if 0
-	// TODO
-    _repr__(self):
-        return "prev_ind: %s, next_ind: %s, loc: %s, count: %s" % \
-            (self.prev_ind, self.next_ind, self.loc.val, self.count)
-#endif
-
 PriorityLevel::PriorityLevel()
 {
-	//BD(cout << "PriorityLevel constructor" << this << "----------------" << endl);
-    _freeListInd = 0;
-    _dlHeadInd = -1;
     _numCands = 0;
 
 	for (int i=0; i<MAX_LOCS; i++)
 	{
-        _dlNodes[i].setNextInd(i+1);
-		_nodeIndByLoc[i] = -1;
+        _nodeByLoc[i]._prevInd = i-1;
+        _nodeByLoc[i]._nextInd = i+1;
+        _nodeByLoc[i]._loc = i;
+        _nodeByLoc[i]._count = 0;
 	}
 
-	_dlNodes[MAX_LOCS-1].setNextInd(-1);
-}
-
-void PriorityLevel::addOrRemoveCandidate(Loc candLoc, int inc)
-{
-	BD(cout << "ARC: " << (void *)this << "----------------" << endl);
-
-	// Get the index of the node for the given candidate location
-	CompressedLoc candLocVal = candLoc._value;
-	Ind nodeInd = _nodeIndByLoc[candLocVal];
-
-	if (nodeInd < 0)
+	for (int j=0; j<MAX_COUNTS; j++)
 	{
-		BD(cout << "ARC 1" << endl);
-		if (inc < 0)
-		{
-			BD(cout << "ARC 2" << endl);
-			// Trying to reduce the count below zero. Error?
-			return;
-		}
-		BD(cout << "ARC 3" << endl);
-		// assert(inc > 0)
-
-		// Node for this loc has no count yet
-		// Use the next node from the free list
-		BD(cout << "ARC 4 - using node " << _freeListInd << endl);
-		nodeInd = _freeListInd;
-		_nodeIndByLoc[candLocVal] = nodeInd;
-		DLNode &node = _dlNodes[nodeInd];
-		_freeListInd = node._nextInd;
-
-		Ind nextInd = _dlHeadInd;
-		Ind oldHeadInd = _dlHeadInd;
-		node.setPrevInd(-1); // "node" is currently the head of the list
-		node.setNextInd(nextInd);
-		BD(cout << "ARC 4a" << endl);
-
-		if (oldHeadInd >= 0)
-		{
-			BD(cout << "ARC 5 " << endl);
-			DLNode &oldHead = _dlNodes[oldHeadInd];
-			oldHead.setPrevInd(nodeInd);
-		}
-
-		BD(cout << "ARC set head ind to ---------------" << nodeInd << endl);
-		_dlHeadInd = nodeInd;
-		BD(cout << "ARC set node loc to ---------------" << candLoc._value << endl);
-		node.setLoc(candLoc);
-		BD(cout << "ARC set inc to " << inc << endl);
-		node.adjustCount(inc);
-
-		_numCands += 1;
+		_headByCount[j] = -1;
 	}
-	else
-	{
-		BD(cout << "ARC B 1" << endl);
-		// A node for this loc has already been used, update its count
-		DLNode &node = _dlNodes[nodeInd];
-		Ind newCount = node.adjustCount(inc);
 
-		if (newCount <= 0)
-		{
-			// We don't need this node any more
-			// assert(newCount == 0);
-
-			// Remove it from its current place in the dlList
-			Ind prevNodeInd = node._prevInd;
-			Ind nextNodeInd = node._nextInd;
-
-			if (prevNodeInd >= 0)
-			{
-				DLNode &prevNode = _dlNodes[prevNodeInd];
-				prevNode.setNextInd(nextNodeInd);
-			}
-
-			if (nextNodeInd >= 0)
-			{
-				DLNode &nextNode = _dlNodes[nextNodeInd];
-				nextNode.setPrevInd(prevNodeInd);
-			}
-
-			if (_dlHeadInd == nodeInd)
-			{
-				Ind newHeadInd = node._nextInd;
-				BD(cout << "addOrRemoveCandidate: setting headInd to " << newHeadInd << endl);
-				_dlHeadInd = newHeadInd;
-			}
-
-			_nodeIndByLoc[candLocVal] = -1;
-
-			// TODO Put it at the head of the free list
-			node.setNextInd(_freeListInd);
-			_freeListInd = nodeInd;
-
-			_numCands -= 1;
-		}
-	}
+	_headByCount[0] = 0;
 }
 
 Ind PriorityLevel::getNumCands() const
@@ -125,37 +26,88 @@ Ind PriorityLevel::getNumCands() const
 	return _numCands;
 }
 
-Ind PriorityLevel::getCount(Loc l) const
-{
-	Ind nodeInd = _nodeIndByLoc[l._value];
-	const DLNode &node = _dlNodes[nodeInd];
-	return node._count;
-}
-
 Ind PriorityLevel::getCands(Loc *locBuffer, Ind max) const
 {
-	BD(cout << "getCands top - " << (void *)this << endl);
-	BD(cout << "getCands 1 - _dlHeadInd" << _dlHeadInd << endl);
 	Ind numAdded = 0;
-	Ind currInd = _dlHeadInd;
 
-	while ((currInd >= 0) && (numAdded < max))
+	Ind currLevel = MAX_COUNTS - 1; // TODO: cache highest level seen
+	Ind currInd = _headByCount[currLevel];
+
+	while ((currLevel > 0) && (numAdded < max))
 	{
-		BD(cout << "getCands 2 - currInd: " << currInd << endl);
-		const DLNode &currNode = _dlNodes[currInd];
-		if (currNode._loc == Loc::INVALID)
+		while (currInd < 0)
 		{
-			BD(cout << "getCands 3 - INVALID" << endl);
-			break;
-		}
-		BD(cout << "getCands 4 - adding " << currNode._loc._value << endl);
-		locBuffer[numAdded] = currNode._loc;
-		//countBuffer[numAdded] = currNode._count;
-		currInd = currNode._nextInd;
-		numAdded++;
-	}
-	BD(cout << "getCands 5" << endl);
+			// No more at this level
+			currLevel--;
 
+			// No more interesting count levels!
+			if (currLevel <= 0)
+				break;
+
+			currInd = _headByCount[currLevel];
+		}
+
+		if (currInd >= 0)
+		{
+			const DLNode &currNode = _nodeByLoc[currInd];
+			locBuffer[numAdded] = currInd;
+			currInd = currNode._nextInd;
+			numAdded++;
+		}
+	}
 	return numAdded;
+}
+
+void PriorityLevel::addOrRemoveCandidate(Loc candLoc, int inc)
+{
+	// Get the index of the node for the given candidate location
+	CompressedLoc candLocVal = candLoc._value;
+
+	DLNode &node = _nodeByLoc[candLocVal];
+
+	// Remove from existing count structure list
+	if (node._prevInd >= 0) {
+		DLNode &prev = _nodeByLoc[node._prevInd];
+		prev._nextInd = node._nextInd;
+	}
+	if (node._nextInd >= 0) {
+		DLNode &next = _nodeByLoc[node._nextInd];
+		next._prevInd = node._prevInd;
+	}
+	
+	// Remove from count structure heads if necessary
+	if (_headByCount[node._count] == candLocVal)
+	{
+		_headByCount[node._count] = node._nextInd;
+	}
+	// I am trying to maintain a count of the total number of candidates
+	// at this priority level, not including duplicates (count > 0)
+	if (node._count + inc == 0)
+		_numCands--;
+
+	node._count += inc;
+
+	if (node._count == 1 && inc > 0)
+		_numCands++;
+
+	// Add to count structure heads
+	Ind oldHead = _headByCount[node._count];
+	
+	// We're going at the front of that list
+	node._nextInd = oldHead;
+
+	if (oldHead >= 0)
+	{
+		// Update the previous head
+		_nodeByLoc[oldHead]._prevInd = candLocVal;
+	}
+
+	// Put us at the front of the list
+	_headByCount[node._count] = candLocVal;
+}
+
+Ind PriorityLevel::getCount(Loc l) const
+{
+	return _nodeByLoc[l._value]._count;
 }
 

@@ -31,7 +31,6 @@ TEST_F(PriorityLevelFixture, testAddOne)
 	EXPECT_EQ(l, locBuffer[0]);
 }
 
-// b priority_level_test.cpp:40
 TEST_F(PriorityLevelFixture, testAddTwo)
 {
 	Loc l1(4,5);
@@ -115,7 +114,6 @@ TEST_F(PriorityLevelFixture, testDoubleComesFirstA)
 }
 
 #if 0
-// TODO keep them sorted by count?
 TEST_F(PriorityLevelFixture, testDoubleComesFirstB)
 {
 	Loc l1(1,1);
