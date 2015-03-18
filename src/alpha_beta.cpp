@@ -22,7 +22,7 @@ Loc AlphaBeta::getBestMove()
 
 	BD(cout << "3 getBestMove");
     UtilityValue val = maxValue(alpha, beta, 0);
-	BD(cout << "4 getBestMove: " << val.first << endl);
+	BD(cout << "4 getBestMove: " << val << endl);
     return _bestTopLevelMove;
 }
 
@@ -32,7 +32,7 @@ UtilityValue AlphaBeta::maxValue(UtilityValue alpha, UtilityValue beta, Depth de
     if (_bridge.isCutoff())
     {
         UtilityValue util = _bridge.getUtility();
-		BD(cout << "2 in maxValue - getUtility gave: " << utilMove << endl);
+		BD(cout << "2 in maxValue - getUtility gave: " << util << endl);
         return util;
     }
 
