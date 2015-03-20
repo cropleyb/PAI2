@@ -6,6 +6,7 @@ typedef short CompressedLoc;
 
 // max x * max y * 2 (2 for diagonals)
 #define MAX_LOCS (20 * 32 * 2)
+#define INVALID_LOC_VAL 7788
 
 #include <assert.h>
 #include <ostream>
@@ -27,7 +28,7 @@ public:
 	Coord operator [](int dim) const
         { if (dim) return (_value/32); else return (_value&31); }
 
-	bool isValid() const { return _value < (CompressedLoc)(19 * 32); }
+	bool isValid() const { return _value != INVALID_LOC_VAL; }
 
 	friend ostream &operator <<(ostream &output, const Loc &loc)
 	{

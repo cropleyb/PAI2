@@ -17,6 +17,7 @@ public:
         _nextInd = 0;
         _loc = -1;
         _count = 0;
+		_candInd = 0;
 	}
 
     void setPrevInd(Ind ind)
@@ -26,11 +27,15 @@ public:
 
     void setNextInd(Ind ind)
 	{
+		if (_candInd == 4)
+			int foo = 1;
         _nextInd = ind;
 	}
 
     void setLoc(Loc loc)
 	{
+		if (_candInd == 4)
+			int foo = 1;
         _loc = loc;
 	}
 
@@ -44,6 +49,7 @@ public:
 	Ind _nextInd;
 	Ind _count;
 	Loc _loc;
+	Ind _candInd; // debugging only
 };
 
 class PriorityLevel
@@ -60,7 +66,8 @@ private:
 
     Ind _headByCount[MAX_COUNTS];
     Ind _numCands = 0;
-    DLNode _nodeByLoc[MAX_LOCS];
+    DLNode _dlNodes[MAX_LOCS];
+    Ind _nodeIndByLoc[MAX_LOCS];
 };
 
 #endif

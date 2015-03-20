@@ -43,3 +43,12 @@ TEST_F(LocFixture, GetCoord1And2) {
     EXPECT_EQ(3, x);
     EXPECT_EQ(5, y);
 }
+
+TEST_F(LocFixture, WhatsGoingOnWithNegValue) {
+    Loc loc(4, 0);
+    int x = loc[0];
+    int y = loc[1];
+    EXPECT_EQ(4, x);
+    EXPECT_EQ(0, y);
+    EXPECT_EQ(4, loc._value);
+}

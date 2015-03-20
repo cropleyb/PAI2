@@ -1,4 +1,4 @@
-#if 1
+#if 0
 #include "gmock/gmock.h"
 
 #define private public
@@ -131,8 +131,6 @@ TEST_F(AISubsystemFixture, test_freebie) {
 }
 #endif
 
-#endif
-
 #if 1
 // OK but slow
 
@@ -149,8 +147,6 @@ TEST_F(AISubsystemFixture, test_strange) {
 	EXPECT_EQ(Loc(8,6), move);
 }
 #endif
-
-#if 0
 
 #if 0
 
@@ -241,164 +237,4 @@ TEST_F(AISubsystemFixture, test_draw) {
 }
 #endif
 
-#if 0
-    def atest_missed_win(self): # TODO
-        self.p1.set_max_depth(2)
-        game_str = \
-"""Black versus White
-13x13
-standard rules
-1. (6, 6)
-2. (8, 4)
-3. (8, 6)
-4. (10, 6)
-5. (7, 6)
-6. (5, 6)
-7. (6, 4)
-8. (9, 5)
-9. (7, 3)
-10. (11, 7)
-11. (12, 8)
-12. (8, 2)
-13. (5, 5)
-14. (8, 1)
-15. (3, 7)
-16. (4, 6)
-17. (3, 6)
-18. (4, 6)
-19. (8, 3)
-20. (6, 3)
-21. (9, 3)
-22. (10, 3)
-23. (10, 5)
-24. (11, 4)
-25. (5, 6)
-26. (9, 6)
-27. (11, 6)
-28. (9, 6)
-29. (7, 7)
-30. (9, 2)
-31. (8, 0)
-"""
-        self.game.load_game(game_str)
-        turn, prev_move, m = self.p2.do_the_search()
-        self.assertEquals(m, (8,1))
-
-    # !python pentai/ai/t_ai_subsystem.py AIPlayerSubsystemTest.test_pacifist
-    def test_pacifist(self):
-        self.p1.set_max_depth(4)
-        game_str = \
-"""Black versus White
-9x9
-standard rules
-1. (4, 4)
-2. (5, 4)
-3. (2, 6)
-4. (5, 5)
-5. (3, 5)
-6. (5, 3)
-7. (5, 6)
-8. (1, 7)
-9. (5, 2)
-10. (6, 3)
-11. (4, 3)
-12. (4, 5)
-13. (6, 5)
-14. (4, 5)
-15. (3, 6)
-16. (4, 6)
-"""
-        self.game.load_game(game_str)
-        turn, prev_move, m = self.p1.do_the_search()
-        self.assertEquals(m, (4,7))
-
-    def test_another(self):
-        self.p1.set_max_depth(4)
-        game_str = \
-"""Black versus White
-13x13
-standard rules
-1. (6, 6)
-2. (7, 5)
-3. (5, 5)
-4. (7, 7)
-5. (4, 4)
-6. (3, 3)
-7. (7, 6)
-8. (8, 6)
-9. (9, 7)
-10. (6, 4)
-"""
-        self.game.load_game(game_str)
-        turn, prev_move, m = self.p1.do_the_search()
-        self.assertNotEquals(m, (4,6))
-
-    def atest_bother(self):
-        self.p1.set_max_depth(8)
-        game_str = \
-"""DT versus BC
-13x13
-standard rules
-1. (6, 6)
-2. (5, 7)
-3. (8, 8)
-4. (7, 7)
-5. (8, 7)
-6. (8, 6)
-7. (6, 8)
-8. (9, 5)
-9. (6, 7)
-10. (6, 5)"""
-        self.game.load_game(game_str)
-        turn, prev_move, m = self.p1.do_the_search()
-        self.assertNotIn(m, ((7,8),(5,8)))
-
-    def test_block_one_end(self):
-        self.p1.set_max_depth(8)
-        game_str = \
-"""Bruce versus DT
-13x13
-Standard rules
-1. (6, 6)
-2. (5, 5)
-3. (7, 6)
-4. (7, 4)
-5. (8, 6)
-6. (9, 3)
-7. (9, 6)"""
-        self.game.load_game(game_str)
-        turn, prev_move, m = self.p2.do_the_search()
-        self.assertIn(m, ((10,6),(5,6)))
-
-    def atest_think_in_opponents_move(self):
-        #self.p1.set_max_depth(8)
-        game_str = \
-"""Bruce versus DT
-13x13
-Standard rules
-1. (6, 6)"""
-        self.game.load_game(game_str)
-        turn, prev_move, m = self.p1.do_the_search()
-        self.assertIsNone(m)
-
-    # TODO
-    def atest_trap(self):
-        self.p1.set_max_depth(8)
-        game_str = \
-"""Killer versus Kang
-19x19
-Standard rules
-1. (9, 9)
-2. (8, 10)
-3. (6, 9)
-4. (8, 8)
-5. (8, 9)
-6. (7, 9)"""
-        self.game.load_game(game_str)
-        turn, prev_move, m = self.p1.do_the_search()
-        self.assertNotEquals(m, (10,9))
-
-if __name__ == "__main__":
-    unittest.main()
-#endif
 #endif

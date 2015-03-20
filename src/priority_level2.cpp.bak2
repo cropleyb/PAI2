@@ -79,6 +79,12 @@ void PriorityLevel::addOrRemoveCandidate(Loc candLoc, int inc)
 	if (_headByCount[node._count] == candLocVal)
 	{
 		_headByCount[node._count] = node._nextInd;
+
+#if 0
+		// Update total candidate count
+		if (node._nextInd == -1 && node._count > 0)
+			_numCands--;
+#endif
 	}
 	// I am trying to maintain a count of the total number of candidates
 	// at this priority level, not including duplicates (count > 0)
