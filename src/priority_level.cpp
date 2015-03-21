@@ -65,8 +65,9 @@ void PriorityLevel::addOrRemoveCandidate(Loc candLoc, int inc)
 {
 	// Get the index of the node for the given candidate location
 	CompressedLoc candLocVal = candLoc._value;
+	assert(candLocVal >= 0);
 	Ind candInd = _nodeIndByLoc[candLocVal];
-	BD(cout << "Entering addOrRemoveCandidate " << this << " for " << inc << " " << (int)candLoc._value << endl);
+	BD(cout << "Entering addOrRemoveCandidate " << this << " for inc " << inc << " of loc " << (int)candLoc._value << " candInd: " << candInd << endl);
 
 	if (candInd == INVALID_LOC_VAL)
 	{
@@ -127,7 +128,7 @@ void PriorityLevel::addOrRemoveCandidate(Loc candLoc, int inc)
 	else
 	{
 		// This Loc already has a valid candInd for this priority level,
-		// and therefore has a valid DLNode for it.
+		// and therefore should have a valid DLNode for it.
 		DLNode &candNode = _dlNodes[candInd];
 		if (candNode._loc != candLoc)
 		{
