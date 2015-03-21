@@ -145,3 +145,11 @@ TEST_F(PositionStatsFixture, TestPatternCount) {
 	PattCount c = ps.getNumPatterns(P2, Threat);
 	EXPECT_EQ(1, c);
 }
+
+TEST_F(PositionStatsFixture, TestBlockedCount) {
+	LocArr ll;
+	ps.reportCandidates(P2, Blocked, ll, 1); // inc
+
+	PattCount c = ps.getNumPatterns(P2, Blocked);
+	EXPECT_EQ(1, c);
+}
