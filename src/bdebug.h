@@ -8,9 +8,9 @@ using std::endl;
 //#define BDEBUG
 
 #ifdef BDEBUG 
-#define BD(x) x
+#define BD(X) X
 #else 
-#define BD(x)
+#define BD(X)
 #endif
 
 #endif
