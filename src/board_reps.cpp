@@ -56,7 +56,7 @@ void BoardReps::setOcc(Loc l, Colour c)
 	{
 		assert(dir>=0);
 		assert(dir<MAX_DIR);
-		assert(l._value>=0);
+		assert(l.isValid());
 		assert(l._value<=MAX_LOCS);
 
 		// Find the en/decoding info for that loc in the given direction
