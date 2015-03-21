@@ -24,7 +24,7 @@ void matchRange(U64 occs, const SpanEntry &span, REPORTER &reporter, int inc)
 		if (found->_patternType == NoPattern) continue;
 
         // Report it
-		LinePattern toReport = *found;
+		LinePattern toReport(*found);
 
 		for (int i=0; i<toReport._numInds; i++)
 		{
@@ -41,9 +41,9 @@ void matchRange(U64 occs, const SpanEntry &span, REPORTER &reporter, int inc)
 		if (found->_patternType == NoPattern) continue;
 
         // Report it too
-		LinePattern toReport2 = *found;
+		LinePattern toReport2(*found);
 
-		for (int i=0; i<toReport._numInds; i++)
+		for (int i=0; i<toReport2._numInds; i++)
 		{
 			toReport2._candInds[i] += ind;
 		}
