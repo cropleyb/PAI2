@@ -22,7 +22,7 @@ public:
         _captureScoreBase = 300;
         _takeScoreBase = 80;
         _threatScoreBase = 20;
-        _enclosedFourBase = 400;
+        _blockedFourBase = 200; // Halved as only one is blocked
         _useNetCaptures = true;
         _lengthFactor = 35;
         _forceDepth = 0;
@@ -50,7 +50,7 @@ private:
 	int _captureScoreBase;
 	int _takeScoreBase;
 	int _threatScoreBase;
-	int _enclosedFourBase;
+	int _blockedFourBase;
 	bool _useNetCaptures;
 	int _capturesScale[6];
 	// _lengthScale;
@@ -163,6 +163,9 @@ UtilityValue UtilityCalc<PS>::utilityScore(Colour evalColour, Colour /*turnColou
 	score += tc;
 
 	tc = threatContrib(evalPatterns[Threat], captured);
+	score += tc;
+
+	tc = evalPatterns[Blocked] * _blockedFourBase;
 	score += tc;
 
 	return score;
