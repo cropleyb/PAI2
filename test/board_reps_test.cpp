@@ -87,6 +87,7 @@ TEST_F(BoardRepsFixture, CheckLine3s) {
 }
 
 TEST_F(BoardRepsFixture, CheckThreatIsAlsoTwo) {
+	// | . W W . . . .
 	br.setOcc(Loc(1,0), P2);
 	br.setOcc(Loc(2,0), P2);
 
