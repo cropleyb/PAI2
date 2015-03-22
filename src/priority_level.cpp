@@ -162,7 +162,8 @@ void PriorityLevel::addOrRemoveCandidate(Loc candLoc, int inc)
 		}
 		
 		// Remove from count structure heads if necessary
-		if (_headByCount[candNode._count] == candInd)
+		if (candNode._prevInd == INVALID_LOC_VAL)
+		// == (_headByCount[candNode._count] == candInd)
 		{
 			_headByCount[candNode._count] = candNode._nextInd;
 			if (candNode._count == 0)
