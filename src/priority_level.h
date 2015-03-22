@@ -57,13 +57,12 @@ class PriorityLevel
 public:
 	PriorityLevel();
 
-	Ind getCands(Loc *locBuffer, Ind max) const;
+	Ind getCands(Loc *locBuffer, Ind max, bool tried[MAX_LOCS]) const;
 	Ind getNumCands() const;
 	Ind getCount(Loc l) const;
 	void addOrRemoveCandidate(Loc l, int inc=1);
 
 private:
-
     Ind _headByCount[MAX_COUNTS];
     Ind _numCands = 0;
     DLNode _dlNodes[MAX_LOCS];

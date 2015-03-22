@@ -103,9 +103,9 @@ TEST_F(MoveSuggesterFixture, TwoMovesSamePL) {
 
 TEST_F(MoveSuggesterFixture, TwoMovesDiffPL) {
 	Loc l1(1,1);
-	arcs(P1, Line3, 1, l1); // length 2, inc
+	arcs(P1, Line3, 1, l1); // length 3, inc
 
-	Loc l2(1,1);
+	Loc l2(2,1);
 	arcs(P1, Line2, 1, l2); // length 2, inc
 
 	Loc move = ms.getNextMove(2, P1);
@@ -116,6 +116,22 @@ TEST_F(MoveSuggesterFixture, TwoMovesDiffPL) {
 	EXPECT_EQ(move.isValid(), true);
 	EXPECT_EQ(l2, move);
 
+	move = ms.getNextMove(2, P1);
+	EXPECT_EQ(move.isValid(), false);
+}
+
+TEST_F(MoveSuggesterFixture, SameMoveDiffPL) {
+	Loc l1(1,1);
+	arcs(P1, Line3, 1, l1); // length 3, inc
+
+	arcs(P1, Line2, 1, l1); // length 2, inc
+
+	Loc move = ms.getNextMove(2, P1);
+	EXPECT_EQ(move.isValid(), true);
+	EXPECT_EQ(l1, move);
+
+	// Should only suggest l1 once.
+	
 	move = ms.getNextMove(2, P1);
 	EXPECT_EQ(move.isValid(), false);
 }

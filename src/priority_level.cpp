@@ -29,7 +29,7 @@ Ind PriorityLevel::getNumCands() const
 	return _numCands;
 }
 
-Ind PriorityLevel::getCands(Loc *locBuffer, Ind max) const
+Ind PriorityLevel::getCands(Loc *locBuffer, Ind max, bool tried[MAX_LOCS]) const
 {
 	Ind numAdded = 0;
 
@@ -53,9 +53,13 @@ Ind PriorityLevel::getCands(Loc *locBuffer, Ind max) const
 		if (currInd != INVALID_LOC_VAL)
 		{
 			const DLNode &currNode = _dlNodes[currInd];
-			locBuffer[numAdded] = currNode._loc;
+			if (!tried[currNode._loc._value])
+			{
+				locBuffer[numAdded] = currNode._loc;
+				tried[currNode._loc._value] = true;
+				numAdded++;
+			}
 			currInd = currNode._nextInd;
-			numAdded++;
 		}
 	}
 	return numAdded;

@@ -11,11 +11,12 @@ public:
 
 	PriorityLevel pl;
 	Loc locBuffer[MAX_CANDS];
+	bool tried[MAX_LOCS] = { 0 };
 };
 
 TEST_F(PriorityLevelFixture, testEmpty)
 {
-	Ind candCount = pl.getCands(locBuffer, 5);
+	Ind candCount = pl.getCands(locBuffer, 5, tried);
 
 	EXPECT_EQ(0, candCount);
 }
@@ -25,7 +26,7 @@ TEST_F(PriorityLevelFixture, testAddOne)
 	Loc l(5,3);
 	arc(l);
 	
-	int candCount = pl.getCands(locBuffer, 5);
+	int candCount = pl.getCands(locBuffer, 5, tried);
 
 	EXPECT_EQ(1, candCount);
 	EXPECT_EQ(l, locBuffer[0]);
@@ -38,7 +39,7 @@ TEST_F(PriorityLevelFixture, testAddTwo)
 	arc(l1);
 	arc(l2);
 	
-	int candCount = pl.getCands(locBuffer, 5);
+	int candCount = pl.getCands(locBuffer, 5, tried);
 
 	EXPECT_EQ(2, candCount);
 	EXPECT_EQ(l2, locBuffer[0]);
@@ -51,7 +52,7 @@ TEST_F(PriorityLevelFixture, testOneTwice)
 	arc(l);
 	arc(l);
 	
-	int candCount = pl.getCands(locBuffer, 5);
+	int candCount = pl.getCands(locBuffer, 5, tried);
 
 	EXPECT_EQ(1, candCount);
 	EXPECT_EQ(l, locBuffer[0]);
@@ -63,7 +64,7 @@ TEST_F(PriorityLevelFixture, testAddOneThenRemoveIt)
 	arc(l);
 	arc(l, -1);
 	
-	int candCount = pl.getCands(locBuffer, 5);
+	int candCount = pl.getCands(locBuffer, 5, tried);
 
 	EXPECT_EQ(0, candCount);
 }
@@ -76,7 +77,7 @@ TEST_F(PriorityLevelFixture, testAddTwoRemoveOne)
 	arc(l2);
 	arc(l1, -1);
 	
-	int candCount = pl.getCands(locBuffer, 5);
+	int candCount = pl.getCands(locBuffer, 5, tried);
 
 	EXPECT_EQ(1, candCount);
 	EXPECT_EQ(l2, locBuffer[0]);
@@ -91,7 +92,7 @@ TEST_F(PriorityLevelFixture, testAddTooManyToIterateOver)
 	arc(l2);
 	arc(l3);
 	
-	int candCount = pl.getCands(locBuffer, 2);
+	int candCount = pl.getCands(locBuffer, 2, tried);
 
 	EXPECT_EQ(2, candCount);
 	EXPECT_EQ(l3, locBuffer[0]);
@@ -106,7 +107,7 @@ TEST_F(PriorityLevelFixture, testDoubleComesFirstA)
 	arc(l2);
 	arc(l2);
 	
-	int candCount = pl.getCands(locBuffer, 2);
+	int candCount = pl.getCands(locBuffer, 2, tried);
 
 	EXPECT_EQ(2, candCount);
 	EXPECT_EQ(l2, locBuffer[0]);
@@ -122,7 +123,7 @@ TEST_F(PriorityLevelFixture, testDoubleComesFirstB)
 	arc(l1);
 	arc(l2);
 	
-	int candCount = pl.getCands(locBuffer, 2);
+	int candCount = pl.getCands(locBuffer, 2, tried);
 
 	EXPECT_EQ(2, candCount);
 	EXPECT_EQ(l1, locBuffer[0]);

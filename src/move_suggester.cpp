@@ -148,7 +148,7 @@ void MoveSuggester::fillPriorityLevels(Colour ourColour, Colour theirColour)
 Breadth MoveSuggester::filterCandidates(Loc *moveBuffer, Depth depth, Breadth maxMoves, Colour ourColour)
 {
 	Breadth found = 0;
-	bool tried[MAX_LOCS];
+	bool tried[MAX_LOCS] = { 0 };
 	
 	Colour turnColour = ourColour;
 	if (depth % 2) {
@@ -163,8 +163,8 @@ Breadth MoveSuggester::filterCandidates(Loc *moveBuffer, Depth depth, Breadth ma
 	for (int slotInd=0; slotInd<_numSearchLevels; slotInd++)
 	{
 		const PriorityLevel *pl = _toSearchLevels[slotInd];
-		Breadth foundFromPL = pl->getCands(moveBuffer, maxMoves-found);
-		BD(cout << "Found " << (int)foundFromPL << endl;)
+		Breadth foundFromPL = pl->getCands(moveBuffer, maxMoves-found, tried);
+		BD(cout << "MS Found " << (int)foundFromPL << endl;)
 
 		found += foundFromPL;
 		if (found >= maxMoves)
