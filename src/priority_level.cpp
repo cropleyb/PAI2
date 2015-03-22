@@ -31,14 +31,7 @@ void PriorityLevel::addOrRemoveCandidate(Loc candLoc, int inc)
 	if (nodeInd < 0)
 	{
 		BD(cout << "ARC 1" << endl);
-		if (inc < 0)
-		{
-			BD(cout << "ARC 2" << endl);
-			// Trying to reduce the count below zero. Error?
-			return;
-		}
-		BD(cout << "ARC 3" << endl);
-		// assert(inc > 0)
+		// assert(inc > 0);
 
 		// Node for this loc has no count yet
 		// Use the next node from the free list
