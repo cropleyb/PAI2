@@ -36,9 +36,6 @@ public:
 		return _captured[c];
 	}
 
-
-	// TODO: checkerboardStats
-	
 	void report(const SpanEntry &spanEntry, const LinePattern &patternEntry, int inc);
 
 	const PriorityLevel &getPriorityLevel(Colour c, PatternType pattern) const
@@ -56,6 +53,25 @@ public:
 		return _patternCounts[c][pattern];
 	}
 
+	void updateCheckerboardStats(Colour c, Loc loc, int inc)
+	{
+        if (!c)
+            // We don't care about empty spaces
+            return;
+
+        Colour squareColour = (loc[0] % 2) ^ (loc[1] % 2);
+
+        _checkerboardStats[c][squareColour] += inc;
+	}
+
+	UtilityValue getCheckerboardContrib(Colour c) const
+	{
+		const short *ours = _checkerboardStats[c];
+		
+		UtilityValue ret = abs(ours[0] - ours[1])/(ours[0] + ours[1] + 1);
+		return ret;
+	}
+
 private:
 	// Test code only
 	void reportCandidate(Colour colour, PatternType pt, Loc loc, Step inc);
@@ -64,6 +80,7 @@ private:
 	PriorityLevel _levels[3][MAX_PATTERN_TYPE];
 	PattCount _patternCounts[3][MAX_PATTERN_TYPE];
 	CapCount _captured[3];
+	short _checkerboardStats[3][2];
 };
 
 #endif

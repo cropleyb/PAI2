@@ -37,6 +37,12 @@ public:
 		return _patternCounts[c];
 	}
 	
+	UtilityValue getCheckerboardContrib(Colour /*c*/) const
+	{
+		// TODO: test this...
+		return 0;
+	}
+	
 	CapCount _captured[3];
 	PattCount _patternCounts[3][MAX_PATTERN_TYPE];
 };

@@ -168,6 +168,10 @@ UtilityValue UtilityCalc<PS>::utilityScore(Colour evalColour, Colour /*turnColou
 	tc = evalPatterns[Blocked] * _blockedFourBase;
 	score += tc;
 
+	// Give an advantage to having more pieces on one colour of squares
+	tc = _posStats.getCheckerboardContrib(evalColour) * _checkerboardValue;
+	score += tc;
+
 	return score;
 }
 

@@ -31,6 +31,7 @@ void PenteGame::makeMove(Loc l, Colour p)
 	}
 
 	_boardReps.setOcc(l, p);
+	_posStats.updateCheckerboardStats(p, l, 1);
 	_moveHist.saveMove(l, p, _captureDirs);
 }
 
@@ -62,6 +63,8 @@ void PenteGame::reportCapture(const SpanEntry &span, bool left, Colour p)
 	
 	_boardReps.setOcc(capLoc1, EMPTY);
 	_boardReps.setOcc(capLoc2, EMPTY);
+	_posStats.updateCheckerboardStats(otherPlayer(p), capLoc1, -1);
+	_posStats.updateCheckerboardStats(otherPlayer(p), capLoc2, -1);
 
 	int fullCircleDir = span._direction;
 	if (left)
@@ -82,10 +85,12 @@ void PenteGame::undoLastMove()
 	_moveHist.undoLastMove();
 
 	_boardReps.setOcc(l, EMPTY);
+	Colour movedPlayer = 1 + (mn) % 2;
+
+	_posStats.updateCheckerboardStats(movedPlayer, l, -1);
 
 	if (cd)
 	{
-		Colour capturingPlayer = 1 + (mn) % 2;
 		Colour capturedPlayer = 1 + (mn + 1) % 2;
 
 		// Must undo some captures
@@ -93,9 +98,8 @@ void PenteGame::undoLastMove()
 		{
 			if (cd & (1 << dir))
 			{
-				//std::cout << " (uncap) [" << (int)capturingPlayer << ']';
-				// THIS IS GIVING THE WRONG COLOUR. OR IS IT THE FORWARD CAP?
-				_posStats.reportCaptured(capturingPlayer, 2, -1);
+				//std::cout << " (uncap) [" << (int)movedPlayer << ']';
+				_posStats.reportCaptured(movedPlayer, 2, -1);
 
 				int realDir=dir;
 				bool left = false;
@@ -118,6 +122,8 @@ void PenteGame::undoLastMove()
 				
 				_boardReps.setOcc(capLoc1, capturedPlayer);
 				_boardReps.setOcc(capLoc2, capturedPlayer);
+				_posStats.updateCheckerboardStats(capturedPlayer, capLoc1, 1);
+				_posStats.updateCheckerboardStats(capturedPlayer, capLoc2, 1);
 			}
 		}
 	}
