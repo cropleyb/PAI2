@@ -6,7 +6,7 @@
 
 typedef short Ind;
 
-#define MAX_COUNTS 20
+// #define MAX_NODES 19*19
 
 class DLNode
 {
@@ -17,7 +17,6 @@ public:
         _nextInd = 0;
         _loc = -1;
         _count = 0;
-		_candInd = 0;
 	}
 
     void setPrevInd(Ind ind)
@@ -27,15 +26,11 @@ public:
 
     void setNextInd(Ind ind)
 	{
-		if (_candInd == 4)
-			int foo = 1;
         _nextInd = ind;
 	}
 
     void setLoc(Loc loc)
 	{
-		if (_candInd == 4)
-			int foo = 1;
         _loc = loc;
 	}
 
@@ -49,7 +44,6 @@ public:
 	Ind _nextInd;
 	Ind _count;
 	Loc _loc;
-	Ind _candInd; // debugging only
 };
 
 class PriorityLevel
@@ -63,7 +57,24 @@ public:
 	void addOrRemoveCandidate(Loc l, int inc=1);
 
 private:
-    Ind _headByCount[MAX_COUNTS];
+	bool myOrder(const Loc &l1, const Loc &l2) const;
+
+    struct doCompare
+    { 
+        doCompare( const PriorityLevel& info ) : _mInfo(info) { } // only if you really need the object state
+        const PriorityLevel& _mInfo;
+
+        bool operator()( const Loc& i1, const Loc& i2  )
+        { 
+            // comparison code using m_info
+            int count1 = _mInfo._dlNodes[_mInfo._nodeIndByLoc[i1._value]]._count;
+            int count2 = _mInfo._dlNodes[_mInfo._nodeIndByLoc[i2._value]]._count;
+			return count1 > count2;
+        }
+    };
+
+    Ind _freeListInd = 0;
+    Ind _dlHeadInd = -1;
     Ind _numCands = 0;
     DLNode _dlNodes[MAX_LOCS];
     Ind _nodeIndByLoc[MAX_LOCS];
