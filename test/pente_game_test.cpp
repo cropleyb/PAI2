@@ -473,7 +473,10 @@ TEST_F(PenteGameFixture, UtilityIsConnected) {
 	EXPECT_GT(uv2, uv1);
 }
 
+#if 0
+// Disabled for now, not showing a speedup in system tests.
 TEST_F(PenteGameFixture, SaveAndUseTranspositionTable) {
+	g._currDepth = 6; // Hack
 	g.makeMove(Loc(9,9), P1);
 	g.makeMove(Loc(0,0), P2);
 	g.makeMove(Loc(9,8), P1);
@@ -481,6 +484,12 @@ TEST_F(PenteGameFixture, SaveAndUseTranspositionTable) {
 	g.makeMove(Loc(7,9), P1);
 	g.makeMove(Loc(2,0), P2);
 	UtilityValue uv1 = g.getUtility();
+    g.undoLastMove();
+    g.undoLastMove();
+    g.undoLastMove();
+    g.undoLastMove();
+    g.undoLastMove();
+    g.undoLastMove();
 
 	g.makeMove(Loc(9,9), P1);
 	g.makeMove(Loc(2,0), P2);
@@ -493,6 +502,7 @@ TEST_F(PenteGameFixture, SaveAndUseTranspositionTable) {
 	g.clearTT();
 	EXPECT_EQ(false, g.isInTT());
 }
+#endif
 
 #if 0
     bool cutoff = isCutoff();

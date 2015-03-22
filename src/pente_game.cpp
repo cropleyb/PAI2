@@ -152,8 +152,8 @@ bool PenteGame::isCutoff() const
 
 UtilityValue PenteGame::getUtility()
 {
-#if 1
-	if (_currDepth > 2)
+#if 0
+	if (_currDepth > 2 && _currDepth < _maxDepth - 1)
 	{
 		UtilityValue ttVal;
 		bool isInTT = _transpositionTable.lookup(*this, ttVal);
@@ -168,8 +168,8 @@ UtilityValue PenteGame::getUtility()
 	Colour turnColour = 1 + (1 + _currDepth + _ourColour) % 2; // TODO: incremental with otherPlayer?
 	UtilityValue uv = _utilCalc.calcUtility(turnColour, searchColour, lastMn+1);
 	// std::cout << uv;
-#if 1
-	if (lastMn > 2) // TODO: should be able to use _currDepth
+#if 0
+	if (_currDepth > 2 && _currDepth < _maxDepth - 1)
 	{
 		_transpositionTable.savePos(*this, uv);
 	}
