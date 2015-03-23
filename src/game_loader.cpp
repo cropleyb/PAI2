@@ -1,5 +1,8 @@
 #include "game_loader.h"
 #include "pente_game.h"
+#include "loc.h"
+#include "span_lookup_table.h"
+#include "alpha_beta.h"
 
 #include <string>
 #include <sstream>
@@ -7,30 +10,31 @@
 #include <iostream>
 #include <cstddef>
 
+using namespace std;
 
-std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
-    std::stringstream ss(s);
-    std::string item;
-    while (std::getline(ss, item, delim)) {
+vector<string> &split(const string &s, char delim, vector<string> &elems) {
+    stringstream ss(s);
+    string item;
+    while (getline(ss, item, delim)) {
         elems.push_back(item);
     }
     return elems;
 }
 
-std::vector<std::string> split(const std::string &s, char delim) {
-    std::vector<std::string> elems;
+vector<string> split(const string &s, char delim) {
+    vector<string> elems;
     split(s, delim, elems);
     return elems;
 }
 
-void GameLoader::loadStr(PenteGame &g, const string &gameStr)
+void loadGameStr(PenteGame &g, const string &gameStr)
 {
-	std::vector<std::string> lines;
+	vector<string> lines;
     split(gameStr, '\n', lines);
 
 	Colour currColour = P1;
 
-	for (std::string line : lines)
+	for (string line : lines)
 	{
 		// e.g.
 		// 1. (5,3)
@@ -40,12 +44,34 @@ void GameLoader::loadStr(PenteGame &g, const string &gameStr)
 		string coord1str(line.substr(openParenInd+1, commaInd-openParenInd-1));
 		string coord2str(line.substr(commaInd+1, closeParenInd-commaInd-1));
 		 
-		int coord1 = std::atoi(coord1str.c_str());
-		int coord2 = std::atoi(coord2str.c_str());
+		int coord1 = atoi(coord1str.c_str());
+		int coord2 = atoi(coord2str.c_str());
 		g.makeMove(Loc(coord1,coord2), currColour);
-		std::cout << " P" << (int)currColour;
+		cout << " P" << (int)currColour;
 		currColour = otherPlayer(currColour);
 	}
     g.setColour(currColour);
 }
 
+Loc doTheSearch(const string &gameStr)
+{
+	buildSpanTable(19);
+
+	PenteGame g;
+	// g.setMaxDepth(maxDepth);
+	g.setMaxDepth(2); // FIXME
+	loadGameStr(g, gameStr);
+
+	AlphaBeta ab(g);
+	Loc bestMove = ab.getBestMove();
+	return bestMove;
+}
+
+const char *getMoveFromStr(const char *gameChars)
+{
+	string gameStr(gameChars);
+	Loc move = doTheSearch(gameStr);
+	static char moveBuf[100];
+	sprintf(moveBuf, "%d,%d\n", move[0], move[1]);
+	return moveBuf;
+}

@@ -12,26 +12,24 @@
 using std::string;
 using testing::ElementsAre;
 
+extern void loadGameStr(PenteGame &g, const string &gameStr);
+
 class TranspositionTableFixture : public testing::Test {
 public:
 	TranspositionTableFixture() {
-		//tt.clear(); // TODO
-		//buildSpanTable(19);
 	}
 
 	void loadAndStore(const string &gameStr, UtilityValue storeValue)
 	{
 		PenteGame g;
-		GameLoader gl = GameLoader();
-		gl.loadStr(g, gameStr);
+		loadGameStr(g, gameStr);
 		tt.savePos(g, storeValue);
 	}
 
    	bool loadAndLookup(const string &gameStr, UtilityValue &val)
 	{
 		PenteGame g;
-		GameLoader gl = GameLoader();
-		gl.loadStr(g, gameStr);
+		loadGameStr(g, gameStr);
 		return tt.lookup(g, val);
 	}
 
