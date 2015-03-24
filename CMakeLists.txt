@@ -34,7 +34,11 @@ function(set_memcheck_test_properties name)
   set_tests_properties(memcheck_${name} ${ARGN})
 endfunction(set_memcheck_test_properties)
 
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG -O3")
+# For callgrind
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG -g -O3")
+set(CMAKE_BUILD_TYPE Debug)
+# For max speed
+# set(CMAKE_CXX_FLAGS_DEBUG "-O3")
 
 # cmake -G ... (to configure your build)
 # ctest -D ExperimentalBuild (this will build your code)
@@ -56,6 +60,9 @@ endif(SRC_FILES)
 ###############################################################################
 set(TEST_EXECUTABLE_NAME "tests")
 
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG -g -O3")
+set(CMAKE_BUILD_TYPE Debug)
+
 # Test files
 file(GLOB TEST_FILES "test/*.cpp")
 
@@ -73,3 +80,8 @@ target_link_libraries("${TEST_EXECUTABLE_NAME}" gmock gtest pthread)
 include_directories(BEFORE ".")
 include_directories(BEFORE "src/")
 
+# Library
+###############################################################################
+file(GLOB SRC_FILES "src/*.cpp")
+
+add_library("pai2" SHARED ${SRC_FILES})
