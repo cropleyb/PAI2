@@ -168,4 +168,52 @@ Assertion failed: (l._value<=MAX_LOCS), function setOcc, file /Users/cropleyb/Dr
 
 setOcc is being passed a Loc::INVALID
 
+Remaining
+---------
+/ sorting candidates per level in the priority levels
+checkerboard
+half-blocked to PosStats
+/ half-blocked scoring
+optimise transposition table to reduce copying for store?
+CMD line interface?
+Integrate with python code
+Configuration a la AIGenome
+Test turning off the TT?
 
+Crash???
+--------
+What's going on?
+
+[ RUN      ] AISubsystemFixture.test_strange
+Assertion failed: (l._value>=0), function setOcc, file /Users/cropleyb/Dropbox/pai2/src/board_reps.cpp, line 61.
+ P1 P2 P1 P2 P1 P2 P1/bin/bash: line 1: 90981 Abort trap: 6           debug/tests
+
+This is coming from the MoveSuggester. How is it getting there?
+I thought this was working?
+- Debug it
+1. More asserts
+- Analyse source
+- Analyse source changes
+
+Which PriorityLevel class is best:
+- unsorted. lower playing ability than pai1
+- sorted by separate dirty bit sort call. Messy?
+- sorted incrementally. yes
+
+- node indexed by Loc directly (array) - is this the slowdown? probably.
+- node indexed by Loc indirectly (sep. array). yes
+
+Based on:
+PriorityLevel - easier? Hmmm.
+PriorityLevel2 - yeah
+
+LengthLookupTable
+4 ** 5 = 2 ** 10 = 1024 slots - lots of lookups.
+Quick check: 1024 bits = 32 slots of 32 bit uints.
+
+Use from python code
+--------------------
+/ String based API in the C++ code.
+Build a library with CMake first? static lib? dynamic lib?
+Or build the C++ code directly from setup.py as a cython extension?
+NOGIL?
