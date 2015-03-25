@@ -10,7 +10,7 @@ class PositionStatsFixture : public testing::Test {
 public:
 	PositionStats ps;
 	Loc locBuffer[MAX_CANDS];
-	bool tried[MAX_LOCS] = { 0 };
+	U64 seen[MAX_WIDTH] = { 0 };
 };
 
 using ::testing::AtLeast;
@@ -24,7 +24,7 @@ TEST_F(PositionStatsFixture, NoStatsYet) {
 	const PriorityLevel &pl = ps.getPriorityLevel(P1, Line1);
 	EXPECT_EQ(0, pl.getNumCands());
 
-	Ind found = pl.getCands(locBuffer, 4, tried);
+	Ind found = pl.getCands(locBuffer, 4, seen);
 	EXPECT_EQ(0, found);
 }
 
@@ -37,7 +37,7 @@ TEST_F(PositionStatsFixture, AddSingleP1) {
 	const PriorityLevel &pl = ps.getPriorityLevel(P1, Line1);
 	EXPECT_EQ(1, pl.getNumCands());
 
-	Ind found = pl.getCands(locBuffer, 4, tried); // Max
+	Ind found = pl.getCands(locBuffer, 4, seen); // Max
 	EXPECT_EQ(1, found);
 	EXPECT_EQ(l1, locBuffer[0]);
 }
@@ -56,7 +56,7 @@ TEST_F(PositionStatsFixture, AddThreeP2s) {
 	EXPECT_EQ(0, pl1.getNumCands());
 	const PriorityLevel &pl2 = ps.getPriorityLevel(P2, Line2);
 
-	Ind found = pl2.getCands(locBuffer, 4, tried); // Max
+	Ind found = pl2.getCands(locBuffer, 4, seen); // Max
 	EXPECT_EQ(3, found);
 
 	// FIXME: remove order dependence
@@ -75,7 +75,7 @@ TEST_F(PositionStatsFixture, AddAndRemoveSingleP1) {
 	const PriorityLevel &pl = ps.getPriorityLevel(P1, Line1);
 	EXPECT_EQ(0, pl.getNumCands());
 
-	Ind found = pl.getCands(locBuffer, 4, tried); // Max
+	Ind found = pl.getCands(locBuffer, 4, seen); // Max
 	EXPECT_EQ(0, found);
 }
 

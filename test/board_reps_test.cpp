@@ -20,7 +20,7 @@ public:
     PositionStats ps;
     BoardReps br;
 	Loc locBuffer[MAX_CANDS];
-	bool tried[MAX_LOCS] = { 0 };
+	U64 seen[MAX_WIDTH] = { 0 };
 };
 
 ////////////////////////////////////////////////////////
@@ -97,7 +97,7 @@ TEST_F(BoardRepsFixture, CheckThreatIsAlsoTwo) {
 	EXPECT_EQ(2, pl.getNumCands());
 
 	// Check threat candidates
-	int numCands = pl.getCands(locBuffer, 5, tried);
+	int numCands = pl.getCands(locBuffer, 5, seen);
 	EXPECT_EQ(2, numCands); // as above
 	EXPECT_EQ(Loc(3,0), locBuffer[0]);
 	EXPECT_EQ(Loc(0,0), locBuffer[1]);
@@ -107,8 +107,8 @@ TEST_F(BoardRepsFixture, CheckThreatIsAlsoTwo) {
 	EXPECT_EQ(3+1, pl2.getNumCands()); // Two of the candidates are repeated
 
 	// Check 2->3 length candidates
-	bool tried2[MAX_LOCS] = { 0 };
-	numCands = pl2.getCands(locBuffer, 5, tried2);
+	U64 seen2[MAX_WIDTH] = { 0 };
+	numCands = pl2.getCands(locBuffer, 5, seen2);
 	EXPECT_EQ(3+1, numCands); // Count should be the same
 	EXPECT_EQ(Loc(4,0), locBuffer[0]);
 	EXPECT_EQ(Loc(3,0), locBuffer[1]);
@@ -129,7 +129,7 @@ TEST_F(BoardRepsFixture, CheckFarEdgeThreatE) {
 	EXPECT_EQ(2, pl.getNumCands());
 
 	// Check threat candidates
-	int numCands = pl.getCands(locBuffer, 5, tried);
+	int numCands = pl.getCands(locBuffer, 5, seen);
 	EXPECT_EQ(2, numCands); // as above
 	EXPECT_EQ(Loc(18,0), locBuffer[0]);
 	EXPECT_EQ(Loc(15,0), locBuffer[1]);

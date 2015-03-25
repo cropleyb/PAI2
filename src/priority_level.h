@@ -51,7 +51,7 @@ class PriorityLevel
 public:
 	PriorityLevel();
 
-	Ind getCands(Loc *locBuffer, Ind max, bool tried[MAX_LOCS]) const;
+	Ind getCands(Loc *locBuffer, Ind max, U64 seen[MAX_WIDTH]) const;
 	Ind getNumCands() const;
 	Ind getCount(Loc l) const;
 	void addOrRemoveCandidate(Loc l, int inc=1);

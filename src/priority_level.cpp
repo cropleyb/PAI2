@@ -128,7 +128,7 @@ bool PriorityLevel::myOrder(const Loc &l1, const Loc &l2) const
 	return (getCount(l1) > getCount(l2));
 }
 
-Ind PriorityLevel::getCands(Loc *locBuffer, Ind max, bool tried[MAX_LOCS]) const
+Ind PriorityLevel::getCands(Loc *locBuffer, Ind max, U64 seen[MAX_WIDTH]) const
 {
 	BD(cout << "getCands top - " << (void *)this << endl);
 	BD(cout << "getCands 1 - _dlHeadInd" << _dlHeadInd << endl);
@@ -146,11 +146,13 @@ Ind PriorityLevel::getCands(Loc *locBuffer, Ind max, bool tried[MAX_LOCS]) const
 			BD(cout << "getCands 3 - INVALID" << endl);
 			break;
 		}
-		if (!tried[currNode._loc._value])
+		Coord currNodeX = currNode._loc[0];
+		Coord currNodeY = currNode._loc[1];
+		if (!(seen[currNodeY] & ((U64)1 << currNodeX)))
 		{
 			BD(cout << "getCands 4 - adding " << currNode._loc._value << endl);
 			locBuffer[numAdded] = currNode._loc;
-			tried[currNode._loc._value] = true;
+			seen[currNodeY] |= ((U64)1 << currNodeX);
 			numAdded++;
 		}
 		currInd = currNode._nextInd;
