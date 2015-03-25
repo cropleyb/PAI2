@@ -60,9 +60,6 @@ endif(SRC_FILES)
 ###############################################################################
 set(TEST_EXECUTABLE_NAME "tests")
 
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG -g -O3")
-set(CMAKE_BUILD_TYPE Debug)
-
 # Test files
 file(GLOB TEST_FILES "test/*.cpp")
 
