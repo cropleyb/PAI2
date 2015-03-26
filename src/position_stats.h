@@ -22,6 +22,8 @@ public:
 			{
 				_patternCounts[c][p] = 0;
 			}
+			_checkerboardStats[c][0] = 0;
+			_checkerboardStats[c][1] = 0;
 		}
 	}
 
