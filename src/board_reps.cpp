@@ -4,6 +4,14 @@
 #include "board_strip.h"
 #include "position_stats.h"
 
+// For debugging
+#include <iostream>
+#include <strstream>
+#include <iomanip>
+
+using namespace std;
+
+// Production code
 BoardReps::BoardReps(BoardWidth boardSize, PositionStats &posStats) :
     _posStats(posStats),
 	_boardSize(boardSize)
@@ -87,5 +95,40 @@ Colour BoardReps::getOcc(Loc l) const
 	U64 mask = (U64)3 << shift;
 	U64 val = (_boardStrips[E_DIR][spanEntry->_strip] & mask);
 	return val >> shift;
+}
+
+// Debugging...
+void BoardReps::print() const
+{
+	Coord size = 19;
+	char rep = '\n';
+	strstream ss;
+	ss << "  ";
+	for (int x=0;x<size;x++)
+	{
+		ss << setfill(' ') << setw(2) << x;
+	}
+	ss << '\n';
+	for (int y=size-1;y>=0;y--)
+	{
+		ss << setfill(' ') << setw(2) << y;
+		ss << ' ';
+		for (int x=0;x<size;x++)
+		{
+			Colour occCol = getOcc(Loc(x,y));
+			char occRep = '.';
+			if (occCol == P1)
+			{
+				occRep = 'B';
+			} else if (occCol == P2) {
+				occRep = 'W';
+			} else if (occCol == P1+P2) {
+				occRep = 'E';
+			}
+			ss << occRep << ' ';
+		}
+		ss << '\n';
+	}
+	cout << ss.str();
 }
 

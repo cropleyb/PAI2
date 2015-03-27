@@ -53,13 +53,12 @@ void loadGameStr(PenteGame &g, const string &gameStr)
     g.setColour(currColour);
 }
 
-Loc doTheSearch(const string &gameStr)
+Loc doTheSearch(const string &gameStr, Depth depth)
 {
 	buildSpanTable(19);
 
 	PenteGame g;
-	// g.setMaxDepth(maxDepth);
-	g.setMaxDepth(2); // FIXME
+	g.setMaxDepth(depth);
 	loadGameStr(g, gameStr);
 
 	AlphaBeta ab(g);
@@ -70,7 +69,8 @@ Loc doTheSearch(const string &gameStr)
 const char *getMoveFromStr(const char *gameChars)
 {
 	string gameStr(gameChars);
-	Loc move = doTheSearch(gameStr);
+	Loc move = doTheSearch(gameStr, 8);
+
 	static char moveBuf[100];
 	sprintf(moveBuf, "%d,%d\n", move[0], move[1]);
 	return moveBuf;

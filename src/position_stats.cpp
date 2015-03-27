@@ -36,6 +36,7 @@ void PositionStats::report(const SpanEntry &spanEntry, const LinePattern &patter
 	//assert(levelNum < MAX_PATTERN_TYPE);
 
 	_patternCounts[c][levelNum] += inc;
+	if (levelNum == Line5) updateWonBy(c);
 
 	PriorityLevel &level = _levels[c][levelNum];
 	for (int i=0; i<patternEntry._numInds; i++)

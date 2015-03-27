@@ -147,6 +147,7 @@ PenteGame::getNextMove()
 
 bool PenteGame::isCutoff() const
 {
+	if (_posStats.getWonBy()) return true;
 	return _currDepth >= _maxDepth;
 }
 

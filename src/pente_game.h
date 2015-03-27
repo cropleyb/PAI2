@@ -36,6 +36,23 @@ public:
 	Depth getCurrDepth() { return _currDepth; }
 
 	void reportCapture(const SpanEntry &span, bool right, Colour p);
+	CapCount getCaptured(Colour p) const { return _posStats.getCaptured(p); }
+
+	// For debugging?
+	MoveNumber getLastMoveNumber() const
+	{
+		return _moveHist.getLastMoveNumber();
+	}
+
+	Loc getMove(MoveNumber mn) const
+	{
+		return _moveHist.getMoved(mn);
+	}
+
+	Colour getWonBy() const
+	{
+		return _posStats.getWonBy();
+	}
 
 	friend class TranspositionTable;
 private:

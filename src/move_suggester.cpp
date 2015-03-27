@@ -56,7 +56,6 @@ bool MoveSuggester::getPriorityLevels(Colour ourColour)
 	Colour theirColour = otherPlayer(ourColour);
 
 	const PriorityLevel &ourFours
-		//= _posStats.getLengthPriorityLevel(ourColour, 4);
 		= _posStats.getPriorityLevel(ourColour, Line4);
 	if (ourFours.getNumCands() > 0)
 	{
@@ -73,7 +72,6 @@ bool MoveSuggester::getPriorityLevels(Colour ourColour)
 
 	if (ourCaptureCount >= 8 and ourTakes.getNumCands() > 0) {
 		// This will win too
-		// _toSearch.push_back(ourTakes);
 		_toSearchLevels[0] = &ourTakes;
 		_numSearchLevels = 1;
 		onePoss = true;
@@ -87,8 +85,6 @@ bool MoveSuggester::getPriorityLevels(Colour ourColour)
 	if (theirCaptureCount >= 8 and theirTakes.getNumCands() > 0) {
 		// Block their takes, or capture one of the ends of an
 		// attacker, or lose
-		//_toSearch.push_back(ourTakes);
-		//_toSearch.push_back(theirTakes);
 		_toSearchLevels[0] = &ourTakes;
 		_toSearchLevels[1] = &theirTakes;
 		_numSearchLevels = 2;
@@ -103,14 +99,12 @@ bool MoveSuggester::getPriorityLevels(Colour ourColour)
 		if (theirFours.getNumCands() > 1) {
 			if (ourTakes.getNumCands() > 0) {
 				// We will lose unless we capture
-				// _toSearch.push_back(ourTakes);
 				_toSearchLevels[0] = &ourTakes;
 				_numSearchLevels = 1;
 				onePoss = false;
 				return onePoss;
 			} else {
 				// Might as well block one of them, can't stop 'em all
-				// _toSearch.push_back(theirFours);
 				_toSearchLevels[0] = &theirFours;
 				_numSearchLevels = 1;
 				onePoss = true;
@@ -119,8 +113,6 @@ bool MoveSuggester::getPriorityLevels(Colour ourColour)
 		}
 
 		// We will lose unless we block or capture 
-		//_toSearch.push_back(theirFours);
-		//_toSearch.push_back(ourTakes);
 		_toSearchLevels[0] = &theirFours;
 		_toSearchLevels[1] = &ourTakes;
 		_numSearchLevels = 2;
@@ -148,7 +140,7 @@ void MoveSuggester::fillPriorityLevels(Colour ourColour, Colour theirColour)
 Breadth MoveSuggester::filterCandidates(Loc *moveBuffer, Depth depth, Breadth maxMoves, Colour ourColour)
 {
 	Breadth found = 0;
-	bool tried[MAX_LOCS] = { 0 };
+	U64 seen[MAX_WIDTH] = { (U64)0 };
 	
 	Colour turnColour = ourColour;
 	if (depth % 2) {
@@ -163,7 +155,7 @@ Breadth MoveSuggester::filterCandidates(Loc *moveBuffer, Depth depth, Breadth ma
 	for (int slotInd=0; slotInd<_numSearchLevels; slotInd++)
 	{
 		const PriorityLevel *pl = _toSearchLevels[slotInd];
-		Breadth foundFromPL = pl->getCands(moveBuffer, maxMoves-found, tried);
+		Breadth foundFromPL = pl->getCands(moveBuffer, maxMoves-found, seen);
 		BD(cout << "MS Found " << (int)foundFromPL << endl;)
 
 		found += foundFromPL;

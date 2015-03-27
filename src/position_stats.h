@@ -25,11 +25,13 @@ public:
 			_checkerboardStats[c][0] = 0;
 			_checkerboardStats[c][1] = 0;
 		}
+		_wonBy = EMPTY;
 	}
 
 	void reportCaptured(Colour c, CapCount count, int inc)
 	{
 		_captured[c] += count * inc;
+		updateWonBy(c);
 		// std::cout << " -> " << (int)_captured[c];
 	}
 
@@ -55,6 +57,11 @@ public:
 		return _patternCounts[c][pattern];
 	}
 
+	Colour getWonBy() const
+	{
+		return _wonBy;
+	}
+
 	void updateCheckerboardStats(Colour c, Loc loc, int inc)
 	{
         if (!c)
@@ -75,6 +82,13 @@ public:
 	}
 
 private:
+	void updateWonBy(Colour c)
+	{
+		_wonBy = EMPTY;
+		if (_captured[c] >= 10) _wonBy = c;
+		else if (_patternCounts[c][Line5] > 0) _wonBy = c;
+	}
+
 	// Test code only
 	void reportCandidate(Colour colour, PatternType pt, Loc loc, Step inc);
 	void reportCandidates(Colour colour, PatternType pt, const vector<Loc> &locArr, Step inc);
@@ -83,6 +97,7 @@ private:
 	PattCount _patternCounts[3][MAX_PATTERN_TYPE];
 	CapCount _captured[3];
 	short _checkerboardStats[3][2];
+	Colour _wonBy;
 };
 
 #endif

@@ -24,6 +24,9 @@ public:
 private:
 	void initEdges();
 	void initEdgeVal(int dir, Loc l);
+	
+	// For debugging...
+	void print() const;
 
 	PositionStats &_posStats;
 	BoardWidth _boardSize;

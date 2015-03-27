@@ -4,9 +4,11 @@
 #include <algorithm>    // std::sort
 #include <vector>       // std::vector
 
+#define PLD(X)
+
 PriorityLevel::PriorityLevel()
 {
-	//BD(cout << "PriorityLevel constructor" << this << "----------------" << endl);
+	//PLD(cout << "PriorityLevel constructor" << this << "----------------" << endl);
     _freeListInd = 0;
     _dlHeadInd = -1;
     _numCands = 0;
@@ -22,7 +24,7 @@ PriorityLevel::PriorityLevel()
 
 void PriorityLevel::addOrRemoveCandidate(Loc candLoc, int inc)
 {
-	BD(cout << "ARC: " << (void *)this << "----------------" << endl);
+	PLD(cout << "ARC: " << (void *)this << "----------------" << endl);
 
 	// Get the index of the node for the given candidate location
 	CompressedLoc candLocVal = candLoc._value;
@@ -30,12 +32,12 @@ void PriorityLevel::addOrRemoveCandidate(Loc candLoc, int inc)
 
 	if (nodeInd < 0)
 	{
-		BD(cout << "ARC 1" << endl);
+		PLD(cout << "ARC 1" << endl);
 		// assert(inc > 0);
 
 		// Node for this loc has no count yet
 		// Use the next node from the free list
-		BD(cout << "ARC 4 - using node " << _freeListInd << endl);
+		PLD(cout << "ARC 4 - using node " << _freeListInd << endl);
 		nodeInd = _freeListInd;
 		_nodeIndByLoc[candLocVal] = nodeInd;
 		DLNode &node = _dlNodes[nodeInd];
@@ -45,27 +47,27 @@ void PriorityLevel::addOrRemoveCandidate(Loc candLoc, int inc)
 		Ind oldHeadInd = _dlHeadInd;
 		node.setPrevInd(-1); // "node" is currently the head of the list
 		node.setNextInd(nextInd);
-		BD(cout << "ARC 4a" << endl);
+		PLD(cout << "ARC 4a" << endl);
 
 		if (oldHeadInd >= 0)
 		{
-			BD(cout << "ARC 5 " << endl);
+			PLD(cout << "ARC 5 " << endl);
 			DLNode &oldHead = _dlNodes[oldHeadInd];
 			oldHead.setPrevInd(nodeInd);
 		}
 
-		BD(cout << "ARC set head ind to ---------------" << nodeInd << endl);
+		PLD(cout << "ARC set head ind to ---------------" << nodeInd << endl);
 		_dlHeadInd = nodeInd;
-		BD(cout << "ARC set node loc to ---------------" << candLoc._value << endl);
+		PLD(cout << "ARC set node loc to ---------------" << candLoc._value << endl);
 		node.setLoc(candLoc);
-		BD(cout << "ARC set inc to " << inc << endl);
+		PLD(cout << "ARC set inc to " << inc << endl);
 		node.adjustCount(inc);
 
 		_numCands += 1;
 	}
 	else
 	{
-		BD(cout << "ARC B 1" << endl);
+		PLD(cout << "ARC B 1" << endl);
 		// A node for this loc has already been used, update its count
 		DLNode &node = _dlNodes[nodeInd];
 		Ind newCount = node.adjustCount(inc);
@@ -94,7 +96,7 @@ void PriorityLevel::addOrRemoveCandidate(Loc candLoc, int inc)
 			if (_dlHeadInd == nodeInd)
 			{
 				Ind newHeadInd = node._nextInd;
-				BD(cout << "addOrRemoveCandidate: setting headInd to " << newHeadInd << endl);
+				PLD(cout << "addOrRemoveCandidate: setting headInd to " << newHeadInd << endl);
 				_dlHeadInd = newHeadInd;
 			}
 
@@ -130,8 +132,8 @@ bool PriorityLevel::myOrder(const Loc &l1, const Loc &l2) const
 
 Ind PriorityLevel::getCands(Loc *locBuffer, Ind max, U64 seen[MAX_WIDTH]) const
 {
-	BD(cout << "getCands top - " << (void *)this << endl);
-	BD(cout << "getCands 1 - _dlHeadInd" << _dlHeadInd << endl);
+	PLD(cout << "getCands top - " << (void *)this << endl);
+	PLD(cout << "getCands 1 - _dlHeadInd" << _dlHeadInd << endl);
 	Ind numAdded = 0;
 	Ind currInd = _dlHeadInd;
 
@@ -139,25 +141,25 @@ Ind PriorityLevel::getCands(Loc *locBuffer, Ind max, U64 seen[MAX_WIDTH]) const
 
 	while ((currInd >= 0) && (numAdded < max))
 	{
-		BD(cout << "getCands 2 - currInd: " << currInd << endl);
+		PLD(cout << "getCands 2 - currInd: " << currInd << endl);
 		const DLNode &currNode = _dlNodes[currInd];
 		if (currNode._loc == Loc::INVALID)
 		{
-			BD(cout << "getCands 3 - INVALID" << endl);
+			PLD(cout << "getCands 3 - INVALID" << endl);
 			break;
 		}
 		Coord currNodeX = currNode._loc[0];
 		Coord currNodeY = currNode._loc[1];
 		if (!(seen[currNodeY] & ((U64)1 << currNodeX)))
 		{
-			BD(cout << "getCands 4 - adding " << currNode._loc._value << endl);
+			PLD(cout << "getCands 4 - adding " << currNode._loc._value << endl);
 			locBuffer[numAdded] = currNode._loc;
 			seen[currNodeY] |= ((U64)1 << currNodeX);
 			numAdded++;
 		}
 		currInd = currNode._nextInd;
 	}
-	BD(cout << "getCands 5" << endl);
+	PLD(cout << "getCands 5" << endl);
 
 	// TODO?: This is not sorting all the candidates at this count, just the
 	// ones that were randomly added at this priority level.
