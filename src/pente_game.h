@@ -54,6 +54,9 @@ public:
 		return _posStats.getWonBy();
 	}
 
+	// Debugging...
+	void print() const;
+
 	friend class TranspositionTable;
 private:
 	void setAndRecordCaptures(Loc l, Colour p);

@@ -179,3 +179,15 @@ UtilityValue PenteGame::getUtility()
 	return uv;
 }
 
+using namespace std;
+
+void PenteGame::print() const
+{
+	MoveNumber mn = getLastMoveNumber();
+	CapCount c1 = getCaptured(P1);
+	CapCount c2 = getCaptured(P2);
+
+	cout << "Move " << mn+1 << ": " << getMove(mn) << 
+		"; Caps: " << (int)c1 << "-" << (int)c2 << ":" << endl;
+	_boardReps.print();
+}

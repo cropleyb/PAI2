@@ -263,7 +263,6 @@ TEST_F(AISubsystemFixture, test_bad) {
 "18.(10, 10)\n"
 "19.(11, 11)\n"
 "20.(12, 11)\n"
-#if 1
 "21.(8, 11)\n"
 "22.(7, 11)\n"
 "23.(12, 9)\n"
@@ -283,7 +282,6 @@ TEST_F(AISubsystemFixture, test_bad) {
 "37.(11, 10)\n"
 "38.(10, 8)\n"
 "39.(12, 8)\n";
-#endif
 
 #if 1
 	PenteGame g;
@@ -291,19 +289,13 @@ TEST_F(AISubsystemFixture, test_bad) {
 	cout << endl;
 	for (int i=60; i>0; i--)
 	{
+		g.print();
 		MoveNumber mn = g.getLastMoveNumber();
-		// TODO CapCount getCaptured(Colour c) const
-		CapCount c1 = g.getCaptured(P1);
-		CapCount c2 = g.getCaptured(P2);
-		cout << "Move " << mn+1 << ": " << g.getMove(mn) << 
-			"; Caps: " << (int)c1 << "-" << (int)c2 << endl;
-		g._boardReps.print();
 		if (mn <= 0) break;
 		g.undoLastMove();
 	}
 #endif
     Loc move = doTheSearchT(gameStr, 6);
-	//EXPECT_EQ(Loc(12,9), move); // Earlier block 4 case
 	EXPECT_EQ(Loc(10,10), move);
 }
 
