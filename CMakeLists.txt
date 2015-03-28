@@ -47,25 +47,35 @@ set(CMAKE_BUILD_TYPE Debug)
 
 # Source files
 file(GLOB SRC_FILES "src/*.cpp")
+file(GLOB MAIN_SRC "src/Main.cpp")
+file(GLOB RUNAI_SRC "src/run_ai.cpp")
+list(REMOVE_ITEM SRC_FILES ${MAIN_SRC})
+list(REMOVE_ITEM SRC_FILES ${RUNAI_SRC})
 
 # Executable dependencies
 if(SRC_FILES)
-    add_executable("${EXECUTABLE_NAME}" ${SRC_FILES}) 
+	add_executable("${EXECUTABLE_NAME}" ${SRC_FILES} ${MAIN_SRC}) 
 endif(SRC_FILES)
 
 # Set link libraries
 # target_link_libraries($EXECUTABLE_NAME ...)
 
+###############################################################################
+# RunAI executable
+###############################################################################
+set(RUNAI_EXECUTABLE_NAME "runai")
+
+if(SRC_FILES)
+	add_executable("${RUNAI_EXECUTABLE_NAME}" ${SRC_FILES} ${RUNAI_SRC}) 
+endif(SRC_FILES)
+
+###############################################################################
 # Tests executable
 ###############################################################################
 set(TEST_EXECUTABLE_NAME "tests")
 
 # Test files
 file(GLOB TEST_FILES "test/*.cpp")
-
-# Don't include Main.cpp from src
-file(GLOB MAIN_SRC "src/Main.cpp")
-list(REMOVE_ITEM SRC_FILES ${MAIN_SRC})
 
 add_executable("${TEST_EXECUTABLE_NAME}" ${TEST_FILES} ${SRC_FILES})
 add_memcheck_test("${MEMCHECK_TEST_EXECUTABLE_NAME}" ${TEST_FILES} ${SRC_FILES})
@@ -77,8 +87,8 @@ target_link_libraries("${TEST_EXECUTABLE_NAME}" gmock gtest pthread)
 include_directories(BEFORE ".")
 include_directories(BEFORE "src/")
 
+###############################################################################
 # Library
 ###############################################################################
-file(GLOB SRC_FILES "src/*.cpp")
 
 add_library("pai2" SHARED ${SRC_FILES})

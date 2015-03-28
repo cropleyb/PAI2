@@ -216,4 +216,11 @@ Use from python code
 / String based API in the C++ code.
 Build a library with CMake first? static lib? dynamic lib?
 Or build the C++ code directly from setup.py as a cython extension?
-NOGIL?
+NOGIL? Yes! Yay!
+
+What next?
+----------
+run AI equiv. for C++ code
+Use run_ai.py to compare Py and C++ AIs
+Analyse some more bad play.
+Add sort of lowest level of included PL candidates (by decreasing count)
