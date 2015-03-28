@@ -13,10 +13,14 @@ void runAI()
 
 	PenteGame g;
 	g.setMaxDepth(6);
+    g.setColour(P1);
 	// loadGameStr(g, gameStr);
 
 	AlphaBeta ab(g);
 	Loc bestMove = ab.getBestMove();
+    std::cout << "Move " << bestMove << std::endl;
+	g.makeMove(bestMove, P1);
+	//void makeMove(Loc l, Colour p);
 	//return bestMove;
 }
 
@@ -334,8 +338,8 @@ if __name__ == "__main__":
 
 int main(int argc, char *argv[])
 {
-	runAI();
     std::cout << "Hi from runai" << std::endl;
+	runAI();
     return 0;
 }
 

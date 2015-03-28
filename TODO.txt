@@ -218,6 +218,8 @@ Build a library with CMake first? static lib? dynamic lib?
 Or build the C++ code directly from setup.py as a cython extension?
 NOGIL? Yes! Yay!
 
+./tests --gtest_filter="*bad*" > bad.txt
+
 What next?
 ----------
 run AI equiv. for C++ code

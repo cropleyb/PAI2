@@ -19,10 +19,13 @@ PenteGame::PenteGame()
 
 void PenteGame::makeMove(Loc l, Colour p)
 {
-	//std::cout << std::endl;
-	//for (int d=0; d<_currDepth; d++)
-		//std::cout << ". ";
-	//std::cout << l;
+#ifdef DEBUG_SEARCH
+	std::cout << std::endl;
+	for (int d=0; d<_currDepth; d++)
+		std::cout << ". ";
+	std::cout << (int)(_moveHist.getLastMoveNumber()+1)<< ".";
+	std::cout << l;
+#endif
 	_captureDirs = 0;
 
 	const PriorityLevel &pl = _posStats.getPriorityLevel(p, Take);
@@ -47,7 +50,9 @@ void PenteGame::setAndRecordCaptures(Loc l, Colour p)
 
 void PenteGame::reportCapture(const SpanEntry &span, bool left, Colour p)
 {
-	//std::cout << " (cap) [" << (int)p << ']';
+#ifdef DEBUG_SEARCH
+	std::cout << 'c';
+#endif
 	_posStats.reportCaptured(p, 2, 1);
 
 	// Get the indices of the captured pieces
@@ -76,13 +81,15 @@ void PenteGame::reportCapture(const SpanEntry &span, bool left, Colour p)
 
 void PenteGame::undoLastMove()
 {
-	//std::cout << " U ";
 	MoveNumber mn = _moveHist.getLastMoveNumber();
 	_currDepth--;
 	
 	Loc l = _moveHist.getMoved(mn);
 	CaptureDirs cd = _moveHist.getCapDirs(mn);
 	_moveHist.undoLastMove();
+#ifdef DEBUG_SEARCH
+	std::cout << " U->" << _moveHist.getLastMove() << ' ';
+#endif
 
 	_boardReps.setOcc(l, EMPTY);
 	Colour movedPlayer = 1 + (mn) % 2;
@@ -98,7 +105,6 @@ void PenteGame::undoLastMove()
 		{
 			if (cd & (1 << dir))
 			{
-				//std::cout << " (uncap) [" << (int)movedPlayer << ']';
 				_posStats.reportCaptured(movedPlayer, 2, -1);
 
 				int realDir=dir;
@@ -168,7 +174,9 @@ UtilityValue PenteGame::getUtility()
 	Colour searchColour = _ourColour;
 	Colour turnColour = 1 + (1 + _currDepth + _ourColour) % 2; // TODO: incremental with otherPlayer?
 	UtilityValue uv = _utilCalc.calcUtility(turnColour, searchColour, lastMn+1);
-	// std::cout << uv;
+#ifdef DEBUG_SEARCH
+	std::cout << ' ' << uv;
+#endif
 #if 0
 	if (_currDepth > 2 && _currDepth < _maxDepth - 1)
 	{

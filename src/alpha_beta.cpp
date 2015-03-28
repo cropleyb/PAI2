@@ -108,6 +108,9 @@ UtilityValue AlphaBeta::maxValue(UtilityValue alpha, UtilityValue beta, Depth de
 	{
 		_bestTopLevelMove = bestMove;
 	}
+#ifdef DEBUG_SEARCH
+	cout << " [Best(max):" << bestVal << "] ";
+#endif
     return bestVal;
 }
 
@@ -178,6 +181,9 @@ UtilityValue AlphaBeta::minValue(UtilityValue alpha, UtilityValue beta, Depth de
 		BD(cout << "13 in minValue" << endl);
     }
 	BD(cout << "14 in minValue" << endl);
+#ifdef DEBUG_SEARCH
+	cout << " [Best(min):" << bestVal << "] ";
+#endif
     return bestVal;
 }
 

@@ -47,7 +47,12 @@ public:
 	{
 		return _moveNumber - 1;
 	}
-		
+
+	Loc getLastMove() const
+	{
+		return _moveHist[getLastMoveNumber()];
+	}
+
 private:
 	MoveNumber _moveNumber;
 	Loc _moveHist[MAX_MOVES];

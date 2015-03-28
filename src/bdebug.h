@@ -5,6 +5,8 @@
 using std::cout;
 using std::endl;
 
+//#define DEBUG_SEARCH
+
 //#define BDEBUG
 
 #ifdef BDEBUG 
