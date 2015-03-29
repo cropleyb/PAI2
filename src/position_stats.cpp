@@ -27,12 +27,12 @@ void PositionStats::reportCandidates(Colour colour, PatternType pt, const vector
 
 //#include <assert.h>
 
-// Convert each of the indices in patternEntry into Locs using span
+// Convert each of the indices in patternEntry into Locs using span,
 // and update appropriately
 void PositionStats::report(const SpanEntry &spanEntry, const LinePattern &patternEntry, int inc)
 {
 	Colour c = patternEntry._colour;
-	int levelNum = (int)patternEntry._patternType;
+	PatternType levelNum = patternEntry._patternType;
 	//assert(levelNum < MAX_PATTERN_TYPE);
 
 	_patternCounts[c][levelNum] += inc;
