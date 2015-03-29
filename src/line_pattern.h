@@ -53,6 +53,7 @@ public:
 	Colour _colour;
 	PatternType _patternType;
 	Breadth _candInds[5];
+	// std::array<Breadth, 5> _candInds; // TODO
     unsigned char _numInds;
 };
 

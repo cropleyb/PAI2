@@ -4,6 +4,8 @@
 #include "defines.h"
 #include "line_pattern.h"
 
+#include <array>
+
 #define BIG_NUM 1e+18
 
 typedef double UtilityValue;
@@ -52,7 +54,7 @@ private:
 	int _threatScoreBase;
 	int _blockedFourBase;
 	bool _useNetCaptures;
-	int _capturesScale[6];
+	std::array<int,6> _capturesScale;
 	// _lengthScale;
 	int _lengthFactor;
 	int _forceDepth;

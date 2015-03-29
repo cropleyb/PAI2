@@ -4,6 +4,8 @@
 #include "defines.h"
 #include "loc.h"
 
+#include <array>
+
 #define MAX_MOVES 450
 
 class MoveHistory
@@ -55,8 +57,8 @@ public:
 
 private:
 	MoveNumber _moveNumber;
-	Loc _moveHist[MAX_MOVES];
-	CaptureDirs _capHist[MAX_MOVES];
+	std::array<Loc, MAX_MOVES> _moveHist;
+	std::array<CaptureDirs, MAX_MOVES> _capHist;
 };
 
 #endif

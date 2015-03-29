@@ -1,6 +1,8 @@
 #include "defines.h"
 #include "loc.h"
 
+#include <array>
+
 class PositionStats;
 class CandidateCache;
 class PriorityLevel;
@@ -24,7 +26,6 @@ private:
 	CandidateCache *_candCache;
 	PositionStats &_posStats;
 	
-	// This could be on the stack really
-	const PriorityLevel *_toSearchLevels[MAX_CANDS];
+	std::array<const PriorityLevel *, MAX_CANDS> _toSearchLevels;
 	int _numSearchLevels;
 };

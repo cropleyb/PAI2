@@ -1,3 +1,4 @@
+#include <array>
 
 #include "defines.h"
 
@@ -47,7 +48,8 @@ public:
 
 private:
 	Loc _bigBuffer[MAX_DEPTH][MAX_CANDS];
-	Breadth _moveCount[MAX_DEPTH];
-	Breadth _currIndex[MAX_DEPTH];
+	//std::array<std::array<Loc, MAX_DEPTH>, MAX_CANDS> _bigBuffer; // TODO
+	std::array<Breadth, MAX_DEPTH> _moveCount;
+	std::array<Breadth, MAX_DEPTH> _currIndex;
 };
 

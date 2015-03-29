@@ -93,6 +93,7 @@ private:
 	void reportCandidate(Colour colour, PatternType pt, Loc loc, Step inc);
 	void reportCandidates(Colour colour, PatternType pt, const vector<Loc> &locArr, Step inc);
 
+	// TODO: Extract player stats?
 	PriorityLevel _levels[3][MAX_PATTERN_TYPE];
 	PattCount _patternCounts[3][MAX_PATTERN_TYPE];
 	CapCount _captured[3];

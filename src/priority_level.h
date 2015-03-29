@@ -4,6 +4,8 @@
 #include "loc.h"
 #include "defines.h"
 
+#include <array>
+
 typedef short Ind;
 
 // #define MAX_NODES 19*19
@@ -76,8 +78,8 @@ private:
     Ind _freeListInd = 0;
     Ind _dlHeadInd = -1;
     Ind _numCands = 0;
-    DLNode _dlNodes[MAX_LOCS];
-    Ind _nodeIndByLoc[MAX_LOCS];
+	std::array<DLNode, MAX_LOCS> _dlNodes;
+	std::array<Ind, MAX_LOCS> _nodeIndByLoc;
 };
 
 #endif

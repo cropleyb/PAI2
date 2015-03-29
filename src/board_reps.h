@@ -31,6 +31,7 @@ private:
 	PositionStats &_posStats;
 	BoardWidth _boardSize;
 	U64 _boardStrips[MAX_DIR][2*MAX_WIDTH];
+	// std::array<std::array<U64, MAX_DIR>, 2*MAX_WIDTH> _boardStrips; // TODO
 };
 
 #endif
