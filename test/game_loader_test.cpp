@@ -12,6 +12,9 @@ public:
 
 TEST_F(GameLoaderFixture, test_find_one_move) {
     string gameStr = \
+"depth:4\n"
+"boardsize:19\n"
+"rules:tournament\n"
 "1. (6, 6)\n"
 "2. (7, 7)\n"
 "3. (8, 6)\n"

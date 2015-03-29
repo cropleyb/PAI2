@@ -14,28 +14,18 @@
 using std::string;
 using testing::ElementsAre;
 
-extern Loc doTheSearch(const string &gameStr, Depth depth);
+extern Loc doTheSearch(const string &gameStr);
 
 class AISubsystemFixture : public testing::Test {
 public:
 	AISubsystemFixture() {
-		buildSpanTable(19);
-	}
-
-    Loc doTheSearchT(const string &gameStr, Depth maxDepth)
-	{
-		PenteGame g;
-		g.setMaxDepth(maxDepth);
-		//loadGameStr(g, gameStr);
-		Loc bestMove = doTheSearch(gameStr, maxDepth);
-
-		// Loc bestMove = ab.getBestMove();
-		return bestMove;
+		buildSpanTable(19); // TODO: cull
 	}
 };
 
 TEST_F(AISubsystemFixture, test_find_one_move) {
     string gameStr = \
+"depth:2\n"
 "1. (6, 6)\n"
 "2. (7, 7)\n"
 "3. (8, 6)\n"
@@ -53,7 +43,7 @@ TEST_F(AISubsystemFixture, test_find_one_move) {
 "15. (6, 3)\n"
 "16. (6, 2)\n"
 "17. (5, 7)\n";
-    Loc move = doTheSearchT(gameStr, 2);
+    Loc move = doTheSearch(gameStr);
 	EXPECT_EQ(Loc(6,7), move);
 }
 
@@ -61,6 +51,7 @@ TEST_F(AISubsystemFixture, test_find_one_move) {
 // This is failing, but the alternative is reasonable
 TEST_F(AISubsystemFixture, test_dont_waste_a_pair) {
     string gameStr = \
+"depth:4\n"
 "1. (6, 6)\n"
 "2. (6, 7)\n"
 "3. (8, 8)\n"
@@ -71,7 +62,7 @@ TEST_F(AISubsystemFixture, test_dont_waste_a_pair) {
 "8. (8, 7)\n"
 "9. (8, 4)\n"
 "10. (5, 8)\n";
-    Loc move = doTheSearchT(gameStr, 4);
+    Loc move = doTheSearch(gameStr);
 	EXPECT_EQ(Loc(6,5), move);
 }
 #endif
@@ -79,6 +70,7 @@ TEST_F(AISubsystemFixture, test_dont_waste_a_pair) {
 #if 1
 TEST_F(AISubsystemFixture, test_dodgy_move) {
     string gameStr = \
+"depth:6\n"
 "1. (6, 6)\n"
 "2. (6, 5)\n"
 "3. (8, 6)\n"
@@ -89,7 +81,7 @@ TEST_F(AISubsystemFixture, test_dodgy_move) {
 "8. (7, 7)\n"
 "9. (6, 7)\n";
 
-    Loc move = doTheSearchT(gameStr, 6);
+    Loc move = doTheSearch(gameStr);
     // Why not 9,7? i.e. why does 7,5 have a high score?
 	EXPECT_NE(Loc(7,5), move);
 }
@@ -97,6 +89,7 @@ TEST_F(AISubsystemFixture, test_dodgy_move) {
 
 TEST_F(AISubsystemFixture, test_dodgy_move_part2) {
     string gameStr = \
+"depth:5\n"
 "1. (6, 6)\n"
 "2. (6, 5)\n"
 "3. (8, 6)\n"
@@ -107,7 +100,7 @@ TEST_F(AISubsystemFixture, test_dodgy_move_part2) {
 "8. (7, 7)\n"
 "9. (6, 7)\n"
 "10. (7, 5)\n";
-    Loc move = doTheSearchT(gameStr, 5);
+    Loc move = doTheSearch(gameStr);
 	// EXPECT_EQ(Loc(9,7), move); // TODO: Analyse failure...
 }
 
@@ -115,6 +108,7 @@ TEST_F(AISubsystemFixture, test_dodgy_move_part2) {
 // OK but slow
 TEST_F(AISubsystemFixture, test_freebie) {
     string gameStr = \
+"depth:8\n"
 "1. (6, 6)\n"
 "2. (6, 5)\n"
 "3. (8, 6)\n"
@@ -127,7 +121,7 @@ TEST_F(AISubsystemFixture, test_freebie) {
 "10. (7, 5)\n"
 "11. (9, 7)\n"
 "12. (10, 8)\n";
-    Loc move = doTheSearchT(gameStr, 8);
+    Loc move = doTheSearch(gameStr);
 	EXPECT_EQ(Loc(8,7), move);
 }
 #endif
@@ -137,6 +131,7 @@ TEST_F(AISubsystemFixture, test_freebie) {
 
 TEST_F(AISubsystemFixture, test_strange) {
     string gameStr = \
+"depth:6\n"
 "1. (6, 6)\n"
 "2. (6, 7)\n"
 "3. (4, 6)\n"
@@ -144,7 +139,7 @@ TEST_F(AISubsystemFixture, test_strange) {
 "5. (7, 6)\n"
 "6. (5, 6)\n"
 "7. (4, 9)\n";
-    Loc move = doTheSearchT(gameStr, 6);
+    Loc move = doTheSearch(gameStr);
 	EXPECT_EQ(Loc(8,6), move);
 }
 #endif
@@ -153,6 +148,7 @@ TEST_F(AISubsystemFixture, test_strange) {
 
 TEST_F(AISubsystemFixture, test_draw) {
     string gameStr = \
+"depth:4\n"
 "1. (4, 4)\n"
 "2. (5, 5)\n"
 "3. (6, 4)\n"
@@ -242,7 +238,7 @@ extern void loadGameStr(PenteGame &g, const string &gameStr);
 
 TEST_F(AISubsystemFixture, test_bad) {
     string gameStr = \
-//"1. (4, 4)\n"
+"depth:6\n"
 "1.(9, 9)\n"
 "2.(10, 10)\n"
 "3.(9, 11)\n"
@@ -283,7 +279,7 @@ TEST_F(AISubsystemFixture, test_bad) {
 "38.(10, 8)\n"
 "39.(12, 8)\n";
 
-#if 1
+#if 0
 	PenteGame g;
 	loadGameStr(g, gameStr);
 	cout << endl;
@@ -295,26 +291,112 @@ TEST_F(AISubsystemFixture, test_bad) {
 		g.undoLastMove();
 	}
 #endif
-    Loc move = doTheSearchT(gameStr, 6);
+    Loc move = doTheSearch(gameStr);
 	EXPECT_EQ(Loc(10,10), move);
 }
 
+TEST_F(AISubsystemFixture, test_quick_blunder) {
+    string gameStr = \
+"depth:3\n"
+"1.(9, 9)\n"
+"2.(8, 8)\n"
+"3.(9, 7)\n"
+"4.(9, 8)\n"
+"5.(10, 8)\n"
+"6.(11, 9)\n"
+"7.(8, 6)\n";
 #if 0
-// TODO
-(11, 9)
-(9, 9)
-(8, 8)
-(9, 7)
-(9, 8)
-(10, 8)
-(11, 9)
-(8, 6)
-(11, 8)
-(11, 7)
-(12, 6)
-(11, 10)
-(12, 7)
-(11, 9)
+"8.(11, 8)\n"
+"9.(11, 7)\n"
+"10.(12, 6)\n"
+"11.(11, 10)\n"
+"12.(12, 7)\n"
+"13.(11, 9)\n";
 #endif
+
+#if 0
+	PenteGame g;
+	loadGameStr(g, gameStr);
+	cout << endl;
+	for (int i=60; i>0; i--)
+	{
+		g.print();
+		MoveNumber mn = g.getLastMoveNumber();
+		if (mn <= 0) break;
+		g.undoLastMove();
+	}
+#endif
+    Loc move = doTheSearch(gameStr);
+	EXPECT_EQ(Loc(11,7), move);
+}
+
+#if 0
+TEST_F(AISubsystemFixture, test_show_me) {
+    string gameStr = \
+"depth:6\n"
+"1.(9, 9)\n"
+"2.(10, 10)\n"
+"3.(12, 9)\n"
+"4.(8, 9)\n"
+"5.(10, 7)\n"
+"6.(11, 8)\n"
+"7.(12, 7)\n"
+"8.(12, 10)\n"
+"9.(11, 7)\n"
+"10.(13, 7)\n"
+"11.(10, 8)\n"
+#if 0
+"12.(10, 6)\n"
+"13.(12, 6)\n"
+"14.(10, 9)\n"
+"15.(10, 8)\n"
+"16.(10, 7)\n"
+"17.(11, 7)\n"
+#endif
+
+#if 0
+"1.(9, 9)\n"
+"2.(10, 10)\n"
+"3.(11, 9)\n"
+"4.(10, 9)\n"
+"5.(10, 8)\n"
+"6.(12, 10)\n"
+"7.(9, 7)\n"
+"8.(11, 10)\n"
+"9.(10, 11)\n"
+"10.(13, 10)\n"
+"11.(10, 10)\n"
+"12.(10, 9)\n"
+"13.(9, 8)\n"
+"14.(14, 10)\n"
+"15.(15, 10)\n"
+"16.(10, 12)\n"
+"17.(12, 11)\n"
+"18.(10, 10)\n"
+"19.(11, 10)\n"
+"20.(9, 10)\n"
+"21.(9, 6)\n"
+"22.(9, 5)\n"
+"23.(8, 10)\n"
+#endif
+;
+
+#if 0
+	PenteGame g;
+	loadGameStr(g, gameStr);
+	cout << endl;
+	for (int i=60; i>0; i--)
+	{
+		g.print();
+		MoveNumber mn = g.getLastMoveNumber();
+		if (mn <= 0) break;
+		g.undoLastMove();
+	}
+#endif
+    Loc move = doTheSearch(gameStr);
+	EXPECT_NE(Loc(10,6), move);
+}
+#endif
+
 
 #endif
