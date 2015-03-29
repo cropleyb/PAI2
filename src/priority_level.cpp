@@ -130,16 +130,26 @@ bool PriorityLevel::myOrder(const Loc &l1, const Loc &l2) const
 	return (getCount(l1) > getCount(l2));
 }
 
-Ind PriorityLevel::getCands(Loc *locBuffer, Ind max, U64 seen[MAX_WIDTH]) const
+Ind PriorityLevel::getCands(Loc *locBuffer, Ind reqestedMax, U64 seen[MAX_WIDTH]) const
 {
 	PLD(cout << "getCands top - " << (void *)this << endl);
 	PLD(cout << "getCands 1 - _dlHeadInd" << _dlHeadInd << endl);
 	Ind numAdded = 0;
 	Ind currInd = _dlHeadInd;
 
-	// TODO: static heap of size MAX_CANDS
+	// TODO: Bail if only request 1 or 2?
+	
+	Ind tempMax = reqestedMax;
+	if (_numCands > reqestedMax)
+	{
+		// This is the last priority level that will be used to contribute
+		// to the candidate moves. Get all of them so we can sort them by
+		// decreasing _count.
+		tempMax += 100;
+		if (tempMax > _numCands) tempMax = _numCands;
+	}
 
-	while ((currInd >= 0) && (numAdded < max))
+	while ((currInd >= 0) && (numAdded < tempMax))
 	{
 		PLD(cout << "getCands 2 - currInd: " << currInd << endl);
 		const DLNode &currNode = _dlNodes[currInd];
@@ -161,10 +171,12 @@ Ind PriorityLevel::getCands(Loc *locBuffer, Ind max, U64 seen[MAX_WIDTH]) const
 	}
 	PLD(cout << "getCands 5" << endl);
 
-	// TODO?: This is not sorting all the candidates at this count, just the
-	// ones that were randomly added at this priority level.
+	// Sort the candidates by decreasing _count at this priority level.
+	// A more frequent number of occurrences is likely to mean a better move.
+	// Note that if there are more candidates at this level than are requested
+	// by the search, only the best candidates are used.
     std::sort(locBuffer, locBuffer+numAdded, doCompare(*this) );
 
-	return numAdded;
+	return std::min(reqestedMax, numAdded);
 }
 
