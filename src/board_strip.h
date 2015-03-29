@@ -19,12 +19,12 @@ void matchRange(U64 occs, const SpanEntry &span, REPORTER &reporter, int inc)
         U64 mask = (occs >> shift) & FIVE_OCCS_MASK;
 
         // Now see if it's in our lookup table
-		const LinePattern *found = &lengthLookup[mask];
+		const LinePattern &found = lengthLookup[mask];
 		
-		if (found->_patternType == NoPattern) continue;
+		if (found._patternType == NoPattern) continue;
 
         // Report it
-		LinePattern toReport(*found);
+		LinePattern toReport(found);
 
 		for (int i=0; i<toReport._numInds; i++)
 		{
@@ -32,16 +32,16 @@ void matchRange(U64 occs, const SpanEntry &span, REPORTER &reporter, int inc)
 		}
 		reporter.report(span, toReport, inc);
 
-		if (found->_patternType != Threat) continue;
+		if (found._patternType != Threat) continue;
 
 		// If it is a threat, it is probably a Line2 as well.
 		// Look it up in the overflow table.
-		found = &threatLookup[mask];
+		const LinePattern &found2 = threatLookup[mask];
 		
-		if (found->_patternType == NoPattern) continue;
+		if (found2._patternType == NoPattern) continue;
 
         // Report it too
-		LinePattern toReport2(*found);
+		LinePattern toReport2(found2);
 
 		for (int i=0; i<toReport2._numInds; i++)
 		{
@@ -106,24 +106,5 @@ void matchCaptures(U64 occs, const SpanEntry &span, REPORTER &mr, Colour p)
 		}
 	}
 }
-
-
-#if 0
-template <class REPORTER>
-void matchRange(U64 occs, const SpanEntry &span, REPORTER &reporter, int inc)
-{
-	BoardWidth minInd = span._minIndex;
-	BoardWidth maxInd = span._maxIndex;
-
-	for (BoardWidth ind=minInd; ind<=maxInd-4; ind++)
-	{
-        // Extract just the 5 * 2 bits that we're currently interested in.
-        int shift = ind << 1; // x 2 for 2 bits each occ - EMPTY:0, P1:1 or P2:2
-        U64 mask = (occs >> shift) & FIVE_OCCS_MASK;
-
-        // Now see if it's in our lookup table
-		const LinePattern *found = &lengthLookup[mask];
-#endif
-		
 
 #endif
