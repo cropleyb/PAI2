@@ -504,19 +504,3 @@ TEST_F(PenteGameFixture, SaveAndUseTranspositionTable) {
 }
 #endif
 
-#if 0
-    bool cutoff = isCutoff();
-	EXPECT_EQ(false, cutoff);
-
-	const PriorityLevel &pl = ps.getPriorityLevel(P1, Take);
-	EXPECT_EQ(1, pl.getNumCands()); // Only one candidate move, takes 2 pairs
-
-	void makeMove(Loc l, Colour p);
-    virtual void undoLastMove();
-    virtual bool isOnlyOneMove() { return _moveSuggester.isOnlyOneMove(_currDepth); }
-    virtual Loc makeNextMove();
-	virtual Loc getNextMove(); // Get it without performing it
-    virtual bool isCutoff() const;
-	virtual UtilityValue getUtility();
-#endif
-
