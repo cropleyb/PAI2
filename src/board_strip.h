@@ -19,7 +19,7 @@ void matchRange(U64 occs, const SpanEntry &span, REPORTER &reporter, int inc)
         U64 mask = (occs >> shift) & FIVE_OCCS_MASK;
 
         // Now see if it's in our lookup table
-		const LinePattern &found = lengthLookup[mask];
+		const LinePattern &found(lengthLookup[mask]);
 		
 		if (found._patternType == NoPattern) continue;
 
