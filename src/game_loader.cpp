@@ -38,6 +38,24 @@ void loadGameStr(PenteGame &g, const string &gameStr)
 	{
 		// e.g.
 		// 1. (5,3)
+		string::size_type colonInd = line.find(':');
+		if (colonInd != std::string::npos)
+		{
+			string key(line.substr(0, colonInd));
+			string val(line.substr(colonInd+1));
+			int valI = atoi(val.c_str());
+			cout << " Key: " << key << " Val: " << val << endl;
+			if (key == "depth") g.setMaxDepth(valI);
+#if 0
+			else if (key == "boardsize") setBoardSize(valI);
+			else if (key == "rules") setRules(val);
+"depth:4\n"
+"boardsize:19\n"
+"rules:tournament\n"
+#endif
+			continue;
+		}
+
 		string::size_type openParenInd = line.find("(");
 		string::size_type commaInd = line.find(",");
 		string::size_type closeParenInd = line.find(")");
@@ -53,12 +71,11 @@ void loadGameStr(PenteGame &g, const string &gameStr)
     g.setColour(currColour);
 }
 
-Loc doTheSearch(const string &gameStr, Depth depth)
+Loc doTheSearch(const string &gameStr)
 {
 	buildSpanTable(19);
 
 	PenteGame g;
-	g.setMaxDepth(depth);
 	loadGameStr(g, gameStr);
 
 	AlphaBeta ab(g);
@@ -69,7 +86,7 @@ Loc doTheSearch(const string &gameStr, Depth depth)
 const char *getMoveFromStr(const char *gameChars)
 {
 	string gameStr(gameChars);
-	Loc move = doTheSearch(gameStr, 8);
+	Loc move = doTheSearch(gameStr);
 
 	static char moveBuf[100];
 	sprintf(moveBuf, "%d,%d\n", move[0], move[1]);
