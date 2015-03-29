@@ -24,12 +24,8 @@ void matchRange(U64 occs, const SpanEntry &span, REPORTER &reporter, int inc)
 		if (found._patternType == NoPattern) continue;
 
         // Report it
-		LinePattern toReport(found);
+		LinePattern toReport(found, ind);
 
-		for (int i=0; i<toReport._numInds; i++)
-		{
-			toReport._candInds[i] += ind;
-		}
 		reporter.report(span, toReport, inc);
 
 		if (found._patternType != Threat) continue;
@@ -41,12 +37,8 @@ void matchRange(U64 occs, const SpanEntry &span, REPORTER &reporter, int inc)
 		if (found2._patternType == NoPattern) continue;
 
         // Report it too
-		LinePattern toReport2(found2);
+		LinePattern toReport2(found2, ind);
 
-		for (int i=0; i<toReport2._numInds; i++)
-		{
-			toReport2._candInds[i] += ind;
-		}
 		reporter.report(span, toReport2, inc);
 	}
 }

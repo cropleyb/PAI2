@@ -36,6 +36,18 @@ public:
 			_candInds[i] = orig._candInds[i];
 	}
 
+	// Special copy constructor for adding a candidate offset simultaneously
+	LinePattern(const LinePattern &orig, Breadth candOffset) :
+		_colour(orig._colour),
+		_patternType(orig._patternType),
+		_numInds(orig._numInds)
+	{
+		for (int i=0; i<orig._numInds; i++)
+		{
+			_candInds[i] = orig._candInds[i] + candOffset;
+		}
+	}
+	
 	bool operator ==(const LinePattern &other) const
 	{
 		if ((_colour != other._colour) ||
