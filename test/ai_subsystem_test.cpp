@@ -29,6 +29,7 @@ public:
 
 TEST_F(AISubsystemFixture, test_find_one_move) {
     string gameStr = \
+"boardwidth:19\n"
 "depth:2\n"
 "1. (6, 6)\n"
 "2. (7, 7)\n"
@@ -55,6 +56,7 @@ TEST_F(AISubsystemFixture, test_find_one_move) {
 // This is failing, but the alternative is reasonable
 TEST_F(AISubsystemFixture, test_dont_waste_a_pair) {
     string gameStr = \
+"boardwidth:19\n"
 "depth:4\n"
 "1. (6, 6)\n"
 "2. (6, 7)\n"
@@ -74,6 +76,7 @@ TEST_F(AISubsystemFixture, test_dont_waste_a_pair) {
 #if 1
 TEST_F(AISubsystemFixture, test_dodgy_move) {
     string gameStr = \
+"boardwidth:19\n"
 "depth:6\n"
 "1. (6, 6)\n"
 "2. (6, 5)\n"
@@ -93,6 +96,7 @@ TEST_F(AISubsystemFixture, test_dodgy_move) {
 
 TEST_F(AISubsystemFixture, test_dodgy_move_part2) {
     string gameStr = \
+"boardwidth:13\n"
 "depth:5\n"
 "1. (6, 6)\n"
 "2. (6, 5)\n"
@@ -112,6 +116,7 @@ TEST_F(AISubsystemFixture, test_dodgy_move_part2) {
 // OK but slow
 TEST_F(AISubsystemFixture, test_freebie) {
     string gameStr = \
+"boardwidth:19\n"
 "depth:8\n"
 "1. (6, 6)\n"
 "2. (6, 5)\n"
@@ -135,6 +140,7 @@ TEST_F(AISubsystemFixture, test_freebie) {
 
 TEST_F(AISubsystemFixture, test_strange) {
     string gameStr = \
+"boardwidth:19\n"
 "depth:6\n"
 "1. (6, 6)\n"
 "2. (6, 7)\n"
@@ -152,6 +158,7 @@ TEST_F(AISubsystemFixture, test_strange) {
 
 TEST_F(AISubsystemFixture, test_draw) {
     string gameStr = \
+"boardwidth:19\n"
 "depth:4\n"
 "1. (4, 4)\n"
 "2. (5, 5)\n"
@@ -242,6 +249,7 @@ extern void loadGameStr(PenteGame &g, const string &gameStr);
 
 TEST_F(AISubsystemFixture, test_bad) {
     string gameStr = \
+"boardwidth:19\n"
 "depth:6\n"
 "1.(9, 9)\n"
 "2.(10, 10)\n"
@@ -302,6 +310,7 @@ TEST_F(AISubsystemFixture, test_bad) {
 TEST_F(AISubsystemFixture, test_quick_blunder) {
     string gameStr = \
 "depth:3\n"
+"boardwidth:19\n"
 "1.(9, 9)\n"
 "2.(8, 8)\n"
 "3.(9, 7)\n"
@@ -337,6 +346,7 @@ TEST_F(AISubsystemFixture, test_quick_blunder) {
 #if 0
 TEST_F(AISubsystemFixture, test_show_me) {
     string gameStr = \
+"boardwidth:19\n"
 "depth:6\n"
 "1.(9, 9)\n"
 "2.(10, 10)\n"

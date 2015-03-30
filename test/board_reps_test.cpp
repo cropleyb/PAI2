@@ -237,3 +237,18 @@ TEST_F(BoardRepsFixture, CheckFarEdgeLineNE_RIGHT) {
 	const PriorityLevel &pl = ps.getPriorityLevel(P1, Line2);
 	EXPECT_EQ(3, pl.getNumCands());
 }
+
+////////////////////////////////////////////////////////
+// Different Sized Board
+////////////////////////////////////////////////////////
+
+TEST_F(BoardRepsFixture, CannotPlayOutsideBoard) {
+	br.setBoardSize(9);
+	bool ok;
+	ok = br.setOcc(Loc(8,8), P1);
+	EXPECT_EQ(true, ok);
+	ok = br.setOcc(Loc(9,8), P2);
+	EXPECT_EQ(false, ok);
+	ok = br.setOcc(Loc(8,9), P2);
+	EXPECT_EQ(false, ok);
+}

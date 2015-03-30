@@ -15,7 +15,7 @@ public:
 
     void clear();
 
-    void setOcc(Loc l, Colour c);
+    bool setOcc(Loc l, Colour c);
     Colour getOcc(Loc l) const;
 
 	void setBoardSize(BoardWidth bs);

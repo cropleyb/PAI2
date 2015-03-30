@@ -32,31 +32,21 @@ public:
 	virtual bool isInTT() const { UtilityValue unused; return _transpositionTable.lookup(*this, unused); }
 	virtual void clearTT() { _transpositionTable.clear(); }
 
-	void setMaxDepth(Depth d) { _maxDepth = d; }
-	Depth getCurrDepth() const { return _currDepth; }
-	Depth getMaxDepth() const { return _maxDepth; }
-
-	void setBoardSize(BoardWidth bs);
-	BoardWidth getBoardSize() const { return _boardReps.getBoardSize(); }
-
 	void reportCapture(const SpanEntry &span, bool right, Colour p);
 	CapCount getCaptured(Colour p) const { return _posStats.getCaptured(p); }
 
-	// For debugging?
-	MoveNumber getLastMoveNumber() const
-	{
-		return _moveHist.getLastMoveNumber();
-	}
+	// Game and AI parameters from user code
+	void setMaxDepth(Depth d) { _maxDepth = d; }
+	Depth getCurrDepth() const { return _currDepth; }
+	Depth getMaxDepth() const { return _maxDepth; }
+	void setBoardSize(BoardWidth bs);
+	BoardWidth getBoardSize() const { return _boardReps.getBoardSize(); }
+	void setRules(const std::string& rulesStr);
 
-	Loc getMove(MoveNumber mn) const
-	{
-		return _moveHist.getMoved(mn);
-	}
-
-	Colour getWonBy() const
-	{
-		return _posStats.getWonBy();
-	}
+	// Easy accessors
+	MoveNumber getLastMoveNumber() const { return _moveHist.getLastMoveNumber(); }
+	Loc getMove(MoveNumber mn) const { return _moveHist.getMoved(mn); }
+	Colour getWonBy() const { return _posStats.getWonBy(); }
 
 	// Debugging...
 	void print() const;
@@ -75,6 +65,10 @@ private:
 	Depth _maxDepth;
 	Colour _ourColour;
 	TranspositionTable _transpositionTable;
+
+	bool _allowCaptures;
+	bool _forceFirstMoveInCentre;
+	bool _restrictSecondP1Move;
 };
 
 #endif

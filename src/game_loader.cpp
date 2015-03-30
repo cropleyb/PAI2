@@ -29,7 +29,7 @@ vector<string> split(const string &s, char delim) {
 
 void loadGameStr(PenteGame &g, const string &gameStr)
 {
-	cout << " !!!!!!!!!!!------------ Received: " << gameStr << endl;
+	// cout << " !!!!!!!!!!!------------ Received:\n" << gameStr << endl;
 	vector<string> lines;
     split(gameStr, '\n', lines);
 
@@ -45,11 +45,11 @@ void loadGameStr(PenteGame &g, const string &gameStr)
 			string key(line.substr(0, colonInd));
 			string val(line.substr(colonInd+1));
 			int valI = atoi(val.c_str());
-			cout << " Key: " << key << " Val: " << val << endl;
+			// cout << " Key: " << key << " Val: " << val << endl;
 			if (key == "depth") g.setMaxDepth(valI);
 			else if (key == "boardsize") g.setBoardSize(valI);
+			else if (key == "rules") g.setRules(val);
 #if 0
-			else if (key == "rules") setRules(val);
 "depth:4\n"
 "boardsize:19\n"
 "rules:tournament\n"
@@ -66,7 +66,7 @@ void loadGameStr(PenteGame &g, const string &gameStr)
 		int coord1 = atoi(coord1str.c_str());
 		int coord2 = atoi(coord2str.c_str());
 		g.makeMove(Loc(coord1,coord2), currColour);
-		cout << " P" << (int)currColour;
+		// cout << " P" << (int)currColour;
 		currColour = otherPlayer(currColour);
 	}
     g.setColour(currColour);
@@ -91,7 +91,12 @@ Loc doTheSearch(const string &gameStr, PenteGame *game)
 	return bestMove;
 }
 
-const char *getMoveFromStr(const char *gameChars, PenteGame *game)
+const char *getMoveFromStr(const char *gameChars)
+{
+	return getMoveFromStrWithGame(gameChars, 0);
+}
+
+const char *getMoveFromStrWithGame(const char *gameChars, PenteGame *game)
 {
 	string gameStr(gameChars);
 	Loc move = doTheSearch(gameStr, game);

@@ -19,7 +19,7 @@ TEST_F(GameLoaderFixture, test_find_one_move) {
 "depth:4\n"
 "boardsize:19\n"
 "rules:tournament\n"
-"1. (6, 6)\n"
+"1. (6, 6)\n" // This is not a tournament move...
 "2. (7, 7)\n"
 "3. (8, 6)\n"
 "4. (9, 6)\n"
@@ -36,9 +36,22 @@ TEST_F(GameLoaderFixture, test_find_one_move) {
 "15. (6, 3)\n"
 "16. (6, 2)\n"
 "17. (5, 7)\n";
-	const char *move = getMoveFromStr(gameStr.c_str(), &_game);
+	const char *move = getMoveFromStrWithGame(gameStr.c_str(), &_game);
 	EXPECT_EQ(4, _game.getMaxDepth());
 	EXPECT_EQ(19, _game.getBoardSize());
 	EXPECT_EQ(string("6,7\n"), move);
 }
 
+TEST_F(GameLoaderFixture, test_small_and_quick) {
+    string gameStr = \
+"depth:1\n"
+"boardsize:9\n"
+"rules:standard\n"
+"1. (4, 4)\n"
+"2. (5, 5)\n"
+"3. (4, 6)\n";
+	const char *move = getMoveFromStrWithGame(gameStr.c_str(), &_game);
+	EXPECT_EQ(1, _game.getMaxDepth());
+	EXPECT_EQ(9, _game.getBoardSize());
+	// EXPECT_EQ(string("6,7\n"), move);
+}

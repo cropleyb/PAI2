@@ -13,6 +13,7 @@ PenteGame::PenteGame()
 {
 	buildLineLookupTable();
 	buildSpanTable(19);
+	setRules("");
 }
 
 #include <iostream>
@@ -32,8 +33,13 @@ void PenteGame::makeMove(Loc l, Colour p)
 	if (pl.getCount(l) > 0) {
 		setAndRecordCaptures(l, p);
 	}
-
+#ifdef DEBUG
+	bool ok=
+#endif
 	_boardReps.setOcc(l, p);
+#ifdef DEBUG
+	assert(ok);
+#endif
 	_posStats.updateCheckerboardStats(p, l, 1);
 	_moveHist.saveMove(l, p, _captureDirs);
 }
@@ -203,4 +209,23 @@ void PenteGame::print() const
 	cout << "Move " << mn+1 << ": " << getMove(mn) << 
 		"; Caps: " << (int)c1 << "-" << (int)c2 << ":" << endl;
 	_boardReps.print();
+}
+
+void PenteGame::setRules(const std::string& rulesStr)
+{
+	// Default to standard rules
+	_allowCaptures = true;
+	_forceFirstMoveInCentre = false;
+	_restrictSecondP1Move = false;
+
+	if (rulesStr.size() == 0) return;
+
+	char rulesChar = ::tolower(rulesStr[0]);
+
+	if (rulesChar == 't') {
+		_forceFirstMoveInCentre = true;
+		_restrictSecondP1Move = true;
+	} else if (rulesChar == '5') {
+		_allowCaptures = false;
+	}
 }

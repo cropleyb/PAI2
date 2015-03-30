@@ -21,6 +21,7 @@ BoardReps::BoardReps(BoardWidth boardSize, PositionStats &posStats) :
 
 void BoardReps::setBoardSize(BoardWidth bs)
 {
+	_boardSize = bs;
 	buildSpanTable(bs);
 	clear();
 }
@@ -63,8 +64,12 @@ void BoardReps::initEdgeVal(int dir, Loc l)
 }
 
 
-void BoardReps::setOcc(Loc l, Colour c)
+bool BoardReps::setOcc(Loc l, Colour c)
 {
+#ifdef DEBUG
+	if (l[0] >= _boardSize) return false;
+	if (l[1] >= _boardSize) return false;
+#endif
 	for (int dir=E_DIR; dir<MAX_DIR; dir++)
 	{
 		assert(dir>=0);
@@ -90,6 +95,7 @@ void BoardReps::setOcc(Loc l, Colour c)
 
 		matchRange(val, span, _posStats, 1);
 	}
+	return true;
 }
 
 Colour BoardReps::getOcc(Loc l) const
