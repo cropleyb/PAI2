@@ -35,6 +35,7 @@ void BoardReps::clear()
 			_boardStrips[dir][strip] = (U64)0;
 		}
 	}
+	_centreLoc = Loc::INVALID;
 
 	initEdges();
 }
@@ -66,10 +67,6 @@ void BoardReps::initEdgeVal(int dir, Loc l)
 
 bool BoardReps::setOcc(Loc l, Colour c)
 {
-#ifdef DEBUG
-	if (l[0] >= _boardSize) return false;
-	if (l[1] >= _boardSize) return false;
-#endif
 	for (int dir=E_DIR; dir<MAX_DIR; dir++)
 	{
 		assert(dir>=0);
@@ -106,6 +103,27 @@ Colour BoardReps::getOcc(Loc l) const
 	U64 mask = (U64)3 << shift;
 	U64 val = (_boardStrips[E_DIR][spanEntry->_strip] & mask);
 	return val >> shift;
+}
+
+bool BoardReps::isCentreOfBoard(Loc l) const
+{
+	Loc centreLoc = getCentreLoc();
+	return centreLoc == l;
+}
+
+Loc BoardReps::getCentreLoc() const
+{
+	if (_centreLoc == Loc::INVALID)
+	{
+		Coord mid = _boardSize / 2;
+		(Loc &)_centreLoc = Loc(mid, mid);
+	}
+	return _centreLoc;
+}
+
+bool BoardReps::isTournamentExcluded(Loc l) const
+{
+
 }
 
 // Debugging...

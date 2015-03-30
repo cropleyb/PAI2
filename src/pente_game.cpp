@@ -3,6 +3,9 @@
 #include "span_lookup_table.h"
 #include "board_strip.h"
 
+#include <iostream>
+
+
 PenteGame::PenteGame()
 	: _moveSuggester(_posStats),
 	  _boardReps(19,_posStats),
@@ -16,7 +19,22 @@ PenteGame::PenteGame()
 	setRules("");
 }
 
-#include <iostream>
+bool PenteGame::isLegalMove(Loc l) const
+{
+	if (l[0] >= _boardReps.getBoardSize()) return false;
+	if (l[1] >= _boardReps.getBoardSize()) return false;
+	if (_moveHist.getLastMoveNumber() <= 0 && _forceFirstMoveInCentre)
+	{
+		return _boardReps.isCentreOfBoard(l);
+	}
+	if (_moveHist.getLastMoveNumber() == 2 && _restrictSecondP1Move)
+	{
+		// std::cout << "Calling isCentreOfBoard: LMN " << _moveHist.getLastMoveNumber() << std::endl;
+		// std::cout << "Calling isCentreOfBoard: FFMIC " << _forceFirstMoveInCentre << std::endl;
+		return !_boardReps.isTournamentExcluded(l);
+	}
+	return true;
+}
 
 void PenteGame::makeMove(Loc l, Colour p)
 {
@@ -27,6 +45,11 @@ void PenteGame::makeMove(Loc l, Colour p)
 	std::cout << (int)(_moveHist.getLastMoveNumber()+1)<< ".";
 	std::cout << l;
 #endif
+	if (!isLegalMove(l)) {
+		std::cerr << "Illegal move requested:\n";
+		// TODO - Dump stack trace, board state etc. for pente.org:
+		// bailOut();
+	}
 	_captureDirs = 0;
 
 	const PriorityLevel &pl = _posStats.getPriorityLevel(p, Take);

@@ -47,6 +47,8 @@ public:
 
 	MoveNumber getLastMoveNumber() const
 	{
+		if (_moveNumber == 0)
+			return 0;
 		return _moveNumber - 1;
 	}
 

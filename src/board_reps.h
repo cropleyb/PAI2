@@ -18,6 +18,9 @@ public:
     bool setOcc(Loc l, Colour c);
     Colour getOcc(Loc l) const;
 
+	bool isCentreOfBoard(Loc l) const;
+	bool isTournamentExcluded(Loc l) const;
+
 	void setBoardSize(BoardWidth bs);
 	BoardWidth getBoardSize() const { return _boardSize; }
 
@@ -27,6 +30,7 @@ public:
 private:
 	void initEdges();
 	void initEdgeVal(int dir, Loc l);
+	Loc getCentreLoc() const;
 	
 	// For debugging...
 	void print() const;
@@ -35,6 +39,8 @@ private:
 	BoardWidth _boardSize;
 	U64 _boardStrips[MAX_DIR][2*MAX_WIDTH];
 	// std::array<std::array<U64, MAX_DIR>, 2*MAX_WIDTH> _boardStrips; // TODO
+	
+	Loc _centreLoc;
 };
 
 #endif

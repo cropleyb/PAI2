@@ -504,3 +504,57 @@ TEST_F(PenteGameFixture, SaveAndUseTranspositionTable) {
 }
 #endif
 
+////////////////////////////////////////////////////////
+// Different Rules
+////////////////////////////////////////////////////////
+
+TEST_F(PenteGameFixture, CannotPlayOutsideBoard) {
+	g.setBoardSize(9);
+
+	bool ok;
+	ok = g.isLegalMove(Loc(8,8));
+	EXPECT_EQ(true, ok);
+	ok = g.isLegalMove(Loc(9,8));
+	EXPECT_EQ(false, ok);
+	ok = g.isLegalMove(Loc(8,9));
+	EXPECT_EQ(false, ok);
+}
+
+TEST_F(PenteGameFixture, MustPlayCentre) {
+	g.setRules("t");
+	g.setBoardSize(9);
+
+	bool ok;
+	ok = g.isLegalMove(Loc(4,5));
+	EXPECT_EQ(false, ok);
+	ok = g.isLegalMove(Loc(5,4));
+	EXPECT_EQ(false, ok);
+	ok = g.isLegalMove(Loc(4,4));
+	EXPECT_EQ(true, ok);
+}
+
+TEST_F(PenteGameFixture, DoNotNeedToPlayCentreInStandard) {
+	g.setRules("s");
+	g.setBoardSize(13);
+
+	bool ok;
+	ok = g.isLegalMove(Loc(4,5));
+	EXPECT_EQ(true, ok);
+	ok = g.isLegalMove(Loc(5,4));
+	EXPECT_EQ(true, ok);
+	ok = g.isLegalMove(Loc(6,6));
+	EXPECT_EQ(true, ok);
+}
+
+TEST_F(PenteGameFixture, DoNotNeedToPlayCentreIn5_I_A_R) {
+	g.setRules("5");
+	g.setBoardSize(13);
+
+	bool ok;
+	ok = g.isLegalMove(Loc(4,5));
+	EXPECT_EQ(true, ok);
+	ok = g.isLegalMove(Loc(5,4));
+	EXPECT_EQ(true, ok);
+	ok = g.isLegalMove(Loc(6,6));
+	EXPECT_EQ(true, ok);
+}

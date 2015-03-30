@@ -32,6 +32,8 @@ public:
 	virtual bool isInTT() const { UtilityValue unused; return _transpositionTable.lookup(*this, unused); }
 	virtual void clearTT() { _transpositionTable.clear(); }
 
+	bool isLegalMove(Loc l) const; // TODO: inline?
+
 	void reportCapture(const SpanEntry &span, bool right, Colour p);
 	CapCount getCaptured(Colour p) const { return _posStats.getCaptured(p); }
 
