@@ -50,7 +50,7 @@ void PenteGame::setAndRecordCaptures(Loc l, Colour p)
 
 void PenteGame::setBoardSize(BoardWidth bs)
 {
-	// TODO
+	_boardReps.setBoardSize(bs);
 }
 
 void PenteGame::reportCapture(const SpanEntry &span, bool left, Colour p)

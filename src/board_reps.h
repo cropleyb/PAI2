@@ -18,6 +18,7 @@ public:
     void setOcc(Loc l, Colour c);
     Colour getOcc(Loc l) const;
 
+	void setBoardSize(BoardWidth bs);
 	BoardWidth getBoardSize() const { return _boardSize; }
 
 	friend class PenteGame;

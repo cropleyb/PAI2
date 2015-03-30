@@ -16,7 +16,12 @@ BoardReps::BoardReps(BoardWidth boardSize, PositionStats &posStats) :
     _posStats(posStats),
 	_boardSize(boardSize)
 {
-	buildSpanTable(boardSize);
+	setBoardSize(boardSize);
+}
+
+void BoardReps::setBoardSize(BoardWidth bs)
+{
+	buildSpanTable(bs);
 	clear();
 }
 

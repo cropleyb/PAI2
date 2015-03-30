@@ -74,8 +74,6 @@ void loadGameStr(PenteGame &g, const string &gameStr)
 
 Loc doTheSearch(const string &gameStr, PenteGame *game)
 {
-	// buildSpanTable(19);
-
 	bool allocated = false;
 	if (game == 0) 
 	{
