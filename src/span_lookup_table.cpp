@@ -108,6 +108,7 @@ void buildNESpanTable(BoardWidth boardSize)
 	}
 }
 
+// TODO: Issues with multithreading
 static BoardWidth builtFor = 0;
 
 bool buildSpanTable(BoardWidth boardSize)
