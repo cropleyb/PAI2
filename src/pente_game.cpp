@@ -48,6 +48,11 @@ void PenteGame::setAndRecordCaptures(Loc l, Colour p)
 	}
 }
 
+void PenteGame::setBoardSize(BoardWidth bs)
+{
+	// TODO
+}
+
 void PenteGame::reportCapture(const SpanEntry &span, bool left, Colour p)
 {
 #ifdef DEBUG_SEARCH

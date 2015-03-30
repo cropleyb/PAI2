@@ -29,6 +29,7 @@ vector<string> split(const string &s, char delim) {
 
 void loadGameStr(PenteGame &g, const string &gameStr)
 {
+	cout << " !!!!!!!!!!!------------ Received: " << gameStr << endl;
 	vector<string> lines;
     split(gameStr, '\n', lines);
 
@@ -46,8 +47,8 @@ void loadGameStr(PenteGame &g, const string &gameStr)
 			int valI = atoi(val.c_str());
 			cout << " Key: " << key << " Val: " << val << endl;
 			if (key == "depth") g.setMaxDepth(valI);
+			else if (key == "boardsize") g.setBoardSize(valI);
 #if 0
-			else if (key == "boardsize") setBoardSize(valI);
 			else if (key == "rules") setRules(val);
 "depth:4\n"
 "boardsize:19\n"
@@ -71,22 +72,31 @@ void loadGameStr(PenteGame &g, const string &gameStr)
     g.setColour(currColour);
 }
 
-Loc doTheSearch(const string &gameStr)
+Loc doTheSearch(const string &gameStr, PenteGame *game)
 {
-	buildSpanTable(19);
+	// buildSpanTable(19);
 
-	PenteGame g;
-	loadGameStr(g, gameStr);
+	bool allocated = false;
+	if (game == 0) 
+	{
+		game = new PenteGame();
+		allocated = true;
+	}
+	loadGameStr(*game, gameStr);
 
-	AlphaBeta ab(g);
+	AlphaBeta ab(*game);
 	Loc bestMove = ab.getBestMove();
+	if (allocated)
+	{
+		delete game;
+	}
 	return bestMove;
 }
 
-const char *getMoveFromStr(const char *gameChars)
+const char *getMoveFromStr(const char *gameChars, PenteGame *game)
 {
 	string gameStr(gameChars);
-	Loc move = doTheSearch(gameStr);
+	Loc move = doTheSearch(gameStr, game);
 
 	static char moveBuf[100];
 	sprintf(moveBuf, "%d,%d\n", move[0], move[1]);

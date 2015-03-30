@@ -225,7 +225,7 @@ What next?
 run AI equiv. for C++ code
 Use run_ai.py to compare Py and C++ AIs
   - Add support for other board sizes
-  - Pass more params to pai2
+  - Pass more params to pai2: standard vs tournament
 Include py openings DB
 ...Port openings DB to C++ for Pente.org? when needed...
 // Analyse some more bad play.

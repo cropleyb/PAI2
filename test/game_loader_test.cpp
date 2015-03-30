@@ -4,10 +4,14 @@
 #include <string>
 using std::string;
 
+#include "pente_game.h"
+
 class GameLoaderFixture : public testing::Test {
 public:
 	GameLoaderFixture() {
 	}
+
+	PenteGame _game;
 };
 
 TEST_F(GameLoaderFixture, test_find_one_move) {
@@ -32,7 +36,9 @@ TEST_F(GameLoaderFixture, test_find_one_move) {
 "15. (6, 3)\n"
 "16. (6, 2)\n"
 "17. (5, 7)\n";
-	const char *move = getMoveFromStr(gameStr.c_str());
+	const char *move = getMoveFromStr(gameStr.c_str(), &_game);
+	EXPECT_EQ(4, _game.getMaxDepth());
+	EXPECT_EQ(19, _game.getBoardSize());
 	EXPECT_EQ(string("6,7\n"), move);
 }
 

@@ -18,6 +18,8 @@ public:
     void setOcc(Loc l, Colour c);
     Colour getOcc(Loc l) const;
 
+	BoardWidth getBoardSize() const { return _boardSize; }
+
 	friend class PenteGame;
 	friend class TranspositionTable;
 

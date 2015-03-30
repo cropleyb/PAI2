@@ -33,7 +33,11 @@ public:
 	virtual void clearTT() { _transpositionTable.clear(); }
 
 	void setMaxDepth(Depth d) { _maxDepth = d; }
-	Depth getCurrDepth() { return _currDepth; }
+	Depth getCurrDepth() const { return _currDepth; }
+	Depth getMaxDepth() const { return _maxDepth; }
+
+	void setBoardSize(BoardWidth bs);
+	BoardWidth getBoardSize() const { return _boardReps.getBoardSize(); }
 
 	void reportCapture(const SpanEntry &span, bool right, Colour p);
 	CapCount getCaptured(Colour p) const { return _posStats.getCaptured(p); }

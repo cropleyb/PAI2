@@ -14,13 +14,17 @@
 using std::string;
 using testing::ElementsAre;
 
-extern Loc doTheSearch(const string &gameStr);
+extern Loc doTheSearch(const string &gameStr, PenteGame *game);
 
 class AISubsystemFixture : public testing::Test {
 public:
 	AISubsystemFixture() {
 		buildSpanTable(19); // TODO: cull
 	}
+	Loc doTheSearchTest(const string &gameStr) {
+		return doTheSearch(gameStr, &_game);
+	}
+	PenteGame _game;
 };
 
 TEST_F(AISubsystemFixture, test_find_one_move) {
@@ -43,7 +47,7 @@ TEST_F(AISubsystemFixture, test_find_one_move) {
 "15. (6, 3)\n"
 "16. (6, 2)\n"
 "17. (5, 7)\n";
-    Loc move = doTheSearch(gameStr);
+    Loc move = doTheSearchTest(gameStr);
 	EXPECT_EQ(Loc(6,7), move);
 }
 
@@ -62,7 +66,7 @@ TEST_F(AISubsystemFixture, test_dont_waste_a_pair) {
 "8. (8, 7)\n"
 "9. (8, 4)\n"
 "10. (5, 8)\n";
-    Loc move = doTheSearch(gameStr);
+    Loc move = doTheSearchTest(gameStr);
 	EXPECT_EQ(Loc(6,5), move);
 }
 #endif
@@ -81,7 +85,7 @@ TEST_F(AISubsystemFixture, test_dodgy_move) {
 "8. (7, 7)\n"
 "9. (6, 7)\n";
 
-    Loc move = doTheSearch(gameStr);
+    Loc move = doTheSearchTest(gameStr);
     // Why not 9,7? i.e. why does 7,5 have a high score?
 	EXPECT_NE(Loc(7,5), move);
 }
@@ -100,7 +104,7 @@ TEST_F(AISubsystemFixture, test_dodgy_move_part2) {
 "8. (7, 7)\n"
 "9. (6, 7)\n"
 "10. (7, 5)\n";
-    Loc move = doTheSearch(gameStr);
+    Loc move = doTheSearchTest(gameStr);
 	// EXPECT_EQ(Loc(9,7), move); // TODO: Analyse failure...
 }
 
@@ -121,7 +125,7 @@ TEST_F(AISubsystemFixture, test_freebie) {
 "10. (7, 5)\n"
 "11. (9, 7)\n"
 "12. (10, 8)\n";
-    Loc move = doTheSearch(gameStr);
+    Loc move = doTheSearchTest(gameStr);
 	EXPECT_EQ(Loc(8,7), move);
 }
 #endif
@@ -139,7 +143,7 @@ TEST_F(AISubsystemFixture, test_strange) {
 "5. (7, 6)\n"
 "6. (5, 6)\n"
 "7. (4, 9)\n";
-    Loc move = doTheSearch(gameStr);
+    Loc move = doTheSearchTest(gameStr);
 	EXPECT_EQ(Loc(8,6), move);
 }
 #endif
@@ -291,7 +295,7 @@ TEST_F(AISubsystemFixture, test_bad) {
 		g.undoLastMove();
 	}
 #endif
-    Loc move = doTheSearch(gameStr);
+    Loc move = doTheSearchTest(gameStr);
 	EXPECT_EQ(Loc(10,10), move);
 }
 
@@ -326,7 +330,7 @@ TEST_F(AISubsystemFixture, test_quick_blunder) {
 		g.undoLastMove();
 	}
 #endif
-    Loc move = doTheSearch(gameStr);
+    Loc move = doTheSearchTest(gameStr);
 	EXPECT_EQ(Loc(11,7), move);
 }
 
@@ -393,7 +397,7 @@ TEST_F(AISubsystemFixture, test_show_me) {
 		g.undoLastMove();
 	}
 #endif
-    Loc move = doTheSearch(gameStr);
+    Loc move = doTheSearchTest(gameStr);
 	EXPECT_NE(Loc(10,6), move);
 }
 #endif
