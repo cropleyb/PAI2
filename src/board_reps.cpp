@@ -123,7 +123,10 @@ Loc BoardReps::getCentreLoc() const
 
 bool BoardReps::isTournamentExcluded(Loc l) const
 {
-
+	Loc centre = getCentreLoc();
+	short x_dist = ::abs(l[0] - centre[0]);
+	short y_dist = ::abs(l[1] - centre[1]);
+	return (x_dist < 3) && (y_dist < 3);
 }
 
 // Debugging...

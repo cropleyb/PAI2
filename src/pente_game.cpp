@@ -23,14 +23,12 @@ bool PenteGame::isLegalMove(Loc l) const
 {
 	if (l[0] >= _boardReps.getBoardSize()) return false;
 	if (l[1] >= _boardReps.getBoardSize()) return false;
-	if (_moveHist.getLastMoveNumber() <= 0 && _forceFirstMoveInCentre)
+	if (_moveHist.getLastMoveNumber() == 0 && _forceFirstMoveInCentre)
 	{
 		return _boardReps.isCentreOfBoard(l);
 	}
 	if (_moveHist.getLastMoveNumber() == 2 && _restrictSecondP1Move)
 	{
-		// std::cout << "Calling isCentreOfBoard: LMN " << _moveHist.getLastMoveNumber() << std::endl;
-		// std::cout << "Calling isCentreOfBoard: FFMIC " << _forceFirstMoveInCentre << std::endl;
 		return !_boardReps.isTournamentExcluded(l);
 	}
 	return true;
@@ -42,11 +40,11 @@ void PenteGame::makeMove(Loc l, Colour p)
 	std::cout << std::endl;
 	for (int d=0; d<_currDepth; d++)
 		std::cout << ". ";
-	std::cout << (int)(_moveHist.getLastMoveNumber()+1)<< ".";
+	std::cout << (int)(_moveHist.getLastMoveNumber() - 1)<< ".";
 	std::cout << l;
 #endif
 	if (!isLegalMove(l)) {
-		std::cerr << "Illegal move requested:\n";
+		std::cerr << "Illegal move requested\n";
 		// TODO - Dump stack trace, board state etc. for pente.org:
 		// bailOut();
 	}
@@ -115,7 +113,7 @@ void PenteGame::reportCapture(const SpanEntry &span, bool left, Colour p)
 
 void PenteGame::undoLastMove()
 {
-	MoveNumber mn = _moveHist.getLastMoveNumber();
+	MoveNumber mn = _moveHist.getLastMoveNumber() - 1;
 	_currDepth--;
 	
 	Loc l = _moveHist.getMoved(mn);
@@ -202,7 +200,7 @@ UtilityValue PenteGame::getUtility()
 	}
 #endif
 
-	MoveNumber lastMn = _moveHist.getLastMoveNumber();
+	MoveNumber lastMn = _moveHist.getLastMoveNumber() - 1;
 	// lastMn 0, sc P1, depth 0 -> tc P1
 	// lastMn 1, sc P2, depth 0 -> tc P2
 	Colour searchColour = _ourColour;
@@ -225,7 +223,7 @@ using namespace std;
 
 void PenteGame::print() const
 {
-	MoveNumber mn = getLastMoveNumber();
+	MoveNumber mn = getLastMoveNumber() - 1;
 	CapCount c1 = getCaptured(P1);
 	CapCount c2 = getCaptured(P2);
 

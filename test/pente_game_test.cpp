@@ -558,3 +558,27 @@ TEST_F(PenteGameFixture, DoNotNeedToPlayCentreIn5_I_A_R) {
 	ok = g.isLegalMove(Loc(6,6));
 	EXPECT_EQ(true, ok);
 }
+
+TEST_F(PenteGameFixture, TournamentRule) {
+	g.setRules("t");
+	g.setBoardSize(19);
+	g.makeMove(Loc(9,9), P1);
+	g.makeMove(Loc(8,8), P2);
+
+	bool ok;
+	ok = g.isLegalMove(Loc(8,9));
+	EXPECT_EQ(false, ok);
+	ok = g.isLegalMove(Loc(6,9));
+	EXPECT_EQ(true, ok);
+	ok = g.isLegalMove(Loc(9,6));
+	EXPECT_EQ(true, ok);
+	ok = g.isLegalMove(Loc(12,9));
+	EXPECT_EQ(true, ok);
+	ok = g.isLegalMove(Loc(9,12));
+	EXPECT_EQ(true, ok);
+
+	ok = g.isLegalMove(Loc(7,7));
+	EXPECT_EQ(false, ok);
+	ok = g.isLegalMove(Loc(11,11));
+	EXPECT_EQ(false, ok);
+}

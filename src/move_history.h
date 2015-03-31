@@ -45,16 +45,15 @@ public:
 		return _capHist[mn];
 	}
 
+	// The first move number is move 1
 	MoveNumber getLastMoveNumber() const
 	{
-		if (_moveNumber == 0)
-			return 0;
-		return _moveNumber - 1;
+		return _moveNumber;
 	}
 
 	Loc getLastMove() const
 	{
-		return _moveHist[getLastMoveNumber()];
+		return _moveHist[getLastMoveNumber()-1];
 	}
 
 private:

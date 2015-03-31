@@ -1,3 +1,4 @@
+#if 1
 #include "gmock/gmock.h"
 #include "game_loader.h"
 
@@ -55,3 +56,4 @@ TEST_F(GameLoaderFixture, test_small_and_quick) {
 	EXPECT_EQ(9, _game.getBoardSize());
 	// EXPECT_EQ(string("6,7\n"), move);
 }
+#endif
