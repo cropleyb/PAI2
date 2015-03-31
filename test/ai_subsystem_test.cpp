@@ -398,7 +398,6 @@ TEST_F(AISubsystemFixture, testForgotToDefend) {
 "(7, 11)\n"
 "(9, 13)\n"
 "(7, 11)\n"
-#endif
 ;
 
 #if 0
@@ -407,6 +406,7 @@ TEST_F(AISubsystemFixture, testForgotToDefend) {
     Loc move = doTheSearchTest(gameStr);
 	EXPECT_NE(Loc(5,11), move);
 }
+#endif
 
 #if 0
 "1.(9, 9)\n"
