@@ -151,12 +151,15 @@ UtilityValue UtilityCalc<PS>::utilityScore(Colour evalColour, Colour /*turnColou
 		score += evalPatterns[i] * _patternScale[i];
 	}
 
-	// Unless we're playing keryo, capturesScale only needs to operate
-	// on pairs
-	captured /= 2;
+	if (_posStats.getCanWinByCaptures())
+	{
+		// Unless we're playing keryo, capturesScale only needs to operate
+		// on pairs
+		captured /= 2;
 
-	UtilityValue cc = capturedContrib(captured);
-	score += cc;
+		UtilityValue cc = capturedContrib(captured);
+		score += cc;
+	}
 
 	// Give takes and threats some value for their ability to help
 	// get 5 in a row.
@@ -225,9 +228,8 @@ bool UtilityCalc<PS>::zeroTurnWin(Colour evalColour, Colour /*turnColour*/) cons
 	// sfcw = rules.stonesForCaptureWin
 	// ccp = rules.canCapturePairs
 
-	// if sfcw > 0 and ccp:
 	// if evalCaptured >= sfcw:
-	if (evalCaptured >= 10)
+	if (_posStats.getCanWinByCaptures() && evalCaptured >= 10)
 	{
 		// This position has been won already, mark it as such so
 		// that the search is not continued from this node.
@@ -260,18 +262,20 @@ bool UtilityCalc<PS>::oneTurnWin(Colour evalColour, Colour turnColour) const
 				return true;
 	}
 
-	// if ccp and sfcw > 0:
-	// Can win by captures
-	CapCount myTakes = evalPatterns[Take];
-	if (evalColour == turnColour)
+	if (_posStats.getCanWinByCaptures())
 	{
-		if ((10 - evalCaptured) <= 2 and myTakes > 0)
-			// evalColour can take the last pair for a win
-			return true;
-	} else {
-		if ((10 - evalCaptured) <= 2 and myTakes > 2)
-			// evalColour can take the last pair for a win
-			return true;
+		// Can win by captures
+		CapCount myTakes = evalPatterns[Take];
+		if (evalColour == turnColour)
+		{
+			if ((10 - evalCaptured) <= 2 and myTakes > 0)
+				// evalColour can take the last pair for a win
+				return true;
+		} else {
+			if ((10 - evalCaptured) <= 2 and myTakes > 2)
+				// evalColour can take the last pair for a win
+				return true;
+		}
 	}
 	return false;
 }

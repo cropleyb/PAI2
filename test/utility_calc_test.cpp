@@ -42,6 +42,8 @@ public:
 		// TODO: test this...
 		return 0;
 	}
+
+	bool getCanWinByCaptures() const { return true; }
 	
 	CapCount _captured[3];
 	PattCount _patternCounts[3][MAX_PATTERN_TYPE];

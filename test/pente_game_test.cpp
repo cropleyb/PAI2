@@ -630,3 +630,37 @@ TEST_F(PenteGameFixture, NoTournamentRuleInF_I_A_R) {
 	ok = g.isLegalMove(Loc(11,11));
 	EXPECT_EQ(true, ok);
 }
+
+TEST_F(PenteGameFixture, NoWinByCapturesIn5) {
+	g.setRules("5");
+	g.setBoardSize(19);
+
+	g.makeMove(Loc(2,1), P1);
+	g.makeMove(Loc(1,1), P2);
+	g.makeMove(Loc(3,1), P1);
+	g.makeMove(Loc(4,1), P2); // Cap 1
+
+	g.makeMove(Loc(2,3), P1);
+	g.makeMove(Loc(1,3), P2);
+	g.makeMove(Loc(3,3), P1);
+	g.makeMove(Loc(4,3), P2); // Cap 2
+
+	g.makeMove(Loc(2,5), P1);
+	g.makeMove(Loc(1,5), P2);
+	g.makeMove(Loc(3,5), P1);
+	g.makeMove(Loc(4,5), P2); // Cap 3
+
+	g.makeMove(Loc(2,7), P1);
+	g.makeMove(Loc(1,7), P2);
+	g.makeMove(Loc(3,7), P1);
+	g.makeMove(Loc(4,7), P2); // Cap 4
+
+	g.makeMove(Loc(2,9), P1);
+	g.makeMove(Loc(1,9), P2);
+	g.makeMove(Loc(3,9), P1);
+	g.makeMove(Loc(4,9), P2); // Cap 5
+
+	Colour winner = g.getWonBy();
+	EXPECT_EQ(EMPTY, winner);
+}
+

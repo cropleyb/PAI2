@@ -57,7 +57,7 @@ void PenteGame::makeMove(Loc l, Colour p)
 	_captureDirs = 0;
 
 	const PriorityLevel &pl = _posStats.getPriorityLevel(p, Take);
-	if (pl.getCount(l) > 0) {
+	if (pl.getCount(l) > 0 &&  _allowCaptures) {
 		setAndRecordCaptures(l, p);
 	}
 #ifdef DEBUG
@@ -242,6 +242,7 @@ void PenteGame::setRules(const std::string& rulesStr)
 {
 	// Default to standard rules
 	_allowCaptures = true;
+	bool canWinByCaptures = true;
 	_forceFirstMoveInCentre = false;
 	_restrictSecondP1Move = false;
 
@@ -253,6 +254,7 @@ void PenteGame::setRules(const std::string& rulesStr)
 		_forceFirstMoveInCentre = true;
 		_restrictSecondP1Move = true;
 	} else if (rulesChar == '5') {
-		_allowCaptures = false;
+		canWinByCaptures = false;
 	}
+	_posStats.setCanWinByCaptures(canWinByCaptures);
 }

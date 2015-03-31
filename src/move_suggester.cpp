@@ -66,11 +66,13 @@ bool MoveSuggester::getPriorityLevels(Colour ourColour)
 		return onePoss;
 	}
 
+	bool cwbc = _posStats.getCanWinByCaptures();
+
 	CapCount ourCaptureCount = _posStats.getCaptured(ourColour);
 	const PriorityLevel &ourTakes
 		= _posStats.getPriorityLevel(ourColour, Take);
 
-	if (ourCaptureCount >= 8 and ourTakes.getNumCands() > 0) {
+	if (cwbc and ourCaptureCount >= 8 and ourTakes.getNumCands() > 0) {
 		// This will win too
 		_toSearchLevels[0] = &ourTakes;
 		_numSearchLevels = 1;
@@ -82,7 +84,7 @@ bool MoveSuggester::getPriorityLevels(Colour ourColour)
 	const PriorityLevel &theirTakes
 		= _posStats.getPriorityLevel(theirColour, Take);
 
-	if (theirCaptureCount >= 8 and theirTakes.getNumCands() > 0) {
+	if (cwbc and theirCaptureCount >= 8 and theirTakes.getNumCands() > 0) {
 		// Block their takes, or capture one of the ends of an
 		// attacker, or lose
 		_toSearchLevels[0] = &ourTakes;

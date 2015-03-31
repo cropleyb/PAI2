@@ -26,6 +26,7 @@ public:
 			_checkerboardStats[c][1] = 0;
 		}
 		_wonBy = EMPTY;
+		_canWinByCaptures = true;
 	}
 
 	void reportCaptured(Colour c, CapCount count, int inc)
@@ -81,11 +82,14 @@ public:
 		return ret;
 	}
 
+	void setCanWinByCaptures(bool c) { _canWinByCaptures = c; }
+	bool getCanWinByCaptures() const { return _canWinByCaptures; }
+
 private:
 	void updateWonBy(Colour c)
 	{
 		_wonBy = EMPTY;
-		if (_captured[c] >= 10) _wonBy = c;
+		if (_canWinByCaptures && _captured[c] >= 10) _wonBy = c;
 		else if (_patternCounts[c][Line5] > 0) _wonBy = c;
 	}
 
@@ -99,6 +103,7 @@ private:
 	CapCount _captured[3];
 	short _checkerboardStats[3][2];
 	Colour _wonBy;
+	bool _canWinByCaptures;
 };
 
 #endif

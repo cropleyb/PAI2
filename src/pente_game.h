@@ -53,6 +53,8 @@ public:
 	Loc getMove(MoveNumber mn) const { return _moveHist.getMoved(mn); }
 	Colour getWonBy() const { return _posStats.getWonBy(); }
 
+	Colour getOcc(Loc l) { return _boardReps.getOcc(l); }
+
 	// Debugging...
 	void print() const;
 
