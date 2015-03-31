@@ -45,15 +45,9 @@ void loadGameStr(PenteGame &g, const string &gameStr)
 			string key(line.substr(0, colonInd));
 			string val(line.substr(colonInd+1));
 			int valI = atoi(val.c_str());
-			// cout << " Key: " << key << " Val: " << val << endl;
 			if (key == "depth") g.setMaxDepth(valI);
 			else if (key == "boardsize") g.setBoardSize(valI);
 			else if (key == "rules") g.setRules(val);
-#if 0
-"depth:4\n"
-"boardsize:19\n"
-"rules:tournament\n"
-#endif
 			continue;
 		}
 
