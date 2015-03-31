@@ -14,6 +14,23 @@
 using std::string;
 using testing::ElementsAre;
 
+#define NEW_SYSTEM_TESTS 
+
+extern void loadGameStr(PenteGame &g, const string &gameStr);
+
+void printGameHistory(std::string gameStr) {
+	PenteGame g;
+	loadGameStr(g, gameStr);
+	cout << endl;
+	for (int i=60; i>0; i--)
+	{
+		g.print();
+		MoveNumber mn = g.getLastMoveNumber();
+		if (mn <= 1) break;
+		g.undoLastMove();
+	}
+}
+
 extern Loc doTheSearch(const string &gameStr, PenteGame *game);
 
 class AISubsystemFixture : public testing::Test {
@@ -245,8 +262,7 @@ TEST_F(AISubsystemFixture, test_draw) {
 }
 #endif
 
-extern void loadGameStr(PenteGame &g, const string &gameStr);
-
+#ifdef NEW_SYSTEM_TESTS
 TEST_F(AISubsystemFixture, test_bad) {
     string gameStr = \
 "boardwidth:19\n"
@@ -292,21 +308,14 @@ TEST_F(AISubsystemFixture, test_bad) {
 "39.(12, 8)\n";
 
 #if 0
-	PenteGame g;
-	loadGameStr(g, gameStr);
-	cout << endl;
-	for (int i=60; i>0; i--)
-	{
-		g.print();
-		MoveNumber mn = g.getLastMoveNumber();
-		if (mn <= 0) break;
-		g.undoLastMove();
-	}
+	printGameHistory(gameStr);
 #endif
     Loc move = doTheSearchTest(gameStr);
 	EXPECT_EQ(Loc(10,10), move);
 }
+#endif
 
+#ifdef NEW_SYSTEM_TESTS
 TEST_F(AISubsystemFixture, test_quick_blunder) {
     string gameStr = \
 "depth:3\n"
@@ -328,22 +337,14 @@ TEST_F(AISubsystemFixture, test_quick_blunder) {
 #endif
 
 #if 0
-	PenteGame g;
-	loadGameStr(g, gameStr);
-	cout << endl;
-	for (int i=60; i>0; i--)
-	{
-		g.print();
-		MoveNumber mn = g.getLastMoveNumber();
-		if (mn <= 0) break;
-		g.undoLastMove();
-	}
+	printGameHistory(gameStr);
 #endif
     Loc move = doTheSearchTest(gameStr);
 	EXPECT_EQ(Loc(11,7), move);
 }
+#endif
 
-#if 0
+#ifdef NEW_SYSTEM_TESTS
 TEST_F(AISubsystemFixture, test_show_me) {
     string gameStr = \
 "boardwidth:19\n"
@@ -358,15 +359,54 @@ TEST_F(AISubsystemFixture, test_show_me) {
 "8.(12, 10)\n"
 "9.(11, 7)\n"
 "10.(13, 7)\n"
-"11.(10, 8)\n"
-#if 0
-"12.(10, 6)\n"
-"13.(12, 6)\n"
-"14.(10, 9)\n"
-"15.(10, 8)\n"
-"16.(10, 7)\n"
-"17.(11, 7)\n"
+"11.(10, 8)\n";
+    Loc move = doTheSearchTest(gameStr);
+	EXPECT_NE(Loc(10,6), move);
+}
+
 #endif
+
+#ifdef NEW_SYSTEM_TESTS 
+TEST_F(AISubsystemFixture, testForgotToDefend) {
+    string gameStr = \
+"depth:4\n" // Works with depth 4 or higher
+"boardsize:19\n"
+"rules:Tournament\n"
+"(9, 9)\n"
+"(10, 10)\n"
+"(9, 6)\n"
+"(9, 8)\n"
+"(10, 9)\n"
+"(11, 9)\n"
+"(12, 8)\n"
+"(9, 11)\n"
+"(8, 9)\n"
+"(7, 9)\n"
+"(8, 10)\n"
+"(8, 12)\n"
+"(7, 13)\n"
+"(10, 8)\n"
+"(12, 10)\n"
+"(8, 8)\n"
+"(9, 7)\n"
+"(8, 11)\n"
+"(8, 10)\n"
+"(10, 8)\n"
+"(6, 10)\n"
+"(8, 8)\n"
+"(7, 8)\n"
+"(7, 11)\n"
+"(9, 13)\n"
+"(7, 11)\n"
+#endif
+;
+
+#if 0
+	printGameHistory(gameStr);
+#endif
+    Loc move = doTheSearchTest(gameStr);
+	EXPECT_NE(Loc(5,11), move);
+}
 
 #if 0
 "1.(9, 9)\n"
@@ -392,24 +432,6 @@ TEST_F(AISubsystemFixture, test_show_me) {
 "21.(9, 6)\n"
 "22.(9, 5)\n"
 "23.(8, 10)\n"
-#endif
-;
-
-#if 0
-	PenteGame g;
-	loadGameStr(g, gameStr);
-	cout << endl;
-	for (int i=60; i>0; i--)
-	{
-		g.print();
-		MoveNumber mn = g.getLastMoveNumber();
-		if (mn <= 0) break;
-		g.undoLastMove();
-	}
-#endif
-    Loc move = doTheSearchTest(gameStr);
-	EXPECT_NE(Loc(10,6), move);
-}
 #endif
 
 

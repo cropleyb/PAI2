@@ -49,6 +49,8 @@ public:
 	void setRules(const std::string& rulesStr);
 
 	// Easy accessors
+	MoveNumber getLastMoveNumber() const { return _moveHist.getLastMoveNumber(); }
+
 	Loc getMove(MoveNumber mn) const { return _moveHist.getMoved(mn); }
 	Colour getWonBy() const { return _posStats.getWonBy(); }
 
