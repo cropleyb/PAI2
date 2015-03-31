@@ -176,7 +176,8 @@ void PenteGame::undoLastMove()
 Loc
 PenteGame::makeNextMove()
 {
-    Loc move = _moveSuggester.getNextMove(_currDepth, _ourColour);
+    Loc move = getNextMove();
+
 	if (move.isValid())
 		makeMove(move, (1 + (++_currDepth + _ourColour) % 2));
 	return move;
@@ -185,7 +186,13 @@ PenteGame::makeNextMove()
 Loc
 PenteGame::getNextMove()
 {
-    Loc move = _moveSuggester.getNextMove(_currDepth, _ourColour);
+	Loc move;
+	MoveNumber mn = _moveHist.getLastMoveNumber();
+    if (mn == 0) {
+		move = _boardReps.getCentreLoc();
+	} else {
+	 	move = _moveSuggester.getNextMove(_currDepth, _ourColour);
+	}
 	return move;
 }
 
@@ -229,7 +236,7 @@ using namespace std;
 
 void PenteGame::print() const
 {
-	MoveNumber mn = getLastMoveNumber() - 1;
+	MoveNumber mn = _moveHist.getLastMoveNumber() - 1;
 	CapCount c1 = getCaptured(P1);
 	CapCount c2 = getCaptured(P2);
 

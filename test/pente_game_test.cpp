@@ -664,3 +664,27 @@ TEST_F(PenteGameFixture, NoWinByCapturesIn5) {
 	EXPECT_EQ(EMPTY, winner);
 }
 
+TEST_F(PenteGameFixture, MakeFirstMoveInTrnmt) {
+	g.setRules("t");
+	g.setBoardSize(19);
+
+	Loc loc = g.makeNextMove();
+	EXPECT_EQ(Loc(9,9), loc);
+}
+
+TEST_F(PenteGameFixture, MakeFirstMoveInStd) {
+	g.setRules("s");
+	g.setBoardSize(19);
+
+	Loc loc = g.makeNextMove();
+	EXPECT_EQ(Loc(9,9), loc);
+}
+
+TEST_F(PenteGameFixture, MakeFirstMoveIn_F_I_A_R) {
+	g.setRules("5");
+	g.setBoardSize(19);
+
+	Loc loc = g.makeNextMove();
+	EXPECT_EQ(Loc(9,9), loc);
+}
+
