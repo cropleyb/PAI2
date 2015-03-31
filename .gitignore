@@ -10,3 +10,4 @@ setup.sh
 t.pl
 callgrind.out.*
 cg
+tmp
