@@ -26,7 +26,7 @@ public:
 	void makeMove(Loc l, Colour p);
     virtual void undoLastMove();
 
-    virtual bool isOnlyOneMove() { return _moveSuggester.isOnlyOneMove(_currDepth, _ourColour); }
+    virtual bool isOnlyOneMove() { return _moveHist.getLastMoveNumber() == 0 or _moveSuggester.isOnlyOneMove(_currDepth, _ourColour); }
     virtual Loc makeNextMove();
 	virtual Loc getNextMove(); // Get it without performing it
     virtual bool isCutoff() const;

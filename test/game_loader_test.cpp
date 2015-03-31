@@ -56,4 +56,15 @@ TEST_F(GameLoaderFixture, test_small_and_quick) {
 	EXPECT_EQ(9, _game.getBoardSize());
 	// EXPECT_EQ(string("6,7\n"), move);
 }
+
+TEST_F(GameLoaderFixture, test_make_first_move) {
+    string gameStr = \
+"depth:1\n"
+"boardsize:9\n"
+"rules:standard\n";
+	const char *move = getMoveFromStrWithGame(gameStr.c_str(), &_game);
+	EXPECT_EQ(1, _game.getMaxDepth());
+	EXPECT_EQ(9, _game.getBoardSize());
+	EXPECT_EQ(string("4,4\n"), move);
+}
 #endif
