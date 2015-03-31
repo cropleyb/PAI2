@@ -11,12 +11,15 @@
 
 class BoardReps;
 class SpanEntry;
+class PenteGame;
+
+extern PenteGame *_penteGame_;
 
 class PenteGame : public IABBridge
 {
 public:
 	PenteGame();
-	virtual ~PenteGame() {}
+	virtual ~PenteGame();
 
 	void setColour(Colour ourColour) { _ourColour = ourColour; }
 

@@ -1,8 +1,10 @@
 #include "priority_level.h"
+#include "pente_game.h"
 #include "bdebug.h"
 
 #include <algorithm>    // std::sort
 #include <vector>       // std::vector
+
 
 #define PLD(X)
 
@@ -163,8 +165,9 @@ Ind PriorityLevel::getCands(Loc *locBuffer, Ind reqestedMax, U64 seen[MAX_WIDTH]
 		if (!(seen[currNodeY] & ((U64)1 << currNodeX)))
 		{
 			PLD(cout << "getCands 4 - adding " << currNode._loc._value << endl);
-			locBuffer[numAdded] = currNode._loc;
 			seen[currNodeY] |= ((U64)1 << currNodeX);
+			if (_penteGame_ && !_penteGame_->isLegalMove(currNode._loc)) continue;
+			locBuffer[numAdded] = currNode._loc;
 			numAdded++;
 		}
 		currInd = currNode._nextInd;

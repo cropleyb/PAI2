@@ -5,6 +5,7 @@
 
 #include <iostream>
 
+PenteGame *_penteGame_ = 0;
 
 PenteGame::PenteGame()
 	: _moveSuggester(_posStats),
@@ -17,6 +18,11 @@ PenteGame::PenteGame()
 	buildLineLookupTable();
 	buildSpanTable(19);
 	setRules("");
+	_penteGame_ = this;
+}
+
+PenteGame::~PenteGame() {
+	_penteGame_ = 0;
 }
 
 bool PenteGame::isLegalMove(Loc l) const
