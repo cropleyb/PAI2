@@ -132,7 +132,7 @@ bool PriorityLevel::myOrder(const Loc &l1, const Loc &l2) const
 	return (getCount(l1) > getCount(l2));
 }
 
-Ind PriorityLevel::getCands(Loc *locBuffer, Ind reqestedMax, U64 seen[MAX_WIDTH]) const
+Ind PriorityLevel::getCands(Loc *locBuffer, Ind requestedMax, U64 seen[MAX_WIDTH]) const
 {
 	PLD(cout << "getCands top - " << (void *)this << endl);
 	PLD(cout << "getCands 1 - _dlHeadInd" << _dlHeadInd << endl);
@@ -141,8 +141,8 @@ Ind PriorityLevel::getCands(Loc *locBuffer, Ind reqestedMax, U64 seen[MAX_WIDTH]
 
 	// TODO: Bail if only request 1 or 2?
 	
-	Ind tempMax = reqestedMax;
-	if (_numCands > reqestedMax)
+	Ind tempMax = requestedMax;
+	if (_numCands > requestedMax)
 	{
 		// This is the last priority level that will be used to contribute
 		// to the candidate moves. Get all of them so we can sort them by
@@ -180,6 +180,19 @@ Ind PriorityLevel::getCands(Loc *locBuffer, Ind reqestedMax, U64 seen[MAX_WIDTH]
 	// by the search, only the best candidates are used.
     std::sort(locBuffer, locBuffer+numAdded, doCompare(*this) );
 
-	return std::min(reqestedMax, numAdded);
+#if 0
+	if (_numCands > requestedMax)
+	{
+		int lastReqCount = _dlNodes[_nodeIndByLoc[locBuffer[requestedMax-1]._value]]._count;
+		while (requestedMax < numAdded)
+		{
+			int extraCount = _dlNodes[_nodeIndByLoc[locBuffer[requestedMax]._value]]._count;
+			if (extraCount == lastReqCount) requestedMax++;
+			else break;
+		}
+	}
+#endif
+
+	return std::min(requestedMax, numAdded);
 }
 
