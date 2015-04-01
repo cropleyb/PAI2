@@ -24,7 +24,8 @@ public:
         _captureScoreBase = 300;
         _takeScoreBase = 80;
         _threatScoreBase = 20;
-        _blockedFourBase = 200; // Halved as only one is blocked
+        //_blockedFourBase = 200; // Halved as only one is blocked
+        _blockedFourBase = 30;
         _useNetCaptures = true;
         _lengthFactor = 35;
         _forceDepth = 0;
