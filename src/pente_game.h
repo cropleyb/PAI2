@@ -22,6 +22,7 @@ public:
 	virtual ~PenteGame();
 
 	void setColour(Colour ourColour) { _ourColour = ourColour; }
+	void resetCache() { _moveSuggester.resetCache(); }
 
 	void makeMove(Loc l, Colour p);
     virtual void undoLastMove();

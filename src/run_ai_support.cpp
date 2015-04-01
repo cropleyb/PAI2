@@ -1,16 +1,50 @@
 #include "pente_game.h"
 #include "loc.h"
+#include "defines.h"
 #include "span_lookup_table.h"
 #include "alpha_beta.h"
 #include "run_ai_support.h"
 
 #include <iostream>
 
+#include <time.h>       /* time_t, struct tm, difftime, time, mktime */
+
 // RunAI program - for setting up battles between tweaked versions of the AI.
 
 GameResult RunAIGame::play()
 {
+	int toMove = P1;
+
+	AlphaBeta ab_games[2] = {
+		AlphaBeta(*_players[0]),
+		AlphaBeta(*_players[1])
+	};
+
+	time_t before, after;
+
 	GameResult res = GameResult();
+	res._depth = "1";
+	res._size = "19";
+	res._rules = "S";
+
+	while (res._winner == EMPTY)
+	{
+		time(&before);
+		Loc bestMove = ab_games[toMove-1].getBestMove();
+		//std::cout << "Move " << bestMove << std::endl;
+		time(&after);
+
+		_players[0]->makeMove(bestMove, toMove);
+		_players[1]->makeMove(bestMove, toMove);
+		_players[0]->resetCache();
+		_players[1]->resetCache();
+		res._times[toMove] += difftime(after, before);
+
+		toMove = otherPlayer(toMove);
+		res._winner = _players[0]->getWonBy();
+		//_players[0]->print();
+	}
+
 	return res;
 }
 

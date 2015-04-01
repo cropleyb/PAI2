@@ -13,6 +13,8 @@ public:
 	MoveSuggester(PositionStats &ps);
 	~MoveSuggester();
 
+	void resetCache();
+
 	Loc getNextMove(Depth d, Colour searchColour);
 	bool isOnlyOneMove(Depth d, Colour searchColour);
 

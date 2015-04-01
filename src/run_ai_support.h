@@ -1,12 +1,27 @@
 #ifndef _run_ai_support_h
 #define _run_ai_support_h
 
+#include <iostream>
+
+using namespace std;
+
 class PenteGame;
 
 class GameResult
 {
 public:
-	GameResult() {}
+	GameResult() : _times { 0 }, _winner(EMPTY) {}
+
+	Colour getWinner() { return _winner; }
+	bool wasWonBy(Colour p) { return _winner == p; }
+	double getTime(Colour p) { return _times[p]; }
+
+	Colour _winner;
+	double _times[3];
+
+	string _depth;
+	string _size;
+	string _rules;
 };
 
 class RunAIGame
