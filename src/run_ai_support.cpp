@@ -8,8 +8,10 @@
 
 // RunAI program - for setting up battles between tweaked versions of the AI.
 
-void RunAIGame::play()
+GameResult RunAIGame::play()
 {
+	GameResult res = GameResult();
+	return res;
 }
 
 #if 0
@@ -377,11 +379,4 @@ if __name__ == "__main__":
     s.strip_dirs().sort_stats("cumulative").print_stats(20) # or "time"
     #s.strip_dirs().sort_stats("time").print_stats(20)
 #endif
-
-int main(int argc, char *argv[])
-{
-    std::cout << "Hi from runai" << std::endl;
-	runAI();
-    return 0;
-}
 
