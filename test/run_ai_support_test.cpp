@@ -34,6 +34,24 @@ TEST_F(RunAIFixture, run_one_game) {
 	EXPECT_EQ("s", res._rules);
 }
 
+TEST_F(RunAIFixture, run_another_game) {
+	PenteGame p1;
+	PenteGame p2;
+	p1.setColour(P1);
+	p2.setColour(P2);
+	RunAIGame g(p1, p2);
+	GameResult res = g.play(3, 13, 't');
+	EXPECT_EQ(P1, res.getWinner());
+	EXPECT_EQ(1, res.wasWonBy(P1));
+	EXPECT_GT(1.0, res.getTime(P1));
+	EXPECT_GT(1.0, res.getTime(P2));
+	EXPECT_LT(0.0001, res.getTime(P1));
+	EXPECT_LT(0.0001, res.getTime(P2));
+	EXPECT_EQ("3", res._depth);
+	EXPECT_EQ("13", res._size);
+	EXPECT_EQ("t", res._rules);
+}
+
 #if 0
 Game: 2 PenteGame instances
 Match: times and runs games, passes them to the AllStats as GameResults
