@@ -19,8 +19,7 @@ MoveSuggester::~MoveSuggester()
 
 void MoveSuggester::resetCache()
 {
-	delete _candCache;
-	_candCache = new CandidateCache();
+	_candCache->reset();
 }
 
 bool MoveSuggester::isOnlyOneMove(Depth depth, Colour searchColour)

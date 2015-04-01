@@ -7,6 +7,11 @@ class CandidateCache
 public:
 	CandidateCache()
 	{
+		reset();
+	}
+
+	void reset()
+	{
 		for (Breadth b=0; b<MAX_DEPTH; b++)
 		{
 			_moveCount[b] = 0;
