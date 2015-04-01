@@ -19,6 +19,7 @@ typedef signed char BoardWidth;
 typedef unsigned char CaptureDirs;
 typedef unsigned char PattCount;
 typedef double UtilityValue;
+typedef char RulesType;
 
 const Colour EMPTY = 0;
 const Colour P1 = 1;

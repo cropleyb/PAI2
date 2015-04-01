@@ -47,7 +47,7 @@ public:
 	Depth getMaxDepth() const { return _maxDepth; }
 	void setBoardSize(BoardWidth bs);
 	BoardWidth getBoardSize() const { return _boardReps.getBoardSize(); }
-	void setRules(const std::string& rulesStr);
+	void setRules(RulesType rules);
 
 	// Easy accessors
 	MoveNumber getLastMoveNumber() const { return _moveHist.getLastMoveNumber(); }

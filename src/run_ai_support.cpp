@@ -6,13 +6,37 @@
 #include "run_ai_support.h"
 
 #include <iostream>
+#include <chrono>
 
 #include <time.h>       /* time_t, struct tm, difftime, time, mktime */
 
 // RunAI program - for setting up battles between tweaked versions of the AI.
 
-GameResult RunAIGame::play()
+class Timer
 {
+public:
+    Timer() : beg_(clock_::now()) {}
+    void reset() { beg_ = clock_::now(); }
+    double elapsed() const { 
+        return std::chrono::duration_cast<second_>
+            (clock_::now() - beg_).count(); }
+
+private:
+    typedef std::chrono::high_resolution_clock clock_;
+    typedef std::chrono::duration<double, std::ratio<1> > second_;
+    std::chrono::time_point<clock_> beg_;
+};
+
+GameResult RunAIGame::play(Depth depth, BoardWidth size, RulesType rules)
+{
+	for (int i=0; i<=1; i++)
+	{
+		PenteGame *p = _players[i];
+		p->setMaxDepth(depth);
+		p->setBoardSize(size);
+		p->setRules(rules);
+	}
+
 	int toMove = P1;
 
 	AlphaBeta ab_games[2] = {
@@ -23,22 +47,21 @@ GameResult RunAIGame::play()
 	time_t before, after;
 
 	GameResult res = GameResult();
-	res._depth = "1";
-	res._size = "19";
-	res._rules = "S";
+	res._depth = std::to_string((int)depth);
+	res._size = std::to_string((int)size);
+	res._rules = rules;
 
 	while (res._winner == EMPTY)
 	{
-		time(&before);
+		Timer tmr;
 		Loc bestMove = ab_games[toMove-1].getBestMove();
-		//std::cout << "Move " << bestMove << std::endl;
-		time(&after);
+		std::cout << "Move " << bestMove << std::endl;
+		res._times[toMove] += tmr.elapsed();
 
 		_players[0]->makeMove(bestMove, toMove);
 		_players[1]->makeMove(bestMove, toMove);
 		_players[0]->resetCache();
 		_players[1]->resetCache();
-		res._times[toMove] += difftime(after, before);
 
 		toMove = otherPlayer(toMove);
 		res._winner = _players[0]->getWonBy();

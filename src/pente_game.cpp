@@ -12,12 +12,12 @@ PenteGame::PenteGame()
 	  _boardReps(19,_posStats),
 	  _utilCalc(_posStats),
 	  _currDepth(0),
-	  _maxDepth(4),
+	  _maxDepth(1),
 	  _ourColour(EMPTY)
 {
 	buildLineLookupTable();
 	buildSpanTable(19);
-	setRules("");
+	setRules('s');
 	_penteGame_ = this;
 }
 
@@ -245,7 +245,7 @@ void PenteGame::print() const
 	_boardReps.print();
 }
 
-void PenteGame::setRules(const std::string& rulesStr)
+void PenteGame::setRules(RulesType rules)
 {
 	// Default to standard rules
 	_allowCaptures = true;
@@ -253,14 +253,10 @@ void PenteGame::setRules(const std::string& rulesStr)
 	_forceFirstMoveInCentre = false;
 	_restrictSecondP1Move = false;
 
-	if (rulesStr.size() == 0) return;
-
-	char rulesChar = ::tolower(rulesStr[0]);
-
-	if (rulesChar == 't') {
+	if (rules == 't') {
 		_forceFirstMoveInCentre = true;
 		_restrictSecondP1Move = true;
-	} else if (rulesChar == '5') {
+	} else if (rules == '5') {
 		canWinByCaptures = false;
 	}
 	_posStats.setCanWinByCaptures(canWinByCaptures);

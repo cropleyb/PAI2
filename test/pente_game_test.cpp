@@ -521,7 +521,7 @@ TEST_F(PenteGameFixture, CannotPlayOutsideBoard) {
 }
 
 TEST_F(PenteGameFixture, MustPlayCentre) {
-	g.setRules("t");
+	g.setRules('t');
 	g.setBoardSize(9);
 
 	bool ok;
@@ -534,7 +534,7 @@ TEST_F(PenteGameFixture, MustPlayCentre) {
 }
 
 TEST_F(PenteGameFixture, DoNotNeedToPlayCentreInStandard) {
-	g.setRules("s");
+	g.setRules('s');
 	g.setBoardSize(13);
 
 	bool ok;
@@ -547,7 +547,7 @@ TEST_F(PenteGameFixture, DoNotNeedToPlayCentreInStandard) {
 }
 
 TEST_F(PenteGameFixture, DoNotNeedToPlayCentreIn5_I_A_R) {
-	g.setRules("5");
+	g.setRules('5');
 	g.setBoardSize(13);
 
 	bool ok;
@@ -560,7 +560,7 @@ TEST_F(PenteGameFixture, DoNotNeedToPlayCentreIn5_I_A_R) {
 }
 
 TEST_F(PenteGameFixture, TournamentRule) {
-	g.setRules("t");
+	g.setRules('t');
 	g.setBoardSize(19);
 	g.makeMove(Loc(9,9), P1);
 	g.makeMove(Loc(8,8), P2);
@@ -584,7 +584,7 @@ TEST_F(PenteGameFixture, TournamentRule) {
 }
 
 TEST_F(PenteGameFixture, NoTournamentRuleInStandard) {
-	g.setRules("s");
+	g.setRules('s');
 	g.setBoardSize(19);
 	g.makeMove(Loc(9,9), P1);
 	g.makeMove(Loc(8,8), P2);
@@ -608,7 +608,7 @@ TEST_F(PenteGameFixture, NoTournamentRuleInStandard) {
 }
 
 TEST_F(PenteGameFixture, NoTournamentRuleInF_I_A_R) {
-	g.setRules("5");
+	g.setRules('5');
 	g.setBoardSize(19);
 	g.makeMove(Loc(9,9), P1);
 	g.makeMove(Loc(8,8), P2);
@@ -632,7 +632,7 @@ TEST_F(PenteGameFixture, NoTournamentRuleInF_I_A_R) {
 }
 
 TEST_F(PenteGameFixture, NoWinByCapturesIn5) {
-	g.setRules("5");
+	g.setRules('5');
 	g.setBoardSize(19);
 
 	g.makeMove(Loc(2,1), P1);
@@ -665,7 +665,7 @@ TEST_F(PenteGameFixture, NoWinByCapturesIn5) {
 }
 
 TEST_F(PenteGameFixture, MakeFirstMoveInTrnmt) {
-	g.setRules("t");
+	g.setRules('t');
 	g.setBoardSize(19);
 
 	Loc loc = g.makeNextMove();
@@ -673,7 +673,7 @@ TEST_F(PenteGameFixture, MakeFirstMoveInTrnmt) {
 }
 
 TEST_F(PenteGameFixture, MakeFirstMoveInStd) {
-	g.setRules("s");
+	g.setRules('s');
 	g.setBoardSize(19);
 
 	Loc loc = g.makeNextMove();
@@ -681,7 +681,7 @@ TEST_F(PenteGameFixture, MakeFirstMoveInStd) {
 }
 
 TEST_F(PenteGameFixture, MakeFirstMoveIn_F_I_A_R) {
-	g.setRules("5");
+	g.setRules('5');
 	g.setBoardSize(19);
 
 	Loc loc = g.makeNextMove();

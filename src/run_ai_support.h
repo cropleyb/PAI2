@@ -29,7 +29,7 @@ class RunAIGame
 public:
 	RunAIGame(PenteGame &p1, PenteGame &p2) : _players {&p1, &p2} {}
 
-	GameResult play();
+	GameResult play(Depth depth, BoardWidth size, RulesType rules);
 	
 private:
 	PenteGame *_players[2];
