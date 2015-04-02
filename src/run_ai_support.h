@@ -35,6 +35,30 @@ private:
 	PenteGame *_players[2];
 };
 
+class CategoryType
+{
+public:
+	CategoryType(string name) : _catName(name) {}
+	string _catName;
+};
+
+class AllStats
+{
+public:
+	AllStats() : _categoryTypes {
+		CategoryType("Depth"),
+		CategoryType("Size"),
+		CategoryType("Player"),
+		CategoryType("Rules"),
+		CategoryType("Overall") } {}
+
+    const CategoryType &getCategory(int catNum) const {return _categoryTypes[catNum]; }
+	void addGameResult(const GameResult &gr);
+	//: {Depth, Size, Player, Rules, Overall} - Name, CategoryValues
+private:
+	CategoryType _categoryTypes[5];
+};
+
 class Match
 {
 public:
@@ -49,6 +73,7 @@ public:
 	void setSizes(BoardWidth s, Types ... rest) { _sizes.push_back(s); setSizes(rest...); }
 
 	void play();
+	const AllStats &getAllStats() const {return _allStats; }
 	
 private:
 	PenteGame *_players[2];
@@ -56,6 +81,8 @@ private:
 	Depth _maxDepth;
 	string _rulesTypes;
 	vector<BoardWidth> _sizes;
+
+	AllStats _allStats;
 };
 
 #endif

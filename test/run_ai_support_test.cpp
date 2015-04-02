@@ -56,7 +56,29 @@ TEST_F(RunAIFixture, Match) {
 	match.setRulesTypes("st");
 	match.setSizes(13, 19);
 	match.play();
-	//const AllStats &allStats = match.getAllStats();
+	const AllStats &allStats = match.getAllStats();
+	EXPECT_EQ("Depth", allStats.getCategory(0)._catName);
+	EXPECT_EQ("Size", allStats.getCategory(1)._catName);
+	EXPECT_EQ("Player", allStats.getCategory(2)._catName);
+	EXPECT_EQ("Rules", allStats.getCategory(3)._catName);
+	EXPECT_EQ("Overall", allStats.getCategory(4)._catName);
+}
+
+class AccumFixture : public testing::Test {
+public:
+	AccumFixture() {
+	}
+};
+
+TEST_F(AccumFixture, AddGames) {
+	AllStats as;
+	GameResult gr;
+	gr._winner = P1;
+	// double _times[3];
+	gr._depth = "1";
+	gr._size = "19";
+	gr._rules = "S";
+	as.addGameResult(gr);
 }
 
 #if 0
