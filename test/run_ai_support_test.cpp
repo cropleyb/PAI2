@@ -19,8 +19,6 @@ public:
 TEST_F(RunAIFixture, run_one_game) {
 	PenteGame p1;
 	PenteGame p2;
-	p1.setColour(P1);
-	p2.setColour(P2);
 	RunAIGame g(p1, p2);
 	GameResult res = g.play(2, 19, 's');
 	EXPECT_EQ(P1, res.getWinner());
@@ -37,8 +35,6 @@ TEST_F(RunAIFixture, run_one_game) {
 TEST_F(RunAIFixture, run_another_game) {
 	PenteGame p1;
 	PenteGame p2;
-	p1.setColour(P1);
-	p2.setColour(P2);
 	RunAIGame g(p1, p2);
 	GameResult res = g.play(3, 13, 't');
 	EXPECT_EQ(P1, res.getWinner());
@@ -50,6 +46,17 @@ TEST_F(RunAIFixture, run_another_game) {
 	EXPECT_EQ("3", res._depth);
 	EXPECT_EQ("13", res._size);
 	EXPECT_EQ("t", res._rules);
+}
+
+TEST_F(RunAIFixture, Match) {
+	PenteGame p1;
+	PenteGame p2;
+	Match match(p1, p2);
+	match.setDepthRange(1, 2);
+	match.setRulesTypes("st");
+	match.setSizes(13, 19);
+	match.play();
+	//const AllStats &allStats = match.getAllStats();
 }
 
 #if 0

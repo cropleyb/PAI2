@@ -15,6 +15,11 @@ class PositionStats
 public:
 	PositionStats()
 	{
+		reset();
+	}
+
+	void reset()
+	{
 		for (int c=0; c<3; c++)
 		{
 			_captured[c] = 0;

@@ -22,7 +22,10 @@ public:
 	virtual ~PenteGame();
 
 	void setColour(Colour ourColour) { _ourColour = ourColour; }
-	void resetCache() { _moveSuggester.resetCache(); }
+	void resetSearch() { _moveSuggester.reset(); _currDepth=0; }
+	void restartGame() { 
+		while (getLastMoveNumber()) undoLastMove();
+	}
 
 	void makeMove(Loc l, Colour p);
     virtual void undoLastMove();

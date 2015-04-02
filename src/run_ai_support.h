@@ -35,4 +35,27 @@ private:
 	PenteGame *_players[2];
 };
 
+class Match
+{
+public:
+	Match(PenteGame &p1, PenteGame &p2) : _players {&p1, &p2} {}
+
+	void setDepthRange(Depth minDepth, Depth maxDepth) { _minDepth = minDepth; _maxDepth = maxDepth; }
+
+	void setRulesTypes(const char *rulesTypes) { _rulesTypes = rulesTypes; }
+
+	void setSizes() {}
+	template<typename ... Types>
+	void setSizes(BoardWidth s, Types ... rest) { _sizes.push_back(s); setSizes(rest...); }
+
+	void play();
+	
+private:
+	PenteGame *_players[2];
+	Depth _minDepth;
+	Depth _maxDepth;
+	string _rulesTypes;
+	vector<BoardWidth> _sizes;
+};
+
 #endif

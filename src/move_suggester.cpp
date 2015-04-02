@@ -17,7 +17,7 @@ MoveSuggester::~MoveSuggester()
 	delete _candCache;
 }
 
-void MoveSuggester::resetCache()
+void MoveSuggester::reset()
 {
 	_candCache->reset();
 }

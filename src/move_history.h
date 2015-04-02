@@ -13,6 +13,12 @@ class MoveHistory
 public:
 	MoveHistory() : _moveNumber(0)
 	{
+		reset();
+	}
+
+	void reset()
+	{
+	    _moveNumber = 0;
 		for (int i=0; i<MAX_MOVES; i++)
 		{
 			_moveHist[i] = Loc::INVALID;

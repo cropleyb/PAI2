@@ -32,6 +32,8 @@ GameResult RunAIGame::play(Depth depth, BoardWidth size, RulesType rules)
 	for (int i=0; i<=1; i++)
 	{
 		PenteGame *p = _players[i];
+		p->restartGame();
+		p->setColour(i+1);
 		p->setMaxDepth(depth);
 		p->setBoardSize(size);
 		p->setRules(rules);
@@ -51,17 +53,22 @@ GameResult RunAIGame::play(Depth depth, BoardWidth size, RulesType rules)
 	res._size = std::to_string((int)size);
 	res._rules = rules;
 
+	//cout << "boardsize: " << (int)size << endl;
+	//cout << "rules: " << rules << endl;
+	//cout << "depth: " << (int)depth << endl;
+
 	while (res._winner == EMPTY)
 	{
 		Timer tmr;
 		Loc bestMove = ab_games[toMove-1].getBestMove();
-		std::cout << "Move " << bestMove << std::endl;
+		//std::cout << bestMove << std::endl;
 		res._times[toMove] += tmr.elapsed();
+		assert(_players[0]->isLegalMove(bestMove));
 
+		_players[0]->resetSearch();
+		_players[1]->resetSearch();
 		_players[0]->makeMove(bestMove, toMove);
 		_players[1]->makeMove(bestMove, toMove);
-		_players[0]->resetCache();
-		_players[1]->resetCache();
 
 		toMove = otherPlayer(toMove);
 		res._winner = _players[0]->getWonBy();
@@ -71,6 +78,33 @@ GameResult RunAIGame::play(Depth depth, BoardWidth size, RulesType rules)
 	return res;
 }
 
+//////////////////////////////////
+// Match class
+//////////////////////////////////
+
+void Match::play()
+{
+	for (int depth = _minDepth; depth<=_maxDepth; depth++)
+	{
+		for (BoardWidth size : _sizes)
+		{
+			_players[0]->setBoardSize(size);
+			_players[1]->setBoardSize(size);
+			for (char rules : _rulesTypes)
+			{
+				int swap = 0;
+				while (swap < 2)
+				{
+					int other = (swap+1) % 2;
+					RunAIGame rag(*(_players[swap]),
+							      *(_players[other]));
+					GameResult res = rag.play(depth, size, rules);
+					swap += 1;
+				}
+			}
+		}
+	}
+}
 #if 0
 void runAI()
 {

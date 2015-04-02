@@ -37,6 +37,7 @@ bool PenteGame::isLegalMove(Loc l) const
 	{
 		return !_boardReps.isTournamentExcluded(l);
 	}
+	if (_boardReps.getOcc(l) != EMPTY) return false;
 	return true;
 }
 
@@ -83,6 +84,7 @@ void PenteGame::setAndRecordCaptures(Loc l, Colour p)
 
 void PenteGame::setBoardSize(BoardWidth bs)
 {
+	buildSpanTable(bs);
 	_boardReps.setBoardSize(bs);
 }
 
