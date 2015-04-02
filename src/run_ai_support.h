@@ -10,15 +10,16 @@ class PenteGame;
 class GameResult
 {
 public:
-	GameResult() : _times { 0 }, _winner(EMPTY) {}
+	GameResult() : _times { 0 } {}
 
-	Colour getWinner() { return _winner; }
-	bool wasWonBy(Colour p) { return _winner == p; }
-	double getTime(Colour p) { return _times[p]; }
+	bool winnerWasContender() { return _winnerWasContender; }
 
-	Colour _winner;
-	double _times[3];
+	string getValue(const string& categoryName) const;
 
+	double _times[2];
+	bool _winnerWasContender;
+
+	string _contenderP;
 	string _depth;
 	string _size;
 	string _rules;
@@ -27,9 +28,10 @@ public:
 class RunAIGame
 {
 public:
-	RunAIGame(PenteGame &p1, PenteGame &p2) : _players {&p1, &p2} {}
+	RunAIGame(PenteGame &defender, PenteGame &contender) :
+		_players {&defender, &contender} {}
 
-	GameResult play(Depth depth, BoardWidth size, RulesType rules);
+	GameResult play(Depth depth, BoardWidth size, RulesType rules, bool contenderFirst);
 	
 private:
 	PenteGame *_players[2];
@@ -39,6 +41,8 @@ class CategoryType
 {
 public:
 	CategoryType(string name) : _catName(name) {}
+	void addGameResult(const GameResult &gr);
+
 	string _catName;
 };
 
@@ -52,7 +56,7 @@ public:
 		CategoryType("Rules"),
 		CategoryType("Overall") } {}
 
-    const CategoryType &getCategory(int catNum) const {return _categoryTypes[catNum]; }
+    const CategoryType &getCategory(int catNum) const { return _categoryTypes[catNum]; }
 	void addGameResult(const GameResult &gr);
 	//: {Depth, Size, Player, Rules, Overall} - Name, CategoryValues
 private:
