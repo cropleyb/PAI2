@@ -77,7 +77,7 @@ TEST_F(RunAIFixture, Match) {
 	match.setRulesTypes("st");
 	match.setSizes(13, 19);
 	match.play();
-	const AllStats &allStats = match.getAllStats();
+	AllStats &allStats = match.getAllStats();
 	EXPECT_EQ("Depth", allStats.getCategory(0)._catName);
 	EXPECT_EQ("Size", allStats.getCategory(1)._catName);
 	EXPECT_EQ("Player", allStats.getCategory(2)._catName);
@@ -91,15 +91,36 @@ public:
 	}
 };
 
-TEST_F(AccumFixture, AddGames) {
+TEST_F(AccumFixture, AddOneGame) {
 	AllStats as;
 	GameResult gr;
-	// double _times[3];
-	//gr._winner = P1;
+	gr._contenderP = "P1";
 	gr._depth = "1";
 	gr._size = "19";
 	gr._rules = "S";
+	gr._winnerWasContender = false;
 	as.addGameResult(gr);
+
+	CategoryType &ct = as.getCategory(1);
+	EXPECT_EQ("Size", ct._catName);
+	GameCounts &gc = ct.getCounts("19");
+	EXPECT_EQ("0/1", gc.getWinStr());
+}
+
+TEST_F(AccumFixture, AddADifferentGame) {
+	AllStats as;
+	GameResult gr;
+	gr._contenderP = "P2";
+	gr._depth = "2";
+	gr._size = "13";
+	gr._rules = "T";
+	gr._winnerWasContender = true;
+	as.addGameResult(gr);
+
+	CategoryType &ct2 = as.getCategory(2);
+	EXPECT_EQ("Player", ct2._catName);
+	GameCounts &gc2 = ct2.getCounts("P2");
+	EXPECT_EQ("1/0", gc2.getWinStr());
 }
 
 #if 0

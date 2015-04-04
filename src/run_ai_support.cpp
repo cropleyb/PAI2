@@ -109,17 +109,28 @@ void CategoryType::addGameResult(const GameResult &gr)
 {
 	string categoryName = _catName;
 	string value = gr.getValue(categoryName);
+    auto search = _values.find(value);
+ 
+    if (search == _values.end()) {
+		_values[value] = GameCounts();
+    }
+	_values[value].add(gr);
 }
 	
+GameCounts &CategoryType::getCounts(const string &val)
+{
+	return _values[val];
+}
+
 //////////////////////////////////
 // AllStats class
 //////////////////////////////////
 
 void AllStats::addGameResult(const GameResult &gr)
 {
-	for (CategoryType category : _categoryTypes)
+	for (int c=0; c<5; c++)
 	{
-		category.addGameResult(gr);
+		_categoryTypes[c].addGameResult(gr);
 	}
 }
 

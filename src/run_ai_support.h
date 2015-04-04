@@ -37,13 +37,45 @@ private:
 	PenteGame *_players[2];
 };
 
+#include <strstream>
+
+class GameCounts
+{
+public:
+	GameCounts() : _wins(0), _losses(0) {}
+	GameCounts(const GameCounts &orig) : _wins(orig._wins), _losses(orig._losses) {}
+
+	void add(const GameResult &gr) {
+		cout << "add to " << this << endl;
+		if (gr._winnerWasContender) _wins++;
+		else _losses++;
+	}
+
+	string getWinStr() {
+		cout << "get from " << this << endl;
+		strstream ss;
+		ss << _wins << "/" << _losses;
+		return ss.str();
+	}
+
+//private:
+	// By contender
+	int _wins;
+	int _losses;
+};
+
+#include <map>
+
 class CategoryType
 {
 public:
 	CategoryType(string name) : _catName(name) {}
 	void addGameResult(const GameResult &gr);
+	GameCounts &getCounts(const string &val);
 
+private:
 	string _catName;
+	map<string, GameCounts> _values;
 };
 
 class AllStats
@@ -56,7 +88,7 @@ public:
 		CategoryType("Rules"),
 		CategoryType("Overall") } {}
 
-    const CategoryType &getCategory(int catNum) const { return _categoryTypes[catNum]; }
+    CategoryType &getCategory(int catNum) { return _categoryTypes[catNum]; }
 	void addGameResult(const GameResult &gr);
 	//: {Depth, Size, Player, Rules, Overall} - Name, CategoryValues
 private:
@@ -77,7 +109,7 @@ public:
 	void setSizes(BoardWidth s, Types ... rest) { _sizes.push_back(s); setSizes(rest...); }
 
 	void play();
-	const AllStats &getAllStats() const {return _allStats; }
+	AllStats &getAllStats() {return _allStats; }
 	
 private:
 	PenteGame *_players[2];
