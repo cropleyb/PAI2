@@ -2,6 +2,7 @@
 #define _run_ai_support_h
 
 #include <iostream>
+#include <iomanip>
 
 using namespace std;
 
@@ -42,19 +43,30 @@ private:
 class GameCounts
 {
 public:
-	GameCounts() : _wins(0), _losses(0) {}
-	GameCounts(const GameCounts &orig) : _wins(orig._wins), _losses(orig._losses) {}
+	GameCounts() : _wins(0), _losses(0), _ourTotalTime(0), _theirTotalTime(0) {}
+	GameCounts(const GameCounts &orig) : _wins(orig._wins), _losses(orig._losses), _ourTotalTime(orig._ourTotalTime), _theirTotalTime(orig._theirTotalTime) {}
 
 	void add(const GameResult &gr) {
-		cout << "add to " << this << endl;
+		// cout << "add to " << this << endl;
 		if (gr._winnerWasContender) _wins++;
 		else _losses++;
+		_ourTotalTime += gr._times[0];
+		_theirTotalTime += gr._times[1];
 	}
 
 	string getWinStr() {
-		cout << "get from " << this << endl;
+		// cout << "get from " << this << endl;
 		strstream ss;
 		ss << _wins << "/" << _losses;
+		return ss.str();
+	}
+
+	string getTimeStr() {
+		cout << "get from " << this << endl;
+		strstream ss;
+		double ratio = _ourTotalTime / _theirTotalTime;
+		// ss << setw(6) << setprecision(4) << ratio;
+		ss << std::fixed << std::setprecision(4) << ratio;
 		return ss.str();
 	}
 
@@ -62,6 +74,8 @@ public:
 	// By contender
 	int _wins;
 	int _losses;
+	double _ourTotalTime;
+	double _theirTotalTime;
 };
 
 #include <map>

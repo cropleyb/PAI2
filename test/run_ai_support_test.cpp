@@ -123,6 +123,94 @@ TEST_F(AccumFixture, AddADifferentGame) {
 	EXPECT_EQ("1/0", gc2.getWinStr());
 }
 
+TEST_F(AccumFixture, AddTwoGamesP2ContenderWon) {
+	AllStats as;
+	GameResult gr;
+	gr._contenderP = "P2";
+	gr._depth = "2";
+	gr._size = "13";
+	gr._rules = "T";
+	gr._winnerWasContender = true;
+	gr._times[0] = 0.1258;
+	gr._times[1] = 0.5032;
+	as.addGameResult(gr);
+	as.addGameResult(gr);
+
+	CategoryType &ct2 = as.getCategory(2);
+	EXPECT_EQ("Player", ct2._catName);
+	GameCounts &gc2 = ct2.getCounts("P2");
+	EXPECT_EQ("2/0", gc2.getWinStr());
+	EXPECT_EQ("0.2500", gc2.getTimeStr()); // Average ratio
+}
+
+TEST_F(AccumFixture, AddTwoGamesP2ContenderLost) {
+	AllStats as;
+	GameResult gr;
+	gr._contenderP = "P2";
+	gr._depth = "2";
+	gr._size = "13";
+	gr._rules = "T";
+	gr._winnerWasContender = false;
+	gr._times[0] = 0.1258;
+	gr._times[1] = 0.5032;
+	as.addGameResult(gr);
+	as.addGameResult(gr);
+
+	CategoryType &ct2 = as.getCategory(2);
+	EXPECT_EQ("Player", ct2._catName);
+	GameCounts &gc2 = ct2.getCounts("P2");
+	EXPECT_EQ("0/2", gc2.getWinStr());
+	EXPECT_EQ("0.2500", gc2.getTimeStr()); // Average ratio
+}
+
+TEST_F(AccumFixture, AddTwoGamesP1ContenderWon) {
+	AllStats as;
+	GameResult gr;
+	gr._contenderP = "P1";
+	gr._depth = "2";
+	gr._size = "13";
+	gr._rules = "T";
+	gr._winnerWasContender = true;
+	gr._times[0] = 0.1258;
+	gr._times[1] = 0.5032;
+	as.addGameResult(gr);
+	as.addGameResult(gr);
+
+	CategoryType &ct2 = as.getCategory(2);
+	EXPECT_EQ("Player", ct2._catName);
+	GameCounts &gc = ct2.getCounts("P1");
+	EXPECT_EQ("2/0", gc.getWinStr());
+	EXPECT_EQ("0.2500", gc.getTimeStr()); // Average ratio
+}
+
+#if 0
+TEST_F(AccumFixture, Report) {
+	AllStats as;
+	GameResult gr;
+	gr._contenderP = "P2";
+	gr._depth = "2";
+	gr._size = "13";
+	gr._rules = "T";
+	gr._winnerWasContender = true;
+	as.addGameResult(gr);
+
+	string reportStr =
+" C vs. D: Contender (19x19 t3) B: 0.04s, W: 1.31s, B/W: 0.03"
+"| Player     t rat. | Size       t rat. | Depth      t rat. | Rules     t rat."
+"| P2: 1/0    0.0149 | 13: 4/4    5.2345 | 2: 3/5     0.9634 | T: 3/2    0.4626"
+"|                   |                   |                   |                 "
+"| Overall    t rat. |                   |                   |                 "
+"| C/D 16/16  0.7658 |                   |                   |                 "
+	EXPECT_EQ("0/0", gc3.getWinStr());
+}
+#endif
+
+#if 0
+
+x/y: contender wins / defender wins
+t rat: contender time / defender time
+Player P1: contender went first; P2: defender went first
+#endif
 #if 0
 Game: 2 PenteGame instances
 Match: times and runs games, passes them to the AllStats as GameResults
