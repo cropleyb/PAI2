@@ -158,9 +158,11 @@ TEST_F(AccumFixture, AddTwoGamesP2ContenderLost) {
 
 	CategoryType &ct2 = as.getCategory(2);
 	EXPECT_EQ("Player", ct2._catName);
+	EXPECT_EQ("Player     t rat.", ct2.getHeader());
 	GameCounts &gc2 = ct2.getCounts("P2");
 	EXPECT_EQ("0/2", gc2.getWinStr());
 	EXPECT_EQ("0.2500", gc2.getTimeStr()); // Average ratio
+	EXPECT_EQ("0/2    0.2500", gc2.getStr());
 }
 
 TEST_F(AccumFixture, AddTwoGamesP1ContenderWon) {

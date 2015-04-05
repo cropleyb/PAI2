@@ -122,6 +122,13 @@ GameCounts &CategoryType::getCounts(const string &val)
 	return _values[val];
 }
 
+string CategoryType::getHeader()
+{
+	strstream ss;
+	ss << setw(11) << left << _catName << "t rat.";
+	return ss.str();
+}
+
 //////////////////////////////////
 // AllStats class
 //////////////////////////////////

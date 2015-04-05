@@ -70,6 +70,10 @@ public:
 		return ss.str();
 	}
 
+	string getStr() {
+		return getWinStr() + "    " + getTimeStr();
+	}
+
 //private:
 	// By contender
 	int _wins;
@@ -86,6 +90,7 @@ public:
 	CategoryType(string name) : _catName(name) {}
 	void addGameResult(const GameResult &gr);
 	GameCounts &getCounts(const string &val);
+	string getHeader();
 
 private:
 	string _catName;
