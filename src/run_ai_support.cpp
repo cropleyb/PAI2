@@ -92,10 +92,10 @@ GameResult RunAIGame::play(Depth depth, BoardWidth size, RulesType rules, bool c
 
 string GameResult::getValue(const string& categoryName) const
 {
-	if (categoryName == "Depth") return _depth;
+	if (categoryName == "Player") return _contenderP;
 	else if (categoryName == "Size") return _size;
+	else if (categoryName == "Depth") return _depth;
 	else if (categoryName == "Rules") return _rules;
-	else if (categoryName == "Player") return _contenderP;
 	else if (categoryName == "Overall") return "C/D";
 	// Anything else?
 	return "C/D";
@@ -140,6 +140,47 @@ void AllStats::addGameResult(const GameResult &gr)
 		_categoryTypes[c].addGameResult(gr);
 	}
 }
+
+string AllStats::report()
+{
+	// TODO: Games in order.
+	//: {Depth, Size, Player, Rules, Overall} - Name, CategoryValues
+	// work out how many rows we have.
+	int numRows = 6; // Player+Overall
+
+	for (int cI=1; cI < 4; cI++)
+	{
+		int currNumRows = _categoryTypes[cI].getNumRows();
+	    if (currNumRows > numRows) numRows = currNumRows;
+	}
+
+	// Iterate over rows, and get the relevant category info
+	strstream ss;
+	for (int currRowNum=0; currRowNum<numRows; currRowNum++)
+	{
+		for (int catInd=0; catInd<4; catInd++)
+		{
+			int realCatInd = catInd;
+			int realRowNum = currRowNum;
+
+			if (currRowNum >= 4 and catInd == 0) {
+				realCatInd = 4;
+				realRowNum = currRowNum - 4;
+			}
+			ss << "| " << _categoryTypes[realCatInd].getRow(realRowNum) << " ";
+		}
+		ss << endl;
+	}
+	return ss.str();
+}
+#if 0
+"| Player     t rat. | Size       t rat. | Depth      t rat. | Rules     t rat."
+"| P2: 1/0    0.0149 | 13: 4/4    5.2345 | 2: 3/5     0.9634 | T: 3/2    0.4626"
+"|                   |                   |                   |                 "
+"| Overall    t rat. |                   |                   |                 "
+"| C/D 16/16  0.7658 |                   |                   |                 ";
+#endif
+//	CategoryType _categoryTypes[5];
 
 //////////////////////////////////
 // Match class

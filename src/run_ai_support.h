@@ -92,6 +92,30 @@ public:
 	GameCounts &getCounts(const string &val);
 	string getHeader();
 
+	int getNumRows()
+	{
+		return 1 + _values.size();
+	}
+
+	string getRow(int rn)
+	{
+		if (rn == 0)
+			return getHeader();
+		if (rn > (int)_values.size())
+			return "                 ";
+		auto ki = _values.begin();
+		rn--;
+		while (rn > 0) {
+			rn--;
+			++ki;
+		}
+		string keyStr = ki->first + ":";
+		strstream ss;
+		ss << setw(4) << left << keyStr;
+		ss << ki->second.getStr();
+		return ss.str();
+	}
+
 private:
 	string _catName;
 	map<string, GameCounts> _values;
@@ -101,14 +125,16 @@ class AllStats
 {
 public:
 	AllStats() : _categoryTypes {
-		CategoryType("Depth"),
-		CategoryType("Size"),
 		CategoryType("Player"),
+		CategoryType("Size"),
+		CategoryType("Depth"),
 		CategoryType("Rules"),
 		CategoryType("Overall") } {}
 
     CategoryType &getCategory(int catNum) { return _categoryTypes[catNum]; }
 	void addGameResult(const GameResult &gr);
+	string report();
+
 	//: {Depth, Size, Player, Rules, Overall} - Name, CategoryValues
 private:
 	CategoryType _categoryTypes[5];
