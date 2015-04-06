@@ -202,6 +202,7 @@ void Match::play()
 					RunAIGame rag(*(_players[0]), *(_players[1]));
 					GameResult res = rag.play(depth, size, rules, swap);
 					swap += 1;
+					_allStats.addGameResult(res);
 				}
 			}
 		}

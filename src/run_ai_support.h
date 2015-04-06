@@ -55,17 +55,16 @@ public:
 	}
 
 	string getWinStr() {
-		// cout << "get from " << this << endl;
 		strstream ss;
 		ss << _wins << "/" << _losses;
 		return ss.str();
 	}
 
 	string getTimeStr() {
-		cout << "get from " << this << endl;
 		strstream ss;
+		if (_theirTotalTime <= 0) _theirTotalTime = 0.0001;
 		double ratio = _ourTotalTime / _theirTotalTime;
-		// ss << setw(6) << setprecision(4) << ratio;
+
 		ss << std::fixed << std::setprecision(4) << ratio;
 		return ss.str();
 	}
