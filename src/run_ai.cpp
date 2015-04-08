@@ -13,13 +13,10 @@ void runAI()
 	PenteGame p1;
 	PenteGame p2;
 	Match match(p1, p2);
-	match.setDepthRange(1, 2);
-	match.setRulesTypes("st");
-	match.setSizes(13, 19);
+	match.setDepthRange(8, 8);
+	match.setRulesTypes("t");
+	match.setSizes(19);
 	match.play();
-	AllStats &allStats = match.getAllStats();
-	string wholeReport = allStats.report();
-	std::cout << wholeReport << endl;
 }
 
 int main(int argc, char *argv[])

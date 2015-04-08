@@ -10,7 +10,11 @@
 
 PriorityLevel::PriorityLevel()
 {
-	//PLD(cout << "PriorityLevel constructor" << this << "----------------" << endl);
+	reset();
+}
+
+void PriorityLevel::reset()
+{
     _freeListInd = 0;
     _dlHeadInd = -1;
     _numCands = 0;

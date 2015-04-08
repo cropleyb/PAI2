@@ -68,7 +68,7 @@ GameResult RunAIGame::play(Depth depth, BoardWidth size, RulesType rules, bool c
 	{
 		Timer tmr;
 		Loc bestMove = ab_games[toMove-1].getBestMove();
-		//std::cout << bestMove << std::endl;
+		// std::cout << bestMove << std::endl;
 		res._times[toMove-1] += tmr.elapsed();
 		assert(_players[0]->isLegalMove(bestMove));
 
@@ -79,7 +79,7 @@ GameResult RunAIGame::play(Depth depth, BoardWidth size, RulesType rules, bool c
 
 		toMove = otherPlayer(toMove);
 		winner = _players[1]->getWonBy();
-		//_players[0]->print();
+		// _players[0]->print();
 	}
 	res._winnerWasContender = ((winner==P2) xor contenderFirst);
 
@@ -188,25 +188,33 @@ string AllStats::report()
 
 void Match::play()
 {
+	Timer tmr; // HERE
 	for (int depth = _minDepth; depth<=_maxDepth; depth++)
 	{
 		for (BoardWidth size : _sizes)
 		{
-			_players[0]->setBoardSize(size);
-			_players[1]->setBoardSize(size);
 			for (char rules : _rulesTypes)
 			{
 				int swap = 0;
 				while (swap < 2)
 				{
+					_players[0]->setBoardSize(size);
+					_players[1]->setBoardSize(size);
+					_players[0]->restartGame();
+					_players[1]->restartGame();
+
 					RunAIGame rag(*(_players[0]), *(_players[1]));
 					GameResult res = rag.play(depth, size, rules, swap);
 					swap += 1;
 					_allStats.addGameResult(res);
+					// std::cout << _allStats.report() << endl;
+
+					//break;
 				}
 			}
 		}
 	}
+	std::cout << "Total time: " << setprecision(4) << tmr.elapsed() << endl;
 }
 
 #if 0

@@ -15,6 +15,7 @@ class PositionStats
 public:
 	PositionStats()
 	{
+		_canWinByCaptures = true;
 		reset();
 	}
 
@@ -26,12 +27,12 @@ public:
 			for (int p=0; p<MAX_PATTERN_TYPE; p++)
 			{
 				_patternCounts[c][p] = 0;
+				_levels[c][p].reset();
 			}
 			_checkerboardStats[c][0] = 0;
 			_checkerboardStats[c][1] = 0;
 		}
 		_wonBy = EMPTY;
-		_canWinByCaptures = true;
 	}
 
 	void reportCaptured(Colour c, CapCount count, int inc)

@@ -53,6 +53,8 @@ class PriorityLevel
 public:
 	PriorityLevel();
 
+	void reset();
+
 	Ind getCands(Loc *locBuffer, Ind max, U64 seen[MAX_WIDTH]) const;
 	Ind getNumCands() const;
 	Ind getCount(Loc l) const;

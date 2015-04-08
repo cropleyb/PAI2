@@ -14,6 +14,7 @@ Loc AlphaBeta::getBestMove()
 		BD(cout << "2 getBestMove" << endl);
         // Optimisation: one move, don't search
         Loc theMove = _bridge.getNextMove();
+		//assert(theMove.isValid());
         return theMove;
     }
 
@@ -23,6 +24,7 @@ Loc AlphaBeta::getBestMove()
 	BD(cout << "3 getBestMove");
     UtilityValue val = maxValue(alpha, beta, 0);
 	BD(cout << "4 getBestMove: " << val << endl);
+	//assert(_bestTopLevelMove.isValid());
     return _bestTopLevelMove;
 }
 

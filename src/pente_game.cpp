@@ -86,6 +86,9 @@ void PenteGame::setBoardSize(BoardWidth bs)
 {
 	buildSpanTable(bs);
 	_boardReps.setBoardSize(bs);
+	_posStats.reset();
+	_moveSuggester.reset();
+	_moveHist.reset();
 }
 
 void PenteGame::reportCapture(const SpanEntry &span, bool left, Colour p)
@@ -180,8 +183,14 @@ PenteGame::makeNextMove()
 {
     Loc move = getNextMove();
 
-	if (move.isValid())
+	if (move.isValid()) {
+		if (!isLegalMove(move)) {
+			std::cerr << "Illegal move returned by makeNextMove " << move << std::endl;
+			// TODO - Dump stack trace, board state etc. for pente.org:
+			// bailOut();
+		}
 		makeMove(move, (1 + (++_currDepth + _ourColour) % 2));
+	}
 	return move;
 }
 
@@ -194,6 +203,7 @@ PenteGame::getNextMove()
 		move = _boardReps.getCentreLoc();
 	} else {
 	 	move = _moveSuggester.getNextMove(_currDepth, _ourColour);
+		//assert(move.isValid());
 	}
 	return move;
 }

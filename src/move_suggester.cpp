@@ -26,6 +26,7 @@ bool MoveSuggester::isOnlyOneMove(Depth depth, Colour searchColour)
 {
 	if (_candCache->needsFilling(depth))
 	{
+		// cout << "Filling" << endl;
 		fillCache(depth, searchColour);
 	}
 
@@ -51,6 +52,7 @@ void MoveSuggester::fillCache(Depth depth, Colour searchColour)
 
 	Breadth moveCount = filterCandidates(moveBuffer, depth, maxMoves, searchColour);
 	BD(cout << "Setting depth moves for depth " << (int)depth << " to " << (int)moveCount << endl;)
+	//cout << "Setting depth moves for depth " << (int)depth << " to " << (int)moveCount << endl;
 	_candCache->setDepthMoves(depth, moveCount);
 }
 
@@ -65,6 +67,7 @@ bool MoveSuggester::getPriorityLevels(Colour ourColour)
 	if (ourFours.getNumCands() > 0)
 	{
 		// This will win
+		// cout << " win by fours " << endl;
 		_toSearchLevels[0] = &ourFours;
 		_numSearchLevels = 1;
 		onePoss = true;
@@ -79,6 +82,7 @@ bool MoveSuggester::getPriorityLevels(Colour ourColour)
 
 	if (cwbc and ourCaptureCount >= 8 and ourTakes.getNumCands() > 0) {
 		// This will win too
+		// cout << " win by takes" << endl;
 		_toSearchLevels[0] = &ourTakes;
 		_numSearchLevels = 1;
 		onePoss = true;
@@ -106,6 +110,7 @@ bool MoveSuggester::getPriorityLevels(Colour ourColour)
 		if (theirFours.getNumCands() > 1) {
 			if (ourTakes.getNumCands() > 0) {
 				// We will lose unless we capture
+				// cout << " lose by 5 in a row unless we take" << endl;
 				_toSearchLevels[0] = &ourTakes;
 				_numSearchLevels = 1;
 				onePoss = false;
@@ -159,6 +164,7 @@ Breadth MoveSuggester::filterCandidates(Loc *moveBuffer, Depth depth, Breadth ma
 		maxMoves = 1;
 	}
 
+	// cout << "_numSearchLevels: " << _numSearchLevels << endl;
 	for (int slotInd=0; slotInd<_numSearchLevels; slotInd++)
 	{
 		const PriorityLevel *pl = _toSearchLevels[slotInd];

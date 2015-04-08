@@ -25,6 +25,7 @@ public:
 	void resetSearch() { _moveSuggester.reset(); _currDepth=0; }
 	void restartGame() { 
 		while (getLastMoveNumber()) undoLastMove();
+		resetSearch();
 	}
 
 	void makeMove(Loc l, Colour p);

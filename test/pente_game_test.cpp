@@ -655,6 +655,9 @@ TEST_F(PenteGameFixture, NoWinByCapturesIn5) {
 	g.makeMove(Loc(3,7), P1);
 	g.makeMove(Loc(4,7), P2); // Cap 4
 
+	Colour winnerA = g.getWonBy();
+	EXPECT_EQ(EMPTY, winnerA);
+
 	g.makeMove(Loc(2,9), P1);
 	g.makeMove(Loc(1,9), P2);
 	g.makeMove(Loc(3,9), P1);
