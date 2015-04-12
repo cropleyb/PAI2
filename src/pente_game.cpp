@@ -216,7 +216,7 @@ bool PenteGame::isCutoff() const
 
 UtilityValue PenteGame::getUtility()
 {
-#if 0
+#if 1
 	if (_currDepth > 2 && _currDepth < _maxDepth - 1)
 	{
 		UtilityValue ttVal;
@@ -234,7 +234,7 @@ UtilityValue PenteGame::getUtility()
 #ifdef DEBUG_SEARCH
 	std::cout << ' ' << uv;
 #endif
-#if 0
+#if 1
 	if (_currDepth > 2 && _currDepth < _maxDepth - 1)
 	{
 		_transpositionTable.savePos(*this, uv);
