@@ -74,3 +74,32 @@ TEST_F(CandidateCacheFixture, GetMovesFrom2DepthLevels) {
 	ASSERT_THAT(res_locs0_again, ElementsAre());
 }
 
+TEST_F(CandidateCacheFixture, NeedsFillingForward) {
+	Loc l1 = Loc(1,1);
+	Loc l2 = Loc(2,2);
+	Loc l3 = Loc(3,3);
+	Loc l4 = Loc(4,4);
+	Loc l5 = Loc(5,5);
+	Loc l6 = Loc(6,6);
+    Loc *locs0 = cc.getBuffer(0);
+	BD(cout << "Before: " << locs0[0]._value << endl);
+	locs0[0] = l1;
+	locs0[1] = l2;
+	locs0[2] = l3;
+	BD(cout << "After: " << locs0[0]._value << endl);
+	cc.setDepthMoves(0,3);
+
+    Loc *locs1 = cc.getBuffer(1);
+	locs1[0] = l4;
+	locs1[1] = l5;
+	locs1[2] = l6;
+	cc.setDepthMoves(1,3);
+
+	vector<Loc> res_locs1 = getMoves(1);
+	ASSERT_THAT(res_locs1, ElementsAre(l4,l5,l6));
+	vector<Loc> res_locs0 = getMoves(0);
+	ASSERT_THAT(res_locs0, ElementsAre(l1,l2,l3));
+	vector<Loc> res_locs0_again = getMoves(0);
+	ASSERT_THAT(res_locs0_again, ElementsAre());
+}
+

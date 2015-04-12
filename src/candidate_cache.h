@@ -12,6 +12,7 @@ public:
 
 	void reset()
 	{
+		_lastDepthRequested = -1;
 		for (Breadth b=0; b<MAX_DEPTH; b++)
 		{
 			_moveCount[b] = 0;
@@ -21,6 +22,7 @@ public:
 
 	Loc getNextMove(Depth depth) {
 		Breadth currInd = _currIndex[depth];
+		_lastDepthRequested = depth;
 		if (currInd < _moveCount[depth])
 		{
 			// Move on...
@@ -37,13 +39,14 @@ public:
 
 	// Report how many items are used in the buffer, and reset the "iterator"
 	void setDepthMoves(Depth d, unsigned char moveCount) { 
+		_lastDepthRequested = d;
 		_moveCount[d] += moveCount;
 		_currIndex[d] = 0;
 	}
 
 	bool needsFilling(Depth d)
 	{
-		return _moveCount[d] == 0;
+		return (d > _lastDepthRequested);
 	}
 
 	Breadth getNumMoves(Depth d) const
@@ -56,5 +59,6 @@ private:
 	//std::array<std::array<Loc, MAX_DEPTH>, MAX_CANDS> _bigBuffer; // TODO
 	std::array<Breadth, MAX_DEPTH> _moveCount;
 	std::array<Breadth, MAX_DEPTH> _currIndex;
+	Depth _lastDepthRequested;
 };
 
