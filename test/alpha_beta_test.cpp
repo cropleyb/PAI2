@@ -41,10 +41,8 @@ TEST_F(AlphaBetaFixture, FindFromOnlyOneOption) {
 	EXPECT_CALL(mb, isOnlyOneMove())
       .WillOnce(Return(true))
       ;
-	EXPECT_CALL(mb, makeNextMove())
+	EXPECT_CALL(mb, getNextMove())
       .WillOnce(Return(locFromBridge))
-      ;
-	EXPECT_CALL(mb, undoLastMove())
       ;
 
     AlphaBeta ab(mb);
