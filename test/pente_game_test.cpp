@@ -691,3 +691,20 @@ TEST_F(PenteGameFixture, MakeFirstMoveIn_F_I_A_R) {
 	EXPECT_EQ(Loc(9,9), loc);
 }
 
+TEST_F(PenteGameFixture, UndoCaptureUpdatesPosStats) {
+	g.setRules('s');
+	g.setBoardSize(19);
+	g.makeMove(Loc(2,9), P1);
+	g.makeMove(Loc(1,9), P2);
+	g.makeMove(Loc(3,9), P1);
+	g.makeMove(Loc(4,9), P2);
+
+	const PriorityLevel &ourTwosBefore = g._posStats.getPriorityLevel(P2, Line2);
+	EXPECT_EQ(4, ourTwosBefore.getNumCands());
+
+	g.undoLastMove();
+
+	const PriorityLevel &ourTwosAfter = g._posStats.getPriorityLevel(P2, Line2);
+	EXPECT_EQ(0, ourTwosAfter.getNumCands());
+}
+
