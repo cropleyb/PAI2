@@ -90,7 +90,6 @@ TEST_F(AISubsystemFixture, test_dont_waste_a_pair) {
 }
 #endif
 
-#if 1
 TEST_F(AISubsystemFixture, test_dodgy_move) {
     string gameStr = \
 "boardwidth:19\n"
@@ -109,7 +108,6 @@ TEST_F(AISubsystemFixture, test_dodgy_move) {
     // Why not 9,7? i.e. why does 7,5 have a high score?
 	EXPECT_NE(Loc(7,5), move);
 }
-#endif
 
 TEST_F(AISubsystemFixture, test_dodgy_move_part2) {
     string gameStr = \
