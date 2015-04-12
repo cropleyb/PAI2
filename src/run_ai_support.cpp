@@ -6,14 +6,16 @@
 #include "run_ai_support.h"
 
 #include <iostream>
-#include <chrono>
+#include <strstream>
 
+#include <chrono>
 #include <time.h>       /* time_t, struct tm, difftime, time, mktime */
 
 // RunAI program - for setting up battles between tweaked versions of the AI.
 
 class Timer
 {
+	// Downloaded from the net
 public:
     Timer() : beg_(clock_::now()) {}
     void reset() { beg_ = clock_::now(); }
@@ -58,28 +60,24 @@ GameResult RunAIGame::play(Depth depth, BoardWidth size, RulesType rules, bool c
 	res._rules = rules;
 	res._contenderP = (contenderFirst ? "P1" : "P2");
 
-	//cout << "boardsize: " << (int)size << endl;
-	//cout << "rules: " << rules << endl;
-	//cout << "depth: " << (int)depth << endl;
-	
 	Colour winner = EMPTY;
 
 	while (winner == EMPTY)
 	{
 		Timer tmr;
+		_players[0]->resetSearch();
+		_players[1]->resetSearch();
 		Loc bestMove = ab_games[toMove-1].getBestMove();
-		// std::cout << bestMove << std::endl;
+		std::cout << bestMove << std::endl;
 		res._times[toMove-1] += tmr.elapsed();
 		assert(_players[0]->isLegalMove(bestMove));
 
-		_players[0]->resetSearch();
-		_players[1]->resetSearch();
 		_players[0]->makeMove(bestMove, toMove);
 		_players[1]->makeMove(bestMove, toMove);
 
 		toMove = otherPlayer(toMove);
 		winner = _players[1]->getWonBy();
-		// _players[0]->print();
+		_players[0]->print();
 	}
 	res._winnerWasContender = ((winner==P2) xor contenderFirst);
 
@@ -125,8 +123,10 @@ GameCounts &CategoryType::getCounts(const string &val)
 string CategoryType::getHeader()
 {
 	strstream ss;
-	ss << setw(11) << left << _catName << "t rat.";
-	return ss.str();
+	ss << setw(11) << left << _catName << "t rat." << ends;
+	string ret = ss.str();
+	ss.freeze(false);
+	return ret;
 }
 
 //////////////////////////////////
@@ -141,12 +141,13 @@ void AllStats::addGameResult(const GameResult &gr)
 	}
 }
 
+
 string AllStats::report()
 {
 	// TODO: Games in order.
 	//: {Depth, Size, Player, Rules, Overall} - Name, CategoryValues
 	// work out how many rows we have.
-	int numRows = 6; // Player+Overall
+	int numRows = 6; // 3 for Player + Blank + 2 for Overall
 
 	for (int cI=1; cI < 4; cI++)
 	{
@@ -169,9 +170,12 @@ string AllStats::report()
 			}
 			ss << "| " << _categoryTypes[realCatInd].getRow(realRowNum) << " ";
 		}
-		ss << endl;
+		ss << "\n";
 	}
-	return ss.str();
+	ss << ends;
+	string ret = ss.str();
+	ss.freeze(false);
+	return ret;
 }
 #if 0
 "| Player     t rat. | Size       t rat. | Depth      t rat. | Rules     t rat."
@@ -188,7 +192,8 @@ string AllStats::report()
 
 void Match::play()
 {
-	Timer tmr; // HERE
+	Timer tmr;
+	int gameNum = 0;
 	for (int depth = _minDepth; depth<=_maxDepth; depth++)
 	{
 		for (BoardWidth size : _sizes)
@@ -198,11 +203,18 @@ void Match::play()
 				int swap = 0;
 				while (swap < 2)
 				{
+					gameNum++;
 					_players[0]->setBoardSize(size);
 					_players[1]->setBoardSize(size);
 					_players[0]->restartGame();
 					_players[1]->restartGame();
 
+					cout << "Game: " << gameNum << " ";
+					cout << "boardsize: " << (int)size;
+					cout << " rules: " << rules;
+					cout << " depth: " << (int)depth;
+					cout << " swap: " << (int)swap << endl;
+	
 					RunAIGame rag(*(_players[0]), *(_players[1]));
 					GameResult res = rag.play(depth, size, rules, swap);
 					swap += 1;

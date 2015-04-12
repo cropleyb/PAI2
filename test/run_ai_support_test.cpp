@@ -69,6 +69,7 @@ TEST_F(RunAIFixture, run_another_game) {
 	EXPECT_LT(0.0010, res._times[true]);
 }
 
+#if 0
 TEST_F(RunAIFixture, Match) {
 	PenteGame p1;
 	PenteGame p2;
@@ -77,8 +78,8 @@ TEST_F(RunAIFixture, Match) {
 	// match.setRulesTypes("st");
 	// match.setSizes(13, 19);
 	match.setDepthRange(1,1);
-	match.setRulesTypes("t");
-	match.setSizes(13);
+	match.setRulesTypes("st");
+	match.setSizes(19);
 	match.play();
 	AllStats &allStats = match.getAllStats();
 	EXPECT_EQ("Player", allStats.getCategory(0)._catName);
@@ -87,6 +88,7 @@ TEST_F(RunAIFixture, Match) {
 	EXPECT_EQ("Rules", allStats.getCategory(3)._catName);
 	EXPECT_EQ("Overall", allStats.getCategory(4)._catName);
 }
+#endif
 
 class AccumFixture : public testing::Test {
 public:

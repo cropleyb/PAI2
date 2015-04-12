@@ -38,8 +38,6 @@ private:
 	PenteGame *_players[2];
 };
 
-#include <strstream>
-
 class GameCounts
 {
 public:
@@ -55,18 +53,18 @@ public:
 	}
 
 	string getWinStr() {
-		strstream ss;
-		ss << _wins << "/" << _losses;
-		return ss.str();
+		string ret = to_string(_wins) + "/" + to_string(_losses);
+		return ret;
 	}
 
 	string getTimeStr() {
-		strstream ss;
+		char buf[20];
 		if (_theirTotalTime <= 0) _theirTotalTime = 0.0001;
 		double ratio = _ourTotalTime / _theirTotalTime;
+		if (ratio > 999999) ratio = 999999;
 
-		ss << std::fixed << std::setprecision(4) << ratio;
-		return ss.str();
+		sprintf(buf, "%6.4f", ratio);
+		return string(buf, 6);
 	}
 
 	string getStr() {
@@ -93,6 +91,7 @@ public:
 
 	int getNumRows()
 	{
+		// 1 for the header
 		return 1 + _values.size();
 	}
 
@@ -100,19 +99,19 @@ public:
 	{
 		if (rn == 0)
 			return getHeader();
-		if (rn > (int)_values.size())
+		if (rn > (int)_values.size()) {
 			return "                 ";
+		}
 		auto ki = _values.begin();
 		rn--;
 		while (rn > 0) {
 			rn--;
 			++ki;
 		}
-		string keyStr = ki->first + ":";
-		strstream ss;
-		ss << setw(4) << left << keyStr;
-		ss << ki->second.getStr();
-		return ss.str();
+		string keyStr(ki->first + ":  ");
+		keyStr = keyStr.substr(0, 4);
+		string ret = keyStr + ki->second.getStr();
+		return ret;
 	}
 
 private:
