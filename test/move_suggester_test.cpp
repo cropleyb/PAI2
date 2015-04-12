@@ -219,10 +219,10 @@ TEST_F(MoveSuggesterFixture, IterateTwiceNoChange) {
 	EXPECT_EQ(move.isValid(), false);
 
 	move = ms.getNextMove(2, P1);
-	EXPECT_EQ(l1, move);
+	EXPECT_EQ(move.isValid(), false);
 
 	move = ms.getNextMove(2, P1);
-	EXPECT_EQ(l2, move);
+	EXPECT_EQ(move.isValid(), false);
 
 	move = ms.getNextMove(2, P1);
 	EXPECT_EQ(move.isValid(), false);
@@ -230,19 +230,17 @@ TEST_F(MoveSuggesterFixture, IterateTwiceNoChange) {
 
 TEST_F(MoveSuggesterFixture, IterateDifferentDepths) {
 	Loc l1(1,1);
+	Loc l2(17,1);
 	arcs(P1, Line1, 1, l1);
+	arcs(P1, Line1, 1, l2);
 
-	Loc move = ms.getNextMove(0, P1);
-	EXPECT_EQ(move.isValid(), true);
-	EXPECT_EQ(l1, move);
+	Loc move = ms.getNextMove(1, P1);
+	EXPECT_EQ(move.isValid(), true); // Don't care which came first
 
-	move = ms.getNextMove(1, P1);
+	// Since this is only the move suggestor, it could even suggest the same
+	// loc for P2. In the full AI, making the move updates the candidates.
+	move = ms.getNextMove(2, P2);
 	EXPECT_EQ(move.isValid(), true);
-	EXPECT_EQ(l1, move);
-
-	move = ms.getNextMove(2, P1);
-	EXPECT_EQ(move.isValid(), true);
-	EXPECT_EQ(l1, move);
 }
 
 TEST_F(MoveSuggesterFixture, dontStartInTheMiddle13)
@@ -460,7 +458,7 @@ TEST_F(MoveSuggesterFixture, test_add_and_remove_length_candidate_from_diff_dire
 }
 
 #if TODO
-TEST_F(MoveSuggesterFixture, test_multiple_entries_searcshed_first)
+TEST_F(MoveSuggesterFixture, test_multiple_entries_searched_first)
 {
 	arcs(P1, Line3, 1, Loc(2,4), Loc(4,6));
 	arcs(P1, Line3, 1, Loc(2,4), Loc(3,3));
