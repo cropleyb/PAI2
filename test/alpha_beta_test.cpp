@@ -30,24 +30,6 @@ using ::testing::AtLeast;
 using ::testing::Return;
 using ::testing::InSequence;
 
-TEST_F(AlphaBetaFixture, NoOptions) {
-	// Do a search of a tree with no possible moves
-	// - should return an invalid Loc instance
-	MockBridge mb;
-	
-	EXPECT_CALL(mb, isOnlyOneMove())
-      .WillOnce(Return(true))
-      ;
-	EXPECT_CALL(mb, getNextMove())
-      .WillOnce(Return(Loc::INVALID))
-      ;
-
-    AlphaBeta ab(mb);
-
-	Loc move = ab.getBestMove();
-	EXPECT_EQ(move.isValid(), false);
-}
-
 TEST_F(AlphaBetaFixture, FindFromOnlyOneOption) {
 	// Do a search of a tree with a single possible move
 	// - should find that move, and return it.
@@ -59,8 +41,10 @@ TEST_F(AlphaBetaFixture, FindFromOnlyOneOption) {
 	EXPECT_CALL(mb, isOnlyOneMove())
       .WillOnce(Return(true))
       ;
-	EXPECT_CALL(mb, getNextMove())
+	EXPECT_CALL(mb, makeNextMove())
       .WillOnce(Return(locFromBridge))
+      ;
+	EXPECT_CALL(mb, undoLastMove())
       ;
 
     AlphaBeta ab(mb);
