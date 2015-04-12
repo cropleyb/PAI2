@@ -161,6 +161,8 @@ void BoardReps::print() const
 		}
 		ss << '\n';
 	}
+	ss << ends;
 	cout << ss.str();
+	ss.freeze(false);
 }
 
