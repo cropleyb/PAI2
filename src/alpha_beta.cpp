@@ -8,12 +8,15 @@ Loc AlphaBeta::getBestMove()
 {
     _bridge.clearTT();
 
-	BD(cout << "1 getBestMove" << endl);
     if (_bridge.isOnlyOneMove())
     {
-		BD(cout << "2 getBestMove" << endl);
         // Optimisation: one move, don't search
+#if 1
         Loc theMove = _bridge.getNextMove();
+#else
+        Loc theMove = _bridge.makeNextMove();
+		_bridge.undoLastMove();
+#endif
 		assert(theMove.isValid());
         return theMove;
     }
@@ -21,24 +24,19 @@ Loc AlphaBeta::getBestMove()
     UtilityValue alpha = NEGINF;
     UtilityValue beta = INF;
 
-	BD(cout << "3 getBestMove");
     UtilityValue val = maxValue(alpha, beta, 0);
-	BD(cout << "4 getBestMove: " << val << endl);
-	//assert(_bestTopLevelMove.isValid());
+	assert(_bestTopLevelMove.isValid());
     return _bestTopLevelMove;
 }
 
 UtilityValue AlphaBeta::maxValue(UtilityValue alpha, UtilityValue beta, Depth depth)
 {
-	BD(cout << "1 in maxValue - depth: " << (int)depth << endl);
     if (_bridge.isCutoff())
     {
         UtilityValue util = _bridge.getUtility();
-		BD(cout << "2 in maxValue - getUtility gave: " << util << endl);
         return util;
     }
 
-	BD(cout << "3 in maxValue" << endl);
     UtilityValue bestVal(200*NEGINF);
     UtilityValue currVal;
 	Loc bestMove;
@@ -49,65 +47,46 @@ UtilityValue AlphaBeta::maxValue(UtilityValue alpha, UtilityValue beta, Depth de
 		// within PositionStats for 2nd deepest level moves.
 		// This probably goes in the bridge though.
 
-		BD(cout << "4 in maxValue" << endl);
         // Make and locally store the next suggested move
         Loc currMove = _bridge.makeNextMove();
 
         // No more moves at this level
         if (!currMove.isValid())
         {
-			BD(cout << "5 in maxValue" << endl);
             break;
         }
 
-		BD(cout << "6 in maxValue" << endl);
         // Recursively calculate the worst forcible utility value
         // for the resultant position
         currVal = minValue(alpha, beta, depth+1);
 
-		BD(cout << "7 in maxValue" << endl);
         // Undo the currMove made above
         _bridge.undoLastMove();
-		BD(cout << "undo to depth " << (int)depth << " in maxValue" << endl);
 
         UtilityValue val = currVal;
-		BD(cout << "7.5 in maxValue - val: " << val << endl);
 
-        if (val > bestVal)
-        {
-			BD(cout << "8 in maxValue - update bestVal to: " << val << endl);
+        if (val > bestVal) {
             bestVal = val;
-			if (depth == 0)
-			{
+			if (depth == 0) {
 				bestMove = currMove;
 			}
         }
-        if (val >= beta)
-		{
-			BD(cout << "9 in maxValue" << endl);
+        if (val >= beta) {
             break;
         }
-        if (val > INF/100.0)
-		{
-			BD(cout << "10 in maxValue" << endl);
+        if (val > INF/100.0) {
             // Game won, can't get a better value
             break;
         }
-		BD(cout << "11 in maxValue" << endl);
-        if (alpha > val)
-		{
-			BD(cout << "12 in maxValue" << endl);
+        if (alpha > val) {
             alpha = val;
 		}
-		BD(cout << "13 in maxValue" << endl);
     }
 #if 0
     // TODO: Save to transposition table
-    // game.save_utility(state, depth, v)
+	_bridge.storeInTransTable(uv);
 #endif
-	BD(cout << "14 in maxValue" << endl);
-	if (depth == 0)
-	{
+	if (depth == 0) {
 		_bestTopLevelMove = bestMove;
 	}
 #ifdef DEBUG_SEARCH
@@ -118,71 +97,47 @@ UtilityValue AlphaBeta::maxValue(UtilityValue alpha, UtilityValue beta, Depth de
 
 UtilityValue AlphaBeta::minValue(UtilityValue alpha, UtilityValue beta, Depth depth)
 {
-	BD(cout << "1 in minValue - depth: " << (int)depth << endl);
-    if (_bridge.isCutoff())
-    {
-		BD(cout << "2 in minValue" << endl);
+    if (_bridge.isCutoff()) {
         UtilityValue util = _bridge.getUtility();
         return util;
     }
-	BD(cout << "3 in minValue" << endl);
     UtilityValue bestVal(200*INF);
     UtilityValue currVal;
 
-    while (true)
-    {
+    while (true) {
         // TODO: optimise out maintainence of move suggester for 2nd
         // deepest level moves. This probably goes in the bridge though
 
-		BD(cout << "4 in minValue" << endl);
         // Make and locally store the next suggested move
         Loc currMove = _bridge.makeNextMove();
 
         // No more moves at this level
-        if (!currMove.isValid())
-        {
-			BD(cout << "5 in minValue" << endl);
+        if (!currMove.isValid()) {
             break;
         }
 
-		BD(cout << "6 in minValue" << endl);
         // Recursively calculate the worst forcible utility value
         // for the resultant position
         currVal = maxValue(alpha, beta, depth+1);
 
-		BD(cout << "7 in minValue" << endl);
         // Undo the currMove made above
         _bridge.undoLastMove();
 
-		BD(cout << "undo to depth " << (int)depth << " in minValue" << endl);
-
         UtilityValue val = currVal;
-		BD(cout << "7.5 in minValue - val: " << val << endl);
-        if (val < bestVal)
-        {
-			BD(cout << "8 in minValue - update best to: " << val << endl);
+        if (val < bestVal) {
             bestVal = val;
         }
-        if (val <= alpha)
-		{
-			BD(cout << "9 in minValue" << endl);
+        if (val <= alpha) {
             break;
         }
-        if (val < NEGINF/100.0)
-		{
-			BD(cout << "10 in minValue" << endl);
+        if (val < NEGINF/100.0) {
             // Game lost, can't get a better value
             break;
         }
-		BD(cout << "11 in minValue" << endl);
-        if (beta < val)
-		{
-			BD(cout << "12 in minValue" << endl);
+        if (beta < val) {
             beta = val;
 		}
-		BD(cout << "13 in minValue" << endl);
     }
-	BD(cout << "14 in minValue" << endl);
 #ifdef DEBUG_SEARCH
 	cout << " [Best(min):" << bestVal << "] ";
 #endif
