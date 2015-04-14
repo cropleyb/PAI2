@@ -26,7 +26,7 @@ bool MoveSuggester::isOnlyOneMove(Depth depth, Colour searchColour)
 {
 	if (_candCache->needsFilling(depth))
 	{
-		// cout << "Filling" << endl;
+		BD(cout << "Filling" << endl;)
 		fillCache(depth, searchColour);
 	}
 
@@ -52,7 +52,6 @@ void MoveSuggester::fillCache(Depth depth, Colour searchColour)
 
 	Breadth moveCount = filterCandidates(moveBuffer, depth, maxMoves, searchColour);
 	BD(cout << "Setting depth moves for depth " << (int)depth << " to " << (int)moveCount << endl;)
-	//cout << "Setting depth moves for depth " << (int)depth << " to " << (int)moveCount << endl;
 	_candCache->setDepthMoves(depth, moveCount);
 }
 
@@ -67,7 +66,7 @@ bool MoveSuggester::getPriorityLevels(Colour ourColour)
 	if (ourFours.getNumCands() > 0)
 	{
 		// This will win
-		// cout << " win by fours " << endl;
+		BD(cout << "P" << (int)ourColour << " win by fours " << endl;)
 		_toSearchLevels[0] = &ourFours;
 		_numSearchLevels = 1;
 		onePoss = true;
@@ -82,7 +81,7 @@ bool MoveSuggester::getPriorityLevels(Colour ourColour)
 
 	if (cwbc and ourCaptureCount >= 8 and ourTakes.getNumCands() > 0) {
 		// This will win too
-		// cout << " win by takes" << endl;
+		BD(cout << "P" << (int)ourColour << " win by takes" << endl;)
 		_toSearchLevels[0] = &ourTakes;
 		_numSearchLevels = 1;
 		onePoss = true;
@@ -110,13 +109,14 @@ bool MoveSuggester::getPriorityLevels(Colour ourColour)
 		if (theirFours.getNumCands() > 1) {
 			if (ourTakes.getNumCands() > 0) {
 				// We will lose unless we capture
-				// cout << " lose by 5 in a row unless we take" << endl;
+				BD(cout << "P" << (int)ourColour << " lose by 5 in a row unless we take" << endl;)
 				_toSearchLevels[0] = &ourTakes;
 				_numSearchLevels = 1;
 				onePoss = false;
 				return onePoss;
 			} else {
 				// Might as well block one of them, can't stop 'em all
+				BD(cout << " lose by 5 in a row imminently." << endl;)
 				_toSearchLevels[0] = &theirFours;
 				_numSearchLevels = 1;
 				onePoss = true;
@@ -124,7 +124,9 @@ bool MoveSuggester::getPriorityLevels(Colour ourColour)
 			}
 		}
 
+		// else: They have one 4 attack.
 		// We will lose unless we block or capture 
+		BD(cout << "P" << (int)ourColour << " lose by 5 in a row unless we block or capture." << endl;)
 		_toSearchLevels[0] = &theirFours;
 		_toSearchLevels[1] = &ourTakes;
 		_numSearchLevels = 2;
