@@ -13,32 +13,28 @@ typedef short Ind;
 class DLNode
 {
 public:
-    DLNode()
-	{
+    DLNode() {
         _prevInd = 0;
         _nextInd = 0;
         _loc = -1;
         _count = 0;
 	}
 
-    void setPrevInd(Ind ind)
-	{
+    void setPrevInd(Ind ind) {
         _prevInd = ind;
 	}
 
-    void setNextInd(Ind ind)
-	{
+    void setNextInd(Ind ind) {
         _nextInd = ind;
 	}
 
-    void setLoc(Loc loc)
-	{
+    void setLoc(Loc loc) {
         _loc = loc;
 	}
 
-    Ind adjustCount(Ind ind)
-	{
+    Ind adjustCount(Ind ind) {
         _count += ind;
+		assert(_count >= 0);
 		return _count;
 	}
 
@@ -56,8 +52,18 @@ public:
 	void reset();
 
 	Ind getCands(Loc *locBuffer, Ind max, U64 seen[MAX_WIDTH]) const;
+
+	// The number of candidate move locations that extend at least one line
+	// that is currently at this priority level.
+	// For capture and take PLs, this is the number of unique candidate move 
+	// locations that provide at least one capture or threat possibility.
 	Ind getNumCands() const;
+
+	// Get the count of times that the given location provides this PL's
+	// advantage.
 	Ind getCount(Loc l) const;
+
+	// Maintain our complex data structure incrementally for changes to a loc.
 	void addOrRemoveCandidate(Loc l, int inc=1);
 
 private:
