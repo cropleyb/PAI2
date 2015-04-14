@@ -1,6 +1,7 @@
 #include <array>
 
 #include "defines.h"
+#include "bdebug.h"
 
 class CandidateCache
 {
@@ -12,6 +13,7 @@ public:
 
 	void reset()
 	{
+		BD(cout << "resetting CandCache" << endl;)
 		_lastDepthRequested = -1;
 		for (Breadth b=0; b<MAX_DEPTH; b++)
 		{
@@ -39,8 +41,10 @@ public:
 
 	// Report how many items are used in the buffer, and reset the "iterator"
 	void setDepthMoves(Depth d, unsigned char moveCount) { 
+		BD(cout << "setDepthMoves for depth " << (int)d << " to add: " << (int)moveCount << endl;)
 		_lastDepthRequested = d;
 		_moveCount[d] += moveCount;
+		BD(cout << "total for depth: " << (int)_moveCount[d] << endl;)
 		_currIndex[d] = 0;
 	}
 

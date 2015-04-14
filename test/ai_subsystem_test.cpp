@@ -18,6 +18,8 @@ using testing::ElementsAre;
 
 extern void loadGameStr(PenteGame &g, const string &gameStr);
 
+#if 0
+// If this is needed then it should use the new version in PenteGame.
 void printGameHistory(std::string gameStr) {
 	PenteGame g;
 	loadGameStr(g, gameStr);
@@ -30,6 +32,7 @@ void printGameHistory(std::string gameStr) {
 		g.undoLastMove();
 	}
 }
+#endif
 
 extern Loc doTheSearch(const string &gameStr, PenteGame *game);
 
