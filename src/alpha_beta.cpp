@@ -43,16 +43,11 @@ UtilityValue AlphaBeta::maxValue(UtilityValue alpha, UtilityValue beta, Depth de
 
     while (true)
     {
-        // TODO: optimise out maintainence of move suggester info 
-		// within PositionStats for 2nd deepest level moves.
-		// This probably goes in the bridge though.
-
         // Make and locally store the next suggested move
         Loc currMove = _bridge.makeNextMove();
 
         // No more moves at this level
-        if (!currMove.isValid())
-        {
+        if (!currMove.isValid()) {
             break;
         }
 
@@ -82,9 +77,8 @@ UtilityValue AlphaBeta::maxValue(UtilityValue alpha, UtilityValue beta, Depth de
             alpha = val;
 		}
     }
-#if 0
-    // TODO: Save to transposition table
-	_bridge.storeInTransTable(uv);
+#if 1
+	_bridge.storeInTransTable(bestVal);
 #endif
 	if (depth == 0) {
 		_bestTopLevelMove = bestMove;
@@ -105,9 +99,6 @@ UtilityValue AlphaBeta::minValue(UtilityValue alpha, UtilityValue beta, Depth de
     UtilityValue currVal;
 
     while (true) {
-        // TODO: optimise out maintainence of move suggester for 2nd
-        // deepest level moves. This probably goes in the bridge though
-
         // Make and locally store the next suggested move
         Loc currMove = _bridge.makeNextMove();
 
@@ -138,6 +129,9 @@ UtilityValue AlphaBeta::minValue(UtilityValue alpha, UtilityValue beta, Depth de
             beta = val;
 		}
     }
+#if 1
+	_bridge.storeInTransTable(bestVal);
+#endif
 #ifdef DEBUG_SEARCH
 	cout << " [Best(min):" << bestVal << "] ";
 #endif

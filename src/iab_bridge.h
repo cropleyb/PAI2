@@ -13,6 +13,7 @@ public:
     virtual bool isOnlyOneMove() =0;
     virtual void clearTT() =0;
 	virtual UtilityValue getUtility() =0;
+	virtual void storeInTransTable(UtilityValue uv) =0;
 
 	virtual Loc makeNextMove() =0;// Get it and do it on the board
 	virtual Loc getNextMove() =0; // Get it without performing it

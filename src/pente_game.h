@@ -36,7 +36,7 @@ public:
 	virtual Loc getNextMove(); // Get it without performing it
     virtual bool isCutoff() const;
 	virtual UtilityValue getUtility();
-	void storeInTransTable(UtilityValue uv);
+	virtual void storeInTransTable(UtilityValue uv);
 
 	// Just for testing...
 	virtual bool isInTT() const { UtilityValue unused; return _transpositionTable.lookup(*this, unused); }
@@ -85,6 +85,11 @@ private:
 	bool _allowCaptures;
 	bool _forceFirstMoveInCentre;
 	bool _restrictSecondP1Move;
+
+	// These are really temporary variables, for using the
+	// Transposition Table, but I don't want to put them in the AB code.
+	mutable bool _isInTT;
+   	mutable UtilityValue _ttVal;
 };
 
 #endif

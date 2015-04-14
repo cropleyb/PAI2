@@ -19,11 +19,11 @@ public:
     MOCK_METHOD0(isOnlyOneMove, bool());
     MOCK_METHOD0(clearTT, void());
 	MOCK_METHOD0(getUtility, UtilityValue());
+	MOCK_METHOD1(storeInTransTable, void(UtilityValue));
     MOCK_METHOD0(makeNextMove, Loc());
     MOCK_METHOD0(getNextMove, Loc());
     MOCK_METHOD0(undoLastMove, void());
     MOCK_CONST_METHOD0(isCutoff, bool());
-    MOCK_METHOD2(saveUtility, void(Depth depth, UtilityValue v));
 };
 
 using ::testing::AtLeast;

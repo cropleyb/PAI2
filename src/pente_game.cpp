@@ -19,6 +19,7 @@ PenteGame::PenteGame()
 	buildSpanTable(19);
 	setRules('s');
 	_penteGame_ = this;
+	_isInTT = false;
 }
 
 PenteGame::~PenteGame() {
@@ -211,17 +212,25 @@ PenteGame::getNextMove()
 bool PenteGame::isCutoff() const
 {
 	if (_posStats.getWonBy()) return true;
-	return _currDepth >= _maxDepth;
+	if (_currDepth >= _maxDepth) return true;
+
+	// Try the transposition table - has this position been searched
+	// via another branch of the game tree?
+	_isInTT = false;
+	if (_currDepth > 2 && _currDepth < _maxDepth - 1)
+	{
+		_isInTT = _transpositionTable.lookup(*this, _ttVal);
+		if (_isInTT) return true;
+	}
+	return false;
 }
 
 UtilityValue PenteGame::getUtility()
 {
 #if 1
-	if (_currDepth > 2 && _currDepth < _maxDepth - 1)
-	{
-		UtilityValue ttVal;
-		bool isInTT = _transpositionTable.lookup(*this, ttVal);
-		if (isInTT) return ttVal;
+	if (_isInTT) {
+		_isInTT = false; // safety!
+		return _ttVal;
 	}
 #endif
 
