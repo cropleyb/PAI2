@@ -33,6 +33,7 @@ TEST_F(RunAIFixture, run_one_game) {
 	PenteGame defender;
 	PenteGame contender;
 	RunAIGame g(defender, contender);
+	g.setSilent(true);
 
 	// depth, size, rules, contender first
 	GameResult res = g.play(2, 19, 's', true);
@@ -53,11 +54,12 @@ TEST_F(RunAIFixture, run_another_game) {
 	PenteGame defender;
 	PenteGame contender;
 	RunAIGame g(defender, contender);
+	g.setSilent(true);
 
 	// depth, size, rules, contender first
 	GameResult res = g.play(3, 13, 't', false);
 
-	EXPECT_EQ(false, res.winnerWasContender());
+	EXPECT_EQ(true, res.winnerWasContender());
 
 	EXPECT_EQ("3", res._depth);
 	EXPECT_EQ("13", res._size);
@@ -74,10 +76,12 @@ TEST_F(RunAIFixture, Match) {
 	PenteGame p1;
 	PenteGame p2;
 	Match match(p1, p2);
-	// match.setDepthRange(1, 2);
+	match.setSilent(true);
+	match.setDepthRange(1, 1);
 	// match.setRulesTypes("st");
 	// match.setSizes(13, 19);
-	match.setDepthRange(6,6);
+	//match.setDepthRange(6,6);
+	//match.setDepthRange(4,4);
 	//match.setRulesTypes("st");
 	match.setRulesTypes("t");
 	match.setSizes(19);

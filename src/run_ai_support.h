@@ -30,14 +30,16 @@ class RunAIGame
 {
 public:
 	RunAIGame(PenteGame &defender, PenteGame &contender) :
-		_players {&defender, &contender} {}
+		_players {&defender, &contender}, _silent(false) {}
 
 	GameResult play(Depth depth, BoardWidth size, RulesType rules, bool contenderFirst);
 
+	void setSilent(bool val) { _silent = val; }
 	void printHistory();
 	
 private:
 	PenteGame *_players[2];
+	bool _silent;
 };
 
 class GameCounts
@@ -143,7 +145,7 @@ private:
 class Match
 {
 public:
-	Match(PenteGame &p1, PenteGame &p2) : _players {&p1, &p2} {}
+	Match(PenteGame &p1, PenteGame &p2) : _players {&p1, &p2}, _silent(false) {}
 
 	void setDepthRange(Depth minDepth, Depth maxDepth) { _minDepth = minDepth; _maxDepth = maxDepth; }
 
@@ -154,6 +156,7 @@ public:
 	void setSizes(BoardWidth s, Types ... rest) { _sizes.push_back(s); setSizes(rest...); }
 
 	void play();
+	void setSilent(bool val) { _silent = val; }
 	AllStats &getAllStats() {return _allStats; }
 	
 private:
@@ -162,6 +165,7 @@ private:
 	Depth _maxDepth;
 	string _rulesTypes;
 	vector<BoardWidth> _sizes;
+	bool _silent;
 
 	AllStats _allStats;
 };

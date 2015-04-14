@@ -6,6 +6,10 @@
 #include "line_pattern.h"
 #include "position_stats.h"
 
+//#define MSD(X) X
+//using namespace std;
+#define MSD(X)
+
 MoveSuggester::MoveSuggester(PositionStats &ps)
 	: _posStats(ps)
 {
@@ -26,7 +30,7 @@ bool MoveSuggester::isOnlyOneMove(Depth depth, Colour searchColour)
 {
 	if (_candCache->needsFilling(depth))
 	{
-		BD(cout << "Filling" << endl;)
+		MSD(cout << "Filling" << endl;)
 		fillCache(depth, searchColour);
 	}
 
@@ -51,7 +55,7 @@ void MoveSuggester::fillCache(Depth depth, Colour searchColour)
 	if (depth > 3) maxMoves = 4;
 
 	Breadth moveCount = filterCandidates(moveBuffer, depth, maxMoves, searchColour);
-	BD(cout << "Setting depth moves for depth " << (int)depth << " to " << (int)moveCount << endl;)
+	MSD(cout << "Setting depth moves for depth " << (int)depth << " to " << (int)moveCount << endl;)
 	_candCache->setDepthMoves(depth, moveCount);
 }
 
@@ -66,7 +70,7 @@ bool MoveSuggester::getPriorityLevels(Colour ourColour)
 	if (ourFours.getNumCands() > 0)
 	{
 		// This will win
-		BD(cout << "P" << (int)ourColour << " win by fours " << endl;)
+		MSD(cout << "P" << (int)ourColour << " win by fours " << endl;)
 		_toSearchLevels[0] = &ourFours;
 		_numSearchLevels = 1;
 		onePoss = true;
@@ -81,7 +85,7 @@ bool MoveSuggester::getPriorityLevels(Colour ourColour)
 
 	if (cwbc and ourCaptureCount >= 8 and ourTakes.getNumCands() > 0) {
 		// This will win too
-		BD(cout << "P" << (int)ourColour << " win by takes" << endl;)
+		MSD(cout << "P" << (int)ourColour << " win by takes" << endl;)
 		_toSearchLevels[0] = &ourTakes;
 		_numSearchLevels = 1;
 		onePoss = true;
@@ -92,31 +96,34 @@ bool MoveSuggester::getPriorityLevels(Colour ourColour)
 	const PriorityLevel &theirTakes
 		= _posStats.getPriorityLevel(theirColour, Take);
 
+	const PriorityLevel &theirFours
+		= _posStats.getPriorityLevel(theirColour, Line4);
+
 	if (cwbc and theirCaptureCount >= 8 and theirTakes.getNumCands() > 0) {
 		// Block their takes, or capture one of the ends of an
-		// attacker, or lose
+		// attacker, or lose. Include blocking one of their fours or we
+		// may have no moves
 		_toSearchLevels[0] = &ourTakes;
 		_toSearchLevels[1] = &theirTakes;
-		_numSearchLevels = 2;
+		_toSearchLevels[2] = &theirFours;
+		_numSearchLevels = 3;
 		onePoss = false;
 		return onePoss;
 	}
-
-	const PriorityLevel &theirFours
-		= _posStats.getPriorityLevel(theirColour, Line4);
 
 	if (theirFours.getNumCands() > 0) {
 		if (theirFours.getNumCands() > 1) {
 			if (ourTakes.getNumCands() > 0) {
 				// We will lose unless we capture
-				BD(cout << "P" << (int)ourColour << " lose by 5 in a row unless we take" << endl;)
+				MSD(cout << "P" << (int)ourColour << " lose by 5 in a row unless we take" << endl;)
 				_toSearchLevels[0] = &ourTakes;
-				_numSearchLevels = 1;
+				_toSearchLevels[1] = &theirFours; // This loses, but we need a move
+				_numSearchLevels = 2;
 				onePoss = false;
 				return onePoss;
 			} else {
 				// Might as well block one of them, can't stop 'em all
-				BD(cout << " lose by 5 in a row imminently." << endl;)
+				MSD(cout << " lose by 5 in a row imminently." << endl;)
 				_toSearchLevels[0] = &theirFours;
 				_numSearchLevels = 1;
 				onePoss = true;
@@ -124,12 +131,15 @@ bool MoveSuggester::getPriorityLevels(Colour ourColour)
 			}
 		}
 
-		// else: They have one 4 attack.
+		// else: They have one 4 attack or 2 or more winning threat attacks.
 		// We will lose unless we block or capture 
-		BD(cout << "P" << (int)ourColour << " lose by 5 in a row unless we block or capture." << endl;)
+		// Provide a threat blocking alternative so we always have at least
+		// one move.
+		MSD(cout << "P" << (int)ourColour << " lose by 5 in a row unless we block or capture." << endl;)
 		_toSearchLevels[0] = &theirFours;
 		_toSearchLevels[1] = &ourTakes;
-		_numSearchLevels = 2;
+		_toSearchLevels[2] = &theirTakes;
+		_numSearchLevels = 3;
 		onePoss = false;
 		return onePoss;
 	}
@@ -171,12 +181,12 @@ Breadth MoveSuggester::filterCandidates(Loc *moveBuffer, Depth depth, Breadth ma
 	{
 		const PriorityLevel *pl = _toSearchLevels[slotInd];
 		Breadth foundFromPL = pl->getCands(moveBuffer, maxMoves-found, seen);
-		BD(cout << "MS Found " << (int)foundFromPL << endl;)
+		MSD(cout << "MS Found " << (int)foundFromPL << endl;)
 
 		found += foundFromPL;
 		if (found >= maxMoves)
 		{
-			BD(cout << "Found enough in MS" << endl;)
+			MSD(cout << "Found enough in MS" << endl;)
 			return found;
 		}
 		moveBuffer += foundFromPL;

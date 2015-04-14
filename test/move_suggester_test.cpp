@@ -281,14 +281,15 @@ TEST_F(MoveSuggesterFixture, iterate_over_one_of_their_fours)
 	EXPECT_EQ(Loc(3,2),la[1]);
 }
 
-TEST_F(MoveSuggesterFixture, test_two_of_their_fours_try_the_take)
+TEST_F(MoveSuggesterFixture, test_two_of_their_fours_try_the_take_first)
 {
 	arcs(P2, Line4, 1, Loc(1,2));
 	arcs(P2, Line4, 1, Loc(3,4));
 	arcs(P1, Take, 1, Loc(3,2));
 	LocArr la = getLocsInOrder(0);
-	EXPECT_EQ(1, la.size());
+	EXPECT_EQ(3, la.size());
 	EXPECT_EQ(Loc(3,2), la[0]);
+	// Don't care which order the 4 blockers appear in.
 }
 
 TEST_F(MoveSuggesterFixture, test_two_of_their_fours_no_take)
@@ -381,14 +382,15 @@ TEST_F(MoveSuggesterFixture, test_iterate_over_other_players_capture_before_our_
 	EXPECT_TRUE(ourThrees.contains(la[2]));
 }
 
-TEST_F(MoveSuggesterFixture, test_iterate_block_only)
+TEST_F(MoveSuggesterFixture, test_iterate_block_or_capture)
 {
-	arcs(P2, Line3, 1, Loc(1,5),Loc(2,4));
-	arcs(P1, Take, 1, Loc(1,5));
-	arcs(P1, Line4, 1, Loc(2,4));
-	LocArr la = getLocsInOrder(1);
-	EXPECT_EQ(1, la.size());
-	EXPECT_EQ(Loc(2,4), la[0]);
+	arcs(P2, Line3, 1, Loc(1,1),Loc(2,2));
+	arcs(P1, Take, 1, Loc(3,3));
+	arcs(P1, Line4, 1, Loc(4,4));
+	LocArr la = getLocsInOrder(3);
+	EXPECT_EQ(2, la.size());
+	EXPECT_EQ(Loc(4,4), la[0]);
+	EXPECT_EQ(Loc(3,3), la[1]);
 }
 
 TEST_F(MoveSuggesterFixture, test_iterate_over_their_capture_before_our_two)

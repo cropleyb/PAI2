@@ -68,7 +68,9 @@ GameResult RunAIGame::play(Depth depth, BoardWidth size, RulesType rules, bool c
 		_players[0]->resetSearch();
 		_players[1]->resetSearch();
 		Loc bestMove = ab_games[toMove-1].getBestMove();
-		std::cout << bestMove << std::endl;
+		if (!_silent) {
+			std::cout << bestMove << std::endl;
+		}
 		res._times[toMove-1] += tmr.elapsed();
 		assert(_players[0]->isLegalMove(bestMove));
 
@@ -77,7 +79,9 @@ GameResult RunAIGame::play(Depth depth, BoardWidth size, RulesType rules, bool c
 
 		toMove = otherPlayer(toMove);
 		winner = _players[1]->getWonBy();
-		_players[0]->print();
+		if (!_silent) {
+			_players[0]->print();
+		}
 	}
 	res._winnerWasContender = ((winner==P2) xor contenderFirst);
 
@@ -214,20 +218,25 @@ void Match::play()
 					_players[0]->restartGame();
 					_players[1]->restartGame();
 
-					cout << "Game: " << gameNum << " ";
-					cout << "boardsize: " << (int)size;
-					cout << " rules: " << rules;
-					cout << " depth: " << (int)depth;
-					cout << " swap: " << (int)swap << endl;
+					if (!_silent) {
+						cout << "Game: " << gameNum << " ";
+						cout << "boardsize: " << (int)size;
+						cout << " rules: " << rules;
+						cout << " depth: " << (int)depth;
+						cout << " swap: " << (int)swap << endl;
+					}
 	
 					RunAIGame rag(*(_players[0]), *(_players[1]));
+					rag.setSilent(_silent);
 					GameResult res = rag.play(depth, size, rules, swap);
 					swap += 1;
 					_allStats.addGameResult(res);
-					// std::cout << _allStats.report() << endl;
-					rag.printHistory();
+					if (!_silent) {
+						// rag.printHistory();
+						std::cout << _allStats.report() << endl;
+					}
 
-					break; // This is temporary to skip alt. games
+					break; // This is temporary to skip alt. games FIXME
 				}
 			}
 		}
