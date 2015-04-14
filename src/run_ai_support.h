@@ -33,6 +33,8 @@ public:
 		_players {&defender, &contender} {}
 
 	GameResult play(Depth depth, BoardWidth size, RulesType rules, bool contenderFirst);
+
+	void printHistory();
 	
 private:
 	PenteGame *_players[2];

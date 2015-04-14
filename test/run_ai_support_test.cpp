@@ -69,7 +69,7 @@ TEST_F(RunAIFixture, run_another_game) {
 	EXPECT_LT(0.0010, res._times[true]);
 }
 
-#if 0
+#if 1
 TEST_F(RunAIFixture, Match) {
 	PenteGame p1;
 	PenteGame p2;
@@ -77,8 +77,9 @@ TEST_F(RunAIFixture, Match) {
 	// match.setDepthRange(1, 2);
 	// match.setRulesTypes("st");
 	// match.setSizes(13, 19);
-	match.setDepthRange(1,1);
-	match.setRulesTypes("st");
+	match.setDepthRange(6,6);
+	//match.setRulesTypes("st");
+	match.setRulesTypes("t");
 	match.setSizes(19);
 	match.play();
 	AllStats &allStats = match.getAllStats();

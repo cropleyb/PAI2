@@ -84,6 +84,11 @@ GameResult RunAIGame::play(Depth depth, BoardWidth size, RulesType rules, bool c
 	return res;
 }
 
+void RunAIGame::printHistory()
+{
+	_players[0]->printHistory();
+}
+
 //////////////////////////////////
 // GameResult class
 //////////////////////////////////
@@ -220,8 +225,9 @@ void Match::play()
 					swap += 1;
 					_allStats.addGameResult(res);
 					// std::cout << _allStats.report() << endl;
+					rag.printHistory();
 
-					//break;
+					break; // This is temporary to skip alt. games
 				}
 			}
 		}
