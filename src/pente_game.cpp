@@ -235,26 +235,18 @@ UtilityValue PenteGame::getUtility()
 	std::cout << ' ' << uv;
 #endif
 #if 1
-	if (_currDepth > 2 && _currDepth < _maxDepth - 1)
-	{
-		_transpositionTable.savePos(*this, uv);
-	}
+	storeInTransTable(uv);
 #endif
 
 	return uv;
 }
 
-using namespace std;
-
-void PenteGame::print() const
+void PenteGame::storeInTransTable(UtilityValue uv)
 {
-	MoveNumber mn = _moveHist.getLastMoveNumber() - 1;
-	CapCount c1 = getCaptured(P1);
-	CapCount c2 = getCaptured(P2);
-
-	cout << "Move " << mn+1 << ": " << getMove(mn) << 
-		"; Caps: " << (int)c1 << "-" << (int)c2 << ":" << endl;
-	_boardReps.print();
+	if (_currDepth > 2 && _currDepth < _maxDepth - 1)
+	{
+		_transpositionTable.savePos(*this, uv);
+	}
 }
 
 void PenteGame::setRules(RulesType rules)
@@ -273,3 +265,25 @@ void PenteGame::setRules(RulesType rules)
 	}
 	_posStats.setCanWinByCaptures(canWinByCaptures);
 }
+
+using namespace std;
+
+void PenteGame::print() const
+{
+	MoveNumber mn = _moveHist.getLastMoveNumber() - 1;
+	CapCount c1 = getCaptured(P1);
+	CapCount c2 = getCaptured(P2);
+
+	cout << "Move " << mn+1 << ": " << getMove(mn) << 
+		"; Caps: " << (int)c1 << "-" << (int)c2 << ":" << endl;
+	_boardReps.print();
+}
+
+void PenteGame::printHistory() const
+{
+	for (int i=0; i<_moveHist.getLastMoveNumber(); i++) {
+		Loc move = _moveHist.getMoved(i);
+		cout << move << endl;
+	}
+}
+
