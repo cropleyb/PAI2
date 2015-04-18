@@ -5,6 +5,8 @@
 
 #include <iostream>
 
+//#define DEBUG_SEARCH
+
 PenteGame *_penteGame_ = 0;
 
 PenteGame::PenteGame()
@@ -18,27 +20,49 @@ PenteGame::PenteGame()
 	buildLineLookupTable();
 	buildSpanTable(19);
 	setRules('s');
-	_penteGame_ = this;
 	_isInTT = false;
 }
 
 PenteGame::~PenteGame() {
-	_penteGame_ = 0;
+	if (_penteGame_ == this)
+	{
+		_penteGame_ = 0;
+	}
 }
+
+#ifdef PGDEBUG
+#define PGD(X) X
+#include <iostream>
+using namespace std;
+#else
+#define PGD(X)
+#endif
 
 bool PenteGame::isLegalMove(Loc l) const
 {
-	if (l[0] >= _boardReps.getBoardSize()) return false;
-	if (l[1] >= _boardReps.getBoardSize()) return false;
+	if ((l[0] >= _boardReps.getBoardSize()) ||
+	    (l[1] >= _boardReps.getBoardSize()))
+	{
+		PGD(cout << "Illegal: off board: " << l << endl;)
+		return false;
+	}
 	if (_moveHist.getLastMoveNumber() == 0 && _forceFirstMoveInCentre)
 	{
+		PGD(cout << "Illegal: first move not in centre: " << l << endl;)
 		return _boardReps.isCentreOfBoard(l);
 	}
 	if (_moveHist.getLastMoveNumber() == 2 && _restrictSecondP1Move)
 	{
-		return !_boardReps.isTournamentExcluded(l);
+		if (_boardReps.isTournamentExcluded(l)) {
+			PGD(cout << "Illegal: Tournament move: " << l << endl;)
+			return false;
+		}
 	}
-	if (_boardReps.getOcc(l) != EMPTY) return false;
+	if (_boardReps.getOcc(l) != EMPTY)
+	{
+		PGD(cout << "Illegal: Already occupied: " << l << endl;)
+		return false;
+	}
 	return true;
 }
 
@@ -189,6 +213,7 @@ PenteGame::makeNextMove()
 			std::cerr << "Illegal move returned by makeNextMove " << move << std::endl;
 			// TODO - Dump stack trace, board state etc. for pente.org:
 			// bailOut();
+			assert(0);
 		}
 		makeMove(move, (1 + (++_currDepth + _ourColour) % 2));
 	}
@@ -266,7 +291,7 @@ void PenteGame::setRules(RulesType rules)
 	_forceFirstMoveInCentre = false;
 	_restrictSecondP1Move = false;
 
-	if (rules == 't') {
+	if (rules == 't' or rules == 'T') { // TODO: to upper/lower
 		_forceFirstMoveInCentre = true;
 		_restrictSecondP1Move = true;
 	} else if (rules == '5') {

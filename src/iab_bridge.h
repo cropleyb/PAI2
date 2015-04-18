@@ -11,7 +11,7 @@ public:
 	virtual ~IABBridge() {}
 
     virtual bool isOnlyOneMove() =0;
-    virtual void clearTT() =0;
+    virtual void resetSearch() =0;
 	virtual UtilityValue getUtility() =0;
 	virtual void storeInTransTable(UtilityValue uv) =0;
 

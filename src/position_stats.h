@@ -28,6 +28,7 @@ public:
 			{
 				_patternCounts[c][p] = 0;
 				_levels[c][p].reset();
+				_levels[c][p].setLevelName(string("P")+to_string(c)+"-"+to_string(p));
 			}
 			_checkerboardStats[c][0] = 0;
 			_checkerboardStats[c][1] = 0;

@@ -6,17 +6,12 @@
 
 Loc AlphaBeta::getBestMove()
 {
-    _bridge.clearTT();
+    _bridge.resetSearch();
 
     if (_bridge.isOnlyOneMove())
     {
         // Optimisation: one move, don't search
-#if 1
         Loc theMove = _bridge.getNextMove();
-#else
-        Loc theMove = _bridge.makeNextMove();
-		_bridge.undoLastMove();
-#endif
 		assert(theMove.isValid());
         return theMove;
     }

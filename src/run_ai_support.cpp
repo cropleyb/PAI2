@@ -1,3 +1,6 @@
+// TEMP for debugging...?
+#define private public
+
 #include "pente_game.h"
 #include "loc.h"
 #include "defines.h"
@@ -65,8 +68,6 @@ GameResult RunAIGame::play(Depth depth, BoardWidth size, RulesType rules, bool c
 	while (winner == EMPTY)
 	{
 		Timer tmr;
-		_players[0]->resetSearch();
-		_players[1]->resetSearch();
 		Loc bestMove = ab_games[toMove-1].getBestMove();
 		if (!_silent) {
 			std::cout << bestMove << std::endl;
@@ -80,7 +81,24 @@ GameResult RunAIGame::play(Depth depth, BoardWidth size, RulesType rules, bool c
 		toMove = otherPlayer(toMove);
 		winner = _players[1]->getWonBy();
 		if (!_silent) {
+			// TODO: Use another flag for games
 			_players[0]->print();
+
+#if 0
+			const PriorityLevel &p1Threes
+				= _players[0]->_posStats.getPriorityLevel(P1, Line3);
+			const PriorityLevel &p2Threes
+				= _players[0]->_posStats.getPriorityLevel(P2, Line3);
+			const PriorityLevel &p1Fours
+				= _players[0]->_posStats.getPriorityLevel(P1, Line4);
+			const PriorityLevel &p2Fours
+				= _players[0]->_posStats.getPriorityLevel(P2, Line4);
+
+			cout << "P1 3s: " << p1Threes.getNumCands()
+				 << "; P2 3s: " << p2Threes.getNumCands()
+				 << "; P1 4s: " << p1Fours.getNumCands()
+				 << "; P2 4s: " << p2Fours.getNumCands() << endl;
+#endif
 		}
 	}
 	res._winnerWasContender = ((winner==P2) xor contenderFirst);
@@ -232,11 +250,9 @@ void Match::play()
 					swap += 1;
 					_allStats.addGameResult(res);
 					if (!_silent) {
-						// rag.printHistory();
+						// rag.printHistory(); // TODO: another option
 						std::cout << _allStats.report() << endl;
 					}
-
-					break; // This is temporary to skip alt. games FIXME
 				}
 			}
 		}

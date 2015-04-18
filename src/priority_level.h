@@ -10,6 +10,9 @@ typedef short Ind;
 
 // #define MAX_NODES 19*19
 
+#include <string>
+using namespace std;
+
 class DLNode
 {
 public:
@@ -66,6 +69,9 @@ public:
 	// Maintain our complex data structure incrementally for changes to a loc.
 	void addOrRemoveCandidate(Loc l, int inc=1);
 
+	void setLevelName(string val) { _levelName = val; }
+	string getLevelName() const { return _levelName; }
+
 private:
 	bool myOrder(const Loc &l1, const Loc &l2) const;
 
@@ -88,6 +94,9 @@ private:
     Ind _numCands = 0;
 	std::array<DLNode, MAX_LOCS> _dlNodes;
 	std::array<Ind, MAX_LOCS> _nodeIndByLoc;
+
+	// Debugging only
+	string _levelName;
 };
 
 #endif

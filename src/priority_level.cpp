@@ -6,7 +6,14 @@
 #include <vector>       // std::vector
 
 
+#ifdef PLDEBUG 
+//PLD is very time consuming
+#include <iostream>
+using namespace std;
+#define PLD(X) X
+#else
 #define PLD(X)
+#endif
 
 PriorityLevel::PriorityLevel()
 {
@@ -22,6 +29,9 @@ void PriorityLevel::reset()
 	for (int i=0; i<MAX_LOCS; i++)
 	{
         _dlNodes[i].setNextInd(i+1);
+		_dlNodes[i]._prevInd = i-1;
+		_dlNodes[i]._count = 0;
+		_dlNodes[i]._loc = Loc::INVALID;
 		_nodeIndByLoc[i] = -1;
 	}
 
@@ -119,6 +129,14 @@ void PriorityLevel::addOrRemoveCandidate(Loc candLoc, int inc)
 
 Ind PriorityLevel::getNumCands() const
 {
+#if 0
+	// TEMP
+	if (_numCands > 0) {
+		const DLNode &headNode = _dlNodes[_dlHeadInd];
+		assert(headNode._count);
+	}
+	// PRODUCTION
+#endif
 	return _numCands;
 }
 
@@ -164,16 +182,22 @@ Ind PriorityLevel::getCands(Loc *locBuffer, Ind requestedMax, U64 seen[MAX_WIDTH
 			PLD(cout << "getCands 3 - INVALID" << endl);
 			break;
 		}
+		assert(currNode._count > 0);
 		Coord currNodeX = currNode._loc[0];
 		Coord currNodeY = currNode._loc[1];
 		if (!(seen[currNodeY] & ((U64)1 << currNodeX)))
 		{
 			PLD(cout << "getCands 4 - adding " << currNode._loc._value << endl);
 			seen[currNodeY] |= ((U64)1 << currNodeX);
+
+			// The _penteGame_ global is set at the start of every search.
 			if (_penteGame_ && !_penteGame_->isLegalMove(currNode._loc)) continue;
 			locBuffer[numAdded] = currNode._loc;
 			numAdded++;
+		} else {
+			PLD(cout << "getCands not adding as previously 'seen': " << currNode._loc << endl;)
 		}
+
 		currInd = currNode._nextInd;
 	}
 	PLD(cout << "getCands 5" << endl);
@@ -199,4 +223,3 @@ Ind PriorityLevel::getCands(Loc *locBuffer, Ind requestedMax, U64 seen[MAX_WIDTH
 
 	return std::min(requestedMax, numAdded);
 }
-

@@ -6,9 +6,13 @@
 #include "line_pattern.h"
 #include "position_stats.h"
 
-//#define MSD(X) X
-//using namespace std;
+//#define MSDEBUG
+#ifdef MSDEBUG
+#define MSD(X) X
+using namespace std;
+#else
 #define MSD(X)
+#endif
 
 MoveSuggester::MoveSuggester(PositionStats &ps)
 	: _posStats(ps)
@@ -30,7 +34,6 @@ bool MoveSuggester::isOnlyOneMove(Depth depth, Colour searchColour)
 {
 	if (_candCache->needsFilling(depth))
 	{
-		MSD(cout << "Filling" << endl;)
 		fillCache(depth, searchColour);
 	}
 
@@ -49,6 +52,7 @@ Loc MoveSuggester::getNextMove(Depth depth, Colour searchColour)
 
 void MoveSuggester::fillCache(Depth depth, Colour searchColour)
 {
+	MSD(cout << "Filling depth: " << (int)depth << endl;)
 	Loc *moveBuffer = _candCache->getBuffer(depth);
 
 	Breadth maxMoves = 9;
@@ -181,7 +185,16 @@ Breadth MoveSuggester::filterCandidates(Loc *moveBuffer, Depth depth, Breadth ma
 	{
 		const PriorityLevel *pl = _toSearchLevels[slotInd];
 		Breadth foundFromPL = pl->getCands(moveBuffer, maxMoves-found, seen);
-		MSD(cout << "MS Found " << (int)foundFromPL << endl;)
+#ifdef MSDEBUG
+		cout << "MS Found " << (int)foundFromPL << " in PL " << pl->getLevelName();
+		if (foundFromPL > 0) {
+			cout << ": ";
+			for (int ii=found; ii<found+foundFromPL; ii++) {
+				cout << " " << moveBuffer[ii];
+			}
+			cout << endl;
+		}
+#endif
 
 		found += foundFromPL;
 		if (found >= maxMoves)

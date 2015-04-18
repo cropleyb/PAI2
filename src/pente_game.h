@@ -13,6 +13,7 @@ class BoardReps;
 class SpanEntry;
 class PenteGame;
 
+// The current search object
 extern PenteGame *_penteGame_;
 
 class PenteGame : public IABBridge
@@ -22,7 +23,7 @@ public:
 	virtual ~PenteGame();
 
 	void setColour(Colour ourColour) { _ourColour = ourColour; }
-	void resetSearch() { _moveSuggester.reset(); _currDepth=0; }
+	void resetSearch() { _moveSuggester.reset(); _currDepth=0; _penteGame_=this; clearTT(); }
 	void restartGame() { 
 		while (getLastMoveNumber()) undoLastMove();
 		resetSearch();
@@ -40,7 +41,6 @@ public:
 
 	// Just for testing...
 	virtual bool isInTT() const { UtilityValue unused; return _transpositionTable.lookup(*this, unused); }
-	virtual void clearTT() { _transpositionTable.clear(); }
 
 	bool isLegalMove(Loc l) const; // TODO: inline?
 
@@ -70,6 +70,7 @@ public:
 	friend class TranspositionTable;
 private:
 	void setAndRecordCaptures(Loc l, Colour p);
+	virtual void clearTT() { _transpositionTable.clear(); }
 
 	BoardReps _boardReps;
 	PositionStats _posStats;

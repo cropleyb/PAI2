@@ -17,7 +17,7 @@ public:
 	MockBridge() : IABBridge() {}
 
     MOCK_METHOD0(isOnlyOneMove, bool());
-    MOCK_METHOD0(clearTT, void());
+    MOCK_METHOD0(resetSearch, void());
 	MOCK_METHOD0(getUtility, UtilityValue());
 	MOCK_METHOD1(storeInTransTable, void(UtilityValue));
     MOCK_METHOD0(makeNextMove, Loc());

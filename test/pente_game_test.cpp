@@ -388,6 +388,49 @@ TEST_F(PenteGameFixture, SuggestBothThreatPoints) {
 	EXPECT_EQ(Loc(9,8), loc2);
 }
 
+TEST_F(PenteGameFixture, UndoThreatAndLine2) {
+	g.makeMove(Loc(9,9), P1);
+	g.makeMove(Loc(7,8), P2);
+	g.makeMove(Loc(9,10), P1);
+
+	int p2threats = g._posStats.getPriorityLevel(P2, Threat).getNumCands();
+	EXPECT_EQ(2, p2threats);
+	int p1line2s = g._posStats.getPriorityLevel(P1, Line2).getNumCands();
+	EXPECT_EQ(6, p1line2s);
+
+	g.undoLastMove();
+
+	p2threats = g._posStats.getPriorityLevel(P2, Threat).getNumCands();
+	EXPECT_EQ(0, p2threats);
+	p1line2s = g._posStats.getPriorityLevel(P1, Line2).getNumCands();
+	EXPECT_EQ(0, p1line2s);
+}
+
+TEST_F(PenteGameFixture, PlayThreat) {
+	g.makeMove(Loc(9,7), P1);
+	g.makeMove(Loc(7,4), P2);
+	g.makeMove(Loc(9,6), P1);
+
+	int p2threats = g._posStats.getPriorityLevel(P2, Threat).getNumCands();
+	EXPECT_EQ(2, p2threats);
+	int p1line2s = g._posStats.getPriorityLevel(P1, Line2).getNumCands();
+	EXPECT_EQ(6, p1line2s);
+
+	g.makeMove(Loc(9,5), P2);
+
+	p2threats = g._posStats.getPriorityLevel(P2, Threat).getNumCands();
+	EXPECT_EQ(0, p2threats);
+	p1line2s = g._posStats.getPriorityLevel(P1, Line2).getNumCands();
+	EXPECT_EQ(3, p1line2s);
+
+	g.undoLastMove();
+
+	p2threats = g._posStats.getPriorityLevel(P2, Threat).getNumCands();
+	EXPECT_EQ(2, p2threats);
+	p1line2s = g._posStats.getPriorityLevel(P1, Line2).getNumCands();
+	EXPECT_EQ(6, p1line2s);
+}
+
 TEST_F(PenteGameFixture, SuggestSWCornerBlock) {
 	g.makeMove(Loc(1,1), P1);
 	g.makeMove(Loc(7,8), P2);
@@ -708,3 +751,22 @@ TEST_F(PenteGameFixture, UndoCaptureUpdatesPosStats) {
 	EXPECT_EQ(0, ourTwosAfter.getNumCands());
 }
 
+/////////////////////////////////////////////////////////
+// Restart game tests
+/////////////////////////////////////////////////////////
+
+TEST_F(PenteGameFixture, RestartTakesUsAllTheWayBack) {
+	g.setRules('s');
+	g.setBoardSize(19);
+	g.makeMove(Loc(9,9), P1);
+	g.makeMove(Loc(8,8), P2);
+	g.makeMove(Loc(6,9), P1);
+	g.makeMove(Loc(10,8), P2);
+	g.restartGame();
+
+	const PriorityLevel &p1Line1s = g._posStats.getPriorityLevel(P1, Line1);
+	EXPECT_EQ(0, p1Line1s.getNumCands());
+
+	Colour centre = g.getOcc(Loc(9,9));
+	EXPECT_EQ(EMPTY, centre);
+}
