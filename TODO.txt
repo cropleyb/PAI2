@@ -230,3 +230,11 @@ Include py openings DB
 ...Port openings DB to C++ for Pente.org? when needed...
 // Analyse some more bad play.
 // Add sort of lowest level of included PL candidates (by decreasing count)
+
+AB extra pruning?
+initiative detection
+Fukami in utility score?
+More detailed opening strategy
+restrict getPriorityLevels when there is an opponent's open 3, and boost the depth for that branch.
+
+2 searches: wide & shallow; narrow & deep?
