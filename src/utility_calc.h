@@ -20,17 +20,16 @@ public:
 	{
 		// TEMP until we have an equiv. to ai_genome
 		_moveFactor = 45.0;
-        _calcMode = 1;
         _captureScoreBase = 300;
+        //_captureScoreBase = 200;
         _takeScoreBase = 80;
         _threatScoreBase = 20;
         //_blockedFourBase = 200; // Halved as only one is blocked
-        _blockedFourBase = 30;
-        _useNetCaptures = true;
+        _blockedFourBase = 500;
         _lengthFactor = 35;
-        _forceDepth = 0;
         _judgement = 100;
-        _checkerboardValue = 35;
+        //_checkerboardValue = 35;
+        _checkerboardValue = 500;
 	}
 
 	UtilityValue calcUtility(Colour turnColour, Colour searchColour, MoveNumber moveNumber) const;
@@ -49,16 +48,13 @@ private:
 
 	double _moveFactor;
 	double _patternScale[MAX_PATTERN_TYPE];
-	int _calcMode;
 	int _captureScoreBase;
 	int _takeScoreBase;
 	int _threatScoreBase;
 	int _blockedFourBase;
-	bool _useNetCaptures;
 	std::array<int,6> _capturesScale;
 	// _lengthScale;
 	int _lengthFactor;
-	int _forceDepth;
 	int _judgement;
 	int _checkerboardValue;
 };

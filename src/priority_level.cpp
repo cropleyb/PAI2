@@ -223,3 +223,31 @@ Ind PriorityLevel::getCands(Loc *locBuffer, Ind requestedMax, U64 seen[MAX_WIDTH
 
 	return std::min(requestedMax, numAdded);
 }
+
+// At least three of the above candidates have a count of 2 or more lines.
+bool PriorityLevel::atLeastThreeMultiCands() const
+{
+	PLD(cout << "atLeastThreeMultiCands top - " << (void *)this << endl);
+	PLD(cout << "atLeastThreeMultiCands 1 - _dlHeadInd" << _dlHeadInd << endl);
+	Ind currInd = _dlHeadInd;
+    Ind multis = 0;
+
+	while ((currInd >= 0) && (multis < 3))
+	{
+		PLD(cout << "atLeastThreeMultiCands 2 - currInd: " << currInd << endl);
+		const DLNode &currNode = _dlNodes[currInd];
+		if (currNode._loc == Loc::INVALID)
+		{
+			PLD(cout << "atLeastThreeMultiCands 3 - INVALID" << endl);
+			break;
+		}
+		if (currNode._count > 1)
+		{
+			PLD(cout << "atLeastThreeMultiCands 4 - found one" << endl);
+			multis++;
+			if (multis >= 3) return true;
+		}
+		currInd = currNode._nextInd;
+	}
+	return false;
+}

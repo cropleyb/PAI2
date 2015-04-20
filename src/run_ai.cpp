@@ -1,3 +1,5 @@
+#define private public
+
 #include "pente_game.h"
 #include "loc.h"
 #include "span_lookup_table.h"
@@ -10,13 +12,25 @@
 
 void runAI()
 {
-	PenteGame p1;
-	PenteGame p2;
-	Match match(p1, p2);
-    match.setSilent(false);
+	PenteGame contender;
+	PenteGame defender;
+	Match match(contender, defender);
+    //defender._moveSuggester._shallowCutoff = 2;
+    //contender._utilCalc._blockedFourBase = 700;
+    //contender._utilCalc._blockedFourBase = 200;
+    //contender._utilCalc._checkerboardValue = 800;
+    //contender._utilCalc._lengthFactor = 45;
+    //contender._utilCalc._captureScoreBase = 200;
+    //contender._moveSuggester._shallowCutoff = 3;
+    //contender._moveSuggester._shallowCutoff = 5;
+    //contender._moveSuggester._maxMovesShallow = 7;
+    //contender._moveSuggester._maxMovesDeep = 5;
+    //cout << "Contender util calc modified: " << &(contender._utilCalc) << endl;
+    match.setSilent(true);
+    match.setShowReport(true);
 	match.setDepthRange(1, 6);
 	match.setRulesTypes("st");
-	match.setSizes(13,19);
+	match.setSizes(19);
 	match.play();
 }
 

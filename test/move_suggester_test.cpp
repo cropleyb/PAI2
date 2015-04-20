@@ -506,15 +506,16 @@ TEST_F(MoveSuggesterFixture, test_one_opponent_double_three_must_be_block_cap_or
 	arcs(P1, Line3, 1, Loc(5,6), Loc(9,6));
 
 	// all our 3s should be included
-	arcs(P2, Line3,-1, Loc(4,8), Loc(10,6));
+	arcs(P2, Line3, 1, Loc(4,8), Loc(10,6));
 
 	// only threats that threaten the double 3 really need considering (TODO)
 	arcs(P2, Threat, Loc(2,9), inc=1);
 
 	// All 2s are irrelevant since there is a double 3
-	arcs(P2, Line2, 1, Loc(7,8), Loc(8,8), Loc(10,8)));
-	arcs(P2, Line2, 1, Loc(8,8), Loc(10,8), Loc(12,8)));
-	arcs(P2, Line2, 1, Loc(10,8), Loc(12,8), Loc(13,8)));
+	// Hmmm. Maybe extending the 3 would be stepping into a capture?
+	arcs(P2, Line2, 1, Loc(7,8), Loc(8,8), Loc(10,8));
+	arcs(P2, Line2, 1, Loc(8,8), Loc(10,8), Loc(12,8));
+	arcs(P2, Line2, 1, Loc(10,8), Loc(12,8), Loc(13,8));
 
 	LocArr la = getLocsInOrder(1);
 
@@ -526,36 +527,48 @@ TEST_F(MoveSuggesterFixture, test_one_opponent_double_three_must_be_block_cap_or
 	assertIn(la[3], our_threes);
 	EXPECT_EQ(la[4], Loc(2,9));  Our threat (TODO)
 }
+#endif
 
-TEST_F(MoveSuggesterFixture, atest_three_plus_opponent_double_threes_cannot_block)
+#include <set>
+using namespace std;
+
+#if 1
+TEST_F(MoveSuggesterFixture, test_three_plus_opponent_double_threes_cannot_block)
 {
-	// i.e. a single instance of a double 3 attack must be blocked,
-	// captured, or threatened, or we must extend a 3 of our own
-	arcs(P2, Take, 1, Loc(1,5))
+	// i.e. three or more double 3 attacks cannot be blocked;
+	// we must extend a 3 of our own, capture or threaten
 
-	// 3 x Two double attacks - can't block
+	// 3 x Two double attacks - can't block 'em all
 	arcs(P1, Line3, 1, Loc(4,6), Loc(5,6));
 	arcs(P1, Line3, 1, Loc(5,6), Loc(9,6));
 	arcs(P1, Line3, 1, Loc(4,6), Loc(9,6));
 
-	// all our 3s should be included
+	// takes that are not involved in the double 3s may be useful for reaching
+	// 5 pair captures
+	arcs(P2, Take, 1, Loc(1,5));
+
+	// all our 3s should be included since we may be able to get five first
+	// or block a double 3 at the same time.
 	arcs(P2, Line3, 1, Loc(4,8), Loc(10,6));
 
-	// only threats that threaten the double 3 really need considering (TODO)
-	arcs(P2, Threat, Loc(2,9));
+	// only threats that threaten the double 3s really need considering (TODO)
+	arcs(P2, Threat, 1, Loc(2,9));
 
 	// All 2s are irrelevant since there is a double 3
-	arcs(P2, Line2, 1, Loc(7,8), Loc(8,8), Loc(10,8)));
-	arcs(P2, Line2, 1, Loc(8,8), Loc(10,8), Loc(12,8)));
-	arcs(P2, Line2, 1, Loc(10,8), Loc(12,8), Loc(13,8)));
+	arcs(P2, Line2, 1, Loc(7,8), Loc(8,8), Loc(10,8));
+	arcs(P2, Line2, 1, Loc(8,8), Loc(10,8), Loc(12,8));
+	arcs(P2, Line2, 1, Loc(10,8), Loc(12,8), Loc(13,8));
 
 	LocArr la = getLocsInOrder(1);
 	EXPECT_EQ(4, la.size());
-	EXPECT_EQ(la[0], Loc(1,5)); // Our take
-	our_threes = Loc(4,8), Loc(10,6)); // Our 3s
-	assertIn(la[1], our_threes);
-	assertIn(la[2], our_threes);
-	EXPECT_EQ(la[3], Loc(2,9)); // Our threat (TODO)
+	set<Loc> our_threes;
+	our_threes.insert(Loc(4,8));
+	our_threes.insert(Loc(10,6)); // Our 3s
+	EXPECT_EQ(1, our_threes.count(la[0]));
+	EXPECT_EQ(1, our_threes.count(la[1]));
+	EXPECT_EQ(la[2], Loc(1,5)); // Our take
+	EXPECT_EQ(la[3], Loc(2,9)); // Our threat
+	// TODO: This should also deepen the search (by 1?)
 }
 
 #endif

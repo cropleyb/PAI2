@@ -72,7 +72,9 @@ public:
 	}
 
 	string getStr() {
-		return getWinStr() + "    " + getTimeStr();
+		string ret = getWinStr() + "      ";
+		ret = ret.substr(0, 7);
+		return ret + getTimeStr();
 	}
 
 //private:
@@ -145,7 +147,7 @@ private:
 class Match
 {
 public:
-	Match(PenteGame &p1, PenteGame &p2) : _players {&p1, &p2}, _silent(false) {}
+	Match(PenteGame &p1, PenteGame &p2) : _players {&p1, &p2}, _silent(false), _showReport(false) {}
 
 	void setDepthRange(Depth minDepth, Depth maxDepth) { _minDepth = minDepth; _maxDepth = maxDepth; }
 
@@ -157,6 +159,7 @@ public:
 
 	void play();
 	void setSilent(bool val) { _silent = val; }
+	void setShowReport(bool val) { _showReport = val; }
 	AllStats &getAllStats() {return _allStats; }
 	
 private:
@@ -166,6 +169,7 @@ private:
 	string _rulesTypes;
 	vector<BoardWidth> _sizes;
 	bool _silent;
+	bool _showReport;
 
 	AllStats _allStats;
 };

@@ -17,6 +17,9 @@ using namespace std;
 MoveSuggester::MoveSuggester(PositionStats &ps)
 	: _posStats(ps)
 {
+	_maxMovesShallow = 7;
+	_maxMovesDeep = 4;
+	_shallowCutoff = 4;
 	_candCache = new CandidateCache();
 }
 
@@ -55,8 +58,9 @@ void MoveSuggester::fillCache(Depth depth, Colour searchColour)
 	MSD(cout << "Filling depth: " << (int)depth << endl;)
 	Loc *moveBuffer = _candCache->getBuffer(depth);
 
-	Breadth maxMoves = 9;
-	if (depth > 3) maxMoves = 4;
+	Breadth maxMoves = _maxMovesShallow;
+	if (depth >= _shallowCutoff) maxMoves = _maxMovesDeep;
+	//assert(maxMoves == 9);
 
 	Breadth moveCount = filterCandidates(moveBuffer, depth, maxMoves, searchColour);
 	MSD(cout << "Setting depth moves for depth " << (int)depth << " to " << (int)moveCount << endl;)
@@ -109,8 +113,8 @@ bool MoveSuggester::getPriorityLevels(Colour ourColour)
 		// may have no moves
 		_toSearchLevels[0] = &ourTakes;
 		_toSearchLevels[1] = &theirTakes;
-		_toSearchLevels[2] = &theirFours;
-		_numSearchLevels = 3;
+		_emergencySearchLevel = &theirFours;
+		_numSearchLevels = 2;
 		onePoss = false;
 		return onePoss;
 	}
@@ -128,8 +132,8 @@ bool MoveSuggester::getPriorityLevels(Colour ourColour)
 			} else {
 				// Might as well block one of them, can't stop 'em all
 				MSD(cout << " lose by 5 in a row imminently." << endl;)
-				_toSearchLevels[0] = &theirFours;
-				_numSearchLevels = 1;
+				_emergencySearchLevel = &theirFours;
+				_numSearchLevels = 0;
 				onePoss = true;
 				return onePoss;
 			}
@@ -147,6 +151,29 @@ bool MoveSuggester::getPriorityLevels(Colour ourColour)
 		onePoss = false;
 		return onePoss;
 	}
+
+	const PriorityLevel &ourThrees
+		= _posStats.getPriorityLevel(ourColour, Line3);
+	const PriorityLevel &theirThrees
+		= _posStats.getPriorityLevel(theirColour, Line3);
+
+	if (theirThrees.getNumCands() > 2) {
+		if (theirThrees.atLeastThreeMultiCands()) {
+			// i.e. three or more double 3 attacks cannot be blocked;
+			// we must extend a 3 of our own, capture or threaten
+			const PriorityLevel &ourThreats
+				= _posStats.getPriorityLevel(ourColour, Threat);
+			MSD(cout << "P" << (int)ourColour << " lose by double four attack unless we attack first." << endl;)
+			_toSearchLevels[0] = &ourThrees;
+			_toSearchLevels[1] = &ourTakes;
+			_toSearchLevels[2] = &ourThreats;
+			_emergencySearchLevel = &theirThrees; // We only want one of these as an emergency
+			_numSearchLevels = 3;
+			onePoss = false;
+			return onePoss;
+		}
+	}
+
 	// Defaulting to many levels
 	fillPriorityLevels(ourColour, theirColour);
 	_numSearchLevels = 10;
@@ -174,6 +201,8 @@ Breadth MoveSuggester::filterCandidates(Loc *moveBuffer, Depth depth, Breadth ma
 	if (depth % 2) {
 		turnColour = otherPlayer(ourColour);
 	}
+
+	_emergencySearchLevel = 0;
 
 	bool onePoss = getPriorityLevels(turnColour);
 	if (onePoss) {
@@ -203,6 +232,13 @@ Breadth MoveSuggester::filterCandidates(Loc *moveBuffer, Depth depth, Breadth ma
 			return found;
 		}
 		moveBuffer += foundFromPL;
+	}
+	if (found == 0 && _emergencySearchLevel != 0)
+	{
+		// We need at least one move, or things go wrong.
+		MSD(cout << "Resorting to emergency level in MS" << endl;)
+		const PriorityLevel *pl = _emergencySearchLevel;
+		found = pl->getCands(moveBuffer, 1, seen);
 	}
 	return found;
 }

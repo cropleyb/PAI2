@@ -55,8 +55,6 @@ GameResult RunAIGame::play(Depth depth, BoardWidth size, RulesType rules, bool c
 		AlphaBeta(*_players[1])
 	};
 
-	time_t before, after;
-
 	GameResult res = GameResult();
 	res._depth = std::to_string((int)depth);
 	res._size = std::to_string((int)size);
@@ -183,7 +181,9 @@ string AllStats::report()
 	}
 
 	// Iterate over rows, and get the relevant category info
+    const char edgeChars[] = "_______________________________________________________________________________\n";
 	strstream ss;
+    ss << edgeChars << endl;
 	for (int currRowNum=0; currRowNum<numRows; currRowNum++)
 	{
 		for (int catInd=0; catInd<4; catInd++)
@@ -199,17 +199,21 @@ string AllStats::report()
 		}
 		ss << "\n";
 	}
+    ss << edgeChars << endl;
 	ss << ends;
 	string ret = ss.str();
 	ss.freeze(false);
 	return ret;
 }
 #if 0
+"______________________________________________________________________________"
+""
 "| Player     t rat. | Size       t rat. | Depth      t rat. | Rules     t rat."
 "| P2: 1/0    0.0149 | 13: 4/4    5.2345 | 2: 3/5     0.9634 | T: 3/2    0.4626"
 "|                   |                   |                   |                 "
 "| Overall    t rat. |                   |                   |                 "
 "| C/D 16/16  0.7658 |                   |                   |                 ";
+"______________________________________________________________________________"
 #endif
 //	CategoryType _categoryTypes[5];
 
@@ -244,15 +248,16 @@ void Match::play()
 						cout << " swap: " << (int)swap << endl;
 					}
 	
-					RunAIGame rag(*(_players[0]), *(_players[1]));
+					RunAIGame rag(*(_players[0 xor swap]), *(_players[1 xor swap]));
 					rag.setSilent(_silent);
 					GameResult res = rag.play(depth, size, rules, swap);
 					swap += 1;
 					_allStats.addGameResult(res);
-					if (!_silent) {
+					if (_showReport) {
 						// rag.printHistory(); // TODO: another option
 						std::cout << _allStats.report() << endl;
 					}
+					//break;
 				}
 			}
 		}

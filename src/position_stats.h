@@ -83,9 +83,11 @@ public:
 
 	UtilityValue getCheckerboardContrib(Colour c) const
 	{
-		const short *ours = _checkerboardStats[c];
+		const UtilityValue *ours = _checkerboardStats[c];
+		UtilityValue absval = ours[0] - ours[1];
+		if (absval < 0) absval = -absval;
 		
-		UtilityValue ret = abs(ours[0] - ours[1])/(ours[0] + ours[1] + 1);
+		UtilityValue ret = absval/(ours[0] + ours[1] + 1);
 		return ret;
 	}
 
@@ -108,7 +110,7 @@ private:
 	PriorityLevel _levels[3][MAX_PATTERN_TYPE];
 	PattCount _patternCounts[3][MAX_PATTERN_TYPE];
 	CapCount _captured[3];
-	short _checkerboardStats[3][2];
+	UtilityValue _checkerboardStats[3][2];
 	Colour _wonBy;
 	bool _canWinByCaptures;
 };

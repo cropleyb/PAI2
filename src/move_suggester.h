@@ -27,7 +27,12 @@ private:
 
 	CandidateCache *_candCache;
 	PositionStats &_posStats;
+
+	Breadth _maxMovesShallow;
+	Breadth _maxMovesDeep;
+	Depth _shallowCutoff;
 	
 	std::array<const PriorityLevel *, MAX_CANDS> _toSearchLevels;
+	const PriorityLevel *_emergencySearchLevel;
 	int _numSearchLevels;
 };
