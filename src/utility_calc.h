@@ -24,12 +24,12 @@ public:
         //_captureScoreBase = 200;
         _takeScoreBase = 80;
         _threatScoreBase = 20;
-        //_blockedFourBase = 200; // Halved as only one is blocked
-        _blockedFourBase = 500;
+        _blockedFourBase = 200; // Halved as only one is blocked
+        //_blockedFourBase = 500;
         _lengthFactor = 35;
         _judgement = 100;
-        //_checkerboardValue = 35;
-        _checkerboardValue = 500;
+        _checkerboardValue = 35;
+        //_checkerboardValue = 500;
 	}
 
 	UtilityValue calcUtility(Colour turnColour, Colour searchColour, MoveNumber moveNumber) const;
