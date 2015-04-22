@@ -113,7 +113,7 @@ bool MoveSuggester::getPriorityLevels(Colour ourColour)
 		// may have no moves
 		_toSearchLevels[0] = &ourTakes;
 		_toSearchLevels[1] = &theirTakes;
-		_emergencySearchLevel = &theirFours;
+		_emergencySearchLevel = &theirFours; // TODO: not in VCT?
 		_numSearchLevels = 2;
 		onePoss = false;
 		return onePoss;
@@ -125,8 +125,8 @@ bool MoveSuggester::getPriorityLevels(Colour ourColour)
 				// We will lose unless we capture
 				MSD(cout << "P" << (int)ourColour << " lose by 5 in a row unless we take" << endl;)
 				_toSearchLevels[0] = &ourTakes;
-				_toSearchLevels[1] = &theirFours; // This loses, but we need a move
-				_numSearchLevels = 2;
+				_emergencySearchLevel = &theirFours; // This loses, but we need a move // TODO: not in VCT
+				_numSearchLevels = 1;
 				onePoss = false;
 				return onePoss;
 			} else {
@@ -141,28 +141,34 @@ bool MoveSuggester::getPriorityLevels(Colour ourColour)
 
 		// else: They have one 4 attack or 2 or more winning threat attacks.
 		// We will lose unless we block or capture 
-		// Provide a threat blocking alternative so we always have at least
-		// one move.
 		MSD(cout << "P" << (int)ourColour << " lose by 5 in a row unless we block or capture." << endl;)
 		_toSearchLevels[0] = &theirFours;
 		_toSearchLevels[1] = &ourTakes;
-		_toSearchLevels[2] = &theirTakes;
-		_numSearchLevels = 3;
+		_numSearchLevels = 2;
+		// Provide a threat blocking alternative so we always have at least
+		// one move.
+		_emergencySearchLevel = &theirTakes;
 		onePoss = false;
 		return onePoss;
 	}
 
+	// TODO: if VCT return false
+	
+#if 0
 	const PriorityLevel &ourThrees
 		= _posStats.getPriorityLevel(ourColour, Line3);
 	const PriorityLevel &theirThrees
 		= _posStats.getPriorityLevel(theirColour, Line3);
 
-	if (theirThrees.getNumCands() > 2) {
-		if (theirThrees.atLeastThreeMultiCands()) {
+	if (theirThrees.getNumCands() > 0) {
+		const PriorityLevel &ourThreats
+			= _posStats.getPriorityLevel(ourColour, Threat);
+
+		Loc multi3Cands[3]; // If there are more than 3 we don't care.
+		Breadth numMulti3Cands = theirThrees.getMultiCands(multi3Cands);
+		if (numMulti3Cands >= 3) {
 			// i.e. three or more double 3 attacks cannot be blocked;
 			// we must extend a 3 of our own, capture or threaten
-			const PriorityLevel &ourThreats
-				= _posStats.getPriorityLevel(ourColour, Threat);
 			MSD(cout << "P" << (int)ourColour << " lose by double four attack unless we attack first." << endl;)
 			_toSearchLevels[0] = &ourThrees;
 			_toSearchLevels[1] = &ourTakes;
@@ -172,7 +178,25 @@ bool MoveSuggester::getPriorityLevels(Colour ourColour)
 			onePoss = false;
 			return onePoss;
 		}
+#if 0
+		else if (numMulti3Cands >= 1) {
+			// Could block if we place on one of the threes.
+			MSD(cout << "P" << (int)ourColour << " lose by double four attack unless we block or attack first." << endl;)
+			_toSearchLevels[0] = &ourThrees;
+			_toSearchLevels[1] = &theirThrees;
+			_toSearchLevels[2] = &ourTakes;
+			_toSearchLevels[3] = &theirTakes;
+			_toSearchLevels[4] = &ourThreats;
+			_numSearchLevels = 5;
+			onePoss = false;
+			return onePoss;
+		}
+		//if (numMulti3Cands == 2) { // TODO
+			// Could block if we place on one of the multi cands.
+		//}
+#endif
 	}
+#endif
 
 	// Defaulting to many levels
 	fillPriorityLevels(ourColour, theirColour);
