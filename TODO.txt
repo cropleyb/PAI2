@@ -238,3 +238,51 @@ More detailed opening strategy
 restrict getPriorityLevels when there is an opponent's open 3, and boost the depth for that branch.
 
 2 searches: wide & shallow; narrow & deep?
+
+VCT
+trigger at max depth, if we have the initiative?
+e.g.
+we have a 3, they don't have a 4, and it is our move, just search our 3s.
+we have a 3, they don't have a 3, and it is their move, they just search our 3s.
+our best level and their best level
+if OBL == TBL, initiative == to move
+what is important about OBL and TBL is the number of moves to win -
+if OBL is 4 then it is one Turn To Win. (TTW)
+Does one player always have the initiative?
+
+When should a VCT search be stopped?
+// Ours:
+When the initiative is reversed?
+
+How do we incorporate VCT and non-VCT search?
+ie the VCT search may not give the best position for the player who initiated it.
+
+e.g. at (even) maxdepth. P1 search, P1's turn. Both P1 and P2 have 3s, but no 4s
+so P1 has the initiative.
+P1 VCT can search all Line3 moves, and choose the AB best cf. the utility at that maxdepth position
+maxdepth+1: (odd depth).  P1 search, P2's turn. P2 Must block the 4(s) (or capture it/them)
+Termination conds: game won. No more P1 3s to extend.
+
+Loss by continuous threats:
+e.g. at (even) maxdepth. P1 search, P1's turn. P2 has a 4
+so P2 has the initiative.
+P2 VCT can search all Line3 moves, and choose the AB best cf. the utility at that maxdepth position
+maxdepth+1: (odd depth).  P1 search, P1's turn. P1 Must block the 4(s) (or capture it/them)
+Termination conds: game lost. No more P2 3s to extend.
+
+3 VCTs
+P1 (to move): 2xLine3; P2: 3xLine3 inc. 2 doubles
+
+For each player:
+If #4s > 0
+	TTW = 1
+If #takes > 0 && #captured >= 8
+	TTW = 1
+If #3s > 0
+	TTW = 2
+If #threats > 0 && #captured >= 8
+	TTW = 2
+If #takes > 1 && #captured >= 6
+    // Assuming the first take opens up a second?
+	TTW = 2
+
