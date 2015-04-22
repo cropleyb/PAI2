@@ -62,8 +62,8 @@ public:
 	// locations that provide at least one capture or threat possibility.
 	Ind getNumCands() const;
 
-	// At least three of the above candidates have a count of 2 or more lines.
-	bool atLeastThreeMultiCands() const;
+	// Get up to three of the above candidates have a count of 2 or more lines.
+	Breadth getMultiCands(Loc multiCands[3]) const;
 
 	// Get the count of times that the given location provides this PL's
 	// advantage.

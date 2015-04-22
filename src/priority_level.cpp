@@ -224,30 +224,30 @@ Ind PriorityLevel::getCands(Loc *locBuffer, Ind requestedMax, U64 seen[MAX_WIDTH
 	return std::min(requestedMax, numAdded);
 }
 
-// At least three of the above candidates have a count of 2 or more lines.
-bool PriorityLevel::atLeastThreeMultiCands() const
+// Get up to three of the above candidates that have a count of 2 or more lines.
+Breadth PriorityLevel::getMultiCands(Loc multiCands[3]) const
 {
-	PLD(cout << "atLeastThreeMultiCands top - " << (void *)this << endl);
-	PLD(cout << "atLeastThreeMultiCands 1 - _dlHeadInd" << _dlHeadInd << endl);
+	PLD(cout << "getMultiCands top - " << (void *)this << endl);
+	PLD(cout << "getMultiCands 1 - _dlHeadInd" << _dlHeadInd << endl);
 	Ind currInd = _dlHeadInd;
     Ind multis = 0;
 
 	while ((currInd >= 0) && (multis < 3))
 	{
-		PLD(cout << "atLeastThreeMultiCands 2 - currInd: " << currInd << endl);
+		PLD(cout << "getMultiCands 2 - currInd: " << currInd << endl);
 		const DLNode &currNode = _dlNodes[currInd];
 		if (currNode._loc == Loc::INVALID)
 		{
-			PLD(cout << "atLeastThreeMultiCands 3 - INVALID" << endl);
+			PLD(cout << "getMultiCands 3 - INVALID" << endl);
 			break;
 		}
 		if (currNode._count > 1)
 		{
-			PLD(cout << "atLeastThreeMultiCands 4 - found one" << endl);
-			multis++;
-			if (multis >= 3) return true;
+			PLD(cout << "getMultiCands 4 - found one" << endl);
+			multiCands[multis++] = currNode._loc;
+			if (multis >= 3) return multis;
 		}
 		currInd = currNode._nextInd;
 	}
-	return false;
+	return multis;
 }
