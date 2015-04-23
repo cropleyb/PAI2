@@ -18,7 +18,8 @@ public:
 	virtual Loc makeNextMove() =0;// Get it and do it on the board
 	virtual Loc getNextMove() =0; // Get it without performing it
 	virtual void undoLastMove() =0;
-    virtual bool isCutoff() const =0;
+    virtual bool needUtility() =0;
+    virtual bool needSearch() =0;
 };
 
 #endif

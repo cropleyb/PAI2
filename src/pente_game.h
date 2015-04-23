@@ -35,7 +35,8 @@ public:
     virtual bool isOnlyOneMove() { return _moveHist.getLastMoveNumber() == 0 or _moveSuggester.isOnlyOneMove(_currDepth, _ourColour); }
     virtual Loc makeNextMove();
 	virtual Loc getNextMove(); // Get it without performing it
-    virtual bool isCutoff() const;
+    virtual bool needUtility();
+    virtual bool needSearch();
 	virtual UtilityValue getUtility();
 	virtual void storeInTransTable(UtilityValue uv);
 

@@ -167,8 +167,8 @@ TEST_F(AISubsystemFixture, test_strange) {
 "7. (4, 9)\n";
     Loc move = doTheSearchTest(gameStr);
 	//_game.print();
-	//EXPECT_EQ(Loc(8,6), move);
-	EXPECT_EQ(Loc(5,8), move); // I'm not sure which is better...
+	EXPECT_EQ(Loc(8,6), move); // (4,7)???
+	//EXPECT_EQ(Loc(5,8), move); // I'm not sure which is better...
 }
 #endif
 
@@ -319,7 +319,7 @@ TEST_F(AISubsystemFixture, test_bad) {
 #ifdef NEW_SYSTEM_TESTS
 TEST_F(AISubsystemFixture, test_quick_blunder) {
     string gameStr = \
-"depth:3\n"
+"depth:4\n"
 "boardwidth:19\n"
 "1.(9, 9)\n"
 "2.(8, 8)\n"

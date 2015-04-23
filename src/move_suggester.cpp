@@ -257,9 +257,9 @@ Breadth MoveSuggester::filterCandidates(Loc *moveBuffer, Depth depth, Breadth ma
 		}
 		moveBuffer += foundFromPL;
 	}
-	if (found == 0 && _emergencySearchLevel != 0)
+	if (found == 0 && depth < 1 && _emergencySearchLevel != 0)
 	{
-		// We need at least one move, or things go wrong.
+		// We need at least one move at the top level, or things go wrong.
 		MSD(cout << "Resorting to emergency level in MS" << endl;)
 		const PriorityLevel *pl = _emergencySearchLevel;
 		found = pl->getCands(moveBuffer, 1, seen);

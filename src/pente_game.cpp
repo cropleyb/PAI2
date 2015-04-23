@@ -234,30 +234,44 @@ PenteGame::getNextMove()
 	return move;
 }
 
-bool PenteGame::isCutoff() const
+#if 0
+// TODO
+bool PenteGame::isVCT() const
 {
-	if (_posStats.getWonBy()) return true;
-	if (_currDepth >= _maxDepth) return true;
-
-	// Try the transposition table - has this position been searched
-	// via another branch of the game tree?
-	_isInTT = false;
-	if (_currDepth > 2 && _currDepth < _maxDepth - 1)
+	if (not _vctEnabled) return false;
+	return true;
+	//if (_posStats.()) return true;
+}
+#endif
+	
+bool PenteGame::needUtility()
+{
+	if (_currDepth > 2) // TODO: VCT must be put in the TT too.
 	{
 		_isInTT = _transpositionTable.lookup(*this, _ttVal);
 		if (_isInTT) return true;
 	}
-	return false;
+	return _currDepth && (_currDepth >= _maxDepth-1);
+}
+
+bool PenteGame::needSearch()
+{
+	if (_posStats.getWonBy()) return false;
+
+	if (_isInTT) {
+		// Found in TT, so got TT "util val", don't need to search?
+		_isInTT = false;
+		return false;
+	}
+
+	return _currDepth < _maxDepth;
 }
 
 UtilityValue PenteGame::getUtility()
 {
-#if 1
 	if (_isInTT) {
-		_isInTT = false; // safety!
 		return _ttVal;
 	}
-#endif
 
 	MoveNumber lastMn = _moveHist.getLastMoveNumber() - 1;
 	// lastMn 0, sc P1, depth 0 -> tc P1
@@ -278,6 +292,7 @@ UtilityValue PenteGame::getUtility()
 void PenteGame::storeInTransTable(UtilityValue uv)
 {
 	if (_currDepth > 2 && _currDepth < _maxDepth - 1)
+	//if (_currDepth > 2) // TODO: Store VCT too
 	{
 		_transpositionTable.savePos(*this, uv);
 	}

@@ -4,6 +4,9 @@
 #define INF 1e40
 #define NEGINF -1e40
 
+#include <iostream>
+using namespace std;
+
 Loc AlphaBeta::getBestMove()
 {
     _bridge.resetSearch();
@@ -26,20 +29,23 @@ Loc AlphaBeta::getBestMove()
 
 UtilityValue AlphaBeta::maxValue(UtilityValue alpha, UtilityValue beta, Depth depth)
 {
-    if (_bridge.isCutoff())
-    {
-        UtilityValue util = _bridge.getUtility();
-        return util;
-    }
-
     UtilityValue bestVal(200*NEGINF);
+
+    if (_bridge.needUtility())
+    {
+        bestVal = _bridge.getUtility();
+    }
+	if (!_bridge.needSearch()) {
+		return bestVal;
+	}
+
     UtilityValue currVal;
 	Loc bestMove;
 
     while (true)
     {
         // Make and locally store the next suggested move
-        Loc currMove = _bridge.makeNextMove();
+        Loc currMove = _bridge.makeNextMove(); // determines if vct by depth > max depth
 
         // No more moves at this level
         if (!currMove.isValid()) {
@@ -86,11 +92,16 @@ UtilityValue AlphaBeta::maxValue(UtilityValue alpha, UtilityValue beta, Depth de
 
 UtilityValue AlphaBeta::minValue(UtilityValue alpha, UtilityValue beta, Depth depth)
 {
-    if (_bridge.isCutoff()) {
-        UtilityValue util = _bridge.getUtility();
-        return util;
-    }
     UtilityValue bestVal(200*INF);
+
+    if (_bridge.needUtility())
+    {
+        bestVal = _bridge.getUtility();
+    }
+	if (!_bridge.needSearch()) {
+		return bestVal;
+	}
+
     UtilityValue currVal;
 
     while (true) {

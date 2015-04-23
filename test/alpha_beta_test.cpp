@@ -23,7 +23,8 @@ public:
     MOCK_METHOD0(makeNextMove, Loc());
     MOCK_METHOD0(getNextMove, Loc());
     MOCK_METHOD0(undoLastMove, void());
-    MOCK_CONST_METHOD0(isCutoff, bool());
+    MOCK_METHOD0(needUtility, bool());
+    MOCK_METHOD0(needSearch, bool());
 };
 
 using ::testing::AtLeast;
@@ -37,6 +38,8 @@ TEST_F(AlphaBetaFixture, FindFromOnlyOneOption) {
 	// node, since there is only one choice.
 	MockBridge mb;
 	
+	EXPECT_CALL(mb, resetSearch())
+	  ;
     Loc locFromBridge(2,3);
 	EXPECT_CALL(mb, isOnlyOneMove())
       .WillOnce(Return(true))
@@ -65,31 +68,42 @@ TEST_F(AlphaBetaFixture, FindFromTwoOptions) {
 
 	InSequence dummy;
 
+	EXPECT_CALL(mb, resetSearch())
+	  ;
 	EXPECT_CALL(mb, isOnlyOneMove())
       .WillOnce(Return(false))
       ;
-	EXPECT_CALL(mb, isCutoff())
+	EXPECT_CALL(mb, needUtility())
       .WillOnce(Return(false))
+      ;
+	EXPECT_CALL(mb, needSearch())
+      .WillOnce(Return(true))
       ;
 	EXPECT_CALL(mb, makeNextMove())
       .WillOnce(Return(locFromBridge1))
       ;
-	EXPECT_CALL(mb, isCutoff())
+	EXPECT_CALL(mb, needUtility())
       .WillOnce(Return(true))
       ;
 	EXPECT_CALL(mb, getUtility())
       .WillOnce(Return(valFromBridge1))
+      ;
+	EXPECT_CALL(mb, needSearch())
+      .WillOnce(Return(false))
       ;
 	EXPECT_CALL(mb, undoLastMove())
       ;
 	EXPECT_CALL(mb, makeNextMove())
       .WillOnce(Return(locFromBridge2))
       ;
-	EXPECT_CALL(mb, isCutoff())
+	EXPECT_CALL(mb, needUtility())
       .WillOnce(Return(true))
       ;
 	EXPECT_CALL(mb, getUtility())
       .WillOnce(Return(valFromBridge2))
+      ;
+	EXPECT_CALL(mb, needSearch())
+      .WillOnce(Return(false))
       ;
 	EXPECT_CALL(mb, undoLastMove())
       ;
@@ -121,31 +135,42 @@ TEST_F(AlphaBetaFixture, FindFromTwoOptionsReversed) {
 
 	InSequence dummy;
 
+	EXPECT_CALL(mb, resetSearch())
+	  ;
 	EXPECT_CALL(mb, isOnlyOneMove())
       .WillOnce(Return(false))
       ;
-	EXPECT_CALL(mb, isCutoff())
+	EXPECT_CALL(mb, needUtility())
       .WillOnce(Return(false))
+      ;
+	EXPECT_CALL(mb, needSearch())
+      .WillOnce(Return(true))
       ;
 	EXPECT_CALL(mb, makeNextMove())
       .WillOnce(Return(locFromBridge1))
       ;
-	EXPECT_CALL(mb, isCutoff())
+	EXPECT_CALL(mb, needUtility())
       .WillOnce(Return(true))
       ;
 	EXPECT_CALL(mb, getUtility())
       .WillOnce(Return(valFromBridge1))
+      ;
+	EXPECT_CALL(mb, needSearch())
+      .WillOnce(Return(false))
       ;
 	EXPECT_CALL(mb, undoLastMove())
       ;
 	EXPECT_CALL(mb, makeNextMove())
       .WillOnce(Return(locFromBridge2))
       ;
-	EXPECT_CALL(mb, isCutoff())
+	EXPECT_CALL(mb, needUtility())
       .WillOnce(Return(true))
       ;
 	EXPECT_CALL(mb, getUtility())
       .WillOnce(Return(valFromBridge2))
+      ;
+	EXPECT_CALL(mb, needSearch())
+      .WillOnce(Return(false))
       ;
 	EXPECT_CALL(mb, undoLastMove())
       ;
@@ -181,37 +206,51 @@ TEST_F(AlphaBetaFixture, OpponentChoosesBadMoveForUs) {
 	InSequence dummy;
 
 	// This code is indented with the depth of the search.
+	EXPECT_CALL(mb, resetSearch())
+	  ;
 	EXPECT_CALL(mb, isOnlyOneMove())
       .WillOnce(Return(false))
       ;
-	EXPECT_CALL(mb, isCutoff())
+	EXPECT_CALL(mb, needUtility())
       .WillOnce(Return(false))
+      ;
+	EXPECT_CALL(mb, needSearch())
+      .WillOnce(Return(true))
       ;
 	EXPECT_CALL(mb, makeNextMove())
       .WillOnce(Return(loc1))
       ;
-		EXPECT_CALL(mb, isCutoff())
+		EXPECT_CALL(mb, needUtility())
 		  .WillOnce(Return(false))
+		  ;
+		EXPECT_CALL(mb, needSearch())
+		  .WillOnce(Return(true))
 		  ;
 		EXPECT_CALL(mb, makeNextMove())
 		  .WillOnce(Return(loc3))
 		  ;
-			EXPECT_CALL(mb, isCutoff())
+			EXPECT_CALL(mb, needUtility())
 			  .WillOnce(Return(true))
 			  ;
 			EXPECT_CALL(mb, getUtility())
 			  .WillOnce(Return(valFromBridge3))
+			  ;
+			EXPECT_CALL(mb, needSearch())
+			  .WillOnce(Return(false))
 			  ;
 		EXPECT_CALL(mb, undoLastMove())
 		  ;
 		EXPECT_CALL(mb, makeNextMove())
 		  .WillOnce(Return(loc4))
 		  ;
-			EXPECT_CALL(mb, isCutoff())
+			EXPECT_CALL(mb, needUtility())
 			  .WillOnce(Return(true))
 			  ;
 			EXPECT_CALL(mb, getUtility())
 			  .WillOnce(Return(valFromBridge4))
+			  ;
+			EXPECT_CALL(mb, needSearch())
+			  .WillOnce(Return(false))
 			  ;
 		EXPECT_CALL(mb, undoLastMove())
 		  ;
@@ -223,11 +262,14 @@ TEST_F(AlphaBetaFixture, OpponentChoosesBadMoveForUs) {
 	EXPECT_CALL(mb, makeNextMove())
       .WillOnce(Return(loc2))
       ;
-		EXPECT_CALL(mb, isCutoff())
+		EXPECT_CALL(mb, needUtility())
 		  .WillOnce(Return(true))
 		  ;
 		EXPECT_CALL(mb, getUtility())
 		  .WillOnce(Return(valFromBridge2))
+		  ;
+		EXPECT_CALL(mb, needSearch())
+		  .WillOnce(Return(false))
 		  ;
 	EXPECT_CALL(mb, undoLastMove())
       ;
