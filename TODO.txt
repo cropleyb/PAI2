@@ -286,3 +286,18 @@ If #takes > 1 && #captured >= 6
     // Assuming the first take opens up a second?
 	TTW = 2
 
+When to include the emergency level:
+Depth 0 - always need at least one move.
+Depth 1..maxDepth-1 - no; the utility func should determine these positions as won or lost, and save some searching(?)
+Depth maxDepth - no; this one
+Depth >maxDepth (i.e. VCT) - no
+
+when should we call the util func? max depth and max VCT depth?
+// VCT positions with the initiative? #Their4s==0, #OurLine3s>0, #OurTakes>1 and caps >= 6
+Or VCT posns. where we are not forced? NOT(#Their4s==0 or #TheirTakes>0 and #theirCaps >= 8)
+Or positions with no move suggestions.
+
+When do we need to do more search?
+
+
+Rename cutoff?
