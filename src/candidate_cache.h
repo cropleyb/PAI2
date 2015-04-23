@@ -43,7 +43,7 @@ public:
 	void setDepthMoves(Depth d, unsigned char moveCount) { 
 		BD(cout << "setDepthMoves for depth " << (int)d << " to add: " << (int)moveCount << endl;)
 		_lastDepthRequested = d;
-		_moveCount[d] += moveCount;
+		_moveCount[d] = moveCount;
 		BD(cout << "total for depth: " << (int)_moveCount[d] << endl;)
 		_currIndex[d] = 0;
 	}
