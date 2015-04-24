@@ -246,16 +246,24 @@ bool PenteGame::isVCT() const
 	
 bool PenteGame::needUtility()
 {
+	// Look up the TT for this position first.
 	if (_currDepth > 2) // TODO: VCT must be put in the TT too.
 	{
 		_isInTT = _transpositionTable.lookup(*this, _ttVal);
+		// evaluating the utility function also uses the looked up _ttVal
 		if (_isInTT) return true;
 	}
+	
+	// When do we need to evaluate the util func? max depth and max VCT depth?
+	// Or VCT posns. where we are not forced? NOT(#Their4s==0 or #TheirTakes>0 and #theirCaps >= 8)
+	// Or positions with no move suggestions.
+
 	return _currDepth && (_currDepth >= _maxDepth-1);
 }
 
 bool PenteGame::needSearch()
 {
+//When do we need to do more search?
 	if (_posStats.getWonBy()) return false;
 
 	if (_isInTT) {

@@ -154,3 +154,43 @@ TEST_F(PositionStatsFixture, TestBlockedCount) {
 	PattCount c = ps.getNumPatterns(P2, Blocked);
 	EXPECT_EQ(1, c);
 }
+
+/////////////////////////////////////////////////////
+// test get moves to win
+/////////////////////////////////////////////////////
+
+TEST_F(PositionStatsFixture, TestMovesToWin1byLine4) {
+	Loc l1(5,2);
+	ps.reportCandidate(P2, Line4, l1, 1); // inc
+
+	Breadth n = ps.getMovesToWin(P2);
+	EXPECT_EQ(1, n);
+}
+
+TEST_F(PositionStatsFixture, TestMovesToWin1byCaps) {
+	Loc l1(5,2);
+	ps.reportCandidate(P2, Take, l1, 1); // inc
+	ps._captured[P2] = 8;
+
+	Breadth n = ps.getMovesToWin(P2);
+	EXPECT_EQ(1, n);
+}
+
+TEST_F(PositionStatsFixture, TestMovesToWin2byLine3) {
+	Loc l1(5,5);
+	ps.reportCandidate(P2, Threat, l1, 1);
+	ps._captured[P2] = 8;
+
+	Breadth n = ps.getMovesToWin(P2);
+	EXPECT_EQ(2, n);
+}
+
+TEST_F(PositionStatsFixture, TestMovesToWin2byThreat) {
+	Loc l1(5,2);
+	Loc l2(5,5);
+	ps.reportCandidate(P1, Line3, l1, 1);
+	ps.reportCandidate(P2, Line4, l2, 1); // P2 MTW is 1, but that shouldn't affect P1 MTW
+
+	Breadth n = ps.getMovesToWin(P1);
+	EXPECT_EQ(2, n);
+}

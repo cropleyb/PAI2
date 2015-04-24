@@ -291,13 +291,33 @@ Depth 0 - always need at least one move.
 Depth 1..maxDepth-1 - no; the utility func should determine these positions as won or lost, and save some searching(?)
 Depth maxDepth - no; this one
 Depth >maxDepth (i.e. VCT) - no
+-- so just on depth 0
 
-when should we call the util func? max depth and max VCT depth?
-// VCT positions with the initiative? #Their4s==0, #OurLine3s>0, #OurTakes>1 and caps >= 6
-Or VCT posns. where we are not forced? NOT(#Their4s==0 or #TheirTakes>0 and #theirCaps >= 8)
+when should we evaluate the util func? max depth and max VCT depth?
+VCT positions with the initiative? (TMTW > 1) && (OMTW <= TMTW)
+Or VCT posns. where we are not forced? (TMTW > 1)
 Or positions with no move suggestions.
 
 When do we need to do more search?
+VCT positions where we are forced: (OMTW > 1) and (TMTW == 1)
+VCT positions where we can force: (TMTW > 1) and (OMTW == 2)
 
 
 Rename cutoff?
+
+Max VCT depth?
+
+Attacking blocking stones...
+A blocked 4 with a head stone that is threatened makes for a MTW value of 2.
+How to maintain this? How do we need to query it?
+for each blocked four:
+	look up the head stone
+	can it be taken? -> MTW 2
+	can it be threatened? -> MTW 3
+	same for XOXXX, XXOXX patterns? Yeah. Blocked 4 for each.
+	threatenable, takeable PLs in pos stats, for (currently unplayable) locs 
+Is a PriorityLevel appropriate for takeable and threatenable locs?
+PLs are for iterating over candidates, whereas we just need to lookup by loc:
+for each loc:
+	count of takeable directions
+	count of threatenable directions

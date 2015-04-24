@@ -42,6 +42,7 @@ void PositionStats::report(const SpanEntry &spanEntry, const LinePattern &patter
 	for (int i=0; i<patternEntry._numInds; i++)
 	{
 		Loc loc = spanEntry.convertIndToLoc(patternEntry._candInds[i]);
-		level.addOrRemoveCandidate(loc, inc);
+		level.addOrRemoveCandidate(loc, inc); // TODO -> Add or remove loc
 	}
 }
+

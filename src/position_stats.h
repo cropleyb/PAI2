@@ -70,6 +70,27 @@ public:
 		return _wonBy;
 	}
 
+	Breadth getMovesToWin(Colour c)
+	{
+		if (getNumPatterns(c, Line4) > 0) {
+			return 1;
+		}
+		if (_captured[c] >= 8 && getNumPatterns(c, Take) > 0) {
+			return 1;
+		}
+		if (getNumPatterns(c, Line3) > 0) {
+			return 2;
+		}
+		if (_captured[c] >= 8 && getNumPatterns(c, Threat) > 0) {
+			return 2;
+		}
+		if (_captured[c] >= 6 && getNumPatterns(c, Take) > 1) {
+			// Guess that there will be enough for two caps. i.e. no shared stones in the takes
+			return 2;
+		}
+		return 3;
+	}
+
 	void updateCheckerboardStats(Colour c, Loc loc, int inc)
 	{
         if (!c)

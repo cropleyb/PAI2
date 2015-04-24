@@ -770,3 +770,25 @@ TEST_F(PenteGameFixture, RestartTakesUsAllTheWayBack) {
 	Colour centre = g.getOcc(Loc(9,9));
 	EXPECT_EQ(EMPTY, centre);
 }
+
+/////////////////////////////////////////////////////////
+// VCT tests
+/////////////////////////////////////////////////////////
+
+#if 0
+TEST_F(PenteGameFixture, VCT) {
+	g.setRules('s');
+	g.setBoardSize(19);
+	g.setMaxDepth(1);
+	g.makeMove(Loc(9,9), P1);
+	g.makeMove(Loc(8,8), P2);
+	g.makeMove(Loc(6,9), P1);
+	g.makeMove(Loc(10,8), P2);
+
+	const PriorityLevel &p1Line1s = g._posStats.getPriorityLevel(P1, Line1);
+	EXPECT_EQ(0, p1Line1s.getNumCands());
+
+	Colour centre = g.getOcc(Loc(9,9));
+	EXPECT_EQ(EMPTY, centre);
+}
+#endif

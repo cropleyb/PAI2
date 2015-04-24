@@ -50,8 +50,10 @@ public:
 
 	// Game and AI parameters from user code
 	void setMaxDepth(Depth d) { _maxDepth = d; }
+	void setMaxVCTDepth(Depth d) { _maxVCTDepth = d; }
 	Depth getCurrDepth() const { return _currDepth; }
 	Depth getMaxDepth() const { return _maxDepth; }
+	Depth getMaxVCTDepth() const { return _maxVCTDepth; }
 	void setBoardSize(BoardWidth bs);
 	BoardWidth getBoardSize() const { return _boardReps.getBoardSize(); }
 	void setRules(RulesType rules);
@@ -81,6 +83,7 @@ private:
 	CaptureDirs _captureDirs;
 	Depth _currDepth;
 	Depth _maxDepth;
+	Depth _maxVCTDepth;
 	Colour _ourColour;
 	TranspositionTable _transpositionTable;
 
