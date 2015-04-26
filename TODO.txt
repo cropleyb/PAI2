@@ -308,8 +308,24 @@ Rename cutoff?
 Max VCT depth?
 
 Attacking blocking stones...
-A blocked 4 with a head stone that is threatened makes for a MTW value of 2.
+A blocked 4 with a blocking stone that is threatened makes for a MTW value of 2.
 How to maintain this? How do we need to query it?
+- calculating need for VCT search (ie calc MTW)
+- determining candidate moves: threats and takes of MTW structures
+  - PL: per candidate (with direction) - a list of occupied Locs for which taking/threatening would be beneficial for the other side.
+- utility calc?
+So it will need to be accessible through pos stats.
+
+Which structures/stones do we need to track?
+- Take end stone (def)
+- Blocked Four blockers (att)
+- Fours (def)
+- Threes (def)
+- Blocked Three blockers? (att)
+- Threat and Takes - the occupied Locs that can be threatened or taken.
+
+How do we maintain MTW incrementally?
+
 for each blocked four:
 	look up the head stone
 	can it be taken? -> MTW 2
@@ -321,3 +337,31 @@ PLs are for iterating over candidates, whereas we just need to lookup by loc:
 for each loc:
 	count of takeable directions
 	count of threatenable directions
+?
+
+Brute force
+for each 4: for each of the locs in the line, we can look up the takeable and threatenables
+Maintain PL for 4s, blocked4s, takes (threats and takes for each)
+Whenever one of these structures is made threatenable or takeable,
+we need to adjust the corresponding PL.
+
+Structure
+- pattern
+- list of relevant locs for that structure type (pattern)
+  - e.g. for Line4, all the locs
+  - for Blocked, the loc that is blocked
+  - for take and threat, the locs that are vulnerable
+
+StructureTable
+- collection of structures
+- free list (array of structure ids, +head ind)
+
+StructureMap
+- for each Loc, a list of indices into the structure table
+
+Each PriorityLevel entry also needs a structure id.
+
+
+Fukami
+------
+

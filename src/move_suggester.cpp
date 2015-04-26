@@ -111,7 +111,7 @@ bool MoveSuggester::getPriorityLevels(Colour ourColour)
 		// Block their takes, or capture one of the ends of an
 		// attacker, or lose. Include blocking one of their fours or we
 		// may have no moves
-		_toSearchLevels[0] = &ourTakes;
+		_toSearchLevels[0] = &ourTakes; // TODO: only those that are attacking our pairs
 		_toSearchLevels[1] = &theirTakes;
 		_emergencySearchLevel = &theirFours; // TODO: not in VCT?
 		_numSearchLevels = 2;
@@ -124,8 +124,10 @@ bool MoveSuggester::getPriorityLevels(Colour ourColour)
 			if (ourTakes.getNumCands() > 0) {
 				// We will lose unless we capture
 				MSD(cout << "P" << (int)ourColour << " lose by 5 in a row unless we take" << endl;)
+				// TODO: only those that take at least one stone from each of their 4s
 				_toSearchLevels[0] = &ourTakes;
-				_emergencySearchLevel = &theirFours; // This loses, but we need a move // TODO: not in VCT
+
+				_emergencySearchLevel = &theirFours; // This loses, but we need a move
 				_numSearchLevels = 1;
 				onePoss = false;
 				return onePoss;
@@ -139,13 +141,13 @@ bool MoveSuggester::getPriorityLevels(Colour ourColour)
 			}
 		}
 
-		// else: They have one 4 attack or 2 or more winning threat attacks.
-		// We will lose unless we block or capture 
-		MSD(cout << "P" << (int)ourColour << " lose by 5 in a row unless we block or capture." << endl;)
+		// else: They have one 4 attack
+		// We will lose unless we block or capture part of it.
+		MSD(cout << "P" << (int)ourColour << " lose by 5 in a row unless we block or capture part of it." << endl;)
 		_toSearchLevels[0] = &theirFours;
-		_toSearchLevels[1] = &ourTakes;
+		_toSearchLevels[1] = &ourTakes; // TODO: only inc intersecting caps.
 		_numSearchLevels = 2;
-		// Provide a threat blocking alternative so we always have at least
+		// Provide a take blocking alternative so we always have at least
 		// one move.
 		_emergencySearchLevel = &theirTakes;
 		onePoss = false;
