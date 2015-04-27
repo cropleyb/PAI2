@@ -70,7 +70,7 @@ public:
 	Ind getCount(Loc l) const;
 
 	// Maintain our complex data structure incrementally for changes to a loc.
-	void addOrRemoveCandidate(Loc l, int inc=1);
+	void addOrRemoveCandidate(Loc l, int inc);
 
 	void setLevelName(string val) { _levelName = val; }
 	string getLevelName() const { return _levelName; }
