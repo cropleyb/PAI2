@@ -90,6 +90,7 @@ private:
 	bool _allowCaptures;
 	bool _forceFirstMoveInCentre;
 	bool _restrictSecondP1Move;
+	bool _vctEnabled;
 
 	// These are really temporary variables, for using the
 	// Transposition Table, but I don't want to put them in the AB code.

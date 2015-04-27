@@ -15,7 +15,8 @@ PenteGame::PenteGame()
 	  _utilCalc(_posStats),
 	  _currDepth(0),
 	  _maxDepth(1),
-	  _ourColour(EMPTY)
+	  _ourColour(EMPTY),
+      _vctEnabled(false)
 {
 	buildLineLookupTable();
 	buildSpanTable(19);
@@ -246,6 +247,8 @@ bool PenteGame::isVCT() const
 	
 bool PenteGame::needUtility()
 {
+	if (not _currDepth) return false;
+
 	// Look up the TT for this position first.
 	if (_currDepth > 2) // TODO: VCT must be put in the TT too.
 	{
@@ -257,8 +260,12 @@ bool PenteGame::needUtility()
 	// When do we need to evaluate the util func? max depth and max VCT depth?
 	// Or VCT posns. where we are not forced? NOT(#Their4s==0 or #TheirTakes>0 and #theirCaps >= 8)
 	// Or positions with no move suggestions.
+	if (_currDepth < _maxDepth-1) return false;
 
-	return _currDepth && (_currDepth >= _maxDepth-1);
+	if (not _vctEnabled) return _currDepth >= _maxDepth - 1;
+
+	// return _currDepth && (_currDepth >= _maxDepth-1);
+	assert(0);
 }
 
 bool PenteGame::needSearch()
@@ -267,7 +274,7 @@ bool PenteGame::needSearch()
 	if (_posStats.getWonBy()) return false;
 
 	if (_isInTT) {
-		// Found in TT, so got TT "util val", don't need to search?
+		// Found in TT, so we already looked up TT "util val" so don't need to search?
 		_isInTT = false;
 		return false;
 	}
