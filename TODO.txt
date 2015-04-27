@@ -359,7 +359,15 @@ StructureTable
 StructureMap
 - for each Loc, a list of indices into the structure table
 
-Each PriorityLevel entry also needs a structure id.
+// Each PriorityLevel entry also needs a structure id.
+
+Move suggester based on MTW rather than priority levels? Or filter the PLs?
+
+Defense:
+Collect a list of locs with their stones that we need to take one of for each of their strongest attacks:
+e.g. Their Line4 - takes must take one of the Line4 stones
+e.g. Their Takes (if the threaten a win by caps) - we must take their stone at the end.
+perhaps a list of most threatening structures for each player?
 
 
 Fukami
