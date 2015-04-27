@@ -20,7 +20,7 @@ typedef unsigned char CaptureDirs;
 typedef unsigned char PattCount;
 typedef double UtilityValue;
 typedef char RulesType;
-typedef char StructureId;
+typedef short StId;
 
 const Colour EMPTY = 0;
 const Colour P1 = 1;
