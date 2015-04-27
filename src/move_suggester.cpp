@@ -113,7 +113,7 @@ bool MoveSuggester::getPriorityLevels(Colour ourColour)
 		// may have no moves
 		_toSearchLevels[0] = &ourTakes; // TODO: only those that are attacking our pairs
 		_toSearchLevels[1] = &theirTakes;
-		_emergencySearchLevel = &theirFours; // TODO: not in VCT?
+		_emergencySearchLevel = &theirFours;
 		_numSearchLevels = 2;
 		onePoss = false;
 		return onePoss;
