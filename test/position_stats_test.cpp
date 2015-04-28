@@ -100,8 +100,7 @@ TEST_F(PositionStatsFixture, AddAndRemoveP2Captured) {
 }
 
 TEST_F(PositionStatsFixture, AddP1Take) {
-	Loc l1(5,2);
-	ps.reportCandidate(P1, Take, l1, 1);
+	ps.reportCandidate(P1, Take, Loc(5,2), 1);
 
 	const PriorityLevel &pl1 = ps.getPriorityLevel(P1, Take);
 	EXPECT_EQ(1, pl1.getNumCands());
@@ -110,8 +109,7 @@ TEST_F(PositionStatsFixture, AddP1Take) {
 }
 
 TEST_F(PositionStatsFixture, AddP2Take) {
-	Loc l1(5,2);
-	ps.reportCandidate(P2, Take, l1, 1);
+	ps.reportCandidate(P2, Take, Loc(5,2), 1);
 
 	const PriorityLevel &pl2 = ps.getPriorityLevel(P2, Take);
 	EXPECT_EQ(1, pl2.getNumCands());
@@ -120,8 +118,7 @@ TEST_F(PositionStatsFixture, AddP2Take) {
 }
 
 TEST_F(PositionStatsFixture, AddP1Threat) {
-	Loc l1(5,2);
-	ps.reportCandidate(P1, Threat, l1, 1);
+	ps.reportCandidate(P1, Threat, Loc(5,2), 1);
 
 	const PriorityLevel &pl1 = ps.getPriorityLevel(P1, Threat);
 	EXPECT_EQ(1, pl1.getNumCands());
@@ -130,8 +127,7 @@ TEST_F(PositionStatsFixture, AddP1Threat) {
 }
 
 TEST_F(PositionStatsFixture, AddP2Threat) {
-	Loc l1(5,2);
-	ps.reportCandidate(P2, Threat, l1, 1);
+	ps.reportCandidate(P2, Threat, Loc(5,2), 1);
 
 	const PriorityLevel &pl2 = ps.getPriorityLevel(P2, Threat);
 	EXPECT_EQ(1, pl2.getNumCands());
@@ -140,8 +136,7 @@ TEST_F(PositionStatsFixture, AddP2Threat) {
 }
 
 TEST_F(PositionStatsFixture, TestPatternCount) {
-	Loc l1(5,2);
-	ps.reportCandidate(P2, Threat, l1, 1);
+	ps.reportCandidate(P2, Threat, Loc(5,2), 1);
 
 	PattCount c = ps.getNumPatterns(P2, Threat);
 	EXPECT_EQ(1, c);
@@ -160,16 +155,14 @@ TEST_F(PositionStatsFixture, TestBlockedCount) {
 /////////////////////////////////////////////////////
 
 TEST_F(PositionStatsFixture, TestMovesToWin1byLine4) {
-	Loc l1(5,2);
-	ps.reportCandidate(P2, Line4, l1, 1); // inc
+	ps.reportCandidate(P2, Line4, Loc(5,2), 1); // inc
 
 	Breadth n = ps.getMovesToWin(P2);
 	EXPECT_EQ(1, n);
 }
 
 TEST_F(PositionStatsFixture, TestMovesToWin1byCaps) {
-	Loc l1(5,2);
-	ps.reportCandidate(P2, Take, l1, 1); // inc
+	ps.reportCandidate(P2, Take, Loc(5,2), 1); // inc
 	ps._captured[P2] = 8;
 
 	Breadth n = ps.getMovesToWin(P2);
@@ -177,8 +170,7 @@ TEST_F(PositionStatsFixture, TestMovesToWin1byCaps) {
 }
 
 TEST_F(PositionStatsFixture, TestMovesToWin2byLine3) {
-	Loc l1(5,5);
-	ps.reportCandidate(P2, Threat, l1, 1);
+	ps.reportCandidate(P2, Threat, Loc(2,3), 1);
 	ps._captured[P2] = 8;
 
 	Breadth n = ps.getMovesToWin(P2);
@@ -186,10 +178,8 @@ TEST_F(PositionStatsFixture, TestMovesToWin2byLine3) {
 }
 
 TEST_F(PositionStatsFixture, TestMovesToWin2byThreat) {
-	Loc l1(5,2);
-	Loc l2(5,5);
-	ps.reportCandidate(P1, Line3, l1, 1);
-	ps.reportCandidate(P2, Line4, l2, 1); // P2 MTW is 1, but that shouldn't affect P1 MTW
+	ps.reportCandidate(P1, Line3, Loc(5,2), 1);
+	ps.reportCandidate(P2, Line4, Loc(5,3), 1); // P2 MTW is 1, but that shouldn't affect P1 MTW
 
 	Breadth n = ps.getMovesToWin(P1);
 	EXPECT_EQ(2, n);
