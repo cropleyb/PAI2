@@ -88,6 +88,8 @@ public:
 			// Guess that there will be enough for two caps. i.e. no shared stones in the takes
 			return 2;
 		}
+		// TODO!: c has a blocked four and a take of the blocker -> 2
+
 		return 3;
 	}
 
@@ -115,6 +117,8 @@ public:
 	void setCanWinByCaptures(bool c) { _canWinByCaptures = c; }
 	bool getCanWinByCaptures() const { return _canWinByCaptures; }
 
+	bool isForced(Colour currentPlayer) { return getMovesToWin(currentPlayer) > getMovesToWin(otherPlayer(currentPlayer)); }
+
 private:
 	void updateWonBy(Colour c)
 	{
@@ -134,6 +138,7 @@ private:
 	UtilityValue _checkerboardStats[3][2];
 	Colour _wonBy;
 	bool _canWinByCaptures;
+	// StId _structureLookup[MAX_PATTERN_TYPE][MAX_LOCS];
 };
 
 #endif

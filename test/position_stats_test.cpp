@@ -184,3 +184,65 @@ TEST_F(PositionStatsFixture, TestMovesToWin2byThreat) {
 	Breadth n = ps.getMovesToWin(P1);
 	EXPECT_EQ(2, n);
 }
+
+//////////////////////////////////////////////////////////////////////
+// isForced tests
+//////////////////////////////////////////////////////////////////////
+
+TEST_F(PositionStatsFixture, isForcedByTheir4) {
+	ps.reportCandidate(P1, Line3, Loc(5,2), 1);
+	ps.reportCandidate(P2, Line4, Loc(5,3), 1);
+
+	bool forced = ps.isForced(P1);
+	EXPECT_EQ(true, forced);
+}
+
+TEST_F(PositionStatsFixture, isForcedByTheir3) {
+	ps.reportCandidate(P1, Line3, Loc(5,2), 1);
+	ps.reportCandidate(P2, Line3, Loc(5,3), 1);
+
+	bool forced = ps.isForced(P1);
+	EXPECT_EQ(false, forced);
+}
+
+TEST_F(PositionStatsFixture, isForcedByTheirTake) {
+	ps._captured[P2] = 8;
+	ps.reportCandidate(P1, Line3, Loc(5,2), 1);
+	ps.reportCandidate(P2, Take, Loc(5,3), 1);
+
+	bool forced = ps.isForced(P1);
+	EXPECT_EQ(true, forced);
+}
+
+TEST_F(PositionStatsFixture, isNotForcedByTheirTake) {
+	ps._captured[P2] = 6;
+	ps.reportCandidate(P1, Line3, Loc(5,2), 1);
+	ps.reportCandidate(P2, Take, Loc(5,3), 1);
+
+	bool forced = ps.isForced(P1);
+	EXPECT_EQ(false, forced);
+}
+
+TEST_F(PositionStatsFixture, canForceByOurThreat) {
+	ps._captured[P1] = 8;
+	ps.reportCandidate(P1, Threat, Loc(5,3), 1);
+	ps.reportCandidate(P2, Line2, Loc(5,2), 1);
+
+	bool forced = ps.isForced(P1);
+	EXPECT_EQ(false, forced);
+	bool theyreForced = ps.isForced(P2);
+	EXPECT_EQ(true, theyreForced);
+}
+
+TEST_F(PositionStatsFixture, canForceByThreeTakes) {
+	ps._captured[P1] = 6;
+	ps.reportCandidate(P1, Take, Loc(5,3), 1);
+	ps.reportCandidate(P1, Take, Loc(7,5), 1);
+	ps.reportCandidate(P1, Take, Loc(1,5), 1);
+	ps.reportCandidate(P2, Line2, Loc(5,2), 1);
+
+	bool forced = ps.isForced(P1);
+	EXPECT_EQ(false, forced);
+	bool theyreForced = ps.isForced(P2);
+	EXPECT_EQ(true, theyreForced);
+}
