@@ -247,6 +247,8 @@ bool PenteGame::isVCT() const
 	
 bool PenteGame::needUtility()
 {
+	_weAreForced = false;
+
 	if (not _currDepth) return false;
 
 	// Look up the TT for this position first.
@@ -264,8 +266,8 @@ bool PenteGame::needUtility()
 
 	if (not _vctEnabled) return _currDepth >= _maxDepth - 1;
 
-	// return _currDepth && (_currDepth >= _maxDepth-1);
-	assert(0);
+	_weAreForced = _posStats.isForced(_ourColour);
+	return not _weAreForced;
 }
 
 bool PenteGame::needSearch()
@@ -279,7 +281,12 @@ bool PenteGame::needSearch()
 		return false;
 	}
 
-	return _currDepth < _maxDepth;
+	if (_currDepth < _maxDepth) return true;
+
+	if (not _vctEnabled) return false;
+
+	bool theyAreForced = _posStats.isForced(otherPlayer(_ourColour));
+	return _weAreForced or theyAreForced;
 }
 
 UtilityValue PenteGame::getUtility()

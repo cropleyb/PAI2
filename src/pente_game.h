@@ -96,6 +96,7 @@ private:
 	// Transposition Table, but I don't want to put them in the AB code.
 	mutable bool _isInTT;
    	mutable UtilityValue _ttVal;
+	bool _weAreForced;
 };
 
 #endif
