@@ -14,9 +14,9 @@ PenteGame::PenteGame()
 	  _boardReps(19,_posStats),
 	  _utilCalc(_posStats),
 	  _currDepth(0),
-	  _maxDepth(1),
-	  _ourColour(EMPTY),
-      _vctEnabled(false)
+	  _normalDepth(1),
+	  _vctDepth(0),
+	  _ourColour(EMPTY)
 {
 	buildLineLookupTable();
 	buildSpanTable(19);
@@ -235,16 +235,6 @@ PenteGame::getNextMove()
 	return move;
 }
 
-#if 0
-// TODO
-bool PenteGame::isVCT() const
-{
-	if (not _vctEnabled) return false;
-	return true;
-	//if (_posStats.()) return true;
-}
-#endif
-	
 bool PenteGame::needUtility()
 {
 	_weAreForced = false;
@@ -262,9 +252,9 @@ bool PenteGame::needUtility()
 	// When do we need to evaluate the util func? max depth and max VCT depth?
 	// Or VCT posns. where we are not forced? NOT(#Their4s==0 or #TheirTakes>0 and #theirCaps >= 8)
 	// Or positions with no move suggestions.
-	if (_currDepth < _maxDepth-1) return false;
+	if (_currDepth < _normalDepth-1) return false;
 
-	if (not _vctEnabled) return _currDepth >= _maxDepth - 1;
+	if (not _vctDepth) return _currDepth >= _normalDepth - 1;
 
 	_weAreForced = _posStats.isForced(_ourColour);
 	return not _weAreForced;
@@ -281,9 +271,9 @@ bool PenteGame::needSearch()
 		return false;
 	}
 
-	if (_currDepth < _maxDepth) return true;
+	if (_currDepth < _normalDepth) return true;
 
-	if (not _vctEnabled) return false;
+	if (_currDepth >= _vctDepth + _normalDepth) return false;
 
 	bool theyAreForced = _posStats.isForced(otherPlayer(_ourColour));
 	return _weAreForced or theyAreForced;
@@ -313,7 +303,7 @@ UtilityValue PenteGame::getUtility()
 
 void PenteGame::storeInTransTable(UtilityValue uv)
 {
-	if (_currDepth > 2 && _currDepth < _maxDepth - 1)
+	if (_currDepth > 2 && _currDepth < _normalDepth - 1)
 	//if (_currDepth > 2) // TODO: Store VCT too
 	{
 		_transpositionTable.savePos(*this, uv);

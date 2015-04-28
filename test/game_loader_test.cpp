@@ -38,7 +38,7 @@ TEST_F(GameLoaderFixture, test_find_one_move) {
 "16. (6, 2)\n"
 "17. (5, 7)\n";
 	const char *move = getMoveFromStrWithGame(gameStr.c_str(), &_game);
-	EXPECT_EQ(4, _game.getMaxDepth());
+	EXPECT_EQ(4, _game.getNormalDepth());
 	EXPECT_EQ(19, _game.getBoardSize());
 	EXPECT_EQ(string("6,7\n"), move);
 }
@@ -52,7 +52,7 @@ TEST_F(GameLoaderFixture, test_small_and_quick) {
 "2. (5, 5)\n"
 "3. (4, 6)\n";
 	const char *move = getMoveFromStrWithGame(gameStr.c_str(), &_game);
-	EXPECT_EQ(1, _game.getMaxDepth());
+	EXPECT_EQ(1, _game.getNormalDepth());
 	EXPECT_EQ(9, _game.getBoardSize());
 }
 
@@ -62,7 +62,7 @@ TEST_F(GameLoaderFixture, test_make_first_move) {
 "boardsize:9\n"
 "rules:standard\n";
 	const char *move = getMoveFromStrWithGame(gameStr.c_str(), &_game);
-	EXPECT_EQ(1, _game.getMaxDepth());
+	EXPECT_EQ(1, _game.getNormalDepth());
 	EXPECT_EQ(9, _game.getBoardSize());
 	EXPECT_EQ(string("4,4\n"), move);
 }

@@ -49,11 +49,11 @@ public:
 	CapCount getCaptured(Colour p) const { return _posStats.getCaptured(p); }
 
 	// Game and AI parameters from user code
-	void setMaxDepth(Depth d) { _maxDepth = d; }
-	void setMaxVCTDepth(Depth d) { _maxVCTDepth = d; }
+	void setNormalDepth(Depth d) { _normalDepth = d; }
+	void setVCTDepth(Depth d) { _vctDepth = d; }
 	Depth getCurrDepth() const { return _currDepth; }
-	Depth getMaxDepth() const { return _maxDepth; }
-	Depth getMaxVCTDepth() const { return _maxVCTDepth; }
+	Depth getNormalDepth() const { return _normalDepth; }
+	Depth getVCTDepth() const { return _vctDepth; }
 	void setBoardSize(BoardWidth bs);
 	BoardWidth getBoardSize() const { return _boardReps.getBoardSize(); }
 	void setRules(RulesType rules);
@@ -82,15 +82,14 @@ private:
     MoveSuggester _moveSuggester;
 	CaptureDirs _captureDirs;
 	Depth _currDepth;
-	Depth _maxDepth;
-	Depth _maxVCTDepth;
+	Depth _normalDepth;
+	Depth _vctDepth;
 	Colour _ourColour;
 	TranspositionTable _transpositionTable;
 
 	bool _allowCaptures;
 	bool _forceFirstMoveInCentre;
 	bool _restrictSecondP1Move;
-	bool _vctEnabled;
 
 	// These are really temporary variables, for using the
 	// Transposition Table, but I don't want to put them in the AB code.

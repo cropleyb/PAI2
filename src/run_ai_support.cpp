@@ -43,7 +43,7 @@ GameResult RunAIGame::play(Depth depth, BoardWidth size, RulesType rules, bool c
 		PenteGame *p = _players[i];
 		p->restartGame();
 		p->setColour(i+1);
-		p->setMaxDepth(depth);
+		p->setNormalDepth(depth);
 		p->setBoardSize(size);
 		p->setRules(rules);
 	}
