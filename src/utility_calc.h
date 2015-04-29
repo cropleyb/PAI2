@@ -6,8 +6,6 @@
 
 #include <array>
 
-#define BIG_NUM 1e+18
-
 typedef double UtilityValue;
 
 template <class PS>
