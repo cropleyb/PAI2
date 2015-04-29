@@ -1,11 +1,18 @@
 #include "alpha_beta.h"
 #include "bdebug.h"
 
-#define INF 1e40
-#define NEGINF -1e40
+#define INF BIG_NUM
+#define NEGINF -BIG_NUM
 
+// There is also DEBUG_SEARCH, which is across a few files.
+//#define ABDEBUG
+#ifdef ABDEBUG
+#define ABD(X) X
 #include <iostream>
 using namespace std;
+#else
+#define ABD(X)
+#endif
 
 Loc AlphaBeta::getBestMove()
 {
@@ -33,14 +40,16 @@ UtilityValue AlphaBeta::maxValue(UtilityValue alpha, UtilityValue beta, Depth de
 
     if (_bridge.needUtility())
     {
+		ABD(cout << "maxValue needs utility" << endl;)
         bestVal = _bridge.getUtility();
     }
 	if (!_bridge.needSearch()) {
+		ABD(cout << "maxValue doesn't need search at depth: " << (int)depth << endl;)
 		return bestVal;
 	}
 
     UtilityValue currVal;
-	Loc bestMove;
+	Loc bestMove = Loc::INVALID;
 
     while (true)
     {
@@ -49,6 +58,11 @@ UtilityValue AlphaBeta::maxValue(UtilityValue alpha, UtilityValue beta, Depth de
 
         // No more moves at this level
         if (!currMove.isValid()) {
+#if 0
+			// TODO?: If no moves, calc util
+			if (bestVal <= 200*NEGINF);
+				bestVal = _bridge.getUtility();
+#endif
             break;
         }
 
@@ -68,9 +82,11 @@ UtilityValue AlphaBeta::maxValue(UtilityValue alpha, UtilityValue beta, Depth de
 			}
         }
         if (val >= beta) {
+			ABD(cout << "val: " << val << " >= beta: " << beta << endl;)
             break;
         }
         if (val > INF/100.0) {
+			ABD(cout << "game won" << endl;)
             // Game won, can't get a better value
             break;
         }
@@ -82,10 +98,11 @@ UtilityValue AlphaBeta::maxValue(UtilityValue alpha, UtilityValue beta, Depth de
 	_bridge.storeInTransTable(bestVal);
 #endif
 	if (depth == 0) {
+        assert(bestMove.isValid());
 		_bestTopLevelMove = bestMove;
 	}
 #ifdef DEBUG_SEARCH
-	cout << " [Best(max):" << bestVal << "] ";
+	ABD(cout << " [Best(max):" << bestVal << "] ";)
 #endif
     return bestVal;
 }
@@ -96,9 +113,11 @@ UtilityValue AlphaBeta::minValue(UtilityValue alpha, UtilityValue beta, Depth de
 
     if (_bridge.needUtility())
     {
+		ABD(cout << "minValue needs utility" << endl;)
         bestVal = _bridge.getUtility();
     }
 	if (!_bridge.needSearch()) {
+		ABD(cout << "minValue doesn't need search" << endl;)
 		return bestVal;
 	}
 
@@ -125,10 +144,12 @@ UtilityValue AlphaBeta::minValue(UtilityValue alpha, UtilityValue beta, Depth de
             bestVal = val;
         }
         if (val <= alpha) {
+			ABD(cout << "val: " << val << " <= alpha: " << alpha << endl;)
             break;
         }
         if (val < NEGINF/100.0) {
             // Game lost, can't get a better value
+			ABD(cout << "game lost" << endl;)
             break;
         }
         if (beta < val) {

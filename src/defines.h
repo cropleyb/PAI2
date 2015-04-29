@@ -7,6 +7,8 @@ using std::vector;
 
 typedef uint64_t U64;
 
+#define BIG_NUM 1e+31
+
 typedef unsigned char Length;
 typedef signed char Step;
 typedef unsigned short Mask;

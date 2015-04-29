@@ -91,8 +91,8 @@ private:
 	bool _forceFirstMoveInCentre;
 	bool _restrictSecondP1Move;
 
-	// These are really temporary variables, for using the
-	// Transposition Table, but I don't want to put them in the AB code.
+	// These are really temporary variables
+	// but I don't want to put them in the AB code.
 	mutable bool _isInTT;
    	mutable UtilityValue _ttVal;
 	bool _weAreForced;

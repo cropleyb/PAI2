@@ -249,6 +249,11 @@ bool PenteGame::needUtility()
 		if (_isInTT) return true;
 	}
 	
+	if (_posStats.getWonBy()) {
+		PGD(cout << "Game Already Over, needUtility" << endl;)
+		return true;
+	}
+
 	// When do we need to evaluate the util func? max depth and max VCT depth?
 	// Or VCT posns. where we are not forced? NOT(#Their4s==0 or #TheirTakes>0 and #theirCaps >= 8)
 	// Or positions with no move suggestions.
@@ -263,10 +268,14 @@ bool PenteGame::needUtility()
 bool PenteGame::needSearch()
 {
 //When do we need to do more search?
-	if (_posStats.getWonBy()) return false;
+	if (_posStats.getWonBy()) {
+		PGD(cout << "Game Already Over, don't needSearch" << endl;)
+		return false;
+	}
 
 	if (_isInTT) {
 		// Found in TT, so we already looked up TT "util val" so don't need to search?
+		PGD(cout << "Was in TT" << endl;)
 		_isInTT = false;
 		return false;
 	}
