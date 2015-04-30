@@ -11,3 +11,4 @@ t.pl
 callgrind.out.*
 cg
 tmp
+tags
