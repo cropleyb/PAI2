@@ -26,9 +26,10 @@ public:
         //_blockedFourBase = 500;
         _lengthFactor = 35;
         _judgement = 100;
-        _checkerboardValue = 35;
+        //_checkerboardValue = 35;
+        _checkerboardValue = 600;
         //_stripeValue = 35;
-        _stripeValue = 0;
+        _stripeValue = 800;
         //_checkerboardValue = 500;
 	}
 
