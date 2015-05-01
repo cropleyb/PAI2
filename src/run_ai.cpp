@@ -19,7 +19,8 @@ void runAI()
     //defender._moveSuggester._shallowCutoff = 2;
     //contender._utilCalc._blockedFourBase = 700;
     //contender._utilCalc._blockedFourBase = 200;
-    //contender._utilCalc._checkerboardValue = 800;
+    contender._utilCalc._checkerboardValue = 600;
+    //contender._utilCalc._stripeValue = 800;
     contender._utilCalc._stripeValue = 800;
     //contender._utilCalc._lengthFactor = 45;
     //contender._utilCalc._captureScoreBase = 200;
@@ -29,10 +30,11 @@ void runAI()
     //contender._moveSuggester._maxMovesDeep = 5;
     //cout << "Contender util calc modified: " << &(contender._utilCalc) << endl;
     match.setSilent(true);
+    //match.setSilent(false);
     match.setShowReport(true);
-	match.setDepthRange(1, 6);
+	match.setDepthRange(1, 7);
 	match.setRulesTypes("st");
-	match.setSizes(19);
+	match.setSizes(13,19);
 	match.play();
 }
 

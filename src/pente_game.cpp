@@ -7,6 +7,16 @@
 
 //#define DEBUG_SEARCH
 
+//#define PGDEBUG
+#ifdef PGDEBUG
+#define PGD(X) X
+#include <iostream>
+using namespace std;
+#else
+#define PGD(X)
+#endif
+
+
 PenteGame *_penteGame_ = 0;
 
 PenteGame::PenteGame()
@@ -30,14 +40,6 @@ PenteGame::~PenteGame() {
 		_penteGame_ = 0;
 	}
 }
-
-#ifdef PGDEBUG
-#define PGD(X) X
-#include <iostream>
-using namespace std;
-#else
-#define PGD(X)
-#endif
 
 bool PenteGame::isLegalMove(Loc l) const
 {
@@ -247,6 +249,8 @@ bool PenteGame::needUtility()
 		_isInTT = _transpositionTable.lookup(*this, _ttVal);
 		// evaluating the utility function also uses the looked up _ttVal
 		if (_isInTT) return true;
+	} else {
+		_isInTT = false;
 	}
 	
 	if (_posStats.getWonBy()) {

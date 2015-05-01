@@ -73,7 +73,7 @@ public:
 	friend class TranspositionTable;
 private:
 	void setAndRecordCaptures(Loc l, Colour p);
-	virtual void clearTT() { _transpositionTable.clear(); }
+	virtual void clearTT() { _transpositionTable.clear(); _isInTT = false; }
 
 	BoardReps _boardReps;
 	PositionStats _posStats;
