@@ -32,17 +32,36 @@ void PositionStats::reportCandidates(Colour colour, PatternType pt, const vector
 void PositionStats::report(const SpanEntry &spanEntry, const LinePattern &patternEntry, int inc)
 {
 	Colour c = patternEntry._colour;
-	PatternType levelNum = patternEntry._patternType;
-	//assert(levelNum < MAX_PATTERN_TYPE);
+	PatternType pt = patternEntry._patternType;
+	//assert(pt < MAX_PATTERN_TYPE);
 
-	_patternCounts[c][levelNum] += inc;
-	if (levelNum == Line5) updateWonBy(c);
+#if 0
+	StId stId = -1;
 
-	PriorityLevel &level = _levels[c][levelNum];
+    if (pt == Line4 or pt == Blocked or pt == Line3)
+    {
+        if (inc > 0) {
+			Structure &str = _structureMap.add(pt);
+			str._pattern = pt;
+			stId = str._id;
+			_structureLookup[pt][spanEntry._baseLoc] = stId;
+		} else {
+			// TODO _structureLookup needs to include direction as well
+	// spanEntry._direction; // Direction that this strip goes - up to MAX_DIR (i.e. 4)
+			stId = _structureLookup[pt][spanEntry._baseLoc];
+			_structureMap.remove(stId);
+		}
+	}
+#endif
+
+	_patternCounts[c][pt] += inc;
+	if (pt == Line5) updateWonBy(c);
+
+	PriorityLevel &level = _levels[c][pt];
 	for (int i=0; i<patternEntry._numInds; i++)
 	{
 		Loc loc = spanEntry.convertIndToLoc(patternEntry._candInds[i]);
-		level.addOrRemoveCandidate(loc, inc); // TODO -> Add or remove loc
+		level.addOrRemoveCandidate(loc, inc);
 	}
 }
 

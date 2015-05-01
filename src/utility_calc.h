@@ -27,6 +27,8 @@ public:
         _lengthFactor = 35;
         _judgement = 100;
         _checkerboardValue = 35;
+        //_stripeValue = 35;
+        _stripeValue = 0;
         //_checkerboardValue = 500;
 	}
 
@@ -55,6 +57,7 @@ private:
 	int _lengthFactor;
 	int _judgement;
 	int _checkerboardValue;
+	int _stripeValue;
 };
 
 template <class PS>
@@ -170,6 +173,10 @@ UtilityValue UtilityCalc<PS>::utilityScore(Colour evalColour, Colour /*turnColou
 
 	// Give an advantage to having more pieces on one colour of squares
 	tc = _posStats.getCheckerboardContrib(evalColour) * _checkerboardValue;
+	score += tc;
+
+	// Give an advantage to having more pieces on one colour of squares
+	tc = _posStats.getStripeContrib(evalColour) * _stripeValue;
 	score += tc;
 
 	return score;

@@ -15,10 +15,12 @@ void runAI()
 	PenteGame contender;
 	PenteGame defender;
 	Match match(contender, defender);
+	//contender.setVCTDepth(1);
     //defender._moveSuggester._shallowCutoff = 2;
     //contender._utilCalc._blockedFourBase = 700;
     //contender._utilCalc._blockedFourBase = 200;
     //contender._utilCalc._checkerboardValue = 800;
+    contender._utilCalc._stripeValue = 800;
     //contender._utilCalc._lengthFactor = 45;
     //contender._utilCalc._captureScoreBase = 200;
     //contender._moveSuggester._shallowCutoff = 3;

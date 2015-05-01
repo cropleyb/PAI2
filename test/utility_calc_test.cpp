@@ -43,6 +43,12 @@ public:
 		return 0;
 	}
 
+	UtilityValue getStripeContrib(Colour /*c*/) const
+	{
+		// TODO: test this...
+		return 0;
+	}
+
 	bool getCanWinByCaptures() const { return true; }
 	
 	CapCount _captured[3];

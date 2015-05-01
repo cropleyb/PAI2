@@ -94,7 +94,7 @@ void PenteGame::makeMove(Loc l, Colour p)
 #ifdef DEBUG
 	assert(ok);
 #endif
-	_posStats.updateCheckerboardStats(p, l, 1);
+	_posStats.updateStrategicStats(p, l, 1);
 	_moveHist.saveMove(l, p, _captureDirs);
 }
 
@@ -137,8 +137,8 @@ void PenteGame::reportCapture(const SpanEntry &span, bool left, Colour p)
 	
 	_boardReps.setOcc(capLoc1, EMPTY);
 	_boardReps.setOcc(capLoc2, EMPTY);
-	_posStats.updateCheckerboardStats(otherPlayer(p), capLoc1, -1);
-	_posStats.updateCheckerboardStats(otherPlayer(p), capLoc2, -1);
+	_posStats.updateStrategicStats(otherPlayer(p), capLoc1, -1);
+	_posStats.updateStrategicStats(otherPlayer(p), capLoc2, -1);
 
 	int fullCircleDir = span._direction;
 	if (left)
@@ -163,7 +163,7 @@ void PenteGame::undoLastMove()
 	_boardReps.setOcc(l, EMPTY);
 	Colour movedPlayer = 1 + (mn) % 2;
 
-	_posStats.updateCheckerboardStats(movedPlayer, l, -1);
+	_posStats.updateStrategicStats(movedPlayer, l, -1);
 
 	if (cd)
 	{
@@ -197,8 +197,8 @@ void PenteGame::undoLastMove()
 				
 				_boardReps.setOcc(capLoc1, capturedPlayer);
 				_boardReps.setOcc(capLoc2, capturedPlayer);
-				_posStats.updateCheckerboardStats(capturedPlayer, capLoc1, 1);
-				_posStats.updateCheckerboardStats(capturedPlayer, capLoc2, 1);
+				_posStats.updateStrategicStats(capturedPlayer, capLoc1, 1);
+				_posStats.updateStrategicStats(capturedPlayer, capLoc2, 1);
 			}
 		}
 	}

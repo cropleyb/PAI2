@@ -30,8 +30,14 @@ public:
 				_levels[c][p].reset();
 				_levels[c][p].setLevelName(string("P")+to_string(c)+"-"+to_string(p));
 			}
-			_checkerboardStats[c][0] = 0;
-			_checkerboardStats[c][1] = 0;
+			for (int q=0; q<2; q++)
+			{
+				_checkerboardStats[c][q] = 0;
+				for (int r=0; r<2; r++)
+				{
+					_stripeStats[c][q][r] = 0;
+				}
+			}
 		}
 		_wonBy = EMPTY;
 	}
@@ -93,20 +99,45 @@ public:
 		return 3;
 	}
 
-	void updateCheckerboardStats(Colour c, Loc loc, int inc)
+	void updateStrategicStats(Colour c, Loc loc, int inc)
 	{
         if (!c)
             // We don't care about empty spaces
             return;
 
-        Colour squareColour = (loc[0] % 2) ^ (loc[1] % 2);
+        int stripe[2];
+	    stripe[0] =	(loc[0] % 2);
+	    stripe[1] =	(loc[1] % 2);
 
+        Colour squareColour;
+        squareColour = (stripe[0]) ^ (stripe[1]);
         _checkerboardStats[c][squareColour] += inc;
+
+        _stripeStats[c][0][stripe[0]] += inc;
+        _stripeStats[c][1][stripe[1]] += inc;
 	}
 
 	UtilityValue getCheckerboardContrib(Colour c) const
 	{
 		const UtilityValue *ours = _checkerboardStats[c];
+		UtilityValue absval = ours[0] - ours[1];
+		if (absval < 0) absval = -absval;
+		
+		UtilityValue ret = absval/(ours[0] + ours[1] + 1);
+		return ret;
+	}
+
+	UtilityValue getStripeContrib(Colour c) const
+	{
+		UtilityValue ret;
+		ret = getStripeContribPerDir(c, false);
+		ret += getStripeContribPerDir(c, true);
+		return ret;
+	}
+
+	UtilityValue getStripeContribPerDir(Colour c, bool vertical) const
+	{
+		const UtilityValue *ours = _stripeStats[c][vertical];
 		UtilityValue absval = ours[0] - ours[1];
 		if (absval < 0) absval = -absval;
 		
@@ -136,6 +167,7 @@ private:
 	PattCount _patternCounts[3][MAX_PATTERN_TYPE];
 	CapCount _captured[3];
 	UtilityValue _checkerboardStats[3][2];
+	UtilityValue _stripeStats[3][2][2];
 	Colour _wonBy;
 	bool _canWinByCaptures;
 	// StId _structureLookup[MAX_PATTERN_TYPE][MAX_LOCS];
