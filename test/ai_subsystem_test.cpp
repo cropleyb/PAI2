@@ -153,7 +153,7 @@ TEST_F(AISubsystemFixture, test_freebie) {
 }
 #endif
 
-#if 1
+#if 0
 TEST_F(AISubsystemFixture, test_strange) {
     string gameStr = \
 "boardwidth:19\n"
@@ -166,9 +166,11 @@ TEST_F(AISubsystemFixture, test_strange) {
 "6. (5, 6)\n"
 "7. (4, 9)\n";
     Loc move = doTheSearchTest(gameStr);
-	//_game.print();
-	EXPECT_EQ(Loc(8,6), move); // (4,7)???
+	_game.print();
+	EXPECT_EQ(Loc(8,6), move); // (4,7)??? (4,8)???
+	// EXPECT_EQ(Loc(8,6), move); // (4,7)??? (4,8)???
 	//EXPECT_EQ(Loc(5,8), move); // I'm not sure which is better...
+	// No point running it if I don't know what to expect
 }
 #endif
 
