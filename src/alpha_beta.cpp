@@ -26,8 +26,8 @@ Loc AlphaBeta::getBestMove()
         return theMove;
     }
 
-    UtilityValue alpha = NEGINF;
-    UtilityValue beta = INF;
+    UtilityValue alpha = 1000 * NEGINF;
+    UtilityValue beta = 1000 * INF;
 
     UtilityValue val = maxValue(alpha, beta, 0);
 	assert(_bestTopLevelMove.isValid());
@@ -51,6 +51,8 @@ UtilityValue AlphaBeta::maxValue(UtilityValue alpha, UtilityValue beta, Depth de
     UtilityValue currVal;
 	Loc bestMove = Loc::INVALID;
 
+	ABD(cout << "starting maxValue loop" << endl;)
+
     while (true)
     {
         // Make and locally store the next suggested move
@@ -63,6 +65,7 @@ UtilityValue AlphaBeta::maxValue(UtilityValue alpha, UtilityValue beta, Depth de
 			if (bestVal <= 200*NEGINF);
 				bestVal = _bridge.getUtility();
 #endif
+			ABD(cout << "next move invalid in maxValue" << endl;)
             break;
         }
 
@@ -75,7 +78,7 @@ UtilityValue AlphaBeta::maxValue(UtilityValue alpha, UtilityValue beta, Depth de
 
         UtilityValue val = currVal;
 
-        if (val > bestVal) {
+        if (val > bestVal or (depth == 0 and not bestMove.isValid())) {
             bestVal = val;
 			if (depth == 0) {
 				bestMove = currMove;
@@ -149,7 +152,7 @@ UtilityValue AlphaBeta::minValue(UtilityValue alpha, UtilityValue beta, Depth de
         }
         if (val < NEGINF/100.0) {
             // Game lost, can't get a better value
-			ABD(cout << "game lost" << endl;)
+			ABD(cout << "game lost at depth: " << (int)depth << endl;)
             break;
         }
         if (beta < val) {
