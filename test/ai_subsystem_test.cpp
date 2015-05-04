@@ -339,9 +339,6 @@ TEST_F(AISubsystemFixture, test_quick_blunder) {
 "13.(11, 9)\n";
 #endif
 
-#if 0
-	printGameHistory(gameStr);
-#endif
     Loc move = doTheSearchTest(gameStr);
 	//_game.print();
 	EXPECT_EQ(Loc(11,7), move);
