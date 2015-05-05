@@ -369,6 +369,8 @@ e.g. Their Line4 - takes must take one of the Line4 stones
 e.g. Their Takes (if the threaten a win by caps) - we must take their stone at the end.
 perhaps a list of most threatening structures for each player?
 
+Why is PAI2 still not as strong as PAI1?
+Set up some test cases (AI subsystem) and do some parallel debugging
 
 Fukami
 ------
