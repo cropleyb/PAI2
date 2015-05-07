@@ -6,7 +6,7 @@
 #include "line_pattern.h"
 #include "position_stats.h"
 
-//#define MSDEBUG
+#define MSDEBUG
 #ifdef MSDEBUG
 #define MSD(X) X
 using namespace std;
@@ -17,8 +17,12 @@ using namespace std;
 MoveSuggester::MoveSuggester(PositionStats &ps)
 	: _posStats(ps)
 {
+	// These values worked a little better,
+	// but they can't be compared with PAI1. Or can they?
 	_maxMovesShallow = 7;
 	_maxMovesDeep = 4;
+	//_maxMovesShallow = 9;
+	//_maxMovesDeep = 5;
 	_shallowCutoff = 4;
 	_candCache = new CandidateCache();
 }
@@ -55,7 +59,8 @@ Loc MoveSuggester::getNextMove(Depth depth, Colour searchColour)
 
 void MoveSuggester::fillCache(Depth depth, Colour searchColour)
 {
-	MSD(cout << "Filling depth: " << (int)depth << endl;)
+	MSD(cout << "Filling depth: " << (int)depth << " for searchColour: P" << (int)searchColour << endl;)
+
 	Loc *moveBuffer = _candCache->getBuffer(depth);
 
 	Breadth maxMoves = _maxMovesShallow;
@@ -141,16 +146,17 @@ bool MoveSuggester::getPriorityLevels(Colour ourColour)
 			}
 		}
 
-		// else: They have one 4 attack
+		// else: They have exactly one 4 attack
 		// We will lose unless we block or capture part of it.
 		MSD(cout << "P" << (int)ourColour << " lose by 5 in a row unless we block or capture part of it." << endl;)
 		_toSearchLevels[0] = &theirFours;
-		_toSearchLevels[1] = &ourTakes; // TODO: only inc intersecting caps.
-		_numSearchLevels = 2;
-		// Provide a take blocking alternative so we always have at least
-		// one move.
-		_emergencySearchLevel = &theirTakes;
-		onePoss = false;
+		_numSearchLevels = 1;
+		onePoss = true;
+		if (ourTakes.getNumCands() > 0) {
+			_toSearchLevels[1] = &ourTakes; // TODO: only inc intersecting caps.
+			_numSearchLevels = 2;
+			onePoss = false;
+		}
 		return onePoss;
 	}
 
@@ -244,7 +250,7 @@ Breadth MoveSuggester::filterCandidates(Loc *moveBuffer, Depth depth, Breadth ma
 		cout << "MS Found " << (int)foundFromPL << " in PL " << pl->getLevelName();
 		if (foundFromPL > 0) {
 			cout << ": ";
-			for (int ii=found; ii<found+foundFromPL; ii++) {
+			for (int ii=0; ii<foundFromPL; ii++) {
 				cout << " " << moveBuffer[ii];
 			}
 			cout << endl;
