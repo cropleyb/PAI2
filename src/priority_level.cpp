@@ -5,6 +5,7 @@
 #include <algorithm>    // std::sort
 #include <vector>       // std::vector
 
+//#define PLDEBUG
 
 #ifdef PLDEBUG 
 //PLD is very time consuming
