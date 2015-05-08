@@ -6,6 +6,8 @@
 
 #include <array>
 
+using namespace std;
+
 typedef double UtilityValue;
 
 template <class PS>
@@ -18,18 +20,21 @@ public:
 	{
 		// TEMP until we have an equiv. to ai_genome
 		_moveFactor = 45.0;
-        _captureScoreBase = 300;
+        //_captureScoreBase = 300;
+        _captureScoreBase = 600; // Doubled because it is per pair
         //_captureScoreBase = 200;
         _takeScoreBase = 80;
         _threatScoreBase = 20;
-        _blockedFourBase = 200; // Halved as only one is blocked
+        //_blockedFourBase = 200; // Halved as only one is blocked
+        _blockedFourBase = 0;
         //_blockedFourBase = 500;
         _lengthFactor = 35;
         _judgement = 100;
-        //_checkerboardValue = 35;
-        _checkerboardValue = 600;
-        //_stripeValue = 35;
-        _stripeValue = 800;
+        _checkerboardValue = 35;
+        //_checkerboardValue = 600;
+        //_stripeValue = 55;
+        _stripeValue = 0;
+        //_stripeValue = 800;
         //_checkerboardValue = 500;
 	}
 
@@ -122,21 +127,19 @@ UtilityValue UtilityCalc<PS>::calcUtility(Colour turnColour, Colour searchColour
 	if (searchColour != turnColour)
 		ret = theirScore - ourScore;
 
+	//cout << "our score: " << ourScore << "; theirScore: " << theirScore << 
+	//	"; ret: " << ret << endl;
+
 	return ret;
 }
 
 template <class PS>
 UtilityValue UtilityCalc<PS>::utilityScore(Colour evalColour, Colour /*turnColour*/) const
 {
-	// rules = self.rules
-	// sfcw = rules.stones_for_capture_win
-	// ccp = rules.can_capture_pairs
-
 	Colour evalCaptured = _posStats.getCaptured(evalColour);
 	Colour otherColour = otherPlayer(evalColour);
 	Colour otherCaptured = _posStats.getCaptured(otherColour);
 	
-	// CapCount captured = evalCaptured - otherCaptured; // TODO: Test use_net_captures again.
 	CapCount captured = evalCaptured;
 
 	UtilityValue score = 0.0;
@@ -150,35 +153,36 @@ UtilityValue UtilityCalc<PS>::utilityScore(Colour evalColour, Colour /*turnColou
 		score += evalPatterns[i] * _patternScale[i];
 	}
 
+	// Unless we're playing keryo, capturesScale only needs to operate
+	// on pairs
+	captured /= 2;
+
 	if (_posStats.getCanWinByCaptures())
 	{
-		// Unless we're playing keryo, capturesScale only needs to operate
-		// on pairs
-		captured /= 2;
-
 		UtilityValue cc = capturedContrib(captured);
 		score += cc;
+
+		UtilityValue tc;
+		tc  = takeContrib(evalPatterns[Take], captured);
+		score += tc;
+
+		tc = threatContrib(evalPatterns[Threat], captured);
+		score += tc;
 	}
 
-	// Give takes and threats some value for their ability to help
-	// get 5 in a row.
-	UtilityValue tc;
-	tc  = takeContrib(evalPatterns[Take], captured);
-	score += tc;
-
-	tc = threatContrib(evalPatterns[Threat], captured);
-	score += tc;
-
-	tc = evalPatterns[Blocked] * _blockedFourBase;
-	score += tc;
+	UtilityValue bc;
+	bc = evalPatterns[Blocked] * _blockedFourBase;
+	score += bc;
 
 	// Give an advantage to having more pieces on one colour of squares
-	tc = _posStats.getCheckerboardContrib(evalColour) * _checkerboardValue;
-	score += tc;
+	// of a checkerboard
+	bc = _posStats.getCheckerboardContrib(evalColour) * _checkerboardValue;
+	score += bc;
 
 	// Give an advantage to having more pieces on one colour of squares
-	tc = _posStats.getStripeContrib(evalColour) * _stripeValue;
-	score += tc;
+	// of a horizontally or vertically striped board
+	bc = _posStats.getStripeContrib(evalColour) * _stripeValue;
+	score += bc;
 
 	return score;
 }
