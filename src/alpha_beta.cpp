@@ -6,6 +6,9 @@
 
 // There is also DEBUG_SEARCH, which is across a few files.
 //#define ABDEBUG
+//#include <iostream>
+//using namespace std;
+
 #ifdef ABDEBUG
 #define ABD(X) X
 #include <iostream>
@@ -38,74 +41,72 @@ UtilityValue AlphaBeta::maxValue(UtilityValue alpha, UtilityValue beta, Depth de
 {
     UtilityValue bestVal(200*NEGINF);
 
-    if (_bridge.needUtility())
+	bool needSearch = _bridge.needSearch();
+    if (not needSearch or _bridge.needUtility())
     {
 		ABD(cout << "maxValue needs utility" << endl;)
         bestVal = _bridge.getUtility();
     }
-	if (!_bridge.needSearch()) {
-		ABD(cout << "maxValue doesn't need search at depth: " << (int)depth << endl;)
-		return bestVal;
-	}
 
     UtilityValue currVal;
 	Loc bestMove = Loc::INVALID;
 
-	ABD(cout << "starting maxValue loop" << endl;)
+	if (needSearch) {
+		ABD(cout << "starting maxValue loop" << endl;)
 
-    while (true)
-    {
-        // Make and locally store the next suggested move
-        Loc currMove = _bridge.makeNextMove(); // determines if vct by depth > max depth
+		while (true)
+		{
+			// Make and locally store the next suggested move
+			Loc currMove = _bridge.makeNextMove(); // determines if vct by depth > max depth
 
-        // No more moves at this level
-        if (!currMove.isValid()) {
-#if 0
-			// TODO?: If no moves, calc util
-			if (bestVal <= 200*NEGINF);
-				bestVal = _bridge.getUtility();
-#endif
-			ABD(cout << "next move invalid in maxValue" << endl;)
-            break;
-        }
-
-        // Recursively calculate the worst forcible utility value
-        // for the resultant position
-        currVal = minValue(alpha, beta, depth+1);
-
-        // Undo the currMove made above
-        _bridge.undoLastMove();
-
-        UtilityValue val = currVal;
-
-        if (val > bestVal or (depth == 0 and not bestMove.isValid())) {
-            bestVal = val;
-			if (depth == 0) {
-				bestMove = currMove;
+			// No more moves at this level
+			if (!currMove.isValid()) {
+				ABD(cout << "next move invalid in maxValue" << endl;)
+				break;
 			}
-        }
-        if (val >= beta) {
-			ABD(cout << "val: " << val << " >= beta: " << beta << endl;)
-            break;
-        }
-        if (val > INF/100.0) {
-			ABD(cout << "game won" << endl;)
-            // Game won, can't get a better value
-            break;
-        }
-        if (alpha > val) {
-            alpha = val;
+
+			// Recursively calculate the worst forcible utility value
+			// for the resultant position
+			currVal = minValue(alpha, beta, depth+1);
+
+			// Undo the currMove made above
+			_bridge.undoLastMove();
+
+			UtilityValue val = currVal;
+
+			if (depth == 0) {
+				ABD(cout << "================ maxValue: top level option " << currMove << ": " << currVal << endl;)
+			}
+
+			if (val > bestVal or (depth == 0 and not bestMove.isValid())) {
+				bestVal = val;
+				if (depth == 0) {
+					bestMove = currMove;
+				}
+			}
+			if (val >= beta) {
+				ABD(cout << "val: " << val << " >= beta: " << beta << endl;)
+				break;
+			}
+			if (val > INF/100.0) {
+				ABD(cout << "game won" << endl;)
+				// Game won, can't get a better value
+				break;
+			}
+			if (alpha > val) {
+				alpha = val;
+			}
 		}
-    }
 #if 1
-	_bridge.storeInTransTable(bestVal);
+		_bridge.storeInTransTable(bestVal);
 #endif
+	}
 	if (depth == 0) {
         assert(bestMove.isValid());
 		_bestTopLevelMove = bestMove;
 	}
 #ifdef DEBUG_SEARCH
-	ABD(cout << " [Best(max):" << bestVal << "] ";)
+	//ABD(cout << " [Best(max):" << bestVal << "] ";)
 #endif
     return bestVal;
 }
@@ -114,56 +115,56 @@ UtilityValue AlphaBeta::minValue(UtilityValue alpha, UtilityValue beta, Depth de
 {
     UtilityValue bestVal(200*INF);
 
-    if (_bridge.needUtility())
+	bool needSearch = _bridge.needSearch();
+    if (not needSearch or _bridge.needUtility())
     {
 		ABD(cout << "minValue needs utility" << endl;)
         bestVal = _bridge.getUtility();
     }
-	if (!_bridge.needSearch()) {
-		ABD(cout << "minValue doesn't need search" << endl;)
-		return bestVal;
-	}
 
     UtilityValue currVal;
 
-    while (true) {
-        // Make and locally store the next suggested move
-        Loc currMove = _bridge.makeNextMove();
+	if (needSearch) {
+		while (true) {
+			// Make and locally store the next suggested move
+			Loc currMove = _bridge.makeNextMove();
 
-        // No more moves at this level
-        if (!currMove.isValid()) {
-            break;
-        }
+			// No more moves at this level
+			if (!currMove.isValid()) {
+				break;
+			}
 
-        // Recursively calculate the worst forcible utility value
-        // for the resultant position
-        currVal = maxValue(alpha, beta, depth+1);
+			// Recursively calculate the worst forcible utility value
+			// for the resultant position
+			currVal = maxValue(alpha, beta, depth+1);
 
-        // Undo the currMove made above
-        _bridge.undoLastMove();
+			// Undo the currMove made above
+			_bridge.undoLastMove();
 
-        UtilityValue val = currVal;
-        if (val < bestVal) {
-            bestVal = val;
-        }
-        if (val <= alpha) {
-			ABD(cout << "val: " << val << " <= alpha: " << alpha << endl;)
-            break;
-        }
-        if (val < NEGINF/100.0) {
-            // Game lost, can't get a better value
-			ABD(cout << "game lost at depth: " << (int)depth << endl;)
-            break;
-        }
-        if (beta < val) {
-            beta = val;
+			UtilityValue val = currVal;
+			if (val < bestVal) {
+				bestVal = val;
+			}
+			if (val <= alpha) {
+				ABD(cout << "val: " << val << " <= alpha: " << alpha << endl;)
+				break;
+			}
+			if (val < NEGINF/100.0) {
+				// Game lost, can't get a better value
+				ABD(cout << "game lost at depth: " << (int)depth << endl;)
+				break;
+			}
+			if (beta < val) {
+				beta = val;
+			}
 		}
-    }
 #if 1
-	_bridge.storeInTransTable(bestVal);
+		_bridge.storeInTransTable(bestVal);
 #endif
+	}
+
 #ifdef DEBUG_SEARCH
-	cout << " [Best(min):" << bestVal << "] ";
+	//cout << " [Best(min):" << bestVal << "] ";
 #endif
     return bestVal;
 }

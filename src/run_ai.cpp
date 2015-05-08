@@ -17,23 +17,29 @@ void runAI()
 	Match match(contender, defender);
 	//contender.setVCTDepth(1);
     //defender._moveSuggester._shallowCutoff = 2;
-    //contender._utilCalc._blockedFourBase = 700;
-    //contender._utilCalc._blockedFourBase = 200;
-    contender._utilCalc._checkerboardValue = 600;
+	//defender._utilCalc._moveFactor = 45.0;
+    contender._utilCalc._blockedFourBase = 200;
+    //contender._utilCalc._blockedFourBase = 50;
+    //contender._utilCalc._blockedFourBase = 0;
+    //contender._utilCalc._checkerboardValue = 55;
     //contender._utilCalc._stripeValue = 800;
-    contender._utilCalc._stripeValue = 800;
+    contender._utilCalc._stripeValue = 55;
+    //contender._utilCalc._stripeValue = 0;
+	// checkerboard 100 with stripe 100 is crashing.
     //contender._utilCalc._lengthFactor = 45;
     //contender._utilCalc._captureScoreBase = 200;
     //contender._moveSuggester._shallowCutoff = 3;
     //contender._moveSuggester._shallowCutoff = 5;
-    //contender._moveSuggester._maxMovesShallow = 7;
+    //contender._moveSuggester._maxMovesShallow = 8;
     //contender._moveSuggester._maxMovesDeep = 5;
     //cout << "Contender util calc modified: " << &(contender._utilCalc) << endl;
     match.setSilent(true);
-    //match.setSilent(false);
     match.setShowReport(true);
-	match.setDepthRange(1, 7);
+	match.setDepthRange(2, 6);
+	//match.setDepthRange(3, 4);
 	match.setRulesTypes("st");
+	//match.setRulesTypes("t");
+	//match.setSizes(13,19);
 	match.setSizes(13,19);
 	match.play();
 }

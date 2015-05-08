@@ -40,7 +40,7 @@ class AISubsystemFixture : public testing::Test {
 public:
 	AISubsystemFixture() {
 		buildSpanTable(19); // TODO: cull
-	}
+    }
 	Loc doTheSearchTest(const string &gameStr) {
 		return doTheSearch(gameStr, &_game);
 	}
@@ -310,10 +310,8 @@ TEST_F(AISubsystemFixture, test_bad) {
 "38.(10, 8)\n"
 "39.(12, 8)\n";
 
-#if 0
-	printGameHistory(gameStr);
-#endif
     Loc move = doTheSearchTest(gameStr);
+	_game.print();
 	EXPECT_EQ(Loc(10,10), move);
 }
 #endif
@@ -399,6 +397,35 @@ TEST_F(AISubsystemFixture, testForgotToDefend) {
 "(9, 13)\n"
 "(7, 11)\n"
 ;
+    Loc move = doTheSearchTest(gameStr);
+	EXPECT_NE(Loc(5,11), move);
+}
+#endif
+
+#if 0
+"1.(9, 9)\n"
+"2.(10, 10)\n"
+"3.(11, 9)\n"
+"4.(10, 9)\n"
+"5.(10, 8)\n"
+"6.(12, 10)\n"
+"7.(9, 7)\n"
+"8.(11, 10)\n"
+"9.(10, 11)\n"
+"10.(13, 10)\n"
+"11.(10, 10)\n"
+"12.(10, 9)\n"
+"13.(9, 8)\n"
+"14.(14, 10)\n"
+"15.(15, 10)\n"
+"16.(10, 12)\n"
+"17.(12, 11)\n"
+"18.(10, 10)\n"
+"19.(11, 10)\n"
+"20.(9, 10)\n"
+"21.(9, 6)\n"
+"22.(9, 5)\n"
+"23.(8, 10)\n"
 
 #if 0
 	printGameHistory(gameStr);
@@ -434,47 +461,260 @@ TEST_F(AISubsystemFixture, testForgotToDefend) {
 "23.(8, 10)\n"
 #endif
 
+#ifdef NEW_SYSTEM_TESTS 
 #if 0
-// Crash
-depth:6
-boardsize:19
-rules:Tournament
-(9, 9)
-	(9, 8)
-	(12, 8)
-	(10, 9)
-	(10, 10)
-	(8, 7)
-	(11, 10)
-	(12, 10)
-	(11, 8)
-	(11, 11)
-	(13, 8)
-	(7, 6)
-	(6, 5)
-	(14, 8)
-	(13, 9)
-	(9, 10)
-	(8, 11)
-	(10, 9)
-	(11, 10)
-	(11, 7)
-	(10, 12)
-	(10, 7)
-	(9, 7)
-	(13, 10)
-	(12, 7)
-	(13, 6)
-	(11, 7)
-	(14, 10)
-	(10, 6)
-	(9, 5)
-	(11, 5)
-	(12, 4)
-	(7, 9)
-	(8, 8)
-	(10, 8)
+TEST_F(AISubsystemFixture, testSimpleComparison) {
+    string gameStr = \
+"depth:1\n"
+"boardsize:19\n"
+"rules:Tournament\n"
+"(9, 9)\n"
+"(10, 10)\n"
+"(12, 9)\n"
+;
+
+    Loc move = doTheSearchTest(gameStr);
+	EXPECT_EQ(Loc(13,9), move);
+}
+#endif
 #endif
 
+#if 0
+// Correct:
+Curr: (13, 9): -2825
+Curr: (8, 9): -2848
+Curr: (11, 10): -6046
+Curr: (10, 11): -6090
+Curr: (9, 11): -6067
+Curr: (9, 10): -6046
+Curr: (12, 10): -4256
+				 ? why only 7 ?
+
+// Incorrect:
+================ maxValue: (11,9): -2018.67 Not in orig
+================ maxValue: (10,9): -2042 Not in orig
+================ maxValue: (13,9): -2824.67 OK
+================ maxValue: (8,9): -2848 OK
+================ maxValue: (10,11): -5190 Should be -6090
+================ maxValue: (9,11): -5166.67 Should be -6067
+================ maxValue: (11,10): -5146 Should be -6046
+================ maxValue: (9,10): -5146 Should be -6046
+================ maxValue: (10,12): -4431.67 Not in orig
+Missing (12,10)
+
+#endif
+
+#if 0
+"1.(9, 9)\n"
+"2.(10, 10)\n"
+"3.(11, 9)\n"
+"4.(10, 9)\n"
+"5.(10, 8)\n"
+"6.(12, 10)\n"
+"7.(9, 7)\n"
+"8.(11, 10)\n"
+"9.(10, 11)\n"
+"10.(13, 10)\n"
+"11.(10, 10)\n"
+"12.(10, 9)\n"
+"13.(9, 8)\n"
+"14.(14, 10)\n"
+"15.(15, 10)\n"
+"16.(10, 12)\n"
+"17.(12, 11)\n"
+"18.(10, 10)\n"
+"19.(11, 10)\n"
+"20.(9, 10)\n"
+"21.(9, 6)\n"
+"22.(9, 5)\n"
+"23.(8, 10)\n"
+#endif
+
+TEST_F(AISubsystemFixture, testMustBlockOpen4) {
+//"Defender versus Six 2\n"
+//"19x19\n"
+//"Tournament rules\n"
+    string gameStr = \
+"(9, 9)\n"
+"(8, 9)\n"
+"(6, 12)\n"
+"(7, 11)\n"
+"(9, 12)\n"
+"(9, 11)\n"
+"(11, 11)\n"
+"(8, 11)\n"
+"(6, 11)\n"
+"(6, 13)\n"
+"(12, 12)\n"
+//"(6, 10)\n"
+//"(10, 10)\n"
+//"(13, 13)\n"
+//"(8, 8)\n"
+;
+    Loc move = doTheSearchTest(gameStr);
+	_game.print();
+	EXPECT_EQ(Loc(10,10), move);
+}
+
+#if 0
+One 1a versus One 1
+19x19
+Tournament rules
+#endif
+TEST_F(AISubsystemFixture, testLevel1SameAsPAI1) {
+    string gameStr = \
+"1. (9, 9)\n"
+"2. (10, 10)\n"
+"3. (9, 6)\n"
+"4. (9, 7)\n"
+"5. (12, 6)\n"
+"6. (11, 7)\n"
+"7. (10, 7)\n"
+"8. (8, 5)\n"
+"9. (11, 8)\n"
+"10. (12, 9)\n"
+"11. (8, 6)\n"
+"12. (10, 6)\n"
+"13. (7, 6)\n"
+"14. (6, 6)\n"
+"15. (12, 8)\n"
+"16. (8, 8)\n"
+"17. (9, 5)\n"
+"18. (9, 4)\n"
+"19. (10, 3)\n"
+"20. (9, 6)\n"
+"21. (10, 6)\n"
+"22. (9, 5)\n"
+"23. (7, 9)\n"
+"24. (9, 7)\n"
+"25. (9, 4)\n"
+"26. (11, 7)\n"
+"27. (8, 5)\n"
+"28. (11, 2)\n"
+"29. (7, 6)\n"
+"30. (6, 7)\n"
+"31. (7, 7)\n"
+"32. (7, 8)\n"
+"33. (8, 9)\n"
+"34. (6, 9)\n"
+;
+    Loc move = doTheSearchTest(gameStr);
+	EXPECT_EQ(Loc(5,6), move);
+#if 0
+"35. (5, 6)\n"
+"36. (6, 7)\n"
+"37. (6, 8)\n"
+"38. (6, 5)\n"
+"39. (7, 8)\n"
+"40. (9, 10)\n"
+"41. (7, 8)\n"
+"42. (7, 10)\n"
+"43. (7, 5)\n"
+;
+#endif
+}
+
+TEST_F(AISubsystemFixture, testLevel2SameAsPAI1) {
+    string gameStr = \
+"boardwidth:19\n"
+"depth:2\n"
+"1. (9, 9)\n"
+"2. (11, 11)\n"
+"3. (12, 9)\n"
+"4. (11, 9)\n"
+"5. (12, 10)\n"
+"6. (11, 10)\n"
+"7. (11, 8)\n"
+;
+    Loc move = doTheSearchTest(gameStr);
+	_game.print();
+	EXPECT_EQ(Loc(12, 11), move);
+#if 0
+"8. (12, 11)\n"
+"9. (12, 8)\n"
+"10. (13, 12)\n"
+"11. (12, 7)\n"
+"12. (12, 6)\n"
+"13. (10, 9)\n"
+"14. (8, 9)\n"
+"15. (10, 9)\n"
+"16. (11, 12)\n"
+"17. (11, 13)\n"
+"18. (13, 10)\n"
+"19. (13, 6)\n"
+"20. (10, 7)\n"
+"21. (11, 8)\n"
+"22. (14, 5)\n"
+"23. (9, 10)\n"
+#endif
+}
+
+#if 0
+TEST_F(AISubsystemFixture, testForgotToDefend) {
+    string gameStr = \
+"depth:4\n" // Works with depth 4 or higher
+"boardsize:19\n"
+"rules:Tournament\n"
+"(9, 9)\n"
+"(10, 10)\n"
+"(9, 6)\n"
+"(9, 8)\n"
+"(10, 9)\n"
+"(11, 9)\n"
+"(12, 8)\n"
+"(9, 11)\n"
+"(8, 9)\n"
+"(7, 9)\n"
+"(8, 10)\n"
+"(8, 12)\n"
+"(7, 13)\n"
+"(10, 8)\n"
+"(12, 10)\n"
+"(8, 8)\n"
+"(9, 7)\n"
+"(8, 11)\n"
+"(8, 10)\n"
+"(10, 8)\n"
+"(6, 10)\n"
+"(8, 8)\n"
+"(7, 8)\n"
+"(7, 11)\n"
+"(9, 13)\n"
+"(7, 11)\n"
+;
+
+#if 0
+	printGameHistory(gameStr);
+#endif
+    Loc move = doTheSearchTest(gameStr);
+	EXPECT_NE(Loc(5,11), move);
+}
+#endif
+
+#if 0
+"1.(9, 9)\n"
+"2.(10, 10)\n"
+"3.(11, 9)\n"
+"4.(10, 9)\n"
+"5.(10, 8)\n"
+"6.(12, 10)\n"
+"7.(9, 7)\n"
+"8.(11, 10)\n"
+"9.(10, 11)\n"
+"10.(13, 10)\n"
+"11.(10, 10)\n"
+"12.(10, 9)\n"
+"13.(9, 8)\n"
+"14.(14, 10)\n"
+"15.(15, 10)\n"
+"16.(10, 12)\n"
+"17.(12, 11)\n"
+"18.(10, 10)\n"
+"19.(11, 10)\n"
+"20.(9, 10)\n"
+"21.(9, 6)\n"
+"22.(9, 5)\n"
+"23.(8, 10)\n"
+#endif
 
 #endif

@@ -5,8 +5,6 @@
 
 #include <iostream>
 
-//#define DEBUG_SEARCH
-
 //#define PGDEBUG
 #ifdef PGDEBUG
 #define PGD(X) X
@@ -243,53 +241,31 @@ bool PenteGame::needUtility()
 
 	if (not _currDepth) return false;
 
-	// Look up the TT for this position first.
-	if (_currDepth > 2) // TODO: VCT must be put in the TT too.
-	{
-		_isInTT = _transpositionTable.lookup(*this, _ttVal);
-		// evaluating the utility function also uses the looked up _ttVal
-		if (_isInTT) return true;
-	} else {
-		_isInTT = false;
-	}
-	
 	if (_posStats.getWonBy()) {
 		PGD(cout << "Game Already Over, needUtility" << endl;)
 		return true;
 	}
 
+	// Look up the TT for this position
+	if (_currDepth > 2)
+	{
+		_isInTT = _transpositionTable.lookup(*this, _ttVal);
+		// evaluating the utility function also uses the looked up _ttVal
+		// to save looking it up twice
+		if (_isInTT) return true;
+	} else {
+		_isInTT = false;
+	}
+	
 	// When do we need to evaluate the util func? max depth and max VCT depth?
 	// Or VCT posns. where we are not forced? NOT(#Their4s==0 or #TheirTakes>0 and #theirCaps >= 8)
 	// Or positions with no move suggestions.
 	if (_currDepth < _normalDepth-1) return false;
 
-	if (not _vctDepth) return _currDepth >= _normalDepth - 1;
+	if (not _vctDepth) return _currDepth >= _normalDepth;
 
 	_weAreForced = _posStats.isForced(_ourColour);
 	return not _weAreForced;
-}
-
-bool PenteGame::needSearch()
-{
-//When do we need to do more search?
-	if (_posStats.getWonBy()) {
-		PGD(cout << "Game Already Over, don't needSearch" << endl;)
-		return false;
-	}
-
-	if (_isInTT) {
-		// Found in TT, so we already looked up TT "util val" so don't need to search?
-		PGD(cout << "Was in TT" << endl;)
-		_isInTT = false;
-		return false;
-	}
-
-	if (_currDepth < _normalDepth) return true;
-
-	if (_currDepth >= _vctDepth + _normalDepth) return false;
-
-	bool theyAreForced = _posStats.isForced(otherPlayer(_ourColour));
-	return _weAreForced or theyAreForced;
 }
 
 UtilityValue PenteGame::getUtility()
@@ -308,10 +284,29 @@ UtilityValue PenteGame::getUtility()
 	std::cout << ' ' << uv;
 #endif
 #if 1
-	storeInTransTable(uv);
+	if (not _isInTT) {
+		storeInTransTable(uv);
+	}
+	_isInTT = false;
 #endif
 
 	return uv;
+}
+
+bool PenteGame::needSearch()
+{
+//When do we need to do more search?
+	if (_posStats.getWonBy()) {
+		PGD(cout << "Game Already Over, don't needSearch" << endl;)
+		return false;
+	}
+
+	if (_currDepth < _normalDepth) return true;
+
+	if (_currDepth >= _vctDepth + _normalDepth) return false;
+
+	bool theyAreForced = _posStats.isForced(otherPlayer(_ourColour));
+	return _weAreForced or theyAreForced;
 }
 
 void PenteGame::storeInTransTable(UtilityValue uv)
