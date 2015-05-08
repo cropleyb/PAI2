@@ -6,7 +6,7 @@
 #include "line_pattern.h"
 #include "position_stats.h"
 
-#define MSDEBUG
+//#define MSDEBUG
 #ifdef MSDEBUG
 #define MSD(X) X
 using namespace std;
