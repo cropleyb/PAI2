@@ -47,7 +47,7 @@ TEST_F(RunAIFixture, run_one_game) {
 	EXPECT_GT(1.0, res._times[false]);
 	EXPECT_GT(1.0, res._times[true]);
 	EXPECT_LT(0.0001, res._times[false]);
-	EXPECT_LT(0.0010, res._times[true]);
+	EXPECT_LT(0.0001, res._times[true]);
 }
 
 TEST_F(RunAIFixture, run_another_game) {
@@ -68,7 +68,7 @@ TEST_F(RunAIFixture, run_another_game) {
 	EXPECT_GT(1.0, res._times[false]);
 	EXPECT_GT(1.0, res._times[true]);
 	EXPECT_LT(0.0001, res._times[false]);
-	EXPECT_LT(0.0010, res._times[true]);
+	EXPECT_LT(0.0001, res._times[true]);
 }
 
 #if 1
