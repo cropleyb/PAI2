@@ -526,6 +526,107 @@ Utility for 14: (-22938, 0) (Lines: [None, [26, 8, 0, 0, 0], [49, 1, 0, 0, 0]], 
 	EXPECT_GT(u1, u2);
 }
 
+
+TEST_F(UtilityCalcFixture, testLineValue) {
+	UtilityValue u;
+
+	setLineCounts(P1, 1, 0, 0, 0, 0);
+	u = uc.calcUtility(P1, P1, 1);
+	EXPECT_EQ(45, u);
+
+	setLineCounts(P1, 0, 1, 0, 0, 0);
+	u = uc.calcUtility(P1, P1, 1);
+	EXPECT_EQ(1575, u);
+
+	setLineCounts(P1, 0, 0, 1, 0, 0);
+	u = uc.calcUtility(P1, P1, 1);
+	EXPECT_EQ(55125, u);
+
+	setLineCounts(P1, 0, 0, 0, 1, 0);
+	u = uc.calcUtility(P1, P1, 1);
+	EXPECT_LE(1e+20, u);
+}
+
+TEST_F(UtilityCalcFixture, testCapValue) {
+	UtilityValue u;
+
+	setCaptured(2, 0);
+	u = uc.calcUtility(P1, P1, 1);
+	EXPECT_EQ(27000, u);
+
+	setCaptured(4, 0);
+	u = uc.calcUtility(P1, P1, 1);
+	EXPECT_EQ(54000, u);
+
+	setCaptured(6, 0);
+	u = uc.calcUtility(P1, P1, 1);
+	EXPECT_EQ(162000, u);
+
+	setCaptured(8, 0);
+	u = uc.calcUtility(P1, P1, 1);
+	EXPECT_EQ(432000, u);
+
+	setCaptured(10, 0);
+	u = uc.calcUtility(P1, P1, 1);
+	EXPECT_LE(1e+20, u);
+}
+
+TEST_F(UtilityCalcFixture, testTakeValue) {
+	UtilityValue u;
+
+	setTakes(1, 0);
+	u = uc.calcUtility(P1, P1, 1);
+	EXPECT_EQ(3600, u);
+
+	setTakes(2, 0);
+	u = uc.calcUtility(P1, P1, 1);
+	EXPECT_EQ(7200, u);
+
+	setTakes(4, 0);
+	u = uc.calcUtility(P1, P1, 1);
+	EXPECT_EQ(14400, u);
+
+	setTakes(6, 0);
+	u = uc.calcUtility(P1, P1, 1);
+	EXPECT_EQ(21600, u);
+
+	setTakes(8, 0);
+	u = uc.calcUtility(P1, P1, 1);
+	EXPECT_EQ(28800, u);
+	
+	setTakes(10, 0);
+	u = uc.calcUtility(P1, P1, 1);
+	EXPECT_LE(36000, u);
+}
+
+TEST_F(UtilityCalcFixture, testThreatValue) {
+	UtilityValue u;
+
+	setThreats(1, 0);
+	u = uc.calcUtility(P1, P1, 1);
+	EXPECT_EQ(900, u);
+
+	setThreats(2, 0);
+	u = uc.calcUtility(P1, P1, 1);
+	EXPECT_EQ(1800, u);
+
+	setThreats(4, 0);
+	u = uc.calcUtility(P1, P1, 1);
+	EXPECT_EQ(3600, u);
+
+	setThreats(6, 0);
+	u = uc.calcUtility(P1, P1, 1);
+	EXPECT_EQ(5400, u);
+
+	setThreats(8, 0);
+	u = uc.calcUtility(P1, P1, 1);
+	EXPECT_EQ(7200, u);
+
+	setThreats(10, 0);
+	u = uc.calcUtility(P1, P1, 1);
+	EXPECT_LE(9000, u);
+}
+
 #if 0
 
 TEST_F(UtilityCalcFixture, testBlackNoWinByCapturesForFiveInARow) {
