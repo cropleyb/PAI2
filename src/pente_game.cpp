@@ -23,7 +23,7 @@ PenteGame::PenteGame()
 	  _utilCalc(_posStats),
 	  _currDepth(0),
 	  _normalDepth(1),
-	  _vctDepth(0),
+	  _vctDepth(3),
 	  _ourColour(EMPTY)
 {
 	buildLineLookupTable();
