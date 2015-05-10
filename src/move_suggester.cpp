@@ -160,7 +160,34 @@ bool MoveSuggester::getPriorityLevels(Colour ourColour)
 		return onePoss;
 	}
 
-	// TODO: if VCT return false
+#if 0
+	// TODO
+	const PriorityLevel &ourThreats
+		= _posStats.getPriorityLevel(ourColour, Threat);
+
+	if (cwbc and ourCaptureCount >= 8 and ourThreats.getNumCands() > 0) {
+		// We have only one capture left to win, so a threat is threatening to win next move.
+		const PriorityLevel &ourThrees
+			= _posStats.getPriorityLevel(ourColour, Line3);
+		const PriorityLevel &theirThrees
+			= _posStats.getPriorityLevel(theirColour, Line3);
+		const PriorityLevel &ourTwos
+			= _posStats.getPriorityLevel(ourColour, Line2);
+		const PriorityLevel &theirTwos
+			= _posStats.getPriorityLevel(theirColour, Line2);
+
+		_toSearchLevels[0] = &ourThreats;
+		_toSearchLevels[1] = &ourThrees;
+		_toSearchLevels[2] = &theirThrees;
+		_toSearchLevels[3] = &ourTwos;
+		_toSearchLevels[4] = &theirTwos;
+		//_emergencySearchLevel = &theirFours;
+		_numSearchLevels = 5;
+		_includeAllSearchLevels = 2; // We must look at all of these.
+		onePoss = false;
+		return onePoss;
+	}
+#endif
 	
 #if 0
 	const PriorityLevel &ourThrees
