@@ -88,9 +88,11 @@ UtilityValue AlphaBeta::maxValue(UtilityValue alpha, UtilityValue beta, Depth de
 				ABD(cout << "val: " << val << " >= beta: " << beta << endl;)
 				break;
 			}
-			if (val > INF/100.0) {
+			if (val > INF/100.0 and depth > 0) {
+				// Game won, probably can't get a better value; search order should
+				// handle it.
+				// depth 0 needs to search all options to find the fastest win.
 				ABD(cout << "game won" << endl;)
-				// Game won, can't get a better value
 				break;
 			}
 			if (alpha > val) {
@@ -150,7 +152,8 @@ UtilityValue AlphaBeta::minValue(UtilityValue alpha, UtilityValue beta, Depth de
 				break;
 			}
 			if (val < NEGINF/100.0) {
-				// Game lost, can't get a better value
+				// Game won, probably can't get a better value; search order should
+				// handle it.
 				ABD(cout << "game lost at depth: " << (int)depth << endl;)
 				break;
 			}
