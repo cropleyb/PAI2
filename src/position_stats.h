@@ -6,6 +6,7 @@
 #include "line_pattern.h"
 
 #include <iostream>
+#include <cmath>
 
 class SpanEntry;
 //class LinePattern;
@@ -24,6 +25,14 @@ public:
 		for (int c=0; c<3; c++)
 		{
 			_captured[c] = 0;
+
+#if 0
+			// For calculating spread
+			_totalStones[c] = 0.001; // div by zero prevention
+			_totalDistSqr[c] = 0;
+			_totalDist[c] = 0;
+#endif
+
 			for (int p=0; p<MAX_PATTERN_TYPE; p++)
 			{
 				_patternCounts[c][p] = 0;
@@ -99,6 +108,21 @@ public:
 		return 3;
 	}
 
+#if 0
+	void updateSpreadCounts(Colour c, Loc loc, int inc)
+	{
+		_totalStones[c] += inc;
+		float x = loc[0];
+		float y = loc[1];
+		float distSqr = x*x + y*y;
+		//cout << "distSqr: " << distSqr << endl;
+		_totalDistSqr[c] += distSqr;
+		// TODO: Use a lookup table for sqrt.
+		_totalDist[c] += sqrt(distSqr);
+		//cout << "_totalDist: " << _totalDist[c] << endl;
+	}
+#endif
+
 	void updateStrategicStats(Colour c, Loc loc, int inc)
 	{
         if (!c)
@@ -115,6 +139,10 @@ public:
 
         _stripeStats[c][0][stripe[0]] += inc;
         _stripeStats[c][1][stripe[1]] += inc;
+
+#if 0
+		updateSpreadCounts(c, loc, inc);
+#endif
 	}
 
 	UtilityValue getCheckerboardContrib(Colour c) const
@@ -145,6 +173,17 @@ public:
 		return ret;
 	}
 
+#if 0
+	UtilityValue getSpreadContrib(Colour c) const
+	{
+		float diff = (_totalDist[c] * _totalDist[c]) - (_totalStones[c] * _totalDistSqr[c]);
+		//cout << "diff: " << diff << endl;
+		UtilityValue stddev = sqrt(diff) / _totalStones[c];
+		//cout << "stddev: " << stddev << endl;
+		return stddev;
+	}
+#endif
+
 	void setCanWinByCaptures(bool c) { _canWinByCaptures = c; }
 	bool getCanWinByCaptures() const { return _canWinByCaptures; }
 
@@ -166,8 +205,16 @@ private:
 	PriorityLevel _levels[3][MAX_PATTERN_TYPE];
 	PattCount _patternCounts[3][MAX_PATTERN_TYPE];
 	CapCount _captured[3];
+
+	// Strategic features
 	UtilityValue _checkerboardStats[3][2];
 	UtilityValue _stripeStats[3][2][2];
+#if 0
+	float _totalStones[3];
+	float _totalDistSqr[3];
+	float _totalDist[3];
+#endif
+
 	Colour _wonBy;
 	bool _canWinByCaptures;
 	// StId _structureLookup[MAX_PATTERN_TYPE][MAX_LOCS];

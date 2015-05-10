@@ -19,7 +19,7 @@ public:
         _patternScale {1, 1, 1, 1, 1, 1, 1, 1000000, 0}
 	{
 		// TEMP until we have an equiv. to ai_genome
-		_moveFactor = 45.0;
+		_moveFactor = 95.0;
         //_captureScoreBase = 300;
         _captureScoreBase = 600; // Doubled because it is per pair
         //_captureScoreBase = 200;
@@ -27,15 +27,14 @@ public:
         _threatScoreBase = 20;
         //_blockedFourBase = 200; // Halved as only one is blocked
         _blockedFourBase = 0;
-        //_blockedFourBase = 500;
         _lengthFactor = 35;
         _judgement = 100;
-        _checkerboardValue = 35;
-        //_checkerboardValue = 600;
-        //_stripeValue = 55;
-        _stripeValue = 0;
-        //_stripeValue = 800;
-        //_checkerboardValue = 500;
+        //_checkerboardValue = 35;
+        _checkerboardValue = 400;
+        //_stripeValue = 0;
+        _stripeValue = 400;
+        //_spreadValue = 0;
+        _spreadValue = 0;
 	}
 
 	UtilityValue calcUtility(Colour turnColour, Colour searchColour, MoveNumber moveNumber) const;
@@ -64,6 +63,7 @@ private:
 	int _judgement;
 	int _checkerboardValue;
 	int _stripeValue;
+	int _spreadValue;
 };
 
 template <class PS>
@@ -183,6 +183,16 @@ UtilityValue UtilityCalc<PS>::utilityScore(Colour evalColour, Colour /*turnColou
 	// of a horizontally or vertically striped board
 	bc = _posStats.getStripeContrib(evalColour) * _stripeValue;
 	score += bc;
+
+#if 0
+	// Give an advantage to having pieces closer together
+	bc = _posStats.getSpreadContrib(evalColour) * _spreadValue;
+	score += bc;
+	if (_spreadValue>0) {
+		cout << "Spread val: " << _spreadValue << endl;
+		cout << "bc: " << bc << endl;
+	}
+#endif
 
 	return score;
 }
