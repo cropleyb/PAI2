@@ -166,7 +166,7 @@ TEST_F(AISubsystemFixture, test_strange) {
 "6. (5, 6)\n"
 "7. (4, 9)\n";
     Loc move = doTheSearchTest(gameStr);
-	_game.print();
+	//_game.print();
 	EXPECT_EQ(Loc(8,6), move); // (4,7)??? (4,8)???
 	// EXPECT_EQ(Loc(8,6), move); // (4,7)??? (4,8)???
 	//EXPECT_EQ(Loc(5,8), move); // I'm not sure which is better...
@@ -311,7 +311,7 @@ TEST_F(AISubsystemFixture, test_bad) {
 "39.(12, 8)\n";
 
     Loc move = doTheSearchTest(gameStr);
-	_game.print();
+	//_game.print();
 	EXPECT_EQ(Loc(10,10), move);
 }
 #endif
@@ -552,7 +552,7 @@ TEST_F(AISubsystemFixture, testMustBlockOpen4) {
 //"(8, 8)\n"
 ;
     Loc move = doTheSearchTest(gameStr);
-	_game.print();
+	//_game.print();
 	EXPECT_EQ(Loc(10,10), move);
 }
 
@@ -615,6 +615,7 @@ TEST_F(AISubsystemFixture, testLevel1SameAsPAI1) {
 }
 
 TEST_F(AISubsystemFixture, testLevel2SameAsPAI1) {
+	_game.setVCTDepth(0);
     string gameStr = \
 "boardwidth:19\n"
 "depth:2\n"
@@ -627,7 +628,7 @@ TEST_F(AISubsystemFixture, testLevel2SameAsPAI1) {
 "7. (11, 8)\n"
 ;
     Loc move = doTheSearchTest(gameStr);
-	_game.print();
+	//_game.print();
 	EXPECT_EQ(Loc(12, 11), move);
 #if 0
 "8. (12, 11)\n"
@@ -690,6 +691,206 @@ TEST_F(AISubsystemFixture, testForgotToDefend) {
 	EXPECT_NE(Loc(5,11), move);
 }
 #endif
+
+#ifdef NEW_SYSTEM_TESTS
+#if 0
+Ten 2 versus Lupulo
+19x19
+Tournament rules
+#endif
+// ./debug/tests --gtest_filter="testFinishItOff1*"
+TEST_F(AISubsystemFixture, testFinishItOff1) {
+    string gameStr = \
+//"depth:10\n"
+"depth:7\n" // 7+ depth levels trigger this.
+"boardsize:19\n"
+"rules:Tournament\n"
+"1. (9, 9)\n"
+"2. (10, 8)\n"
+"3. (9, 12)\n"
+"4. (11, 8)\n"
+"5. (9, 8)\n"
+"6. (9, 10)\n"
+"7. (9, 7)\n"
+"8. (12, 8)\n"
+"9. (9, 6)\n"
+"10. (9, 5)\n"
+"11. (12, 7)\n"
+"12. (14, 8)\n"
+"13. (13, 8)\n"
+"14. (11, 6)\n"
+"15. (14, 9)\n"
+"16. (12, 6)\n"
+"17. (15, 10)\n"
+"18. (16, 11)\n"
+"19. (11, 10)\n"
+"20. (11, 7)\n"
+"21. (10, 11)\n"
+"22. (12, 9)\n"
+"23. (12, 10)\n"
+"24. (12, 9)\n"
+"25. (13, 10)\n"
+"26. (14, 10)\n"
+"27. (8, 13)\n"
+"28. (7, 14)\n"
+"29. (10, 7)\n"
+"30. (12, 9)\n"
+"31. (11, 5)\n"
+"32. (13, 6)\n"
+"33. (14, 6)\n"
+"34. (13, 5)\n"
+"35. (11, 8)\n"
+"36. (11, 6)\n"
+"37. (11, 7)\n"
+"38. (11, 9)\n"
+;
+    Loc move = doTheSearchTest(gameStr);
+	EXPECT_NE(Loc(8, 9), move); // probably wins, but not the quickest.
+}
+
+// ./debug/tests --gtest_filter="testFinishItOff2*"
+TEST_F(AISubsystemFixture, testFinishItOff2) {
+    string gameStr = \
+//"depth:10\n"
+"depth:7\n" // 7+ depth levels trigger this.
+"boardsize:19\n"
+"rules:Tournament\n"
+"1. (9, 9)\n"
+"2. (10, 8)\n"
+"3. (9, 12)\n"
+"4. (11, 8)\n"
+"5. (9, 8)\n"
+"6. (9, 10)\n"
+"7. (9, 7)\n"
+"8. (12, 8)\n"
+"9. (9, 6)\n"
+"10. (9, 5)\n"
+"11. (12, 7)\n"
+"12. (14, 8)\n"
+"13. (13, 8)\n"
+"14. (11, 6)\n"
+"15. (14, 9)\n"
+"16. (12, 6)\n"
+"17. (15, 10)\n"
+"18. (16, 11)\n"
+"19. (11, 10)\n"
+"20. (11, 7)\n"
+"21. (10, 11)\n"
+"22. (12, 9)\n"
+"23. (12, 10)\n"
+"24. (12, 9)\n"
+"25. (13, 10)\n"
+"26. (14, 10)\n"
+"27. (8, 13)\n"
+"28. (7, 14)\n"
+"29. (10, 7)\n"
+"30. (12, 9)\n"
+"31. (11, 5)\n"
+"32. (13, 6)\n"
+"33. (14, 6)\n"
+"34. (13, 5)\n"
+"35. (11, 8)\n"
+"36. (11, 6)\n"
+"37. (11, 7)\n"
+"38. (11, 9)\n"
+"39. (8, 9)\n"
+"40. (8, 7)\n"
+"41. (11, 7)\n"
+"42. (13, 7)\n"
+"43. (14, 4)\n"
+"44. (13, 5)\n"
+"45. (7, 10)\n"
+"46. (6, 11)\n"
+;
+    Loc move = doTheSearchTest(gameStr);
+	EXPECT_NE(Loc(13, 4), move);
+}
+
+// ./debug/tests --gtest_filter="testFinishItOff3*"
+TEST_F(AISubsystemFixture, testFinishItOff3) {
+    string gameStr = \
+"depth:10\n"
+"boardsize:19\n"
+"rules:Tournament\n"
+"1. (9, 9)\n"
+"2. (10, 8)\n"
+"3. (9, 12)\n"
+"4. (11, 8)\n"
+"5. (9, 8)\n"
+"6. (9, 10)\n"
+"7. (9, 7)\n"
+"8. (12, 8)\n"
+"9. (9, 6)\n"
+"10. (9, 5)\n"
+"11. (12, 7)\n"
+"12. (14, 8)\n"
+"13. (13, 8)\n"
+"14. (11, 6)\n"
+"15. (14, 9)\n"
+"16. (12, 6)\n"
+"17. (15, 10)\n"
+"18. (16, 11)\n"
+"19. (11, 10)\n"
+"20. (11, 7)\n"
+"21. (10, 11)\n"
+"22. (12, 9)\n"
+"23. (12, 10)\n"
+"24. (12, 9)\n"
+"25. (13, 10)\n"
+"26. (14, 10)\n"
+"27. (8, 13)\n"
+"28. (7, 14)\n"
+"29. (10, 7)\n"
+"30. (12, 9)\n"
+"31. (11, 5)\n"
+"32. (13, 6)\n"
+"33. (14, 6)\n"
+"34. (13, 5)\n"
+"35. (11, 8)\n"
+"36. (11, 6)\n"
+"37. (11, 7)\n"
+"38. (11, 9)\n"
+"39. (8, 9)\n"
+"40. (8, 7)\n"
+"41. (11, 7)\n"
+"42. (13, 7)\n"
+"43. (14, 4)\n"
+"44. (13, 5)\n"
+"45. (7, 10)\n"
+"46. (6, 11)\n"
+"47. (13, 4)\n"
+"48. (15, 9)\n"
+"49. (16, 10)\n"
+"50. (17, 10)\n"
+"51. (16, 10)\n"
+"52. (13, 11)\n"
+"53. (16, 8)\n"
+"54. (12, 12)\n"
+"55. (11, 13)\n"
+"56. (15, 12)\n"
+"57. (14, 13)\n"
+"58. (15, 11)\n"
+"59. (15, 10)\n"
+"60. (15, 13)\n"
+"61. (14, 11)\n"
+"62. (17, 11)\n"
+
+#if 0
+"63. (15, 15)\n"
+"64. (17, 8)\n"
+"65. (13, 9)\n"
+"66. (11, 11)\n"
+"67. (12, 10)\n"
+#endif
+;
+    Loc move = doTheSearchTest(gameStr);
+	cout << move << endl;
+	//_game.print();
+	
+	EXPECT_NE(Loc(15, 15), move);
+}
+#endif
+
 
 #if 0
 "1.(9, 9)\n"
