@@ -49,6 +49,12 @@ public:
 		return 0;
 	}
 
+	UtilityValue getSpreadContrib(Colour /*c*/) const
+	{
+		// TODO: test this...
+		return 0;
+	}
+
 	bool getCanWinByCaptures() const { return true; }
 	
 	CapCount _captured[3];
@@ -291,13 +297,13 @@ TEST_F(UtilityCalcFixture, testOneTakeIsWorthMoreThanTwoThrees) {
 	EXPECT_GT(u, 0);
 }
 
-TEST_F(UtilityCalcFixture, testOneTakeIsWorthLessThanThreeThrees) {
+TEST_F(UtilityCalcFixture, testOneTakeWithTheMoveIsWorthMoreThanThreeThrees) {
 	setLineCounts(P1, 0,0,0,0,0);
 	setLineCounts(P2, 0,0,3,0,0);
 	setTakes(1, 0);
 
 	UtilityValue u = uc.calcUtility(P1, P1, 14);
-	EXPECT_LT(u, 0);
+	EXPECT_GT(u, 0);
 }
 
 TEST_F(UtilityCalcFixture, testOneTakeWithTheMoveIsWorthMoreThanOneThree) {
@@ -527,104 +533,111 @@ Utility for 14: (-22938, 0) (Lines: [None, [26, 8, 0, 0, 0], [49, 1, 0, 0, 0]], 
 }
 
 
+// 45 -> 95
+#define BASE 95
+#define POWER 35
 TEST_F(UtilityCalcFixture, testLineValue) {
 	UtilityValue u;
 
 	setLineCounts(P1, 1, 0, 0, 0, 0);
 	u = uc.calcUtility(P1, P1, 1);
-	EXPECT_EQ(45, u);
+	EXPECT_EQ(BASE, u);
 
 	setLineCounts(P1, 0, 1, 0, 0, 0);
 	u = uc.calcUtility(P1, P1, 1);
-	EXPECT_EQ(1575, u);
+	EXPECT_EQ(BASE*POWER, u);
 
 	setLineCounts(P1, 0, 0, 1, 0, 0);
 	u = uc.calcUtility(P1, P1, 1);
-	EXPECT_EQ(55125, u);
+	EXPECT_EQ(BASE*POWER*POWER, u);
 
 	setLineCounts(P1, 0, 0, 0, 1, 0);
 	u = uc.calcUtility(P1, P1, 1);
 	EXPECT_LE(1e+20, u);
 }
 
+#define CSB 600
+//_capturesScale {1, 1, 1, 2, 4, 8},
 TEST_F(UtilityCalcFixture, testCapValue) {
 	UtilityValue u;
 
 	setCaptured(2, 0);
 	u = uc.calcUtility(P1, P1, 1);
-	EXPECT_EQ(27000, u);
+	EXPECT_EQ(CSB*BASE, u);
 
 	setCaptured(4, 0);
 	u = uc.calcUtility(P1, P1, 1);
-	EXPECT_EQ(54000, u);
+	EXPECT_EQ(CSB*BASE*2, u);
 
 	setCaptured(6, 0);
 	u = uc.calcUtility(P1, P1, 1);
-	EXPECT_EQ(162000, u);
+	EXPECT_EQ(CSB*BASE*3*2, u);
 
 	setCaptured(8, 0);
 	u = uc.calcUtility(P1, P1, 1);
-	EXPECT_EQ(432000, u);
+	EXPECT_EQ(CSB*BASE*4*4, u);
 
 	setCaptured(10, 0);
 	u = uc.calcUtility(P1, P1, 1);
 	EXPECT_LE(1e+20, u);
 }
 
+#define TASB 80
 TEST_F(UtilityCalcFixture, testTakeValue) {
 	UtilityValue u;
 
 	setTakes(1, 0);
 	u = uc.calcUtility(P1, P1, 1);
-	EXPECT_EQ(3600, u);
+	EXPECT_EQ(TASB*BASE, u);
 
 	setTakes(2, 0);
 	u = uc.calcUtility(P1, P1, 1);
-	EXPECT_EQ(7200, u);
+	EXPECT_EQ(TASB*BASE*2, u);
 
 	setTakes(4, 0);
 	u = uc.calcUtility(P1, P1, 1);
-	EXPECT_EQ(14400, u);
+	EXPECT_EQ(TASB*BASE*4, u);
 
 	setTakes(6, 0);
 	u = uc.calcUtility(P1, P1, 1);
-	EXPECT_EQ(21600, u);
+	EXPECT_EQ(TASB*BASE*6, u);
 
 	setTakes(8, 0);
 	u = uc.calcUtility(P1, P1, 1);
-	EXPECT_EQ(28800, u);
+	EXPECT_EQ(TASB*BASE*8, u);
 	
 	setTakes(10, 0);
 	u = uc.calcUtility(P1, P1, 1);
-	EXPECT_LE(36000, u);
+	EXPECT_LE(TASB*BASE*10, u);
 }
 
+#define THSB 20
 TEST_F(UtilityCalcFixture, testThreatValue) {
 	UtilityValue u;
 
 	setThreats(1, 0);
 	u = uc.calcUtility(P1, P1, 1);
-	EXPECT_EQ(900, u);
+	EXPECT_EQ(THSB*BASE, u);
 
 	setThreats(2, 0);
 	u = uc.calcUtility(P1, P1, 1);
-	EXPECT_EQ(1800, u);
+	EXPECT_EQ(THSB*BASE*2, u);
 
 	setThreats(4, 0);
 	u = uc.calcUtility(P1, P1, 1);
-	EXPECT_EQ(3600, u);
+	EXPECT_EQ(THSB*BASE*4, u);
 
 	setThreats(6, 0);
 	u = uc.calcUtility(P1, P1, 1);
-	EXPECT_EQ(5400, u);
+	EXPECT_EQ(THSB*BASE*6, u);
 
 	setThreats(8, 0);
 	u = uc.calcUtility(P1, P1, 1);
-	EXPECT_EQ(7200, u);
+	EXPECT_EQ(THSB*BASE*8, u);
 
 	setThreats(10, 0);
 	u = uc.calcUtility(P1, P1, 1);
-	EXPECT_LE(9000, u);
+	EXPECT_LE(THSB*BASE*10, u);
 }
 
 #if 0
@@ -647,4 +660,8 @@ TEST_F(UtilityCalcFixture, testWhiteNoWinByCapturesForFiveInARow) {
 
 #endif
 
-
+TEST_F(UtilityCalcFixture, testSpread) {
+	// TODO
+	UtilityValue u = uc.calcUtility(P1, P1, 1);
+	EXPECT_EQ(u, 0);
+}
