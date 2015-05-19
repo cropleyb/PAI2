@@ -75,9 +75,9 @@ public:
 		return _patternCounts[c];
 	}
 	
-	PattCount getNumPatterns(Colour c, LinePatternType pattern) const
+	PattCount getNumPatterns(Colour c, int patternType) const
 	{
-		return _patternCounts[c][pattern];
+		return _patternCounts[c][patternType];
 	}
 
 	Colour getWonBy() const
@@ -96,6 +96,10 @@ public:
 		if (getNumPatterns(c, Line3) > 0) {
 			return 2;
 		}
+		if (getNumPatterns(c, Blocked4Take) > 1) {
+			// c has a blocked four and a take of the blocker -> 2
+			return 2;
+		}
 		if (_captured[c] >= 8 && getNumPatterns(c, Threat) > 0) {
 			return 2;
 		}
@@ -103,8 +107,7 @@ public:
 			// Guess that there will be enough for two caps. i.e. no shared stones in the takes
 			return 2;
 		}
-		// TODO!: c has a blocked four and a take of the blocker -> 2
-
+		// TODO: skip VCT earlier in the game...
 		return 3;
 	}
 
