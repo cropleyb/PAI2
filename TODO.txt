@@ -4,7 +4,7 @@ Components
 ----------
 AlphaBeta - Mock out Bridge as template
 
-Move Suggestor
+MoveSuggester
 Utility Calculator
 Utility Stats
 Game State
@@ -69,7 +69,7 @@ PositionStats
  /- max depth * max breadth array of Locs
  /- max depth * number of Locs
  /- max depth * next Loc index
-/ MoveSuggestor = old PriorityFilter
+/ MoveSuggester = old PriorityFilter
  /- All except PL sorting
 /AlphaBeta
  /- first cut
@@ -371,6 +371,86 @@ perhaps a list of most threatening structures for each player?
 
 Why is PAI2 still not as strong as PAI1?
 Set up some test cases (AI subsystem) and do some parallel debugging
+
+Types of important caps
+-----------------------
+Blocked4Take (the blocker of our 4)
+Their 4 (any of the stones)
+TheirTake (the attacking stone)
+Then defensive versions of each, ahead of standard versions of each - we get these for free if they are incrementally maintained for both sides.
+
+Mostly the same for threats...
+(4->3)
+
+SpecialOccsTable
+Counts of important features per loc:
+
+We don't care *which* structure is threatened, only the type of structure (and the counts)
+So for each loc, we need a count with a max of:
+count of: 4s, blocked four blockers & take stones - for each colour.
+4s: 5 x 4 = 20 => 5 bits
+blocked four blockers: 5 x 4 = 20 => 5 bits
+take stones: 2 x 4 = 8 => 3 bits
+total: 13 bits
+
+BBB.aBBB.: 5 x 4 = 20 => 5 bits
+
+CapTable
+Directions and dist from possible take triggers per loc.
+For normal pente there are 2 distances * 8 directions = 16 bits per loc.
+	void addCap(Loc trigger, DirectionType dir, CompressedLoc offset, int inc)
+
+Need one of each table type per colour
+
+Use these tables to populate new PriorityLevels:
+
+Pattern types
+LinePatternTypes are currently used for the spaces that can be played on
+AND
+the priority levels used by the move suggestor:
+
+enum LinePatternType
+{
+	NoPattern=0,
+	Line1=1,
+	Line2=2,
+	Threat=3,
+	Line3=4,
+	Take=5,
+	Line4=6,
+    Line5=7,
+	Blocked=8,
+	MAX_LINE_PATTERN_TYPE=9
+};
+
+There are now more capture related priority pattern types:
+	FourTake      // any of the stones
+	FourBlockTake // the blocker of our 4
+	TakeTake      // the attacking stone
+	...as well as a raw take
+
+Ordering for MS?
+Neither FourTake is relevant by that point as neither player has a four.
+Our FourBlockTake and Our TakeTake are good, as are their versions of FT and TT.
+
+OFBT TFBT OTT TTT
+
+
+Where do these go?
+	inherit from enum?
+	parallel enum?
+	cast to new enum for PLs?
+
+The LinePattern class needs to report a new list of these important indices.
+For takes there are 2 types, one for us, one for them.
+At the LinePattern level, there is only 1 LinePatternType.
+
+Modify MoveSuggester to use new PLs
+Add flag to PosStats to switch on TakeTargeting
+Use new PLs in UtilCalc
+Use new PLs in PenteGame for VCT calc
+Add Locs to LinePattern for capturable stones
+Create PLs from LinePatterns (with SpecialOccsTable and CapTable) in PosStats(?)
 
 Fukami
 ------
