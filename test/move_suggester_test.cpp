@@ -497,13 +497,14 @@ TEST_F(MoveSuggesterFixture, OnlyTakeFourWhenThereAreTwoFours)
 	EXPECT_EQ(Loc(3,3), la[0]);
 }
 
-TEST_F(MoveSuggesterFixture, takeTakeBeforeTakeBlock)
+TEST_F(MoveSuggesterFixture, TakeTakeBeforeBlockTake)
 {
 	ps._takeTargeting = true;
 	setCapturedBy(P2, 8);
 	arcs(P2, Take, 1, Loc(2,4));
 	arcs(P1, TakeTake, 1, Loc(3,3));
 	LocArr la = getLocsInOrder(0);
+	// But try both.
 	EXPECT_EQ(2, la.size());
 	EXPECT_EQ(Loc(3,3), la[0]);
 	EXPECT_EQ(Loc(2,4), la[1]);
