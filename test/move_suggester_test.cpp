@@ -50,7 +50,7 @@ public:
 	}
 
 	template<typename ... Types>
-	void arcs(Colour c, PatternType l, int inc, Types ... rest)
+	void arcs(Colour c, LinePatternType l, int inc, Types ... rest)
 	{
 		LocArr ll;
 		addLocs(ll, rest...);

@@ -5,7 +5,7 @@
 #include "span_entry.h"
 
 // Test code only
-void PositionStats::reportCandidate(Colour colour, PatternType pt, Loc loc, Step inc)
+void PositionStats::reportCandidate(Colour colour, LinePatternType pt, Loc loc, Step inc)
 {
 	_patternCounts[colour][pt] += inc;
 
@@ -14,7 +14,7 @@ void PositionStats::reportCandidate(Colour colour, PatternType pt, Loc loc, Step
 }
 
 // Test code only
-void PositionStats::reportCandidates(Colour colour, PatternType pt, const vector<Loc> &locArr, Step inc)
+void PositionStats::reportCandidates(Colour colour, LinePatternType pt, const vector<Loc> &locArr, Step inc)
 {
 	_patternCounts[colour][pt] += inc;
 
@@ -32,8 +32,17 @@ void PositionStats::reportCandidates(Colour colour, PatternType pt, const vector
 void PositionStats::report(const SpanEntry &spanEntry, const LinePattern &patternEntry, int inc)
 {
 	Colour c = patternEntry._colour;
-	PatternType pt = patternEntry._patternType;
+	LinePatternType pt = patternEntry._patternType;
 	//assert(pt < MAX_PATTERN_TYPE);
+
+#if 0
+    if (pt == Line4 or pt == Blocked or pt == Take) {
+		if (pt == Take) {
+			_takeTable.addCap(Loc trigger, DirectionType dir, int inc);
+		}
+	    _specialOccs.add(Loc trigger, DirectionType dir, int inc);
+	}
+#endif
 
 #if 0
 	StId stId = -1;

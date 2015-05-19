@@ -8,7 +8,7 @@
  * Locs on the board. The LineLookupTable is used to find these rapidly.
  */
 
-enum PatternType
+enum LinePatternType
 {
 	NoPattern=0,
 	Line1=1,
@@ -19,7 +19,14 @@ enum PatternType
 	Line4=6,
     Line5=7,
 	Blocked=8,
-	MAX_PATTERN_TYPE=9
+	MAX_LINE_PATTERN_TYPE=9
+};
+
+enum ExtraPriorityLevels {
+	Blocked4Take=11,
+	TakeTake=12,
+	FourTake=13,
+	MAX_PATTERN_TYPE=14
 };
 
 class LinePattern
@@ -63,7 +70,7 @@ public:
 	friend std::ostream & operator<<(std::ostream &os, const LinePattern& lti);
 
 	Colour _colour;
-	PatternType _patternType;
+	LinePatternType _patternType;
 	Breadth _candInds[5];
 	// std::array<Breadth, 5> _candInds; // TODO
     unsigned char _numInds;

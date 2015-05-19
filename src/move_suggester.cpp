@@ -76,6 +76,7 @@ bool MoveSuggester::getPriorityLevels(Colour ourColour)
 {
 	bool onePoss;
 
+	const bool takeTargeting = _posStats._takeTargeting;
 	Colour theirColour = otherPlayer(ourColour);
 
 	const PriorityLevel &ourFours
@@ -114,51 +115,81 @@ bool MoveSuggester::getPriorityLevels(Colour ourColour)
 
 	if (cwbc and theirCaptureCount >= 8 and theirTakes.getNumCands() > 0) {
 		// Block their takes, or capture one of the ends of an
-		// attacker, or lose. Include blocking one of their fours or we
-		// may have no moves
-		_toSearchLevels[0] = &ourTakes; // TODO: only those that are attacking our pairs
-		_toSearchLevels[1] = &theirTakes;
-		_emergencySearchLevel = &theirFours;
-		_numSearchLevels = 2;
+		// attacker, or lose.
+		const PriorityLevel &ourTakeTakes
+			= _posStats.getPriorityLevel(ourColour, TakeTake);
+		_numSearchLevels = 0;
+		if (takeTargeting and ourTakeTakes.getNumCands() > 0) {
+		    // Only those that are attacking our pairs
+			_toSearchLevels[_numSearchLevels++] = &ourTakeTakes;
+		}
+		if (not takeTargeting and ourTakes.getNumCands() > 0) {
+			// Old version for comparison
+			_toSearchLevels[_numSearchLevels++] = &ourTakes;
+		}
+		// Always try to block at least one of their takes
+		_toSearchLevels[_numSearchLevels++] = &theirTakes;
 		onePoss = false;
 		return onePoss;
 	}
 
 	if (theirFours.getNumCands() > 0) {
+		const PriorityLevel &ourFourTakes
+			= _posStats.getPriorityLevel(ourColour, FourTake);
 		if (theirFours.getNumCands() > 1) {
-			if (ourTakes.getNumCands() > 0) {
+			// They have more than one location where they can win, so blocking is impossible.
+			_numSearchLevels = 0;
+			onePoss = true;
+			if (not takeTargeting and ourTakes.getNumCands() > 0) {
+				_toSearchLevels[_numSearchLevels++] = &ourTakes;
 				// We will lose unless we capture
 				MSD(cout << "P" << (int)ourColour << " lose by 5 in a row unless we take" << endl;)
-				// TODO: only those that take at least one stone from each of their 4s
-				_toSearchLevels[0] = &ourTakes;
-
-				_emergencySearchLevel = &theirFours; // This loses, but we need a move
-				_numSearchLevels = 1;
 				onePoss = false;
-				return onePoss;
-			} else {
-				// Might as well block one of them, can't stop 'em all
-				MSD(cout << " lose by 5 in a row imminently." << endl;)
-				_emergencySearchLevel = &theirFours;
-				_numSearchLevels = 0;
-				onePoss = true;
-				return onePoss;
 			}
+			if (takeTargeting and ourFourTakes.getNumCands() > 0) {
+				// TODO: only those that take at least one stone from EACH of their 4s
+				_toSearchLevels[_numSearchLevels++] = &ourFourTakes;
+				onePoss = false;
+			}
+
+			if (_numSearchLevels == 0) {
+				MSD(cout << " lose by 5 in a row imminently." << endl;)
+			}
+			// Might as well block one of them, can't stop 'em all
+			_emergencySearchLevel = &theirFours;
+			return onePoss;
 		}
 
 		// else: They have exactly one 4 attack
 		// We will lose unless we block or capture part of it.
 		MSD(cout << "P" << (int)ourColour << " lose by 5 in a row unless we block or capture part of it." << endl;)
-		_toSearchLevels[0] = &theirFours;
-		_numSearchLevels = 1;
+		_numSearchLevels = 0;
 		onePoss = true;
-		if (ourTakes.getNumCands() > 0) {
-			_toSearchLevels[1] = &ourTakes; // TODO: only inc intersecting caps.
-			_numSearchLevels = 2;
+
+		const PriorityLevel &ourTakeTakes
+			= _posStats.getPriorityLevel(ourColour, TakeTake);
+
+		if (takeTargeting and ourTakeTakes.getNumCands() > 0) {
+		   	// Only include caps that take from a four.
+			// Since we know this take will help, order it first
+			_toSearchLevels[_numSearchLevels++] = &ourTakeTakes;
+			onePoss = false;
+		}
+		_toSearchLevels[_numSearchLevels++] = &theirFours;
+		if (not takeTargeting and ourTakes.getNumCands() > 0) {
+			// Old behaviour for comparison...
+			_toSearchLevels[_numSearchLevels++] = &ourTakes;
 			onePoss = false;
 		}
 		return onePoss;
 	}
+		
+	// Defaulting to many levels
+	fillPriorityLevels(ourColour, theirColour);
+	_numSearchLevels = 10;
+	onePoss = false;
+	return onePoss;
+}
 
 #if 0
 	// TODO
@@ -233,21 +264,26 @@ bool MoveSuggester::getPriorityLevels(Colour ourColour)
 	}
 #endif
 
-	// Defaulting to many levels
-	fillPriorityLevels(ourColour, theirColour);
-	_numSearchLevels = 10;
-	onePoss = false;
-	return onePoss;
-}
 
 // TODO This could be cached.
 void MoveSuggester::fillPriorityLevels(Colour ourColour, Colour theirColour)
 {
 	int i=0;
-	for (int level=Take; level>=Line1; level--)
+	int level;
+	if (_posStats._takeTargeting) {
+		// Targetted takes should be searched first
+		// There is no point including FourTakes as they will have been used above if necessary
+		//for (level=Blocked4Take; level>=TakeTake; level--)
+		for (level=FourTake; level>=TakeTake; level--)
+		{
+			_toSearchLevels[i++] = &_posStats.getPriorityLevel(ourColour, (LinePatternType)level);
+			_toSearchLevels[i++] = &_posStats.getPriorityLevel(theirColour, (LinePatternType)level);
+		}
+	}
+	for (level=Take; level>=Line1; level--)
 	{
-		_toSearchLevels[i++] = &_posStats.getPriorityLevel(ourColour, (PatternType)level);
-		_toSearchLevels[i++] = &_posStats.getPriorityLevel(theirColour, (PatternType)level);
+		_toSearchLevels[i++] = &_posStats.getPriorityLevel(ourColour, (LinePatternType)level);
+		_toSearchLevels[i++] = &_posStats.getPriorityLevel(theirColour, (LinePatternType)level);
 	}
 }
 

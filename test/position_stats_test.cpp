@@ -5,6 +5,7 @@
 #include "defines.h"
 #include "loc.h"
 #include "position_stats.h"
+#include "span_lookup_table.h"
 
 class PositionStatsFixture : public testing::Test {
 public:
@@ -245,4 +246,26 @@ TEST_F(PositionStatsFixture, canForceByThreeTakes) {
 	EXPECT_EQ(false, forced);
 	bool theyreForced = ps.isForced(P2);
 	EXPECT_EQ(true, theyreForced);
+}
+
+/////////////////////////////////////////////////////
+// Take PriorityLevels
+/////////////////////////////////////////////////////
+
+TEST_F(PositionStatsFixture, TakeTableIsUpdated) {
+#if 0
+	SpanEntry se;
+	se._strip = 0;    // Ind for strip number of a known direction
+	se._locIndex = 0; // Index of this loc
+    se._minIndex = 0; // Min index for updating this loc
+	se._maxIndex = 4; // Max index for updating this loc
+	se._stripMax = 18; // Max index for the entire strip
+	se._baseLoc = 0;         // Base location for this strip
+	se._offsetPerIndex = 1;  // Offset per index val for this strip
+	se._direction = E_DIR; // Direction that this strip goes
+#endif
+	SpanEntry &se = spanLookupTable[E_DIR][Loc(0,0)._value];
+	//void PositionStats::report(const SpanEntry &spanEntry, const LinePattern &patternEntry, int inc)
+	//ps.reportCandidate(P1, Take, Loc(5,3), 1);
+	//EXPECT_EQ(true, );
 }

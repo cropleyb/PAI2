@@ -9,13 +9,13 @@
 #include <cmath>
 
 class SpanEntry;
-//class LinePattern;
 
 class PositionStats
 {
 public:
 	PositionStats()
 	{
+		_takeTargeting = false;
 		_canWinByCaptures = true;
 		reset();
 	}
@@ -65,7 +65,7 @@ public:
 
 	void report(const SpanEntry &spanEntry, const LinePattern &patternEntry, int inc);
 
-	const PriorityLevel &getPriorityLevel(Colour c, PatternType pattern) const
+	const PriorityLevel &getPriorityLevel(Colour c, int pattern) const
 	{
 		return _levels[c][pattern];
 	}
@@ -75,7 +75,7 @@ public:
 		return _patternCounts[c];
 	}
 	
-	PattCount getNumPatterns(Colour c, PatternType pattern) const
+	PattCount getNumPatterns(Colour c, LinePatternType pattern) const
 	{
 		return _patternCounts[c][pattern];
 	}
@@ -189,6 +189,8 @@ public:
 
 	bool isForced(Colour currentPlayer) { return getMovesToWin(currentPlayer) > getMovesToWin(otherPlayer(currentPlayer)); }
 
+	bool _takeTargeting;
+
 private:
 	void updateWonBy(Colour c)
 	{
@@ -198,8 +200,8 @@ private:
 	}
 
 	// Test code only
-	void reportCandidate(Colour colour, PatternType pt, Loc loc, Step inc);
-	void reportCandidates(Colour colour, PatternType pt, const vector<Loc> &locArr, Step inc);
+	void reportCandidate(Colour colour, LinePatternType pt, Loc loc, Step inc);
+	void reportCandidates(Colour colour, LinePatternType pt, const vector<Loc> &locArr, Step inc);
 
 	// TODO: Extract player stats?
 	PriorityLevel _levels[3][MAX_PATTERN_TYPE];
