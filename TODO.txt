@@ -445,8 +445,9 @@ The LinePattern class needs to report a new list of these important indices.
 For takes there are 2 types, one for us, one for them.
 At the LinePattern level, there is only 1 LinePatternType.
 
-Modify MoveSuggester to use new PLs
-Add flag to PosStats to switch on TakeTargeting
+#Add flag to PosStats to switch on TakeTargeting
+#Modify MoveSuggester to use new PLs
+New unit tests for MS
 Use new PLs in UtilCalc
 Use new PLs in PenteGame for VCT calc
 Add Locs to LinePattern for capturable stones
