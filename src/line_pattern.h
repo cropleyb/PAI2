@@ -23,8 +23,8 @@ enum LinePatternType
 };
 
 enum ExtraPriorityLevels {
-	Blocked4Take=11,
-	TakeTake=12,
+	TakeTake=11,
+	Blocked4Take=12,
 	FourTake=13,
 	MAX_PATTERN_TYPE=14
 };
