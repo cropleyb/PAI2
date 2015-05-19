@@ -447,9 +447,9 @@ At the LinePattern level, there is only 1 LinePatternType.
 
 #Add flag to PosStats to switch on TakeTargeting
 #Modify MoveSuggester to use new PLs
-New unit tests for MS
+#New unit tests for MS
+#Use new PLs in PenteGame for VCT calc
 Use new PLs in UtilCalc
-Use new PLs in PenteGame for VCT calc
 Add Locs to LinePattern for capturable stones
 Create PLs from LinePatterns (with SpecialOccsTable and CapTable) in PosStats(?)
 
