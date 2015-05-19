@@ -166,13 +166,10 @@ bool MoveSuggester::getPriorityLevels(Colour ourColour)
 		_numSearchLevels = 0;
 		onePoss = true;
 
-		const PriorityLevel &ourTakeTakes
-			= _posStats.getPriorityLevel(ourColour, TakeTake);
-
-		if (takeTargeting and ourTakeTakes.getNumCands() > 0) {
+		if (takeTargeting and ourFourTakes.getNumCands() > 0) {
 		   	// Only include caps that take from a four.
 			// Since we know this take will help, order it first
-			_toSearchLevels[_numSearchLevels++] = &ourTakeTakes;
+			_toSearchLevels[_numSearchLevels++] = &ourFourTakes;
 			onePoss = false;
 		}
 		_toSearchLevels[_numSearchLevels++] = &theirFours;

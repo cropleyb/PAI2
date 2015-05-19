@@ -50,11 +50,11 @@ public:
 	}
 
 	template<typename ... Types>
-	void arcs(Colour c, LinePatternType l, int inc, Types ... rest)
+	void arcs(Colour c, int l, int inc, Types ... rest)
 	{
 		LocArr ll;
 		addLocs(ll, rest...);
-		ps.reportCandidates(c, l, ll, inc);
+		ps.reportCandidates(c, (LinePatternType)l, ll, inc);
 	}
 
 	// Hack for testing...
@@ -458,7 +458,6 @@ TEST_F(MoveSuggesterFixture, test_add_and_remove_length_candidate_from_diff_dire
 	EXPECT_TRUE(okPair.contains(la[1]));
 }
 
-#if TODO
 TEST_F(MoveSuggesterFixture, test_multiple_entries_searched_first)
 {
 	arcs(P1, Line3, 1, Loc(2,4), Loc(4,6));
@@ -470,7 +469,75 @@ TEST_F(MoveSuggesterFixture, test_multiple_entries_searched_first)
 	EXPECT_TRUE(others.contains(la[1]));
 	EXPECT_TRUE(others.contains(la[2]));
 }
+
+////////////////////////////////////////////////////////////////////////
+// take targetting tests
+////////////////////////////////////////////////////////////////////////
+
+// debug/tests --gtest_filter="*takeFourFirst*"
+TEST_F(MoveSuggesterFixture, takeFourBeforeBlockingIt)
+{
+	ps._takeTargeting = true;
+	arcs(P2, Line4, 1, Loc(2,4));
+	arcs(P1, FourTake, 1, Loc(3,3));
+	LocArr la = getLocsInOrder(0);
+	EXPECT_EQ(2, la.size());
+	EXPECT_EQ(Loc(3,3), la[0]);
+	EXPECT_EQ(Loc(2,4), la[1]);
+}
+
+TEST_F(MoveSuggesterFixture, OnlyTakeFourWhenThereAreTwoFours)
+{
+	ps._takeTargeting = true;
+	arcs(P2, Line4, 1, Loc(2,4));
+	arcs(P2, Line4, 1, Loc(3,4));
+	arcs(P1, FourTake, 1, Loc(3,3));
+	LocArr la = getLocsInOrder(0);
+	EXPECT_EQ(1, la.size());
+	EXPECT_EQ(Loc(3,3), la[0]);
+}
+
+TEST_F(MoveSuggesterFixture, takeTakeBeforeTakeBlock)
+{
+	ps._takeTargeting = true;
+	setCapturedBy(P2, 8);
+	arcs(P2, Take, 1, Loc(2,4));
+	arcs(P1, TakeTake, 1, Loc(3,3));
+	LocArr la = getLocsInOrder(0);
+	EXPECT_EQ(2, la.size());
+	EXPECT_EQ(Loc(3,3), la[0]);
+	EXPECT_EQ(Loc(2,4), la[1]);
+}
+
+#if 0
+// TODO
+TEST_F(MoveSuggesterFixture, OnlyTakeTakeIfThereAreTwoTakeWins)
+{
+	ps._takeTargeting = true;
+	setCapturedBy(P2, 8);
+	arcs(P2, Take, 1, Loc(2,4));
+	arcs(P2, Take, 1, Loc(3,4));
+	arcs(P1, TakeTake, 1, Loc(3,3));
+	LocArr la = getLocsInOrder(0);
+	EXPECT_EQ(1, la.size());
+	EXPECT_EQ(Loc(3,3), la[0]);
+}
 #endif
+
+TEST_F(MoveSuggesterFixture, takeFourBlockerBeforeExtendThreeOrArbTake)
+{
+	ps._takeTargeting = true;
+	arcs(P1, Line3, 1, Loc(2,4));
+	arcs(P1, Take, 1, Loc(1,5));
+	arcs(P1, Blocked4Take, 1, Loc(3,3));
+	LocArr la = getLocsInOrder(0);
+	EXPECT_EQ(3, la.size());
+	EXPECT_EQ(Loc(3,3), la[0]);
+	EXPECT_EQ(Loc(1,5), la[1]);
+	EXPECT_EQ(Loc(2,4), la[2]);
+}
+
+// Other tests
 
 TEST_F(MoveSuggesterFixture, test_choose_the_only_winner)
 {
