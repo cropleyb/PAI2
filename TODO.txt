@@ -449,7 +449,7 @@ At the LinePattern level, there is only 1 LinePatternType.
 #Modify MoveSuggester to use new PLs
 #New unit tests for MS
 #Use new PLs in PenteGame for VCT calc
-Use new PLs in UtilCalc
+#Use new PLs in UtilCalc
 Add Locs to LinePattern for capturable stones
 Create PLs from LinePatterns (with SpecialOccsTable and CapTable) in PosStats(?)
 

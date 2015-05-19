@@ -67,7 +67,7 @@ public:
 	void expectCandInd(LinePattern &lti, BoardWidth cand, Types ... rest)
 	{
 		assert(lti._numInds < 4);
-		lti._candInds[lti._numInds++] = cand;
+		lti._inds[lti._numInds++] = cand;
 		expectCandInd(lti, rest...);
 	}
 

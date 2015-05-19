@@ -16,7 +16,7 @@ class UtilityCalc
 public:
 	UtilityCalc(const PS &ps) : _posStats(ps),
         _capturesScale {1, 1, 1, 2, 4, 8},
-        _patternScale {1, 1, 1, 1, 1, 1, 1, 1000000, 0}
+        _patternScale {1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1} // TODO: Cull
 	{
 		// TEMP until we have an equiv. to ai_genome
 		_moveFactor = 95.0;
@@ -27,6 +27,9 @@ public:
         _threatScoreBase = 20;
         //_blockedFourBase = 200; // Halved as only one is blocked
         _blockedFourBase = 0;
+        _takeBlocked4ScoreBase = 500; // Guesses for take targeting
+        _takeTakeScoreBase = 500;
+        _takeFourScoreBase = 500;
         _lengthFactor = 35;
         _judgement = 100;
         //_checkerboardValue = 35;
@@ -57,6 +60,9 @@ private:
 	int _takeScoreBase;
 	int _threatScoreBase;
 	int _blockedFourBase;
+	int _takeBlocked4ScoreBase;
+	int _takeTakeScoreBase;
+	int _takeFourScoreBase;
 	std::array<int,6> _capturesScale;
 	// _lengthScale;
 	int _lengthFactor;
@@ -152,6 +158,12 @@ UtilityValue UtilityCalc<PS>::utilityScore(Colour evalColour, Colour /*turnColou
 		score *= _lengthFactor;
 		score += evalPatterns[i] * _patternScale[i];
 	}
+    bool takeTargeting = _posStats._takeTargeting;
+    if (takeTargeting) {
+        score += evalPatterns[TakeTake] * _takeTakeScoreBase;
+        score += evalPatterns[FourTake] * _takeFourScoreBase;
+        score += evalPatterns[Blocked4Take] * _takeBlocked4ScoreBase;
+    }
 
 	// Unless we're playing keryo, capturesScale only needs to operate
 	// on pairs

@@ -41,7 +41,7 @@ public:
 	{
 		vector<Breadth> res;
 		for (int i=0; i<lp->_numInds; i++)
-			res.push_back(lp->_candInds[i]);
+			res.push_back(lp->_inds[i]);
 		return res;
 	}
 };

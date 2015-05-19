@@ -59,6 +59,7 @@ public:
 	
 	CapCount _captured[3];
 	PattCount _patternCounts[3][MAX_PATTERN_TYPE];
+	bool _takeTargeting = false;
 };
 
 class UtilityCalcFixture : public testing::Test {
