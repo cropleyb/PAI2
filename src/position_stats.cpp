@@ -67,7 +67,7 @@ void PositionStats::report(const SpanEntry &spanEntry, const LinePattern &patter
 	if (pt == Line5) updateWonBy(c);
 
 	PriorityLevel &level = _levels[c][pt];
-	for (int i=0; i<patternEntry._numInds; i++)
+	for (int i=0; i<patternEntry._numCands; i++)
 	{
 		Loc loc = spanEntry.convertIndToLoc(patternEntry._inds[i]);
 		level.addOrRemoveCandidate(loc, inc);

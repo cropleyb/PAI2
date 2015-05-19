@@ -45,8 +45,8 @@ void extendAndStoreLineLookups(Colour occ, int levelsDone,  Mask occVal, LinePat
 		if (ptRaw == Threat || ptRaw == Take) ptRaw++;
         lti._patternType = (LinePatternType)((int)ptRaw);
 	} else {
-		assert(lti._numInds < 5);
-		lti._candInds[lti._numInds++] = levelsDone;
+		assert(lti._numCands < 5);
+		lti._inds[lti._numCands++] = levelsDone;
 	}
 
     if (levelsDone >= 4)
@@ -101,7 +101,13 @@ void buildAndStoreEndedTakes(Colour c, bool side)
 			occVal = P2_CAPTURE_RIGHT_PATTERN;
 
 	Breadth candInd = 0;
-	if (side) candInd = 3;
+	Breadth takerInd = 3;
+	Breadth victim1Ind = 1;
+	Breadth victim2Ind = 2;
+	if (side) {
+		candInd = 3;
+		takerInd = 0;
+	}
 
 	LinePattern lti;
 	lti._colour = c;
@@ -109,8 +115,11 @@ void buildAndStoreEndedTakes(Colour c, bool side)
 
 	for (int lastColumn=EMPTY; lastColumn<=EDGE; lastColumn++)
 	{
-		lti._numInds = 0;
-		lti._candInds[lti._numInds++] = candInd;
+		lti._numCands = 1;
+		lti._inds[0] = candInd;
+		lti._inds[1] = victim1Ind;
+		lti._inds[2] = victim2Ind;
+		lti._inds[3] = takerInd;
 
 		Mask storeOccVal = occVal + (lastColumn << 8);
 		lengthLookup[storeOccVal] = lti;
@@ -142,8 +151,8 @@ void buildAndStoreEndedThreats(Colour c)
 	LinePattern lti;
 	lti._colour = c;
 	lti._patternType = Threat;
-	lti._candInds[lti._numInds++] = 0;
-	lti._candInds[lti._numInds++] = 3;
+	lti._inds[lti._numCands++] = 0;
+	lti._inds[lti._numCands++] = 3;
 
 	for (int lastColumn=EMPTY; lastColumn<=EDGE; lastColumn++)
 	{

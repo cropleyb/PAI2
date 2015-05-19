@@ -66,15 +66,15 @@ public:
 	template<typename ... Types>
 	void expectCandInd(LinePattern &lti, BoardWidth cand, Types ... rest)
 	{
-		assert(lti._numInds < 4);
-		lti._inds[lti._numInds++] = cand;
+		assert(lti._numCands < 4);
+		lti._inds[lti._numCands++] = cand;
 		expectCandInd(lti, rest...);
 	}
 
 	template<typename ... Types>
 	void expectCandInds(LinePattern &lti, Types ... rest)
 	{
-		lti._numInds = 0;
+		lti._numCands = 0;
 		expectCandInd(lti, rest...);
 	}
 

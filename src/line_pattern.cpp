@@ -11,12 +11,12 @@ string toStr(const LinePattern &pattern)
 	ostringstream ss;
 	ss << "Colour: " << (int)pattern._colour
 	   << " Match type: " << pattern._patternType;
-	if (pattern._numInds > 0)
+	if (pattern._numCands > 0)
 	{
 		ss << " Cands: ";
-		for (int i=0; i<pattern._numInds; i++)
+		for (int i=0; i<pattern._numCands; i++)
 		{
-			ss << pattern._candInds[i] << ",";
+			ss << pattern._inds[i] << ",";
 		}
 	}
 	ss << endl;

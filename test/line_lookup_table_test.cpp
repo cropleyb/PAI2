@@ -40,7 +40,7 @@ public:
 	vector<Breadth> inds(LinePattern *lp)
 	{
 		vector<Breadth> res;
-		for (int i=0; i<lp->_numInds; i++)
+		for (int i=0; i<lp->_numCands; i++)
 			res.push_back(lp->_inds[i]);
 		return res;
 	}

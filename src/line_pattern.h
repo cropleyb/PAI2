@@ -32,36 +32,36 @@ enum ExtraPriorityLevels {
 class LinePattern
 {
 public:
-	LinePattern() : _colour(EMPTY), _patternType(NoPattern), _numInds(0) {}
+	LinePattern() : _colour(EMPTY), _patternType(NoPattern), _numCands(0) {}
 
 	LinePattern(const LinePattern &orig) :
 		_colour(orig._colour),
 		_patternType(orig._patternType),
-		_numInds(orig._numInds)
+		_numCands(orig._numCands)
 	{
-		for (int i=0; i<_numInds; i++)
-			_candInds[i] = orig._candInds[i];
+		for (int i=0; i<5; i++) {
+			_inds[i] = orig._inds[i];
+		}
 	}
 
 	// Special copy constructor for adding a candidate offset simultaneously
 	LinePattern(const LinePattern &orig, Breadth candOffset) :
 		_colour(orig._colour),
 		_patternType(orig._patternType),
-		_numInds(orig._numInds)
+		_numCands(orig._numCands)
 	{
-		for (int i=0; i<orig._numInds; i++)
+		for (int i=0; i<5; i++)
 		{
-			_candInds[i] = orig._candInds[i] + candOffset;
+			_inds[i] = orig._inds[i] + candOffset;
 		}
 	}
 	
 	bool operator ==(const LinePattern &other) const
 	{
 		if ((_colour != other._colour) ||
-		    (_patternType != other._patternType) ||
-		    (_numInds != other._numInds)) return false;
-		for (int i=0; i<_numInds; i++)
-			if (_candInds[i] != other._candInds[i])
+		    (_patternType != other._patternType)) return false;
+		for (int i=0; i<_numCands; i++)
+			if (_inds[i] != other._inds[i])
 				return false;
 		return true;
 	}
@@ -71,9 +71,8 @@ public:
 
 	Colour _colour;
 	LinePatternType _patternType;
-	Breadth _candInds[5];
-	// std::array<Breadth, 5> _candInds; // TODO
-    unsigned char _numInds;
+	Breadth _inds[5];
+    unsigned char _numCands;
 };
 
 #endif
