@@ -64,6 +64,7 @@ public:
 	}
 
 	void report(const SpanEntry &spanEntry, const LinePattern &patternEntry, int inc);
+	void maintainTakePLs(const SpanEntry &spanEntry, const LinePattern &patternEntry, int inc);
 
 	const PriorityLevel &getPriorityLevel(Colour c, int pattern) const
 	{

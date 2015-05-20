@@ -27,27 +27,43 @@ void PositionStats::reportCandidates(Colour colour, LinePatternType pt, const ve
 
 //#include <assert.h>
 
+void PositionStats::maintainTakePLs(const SpanEntry &spanEntry, const LinePattern &patternEntry, int inc)
+{
+	Colour c = patternEntry._colour;
+	LinePatternType pt = patternEntry._patternType;
+
+	switch (pt) {
+		case Line4:
+			// _specialOccs.add(Loc trigger, DirectionType dir, int inc);
+			break;
+		case Blocked4:
+			// _specialOccs.add(Loc trigger, DirectionType dir, int inc);
+			break;
+		case Take:
+			// _takeTable.addCap(Loc trigger, DirectionType dir, int inc);
+			// _specialOccs.add(Loc trigger, DirectionType dir, int inc);
+			break;
+		default:
+			break;
+	}
+}
+
 // Convert each of the indices in patternEntry into Locs using span,
 // and update appropriately
 void PositionStats::report(const SpanEntry &spanEntry, const LinePattern &patternEntry, int inc)
 {
 	Colour c = patternEntry._colour;
 	LinePatternType pt = patternEntry._patternType;
-	//assert(pt < MAX_PATTERN_TYPE);
+	//assert(pt < MAX_LINE_PATTERN_TYPE);
 
-#if 0
-    if (pt == Line4 or pt == Blocked or pt == Take) {
-		if (pt == Take) {
-			_takeTable.addCap(Loc trigger, DirectionType dir, int inc);
-		}
-	    _specialOccs.add(Loc trigger, DirectionType dir, int inc);
+	if (_takeTargeting) {
+		maintainTakePLs(spanEntry, patternEntry, inc);
 	}
-#endif
 
 #if 0
 	StId stId = -1;
 
-    if (pt == Line4 or pt == Blocked or pt == Line3)
+    if (pt == Line4 or pt == Blocked4 or pt == Line3)
     {
         if (inc > 0) {
 			Structure &str = _structureMap.add(pt);
