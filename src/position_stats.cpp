@@ -27,9 +27,29 @@ void PositionStats::reportCandidates(Colour colour, LinePatternType pt, const ve
 
 //#include <assert.h>
 
-void PositionStats::maintainTakePLs(const SpanEntry &spanEntry, const LinePattern &patternEntry, int inc)
+void PositionStats::maintainTake(const SpanEntry &spanEntry, const LinePattern &patternEntry, int inc)
 {
 	Colour c = patternEntry._colour;
+
+	Loc trigger = spanEntry.convertIndToLoc(patternEntry._inds[0]);
+	for (int dist=1; dist<=2; dist++) {
+		CompressedLoc vuln = _takeTable[c].addOneCap(trigger, spanEntry._direction, spanEntry._offsetPerIndex, dist, inc);
+
+		SpecialOccsTable &sot = _specialOccsTable[c];
+		bool numSpecials = sot.isSpecial(vuln);
+		if (numSpecials > 0) {
+			SpecialOccCounts soc = sot.getCounts(vuln);
+
+			int numFTs = soc.fours;
+			PriorityLevel &level = _levels[c][FourTake];
+			level.addOrRemoveCandidate(trigger, inc*numFTs);
+		}
+	}
+}
+
+void PositionStats::maintainTakePLs(const SpanEntry &spanEntry, const LinePattern &patternEntry, int inc)
+{
+	// Colour c = patternEntry._colour;
 	LinePatternType pt = patternEntry._patternType;
 
 	switch (pt) {
@@ -40,8 +60,7 @@ void PositionStats::maintainTakePLs(const SpanEntry &spanEntry, const LinePatter
 			// _specialOccs.add(Loc trigger, DirectionType dir, int inc);
 			break;
 		case Take:
-			// _takeTable.addCap(Loc trigger, DirectionType dir, int inc);
-			// _specialOccs.add(Loc trigger, DirectionType dir, int inc);
+			maintainTake(spanEntry, patternEntry, inc);
 			break;
 		default:
 			break;

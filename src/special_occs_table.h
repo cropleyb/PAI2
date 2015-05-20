@@ -17,6 +17,14 @@ class SpecialOccsTable {
 public:
 	SpecialOccsTable() : _counts{0} {}
 
+    bool isSpecial(CompressedLoc cLoc) const {
+        return _counts[cLoc].all;
+    }
+
+    const SpecialOccCounts getCounts(CompressedLoc cLoc) const {
+        return _counts[cLoc];
+    }
+
 private:
 	SpecialOccCounts _counts[MAX_LOCS];
 };

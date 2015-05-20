@@ -4,6 +4,8 @@
 #include "priority_level.h"
 #include "defines.h"
 #include "line_pattern.h"
+#include "cap_table.h"
+#include "special_occs_table.h"
 
 #include <iostream>
 #include <cmath>
@@ -65,6 +67,7 @@ public:
 
 	void report(const SpanEntry &spanEntry, const LinePattern &patternEntry, int inc);
 	void maintainTakePLs(const SpanEntry &spanEntry, const LinePattern &patternEntry, int inc);
+	void maintainTake(const SpanEntry &spanEntry, const LinePattern &patternEntry, int inc);
 
 	const PriorityLevel &getPriorityLevel(Colour c, int pattern) const
 	{
@@ -223,6 +226,9 @@ private:
 
 	Colour _wonBy;
 	bool _canWinByCaptures;
+
+	CapTable _takeTable[3]; // 2 colours
+	SpecialOccsTable _specialOccsTable[3]; // 2 colours
 	// StId _structureLookup[MAX_PATTERN_TYPE][MAX_LOCS];
 };
 

@@ -11,11 +11,14 @@ class CapTable {
 public:
 	CapTable() : _takes {0} {}
 
-	void addCap(Loc trigger, DirectionType dir, CompressedLoc offset, int inc) {
-		for (int capInd=1; capInd<=2; capInd++) {
-			CompressedLoc capLocVal = trigger._value + (offset*capInd);
-			_takes[capLocVal] += inc * (1 << ((2 * dir) + capInd - 1));
-		}
+	CompressedLoc addOneCap(Loc trigger, DirectionType dir, CompressedLoc offset, Breadth dist, int inc) {
+		CompressedLoc capLocVal = trigger._value + (offset*dist);
+		_takes[capLocVal] += inc * (1 << ((2 * dir) + dist - 1));
+		return capLocVal;
+	}
+
+	bool hasTake(CompressedLoc cLoc) const {
+		return _takes[cLoc];
 	}
 
 private:
