@@ -183,7 +183,7 @@ UtilityValue UtilityCalc<PS>::utilityScore(Colour evalColour, Colour /*turnColou
 	}
 
 	UtilityValue bc;
-	bc = evalPatterns[Blocked] * _blockedFourBase;
+	bc = evalPatterns[Blocked4] * _blockedFourBase;
 	score += bc;
 
 	// Give an advantage to having more pieces on one colour of squares

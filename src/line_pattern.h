@@ -18,7 +18,7 @@ enum LinePatternType
 	Take=5,
 	Line4=6,
     Line5=7,
-	Blocked=8,
+	Blocked4=8,
 	MAX_LINE_PATTERN_TYPE=9
 };
 

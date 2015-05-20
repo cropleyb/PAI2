@@ -145,9 +145,9 @@ TEST_F(PositionStatsFixture, TestPatternCount) {
 
 TEST_F(PositionStatsFixture, TestBlockedCount) {
 	LocArr ll;
-	ps.reportCandidates(P2, Blocked, ll, 1); // inc
+	ps.reportCandidates(P2, Blocked4, ll, 1); // inc
 
-	PattCount c = ps.getNumPatterns(P2, Blocked);
+	PattCount c = ps.getNumPatterns(P2, Blocked4);
 	EXPECT_EQ(1, c);
 }
 

@@ -195,7 +195,7 @@ TEST_F(BoardStripFixture, TakeMatchesRightEdge) {
 
 TEST_F(BoardStripFixture, BlockedMatchesRightEdge) {
 	LinePattern lti;
-	lti._patternType = Blocked;
+	lti._patternType = Blocked4;
 	lti._colour = P1;
 	expectCandInds(lti);
 	EXPECT_CALL(mr, report(span, lti, 1));

@@ -198,7 +198,7 @@ void buildAndStoreBlocked(Colour c, int blockInd)
 
 	LinePattern lti;
 	lti._colour = c;
-	lti._patternType = Blocked;
+	lti._patternType = Blocked4;
 	lti._inds[0] = blockInd;
 	lengthLookup[occVal] = lti;
 }
