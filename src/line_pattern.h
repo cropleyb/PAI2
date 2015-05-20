@@ -81,7 +81,7 @@ public:
 		return _inds[0];
 	}
 
-	Breadth vulnerable(int index) const {
+	Breadth occupied(int index) const {
 		// only applicable to fours so far...
 		return _inds[index + 1];
 	}

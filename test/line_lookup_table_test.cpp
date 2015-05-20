@@ -99,10 +99,10 @@ TEST_F(LineLookupTableFixture, FourBlackLeft) {
 	EXPECT_EQ(P1, pattern->_colour);
 	EXPECT_EQ(Line4, pattern->_patternType);
 	EXPECT_EQ(4, pattern->_inds[0]);
-	ASSERT_THAT(0, pattern->vulnerable(0));
-	ASSERT_THAT(1, pattern->vulnerable(1));
-	ASSERT_THAT(2, pattern->vulnerable(2));
-	ASSERT_THAT(3, pattern->vulnerable(3));
+	ASSERT_THAT(0, pattern->occupied(0));
+	ASSERT_THAT(1, pattern->occupied(1));
+	ASSERT_THAT(2, pattern->occupied(2));
+	ASSERT_THAT(3, pattern->occupied(3));
 }
 
 TEST_F(LineLookupTableFixture, FourWhiteRight) {
@@ -110,10 +110,10 @@ TEST_F(LineLookupTableFixture, FourWhiteRight) {
 	EXPECT_EQ(P2, pattern->_colour);
 	EXPECT_EQ(Line4, pattern->_patternType);
 	EXPECT_EQ(0, pattern->_inds[0]);
-	ASSERT_THAT(1, pattern->vulnerable(0));
-	ASSERT_THAT(2, pattern->vulnerable(1));
-	ASSERT_THAT(3, pattern->vulnerable(2));
-	ASSERT_THAT(4, pattern->vulnerable(3));
+	ASSERT_THAT(1, pattern->occupied(0));
+	ASSERT_THAT(2, pattern->occupied(1));
+	ASSERT_THAT(3, pattern->occupied(2));
+	ASSERT_THAT(4, pattern->occupied(3));
 }
 
 TEST_F(LineLookupTableFixture, FourWhiteMiddle) {
@@ -121,10 +121,10 @@ TEST_F(LineLookupTableFixture, FourWhiteMiddle) {
 	EXPECT_EQ(P2, pattern->_colour);
 	EXPECT_EQ(Line4, pattern->_patternType);
 	EXPECT_EQ(2, pattern->_inds[0]);
-	ASSERT_THAT(0, pattern->vulnerable(0));
-	ASSERT_THAT(1, pattern->vulnerable(1));
-	ASSERT_THAT(3, pattern->vulnerable(2));
-	ASSERT_THAT(4, pattern->vulnerable(3));
+	ASSERT_THAT(0, pattern->occupied(0));
+	ASSERT_THAT(1, pattern->occupied(1));
+	ASSERT_THAT(3, pattern->occupied(2));
+	ASSERT_THAT(4, pattern->occupied(3));
 }
 
 TEST_F(LineLookupTableFixture, FourBlackMidLeft) {
@@ -132,10 +132,10 @@ TEST_F(LineLookupTableFixture, FourBlackMidLeft) {
 	EXPECT_EQ(P1, pattern->_colour);
 	EXPECT_EQ(Line4, pattern->_patternType);
 	EXPECT_EQ(1, pattern->_inds[0]);
-	ASSERT_THAT(0, pattern->vulnerable(0));
-	ASSERT_THAT(2, pattern->vulnerable(1));
-	ASSERT_THAT(3, pattern->vulnerable(2));
-	ASSERT_THAT(4, pattern->vulnerable(3));
+	ASSERT_THAT(0, pattern->occupied(0));
+	ASSERT_THAT(2, pattern->occupied(1));
+	ASSERT_THAT(3, pattern->occupied(2));
+	ASSERT_THAT(4, pattern->occupied(3));
 }
 
 TEST_F(LineLookupTableFixture, FourBlackMidRight) {
@@ -143,10 +143,10 @@ TEST_F(LineLookupTableFixture, FourBlackMidRight) {
 	EXPECT_EQ(P1, pattern->_colour);
 	EXPECT_EQ(Line4, pattern->_patternType);
 	EXPECT_EQ(3, pattern->_inds[0]);
-	ASSERT_THAT(0, pattern->vulnerable(0));
-	ASSERT_THAT(1, pattern->vulnerable(1));
-	ASSERT_THAT(2, pattern->vulnerable(2));
-	ASSERT_THAT(4, pattern->vulnerable(3));
+	ASSERT_THAT(0, pattern->occupied(0));
+	ASSERT_THAT(1, pattern->occupied(1));
+	ASSERT_THAT(2, pattern->occupied(2));
+	ASSERT_THAT(4, pattern->occupied(3));
 }
 
 /////////////////////////////////////////////////////
