@@ -76,6 +76,11 @@ public:
 		return _inds[3];
 	}
 
+	Breadth blocker() const {
+		// only applicable to blocked 5s...
+		return _inds[0];
+	}
+
 	// For debugging only
 	friend std::ostream & operator<<(std::ostream &os, const LinePattern& lti);
 

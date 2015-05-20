@@ -175,44 +175,36 @@ void buildAndStoreAllThreats()
 	}
 }
 
-// WBBBB
-U64 P1_BLOCKED_LEFT_PATTERN = P2 + (4 * P1) + (16 * P1) + (64 * P1) + (256 * P1);
-// BWWWW
-U64 P2_BLOCKED_LEFT_PATTERN = P1 + (4 * P2) + (16 * P2) + (64 * P2) + (256 * P2);
-// BBBBW
-U64 P1_BLOCKED_RIGHT_PATTERN = P1 + (4 * P1) + (16 * P1) + (64 * P1) + (256 * P2);
-// WWWWB
-U64 P2_BLOCKED_RIGHT_PATTERN = P2 + (4 * P2) + (16 * P2) + (64 * P2) + (256 * P1);
-
-void buildAndStoreBlocked(Colour c, bool side)
+void buildAndStoreBlocked(Colour c, int blockInd)
 {
-	Mask occVal;
-	if (c == P1)
-		if (side)
-			occVal = P1_BLOCKED_LEFT_PATTERN;
-		else
-			occVal = P1_BLOCKED_RIGHT_PATTERN;
-	else
-		if (side)
-			occVal = P2_BLOCKED_LEFT_PATTERN;
-		else
-			occVal = P2_BLOCKED_RIGHT_PATTERN;
+	Mask occVal = 0;
+	int factor = 1;
 
-	Breadth candInd = 0;
-	if (side) candInd = 3;
+	for (int ind=0; ind<5; ind++) {
+		Colour currCol;
+		if (ind != blockInd) {
+			currCol = c;
+		} else {
+			currCol = otherPlayer(c);
+		}
+		occVal += currCol * factor;
+		factor *= 4;
+	}
 
 	LinePattern lti;
 	lti._colour = c;
 	lti._patternType = Blocked;
+	lti._inds[0] = blockInd;
 	lengthLookup[occVal] = lti;
 }
 
 void buildAndStoreAllBlocked()
 {
-	buildAndStoreBlocked(P1, false);
-	buildAndStoreBlocked(P1, true);
-	buildAndStoreBlocked(P2, false);
-	buildAndStoreBlocked(P2, true);
+	for (Colour c=P1; c<=P2; c++) {
+		for (int blockInd=0; blockInd<=4; blockInd++) {
+			buildAndStoreBlocked(c, blockInd);
+		}
+	}
 }
 
 /* Build the entire lookup table */
