@@ -10,6 +10,7 @@
 
 using std::vector;
 typedef vector<Loc> LocArr;
+typedef unsigned long UL;
 
 using std::set;
 class LocSet : public set<Loc>
@@ -247,7 +248,7 @@ TEST_F(MoveSuggesterFixture, dontStartInTheMiddle13)
 {
 	// Starting in the middle of the board is not handled here.
 	LocArr la = getLocsInOrder(0);
-	EXPECT_EQ(0, la.size());
+	EXPECT_EQ((UL)0, la.size());
 }
 
 TEST_F(MoveSuggesterFixture, AddAndRemove)
@@ -256,7 +257,7 @@ TEST_F(MoveSuggesterFixture, AddAndRemove)
 	arcs(P1, Line4, -1, Loc(3,4));
 	arcs(P1, Line3, 1, Loc(3,2));
 	LocArr la = getLocsInOrder(0);
-	EXPECT_EQ(1, la.size());
+	EXPECT_EQ((UL)1, la.size());
 	EXPECT_EQ(Loc(3,2), la[0]);
 }
 
@@ -266,7 +267,7 @@ TEST_F(MoveSuggesterFixture, IterateOverOurFour)
 	arcs(P1, Line4, 1, Loc(3,4));
 	arcs(P1, Line3, 1, Loc(3,2));
 	LocArr la = getLocsInOrder(0);
-	EXPECT_EQ(1, la.size());
+	EXPECT_EQ((UL)1, la.size());
 	EXPECT_EQ(Loc(3,4), la[0]);
 }
 
@@ -276,7 +277,7 @@ TEST_F(MoveSuggesterFixture, iterate_over_one_of_their_fours)
 	arcs(P1, Take, 1, Loc(3,2));
 	setCapturedBy(P1, 6);
 	LocArr la = getLocsInOrder(0);
-	EXPECT_EQ(2, la.size());
+	EXPECT_EQ((UL)2, la.size());
 	EXPECT_EQ(Loc(3,4),la[0]);
 	EXPECT_EQ(Loc(3,2),la[1]);
 }
@@ -287,7 +288,7 @@ TEST_F(MoveSuggesterFixture, test_two_of_their_fours_try_the_take_only)
 	arcs(P2, Line4, 1, Loc(3,4));
 	arcs(P1, Take, 1, Loc(3,2));
 	LocArr la = getLocsInOrder(0);
-	EXPECT_EQ(1, la.size());
+	EXPECT_EQ((UL)1, la.size());
 	EXPECT_EQ(Loc(3,2), la[0]);
 }
 
@@ -296,7 +297,7 @@ TEST_F(MoveSuggesterFixture, test_two_of_their_fours_no_take)
 	arcs(P2, Line4, 1, Loc(1,2));
 	arcs(P2, Line4, 1, Loc(3,4));
 	LocArr la = getLocsInOrder(0);
-	EXPECT_EQ(1, la.size());
+	EXPECT_EQ((UL)1, la.size());
 	// It doesn't matter which one we choose, we're lost
 	// Evaluating this node should give the result
 	// But we need to choose one or the other
@@ -309,7 +310,7 @@ TEST_F(MoveSuggesterFixture, test_finish_capture_win)
 	arcs(P1, Take, 1, Loc(1,2));
 	arcs(P2, Line4, 1, Loc(3,4));
 	LocArr la = getLocsInOrder(0);
-	EXPECT_EQ(1, la.size());
+	EXPECT_EQ((UL)1, la.size());
 	EXPECT_EQ(Loc(1,2), la[0]);
 }
 
@@ -319,7 +320,7 @@ TEST_F(MoveSuggesterFixture, test_block_or_take_to_defend_capture_loss)
 	arcs(P1, Take, 1, Loc(1,2));
 	arcs(P2, Take, 1, Loc(3,4));
 	LocArr la = getLocsInOrder(0);
-	EXPECT_EQ(2, la.size());
+	EXPECT_EQ((UL)2, la.size());
 }
 
 TEST_F(MoveSuggesterFixture, test_iterate_over_own_black_first)
@@ -327,7 +328,7 @@ TEST_F(MoveSuggesterFixture, test_iterate_over_own_black_first)
 	arcs(P2, Line4, 1, Loc(1,5));
 	arcs(P1, Line4, 1, Loc(3,4));
 	LocArr la = getLocsInOrder(0);
-	EXPECT_EQ(1, la.size());
+	EXPECT_EQ((UL)1, la.size());
 	EXPECT_EQ(Loc(3,4), la[0]);
 }
 
@@ -336,7 +337,7 @@ TEST_F(MoveSuggesterFixture, test_iterate_over_higher_priority_only)
 	arcs(P2, Line3, 1, Loc(1,5));
 	arcs(P2, Line4, 1, Loc(3,4));
 	LocArr la = getLocsInOrder(0);
-	EXPECT_EQ(1, la.size());
+	EXPECT_EQ((UL)1, la.size());
 	EXPECT_EQ(Loc(3,4), la[0]);
 }
 
@@ -344,7 +345,7 @@ TEST_F(MoveSuggesterFixture, test_iterate_over_capture)
 {
 	arcs(P1, Take, 1, Loc(3,4));
 	LocArr la = getLocsInOrder(0);
-	EXPECT_EQ(1, la.size());
+	EXPECT_EQ((UL)1, la.size());
 	EXPECT_EQ(Loc(3,4), la[0]);
 }
 
@@ -353,7 +354,7 @@ TEST_F(MoveSuggesterFixture, test_iterate_over_own_capture_first)
 	arcs(P1, Take, 1, Loc(1,2));
 	arcs(P2, Take, 1, Loc(3,4));
 	LocArr la = getLocsInOrder(1);
-	EXPECT_EQ(2, la.size());
+	EXPECT_EQ((UL)2, la.size());
 	EXPECT_EQ(Loc(3,4), la[0]);
 	EXPECT_EQ(Loc(1,2), la[1]);
 }
@@ -363,7 +364,7 @@ TEST_F(MoveSuggesterFixture, test_iterate_over_other_players_four_before_our_cap
 	arcs(P2, Take, 1, Loc(7,2));
 	arcs(P1, Line4, 1, Loc(3,4));
 	LocArr la = getLocsInOrder(1);
-	EXPECT_EQ(2, la.size());
+	EXPECT_EQ((UL)2, la.size());
 	EXPECT_EQ(Loc(3,4), la[0]);
 	EXPECT_EQ(Loc(7,2), la[1]);
 }
@@ -373,7 +374,7 @@ TEST_F(MoveSuggesterFixture, test_iterate_over_other_players_capture_before_our_
 	arcs(P1, Line3, 1, Loc(3,4), Loc(1,5));
 	arcs(P2, Take, 1, Loc(7,2));
 	LocArr la = getLocsInOrder(1);
-	EXPECT_EQ(3, la.size());
+	EXPECT_EQ((UL)3, la.size());
 	EXPECT_EQ(Loc(7,2), la[0]);
 
 	LocSet ourThrees(Loc(3,4), Loc(1,5));
@@ -387,7 +388,7 @@ TEST_F(MoveSuggesterFixture, test_iterate_block_or_capture)
 	arcs(P2, Take, 1, Loc(3,3));
 	arcs(P1, Line4, 1, Loc(4,4));
 	LocArr la = getLocsInOrder(3);
-	EXPECT_EQ(2, la.size());
+	EXPECT_EQ((UL)2, la.size());
 	EXPECT_EQ(Loc(4,4), la[0]);
 	EXPECT_EQ(Loc(3,3), la[1]);
 }
@@ -397,7 +398,7 @@ TEST_F(MoveSuggesterFixture, test_iterate_over_their_capture_before_our_two)
 	arcs(P1, Line2, 1, Loc(2,4), Loc(4,6), Loc(5,7));
 	arcs(P2, Take, 1, Loc(1,5));
 	LocArr la = getLocsInOrder(0);
-	EXPECT_EQ(4, la.size());
+	EXPECT_EQ((UL)4, la.size());
 	EXPECT_EQ(Loc(1,5), la[0]);
 
 	LocSet ourTwos(Loc(2,4), Loc(4,6), Loc(5,7));
@@ -411,7 +412,7 @@ TEST_F(MoveSuggesterFixture, test_iterate_over_their_three_before_our_threat)
 	arcs(P1, Line3, 1, Loc(2,4), Loc(4,6));
 	arcs(P2, Threat, 1, Loc(1,5));
 	LocArr la = getLocsInOrder(0);
-	EXPECT_EQ(3, la.size());
+	EXPECT_EQ((UL)3, la.size());
 
 	LocSet threes(Loc(2,4), Loc(4,6));
 	EXPECT_TRUE(threes.contains(la[0]));
@@ -426,7 +427,7 @@ TEST_F(MoveSuggesterFixture, test_add_and_remove_length_candidate)
 	arcs(P1, Threat, 1, Loc(1,5));
 	arcs(P1, Line3,-1, Loc(2,4), Loc(4,6));
 	LocArr la = getLocsInOrder(0);
-	EXPECT_EQ(1, la.size());
+	EXPECT_EQ((UL)1, la.size());
 	EXPECT_EQ(Loc(1,5), la[0]);
 }
 
@@ -435,7 +436,7 @@ TEST_F(MoveSuggesterFixture, test_add_and_remove_capture_candidate)
 	arcs(P1, Take, 1, Loc(1,5));
 	arcs(P1, Take, -1, Loc(1,5));
 	LocArr la = getLocsInOrder(0);
-	EXPECT_EQ(0, la.size());
+	EXPECT_EQ((UL)0, la.size());
 }
 
 TEST_F(MoveSuggesterFixture, test_add_and_remove_threat_candidate)
@@ -443,7 +444,7 @@ TEST_F(MoveSuggesterFixture, test_add_and_remove_threat_candidate)
 	arcs(P1, Threat, 1, Loc(1,5));
 	arcs(P1, Threat, -1, Loc(1,5));
 	LocArr la = getLocsInOrder(0);
-	EXPECT_EQ(0, la.size());
+	EXPECT_EQ((UL)0, la.size());
 }
 
 TEST_F(MoveSuggesterFixture, test_add_and_remove_length_candidate_from_diff_directions)
@@ -452,7 +453,7 @@ TEST_F(MoveSuggesterFixture, test_add_and_remove_length_candidate_from_diff_dire
 	arcs(P1, Line3, 1, Loc(2,4), Loc(3,3));
 	arcs(P1, Line3,-1, Loc(2,4), Loc(4,6));
 	LocArr la = getLocsInOrder(0);
-	EXPECT_EQ(2, la.size());
+	EXPECT_EQ((UL)2, la.size());
 	LocSet okPair(Loc(2,4), Loc(3,3));
 	EXPECT_TRUE(okPair.contains(la[0]));
 	EXPECT_TRUE(okPair.contains(la[1]));
@@ -463,7 +464,7 @@ TEST_F(MoveSuggesterFixture, test_multiple_entries_searched_first)
 	arcs(P1, Line3, 1, Loc(2,4), Loc(4,6));
 	arcs(P1, Line3, 1, Loc(2,4), Loc(3,3));
 	LocArr la = getLocsInOrder(0);
-	EXPECT_EQ(3, la.size());
+	EXPECT_EQ((UL)3, la.size());
 	EXPECT_EQ(Loc(2,4), la[0]);
 	LocSet others(Loc(4,6), Loc(3,3));
 	EXPECT_TRUE(others.contains(la[1]));
@@ -481,7 +482,7 @@ TEST_F(MoveSuggesterFixture, takeFourBeforeBlockingIt)
 	arcs(P2, Line4, 1, Loc(2,4));
 	arcs(P1, FourTake, 1, Loc(3,3));
 	LocArr la = getLocsInOrder(0);
-	EXPECT_EQ(2, la.size());
+	EXPECT_EQ((UL)2, la.size());
 	EXPECT_EQ(Loc(3,3), la[0]);
 	EXPECT_EQ(Loc(2,4), la[1]);
 }
@@ -493,7 +494,7 @@ TEST_F(MoveSuggesterFixture, OnlyTakeFourWhenThereAreTwoFours)
 	arcs(P2, Line4, 1, Loc(3,4));
 	arcs(P1, FourTake, 1, Loc(3,3));
 	LocArr la = getLocsInOrder(0);
-	EXPECT_EQ(1, la.size());
+	EXPECT_EQ((UL)1, la.size());
 	EXPECT_EQ(Loc(3,3), la[0]);
 }
 
@@ -505,7 +506,7 @@ TEST_F(MoveSuggesterFixture, TakeTakeBeforeBlockTake)
 	arcs(P1, TakeTake, 1, Loc(3,3));
 	LocArr la = getLocsInOrder(0);
 	// But try both.
-	EXPECT_EQ(2, la.size());
+	EXPECT_EQ((UL)2, la.size());
 	EXPECT_EQ(Loc(3,3), la[0]);
 	EXPECT_EQ(Loc(2,4), la[1]);
 }
@@ -520,7 +521,7 @@ TEST_F(MoveSuggesterFixture, OnlyTakeTakeIfThereAreTwoTakeWins)
 	arcs(P2, Take, 1, Loc(3,4));
 	arcs(P1, TakeTake, 1, Loc(3,3));
 	LocArr la = getLocsInOrder(0);
-	EXPECT_EQ(1, la.size());
+	EXPECT_EQ((UL)1, la.size());
 	EXPECT_EQ(Loc(3,3), la[0]);
 }
 #endif
@@ -532,7 +533,7 @@ TEST_F(MoveSuggesterFixture, takeFourBlockerBeforeExtendThreeOrArbTake)
 	arcs(P1, Take, 1, Loc(1,5));
 	arcs(P1, Blocked4Take, 1, Loc(3,3));
 	LocArr la = getLocsInOrder(0);
-	EXPECT_EQ(3, la.size());
+	EXPECT_EQ((UL)3, la.size());
 	EXPECT_EQ(Loc(3,3), la[0]);
 	EXPECT_EQ(Loc(1,5), la[1]);
 	EXPECT_EQ(Loc(2,4), la[2]);
@@ -546,7 +547,7 @@ TEST_F(MoveSuggesterFixture, test_choose_the_only_winner)
 	arcs(P1, Line4, 1, Loc(5,7));
 	arcs(P1, Line4,-1, Loc(4,6));
 	LocArr la = getLocsInOrder(0);
-	EXPECT_EQ(1, la.size());
+	EXPECT_EQ((UL)1, la.size());
 	EXPECT_EQ(Loc(5,7), la[0]);
 }
 
@@ -557,7 +558,7 @@ TEST_F(MoveSuggesterFixture, test_only_one_option)
 	bool onlyOne = ms.isOnlyOneMove(0, P2);
 	EXPECT_EQ(true, onlyOne);
 	LocArr la = getLocsInOrder(0);
-	EXPECT_EQ(1, la.size());
+	EXPECT_EQ((UL)1, la.size());
 	EXPECT_EQ(Loc(4,6), la[0]);
 }
 
@@ -593,20 +594,20 @@ TEST_F(MoveSuggesterFixture, test_one_opponent_double_three_must_be_blocked_capp
 
 	LocArr la = getLocsInOrder(1);
 
-	EXPECT_EQ(7, la.size());
+	EXPECT_EQ((UL)7, la.size());
 	set<Loc> our_threes;
 	our_threes.insert(Loc(4,8));
 	our_threes.insert(Loc(10,6)); // Our 3s first
-	EXPECT_EQ(1, our_threes.count(la[0]));
-	EXPECT_EQ(1, our_threes.count(la[1]));
+	EXPECT_EQ((UL)1, our_threes.count(la[0]));
+	EXPECT_EQ((UL)1, our_threes.count(la[1]));
 
 	EXPECT_EQ(Loc(5,6), la[2]); // Their double 3 next 
 
 	set<Loc> their_threes; // Then single 3s
 	their_threes.insert(Loc(4,6));
 	their_threes.insert(Loc(9,6));
-	EXPECT_EQ(1, their_threes.count(la[3]));
-	EXPECT_EQ(1, their_threes.count(la[4]));
+	EXPECT_EQ((UL)1, their_threes.count(la[3]));
+	EXPECT_EQ((UL)1, their_threes.count(la[4]));
 
 	// Then our take
 	EXPECT_EQ(Loc(1,5), la[5]);
@@ -643,12 +644,12 @@ TEST_F(MoveSuggesterFixture, test_three_plus_opponent_double_threes_cannot_block
 	arcs(P2, Line2, 1, Loc(10,8), Loc(12,8), Loc(13,8));
 
 	LocArr la = getLocsInOrder(1);
-	EXPECT_EQ(4, la.size());
+	EXPECT_EQ((UL)4, la.size());
 	set<Loc> our_threes;
 	our_threes.insert(Loc(4,8));
 	our_threes.insert(Loc(10,6)); // Our 3s
-	EXPECT_EQ(1, our_threes.count(la[0]));
-	EXPECT_EQ(1, our_threes.count(la[1]));
+	EXPECT_EQ((UL)1, our_threes.count(la[0]));
+	EXPECT_EQ((UL)1, our_threes.count(la[1]));
 	EXPECT_EQ(la[2], Loc(1,5)); // Our take
 	EXPECT_EQ(la[3], Loc(2,9)); // Our threat
 	// TODO: This should also deepen the search (by 1?)
