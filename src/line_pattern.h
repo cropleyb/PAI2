@@ -66,6 +66,16 @@ public:
 		return true;
 	}
 
+	Breadth victim(bool second) const {
+		// only applicable to takes...
+		return _inds[(int)second + 1];
+	}
+
+	Breadth taker() const {
+		// only applicable to takes...
+		return _inds[3];
+	}
+
 	// For debugging only
 	friend std::ostream & operator<<(std::ostream &os, const LinePattern& lti);
 

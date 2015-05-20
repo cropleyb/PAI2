@@ -99,6 +99,9 @@ TEST_F(LineLookupTableFixture, BlackTakeLeftEmpty) {
 	EXPECT_EQ(P1, pattern->_colour);
 	EXPECT_EQ(Take, pattern->_patternType);
 	ASSERT_THAT(inds(pattern), ElementsAre(3));
+	ASSERT_THAT(0, pattern->taker());
+	ASSERT_THAT(1, pattern->victim(false));
+	ASSERT_THAT(2, pattern->victim(true));
 }
 
 TEST_F(LineLookupTableFixture, WhiteTakeRightWhite) {
@@ -106,6 +109,9 @@ TEST_F(LineLookupTableFixture, WhiteTakeRightWhite) {
 	EXPECT_EQ(P2, pattern->_colour);
 	EXPECT_EQ(Take, pattern->_patternType);
 	ASSERT_THAT(inds(pattern), ElementsAre(0));
+	ASSERT_THAT(3, pattern->taker());
+	ASSERT_THAT(1, pattern->victim(false));
+	ASSERT_THAT(2, pattern->victim(true));
 }
 
 TEST_F(LineLookupTableFixture, WhiteTakeRightBlack) {
@@ -113,6 +119,9 @@ TEST_F(LineLookupTableFixture, WhiteTakeRightBlack) {
 	EXPECT_EQ(P2, pattern->_colour);
 	EXPECT_EQ(Take, pattern->_patternType);
 	ASSERT_THAT(inds(pattern), ElementsAre(0));
+	ASSERT_THAT(3, pattern->taker());
+	ASSERT_THAT(1, pattern->victim(false));
+	ASSERT_THAT(2, pattern->victim(true));
 }
 
 TEST_F(LineLookupTableFixture, WhiteTakeRightEdge) {
@@ -120,6 +129,9 @@ TEST_F(LineLookupTableFixture, WhiteTakeRightEdge) {
 	EXPECT_EQ(P2, pattern->_colour);
 	EXPECT_EQ(Take, pattern->_patternType);
 	ASSERT_THAT(inds(pattern), ElementsAre(0));
+	ASSERT_THAT(3, pattern->taker());
+	ASSERT_THAT(1, pattern->victim(false));
+	ASSERT_THAT(2, pattern->victim(true));
 }
 
 TEST_F(LineLookupTableFixture, WhiteTakeLeftEdge) {
@@ -127,6 +139,20 @@ TEST_F(LineLookupTableFixture, WhiteTakeLeftEdge) {
 	EXPECT_EQ(P2, pattern->_colour);
 	EXPECT_EQ(Take, pattern->_patternType);
 	ASSERT_THAT(inds(pattern), ElementsAre(3));
+	ASSERT_THAT(0, pattern->taker());
+	ASSERT_THAT(1, pattern->victim(false));
+	ASSERT_THAT(2, pattern->victim(true));
+}
+
+TEST_F(LineLookupTableFixture, CopyTakeInfo) {
+	LinePattern *pattern = processMaskString("WBB |");
+	LinePattern patt2(*pattern, 5);
+	EXPECT_EQ(P2, patt2._colour);
+	EXPECT_EQ(Take, patt2._patternType);
+	ASSERT_THAT(inds(&patt2), ElementsAre(8));
+	ASSERT_THAT(5, patt2.taker());
+	ASSERT_THAT(6, patt2.victim(false));
+	ASSERT_THAT(7, patt2.victim(true));
 }
 
 /////////////////////////////////////////////////////
