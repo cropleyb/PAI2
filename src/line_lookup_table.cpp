@@ -65,7 +65,7 @@ void extendAndStoreLineLookups(Colour occ, int levelsDone,  Mask occVal, LinePat
             // candidates = [(candidateLookup[i], i) for i in emptyList]
             // candidates.sort()
             // candidates = [i for o,i in candidates]
-			for (int i=0; i<occupied.size(); i++) {
+			for (unsigned long i=0; i<occupied.size(); i++) {
 				lti._inds[i + lti._numCands] = occupied[i];
 			}
             lengthLookup[occVal] = lti;
