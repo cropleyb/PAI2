@@ -22,11 +22,11 @@ For the more important patterns (Line4, Blocked4, Take) we also store the takeab
 Breadth candidateLookup[5] {3,1,0,2,4};
 
 // Fwd decl.
-void buildAndStoreLineValues(int levelsDone, Mask occVal, LinePattern lti);
+void buildAndStoreLineValues(int levelsDone, Mask occVal, LinePattern lti, vector<Breadth> occupied);
 
 #include <assert.h>
 
-void extendAndStoreLineLookups(Colour occ, int levelsDone,  Mask occVal, LinePattern lti)
+void extendAndStoreLineLookups(Colour occ, int levelsDone,  Mask occVal, LinePattern lti, vector<Breadth> occupied)
 {
     /*
     occ is the colour of the stone (or EMPTY) that we are extending by
@@ -34,6 +34,8 @@ void extendAndStoreLineLookups(Colour occ, int levelsDone,  Mask occVal, LinePat
     occVal is the total value so far, representing the stretch to the left
     that we have already processed.
     lti contains the info that will ultimately be stored in the table.
+	occupied is a list of the indices that have been occupied so far. They will be copied to
+	lti when it is added to the table.
 	They will all have been of the same 'lti._colour' as we only care about and
    	store them if they are.
     */
@@ -46,6 +48,7 @@ void extendAndStoreLineLookups(Colour occ, int levelsDone,  Mask occVal, LinePat
         int ptRaw = lti._patternType + 1;
 		if (ptRaw == Threat || ptRaw == Take) ptRaw++;
         lti._patternType = (LinePatternType)((int)ptRaw);
+		occupied.push_back(levelsDone);
 	} else {
 		assert(lti._numCands < 5);
 		lti._inds[lti._numCands++] = levelsDone;
@@ -62,21 +65,23 @@ void extendAndStoreLineLookups(Colour occ, int levelsDone,  Mask occVal, LinePat
             // candidates = [(candidateLookup[i], i) for i in emptyList]
             // candidates.sort()
             // candidates = [i for o,i in candidates]
+			for (int i=0; i<occupied.size(); i++) {
+				lti._inds[i + lti._numCands] = occupied[i];
+			}
             lengthLookup[occVal] = lti;
 		}
 	} else {
         // Recursively add to the stretch
-        buildAndStoreLineValues(levelsDone+1, occVal, lti);
+        buildAndStoreLineValues(levelsDone+1, occVal, lti, occupied);
 	}
 }
 
 
-void buildAndStoreLineValues(int levelsDone, Mask occVal, LinePattern lti)
+void buildAndStoreLineValues(int levelsDone, Mask occVal, LinePattern lti, vector<Breadth> occupied)
 {
     // Add one stone or empty place
-
-	extendAndStoreLineLookups(EMPTY, levelsDone, occVal, lti);
-	extendAndStoreLineLookups(lti._colour, levelsDone, occVal, lti);
+	extendAndStoreLineLookups(EMPTY, levelsDone, occVal, lti, occupied);
+	extendAndStoreLineLookups(lti._colour, levelsDone, occVal, lti, occupied);
 }
 
 // BWWx
@@ -214,10 +219,13 @@ void buildLineLookupTable()
 	if (initialised) return;
 	initialised = true;
 	LinePattern lti;
+
+	vector<Breadth> occupied;
 	lti._colour = P1;
-    buildAndStoreLineValues(0, 0, lti);
+    buildAndStoreLineValues(0, 0, lti, occupied);
+	vector<Breadth> occupied2;
 	lti._colour = P2;
-    buildAndStoreLineValues(0, 0, lti);
+    buildAndStoreLineValues(0, 0, lti, occupied2);
 
     buildAndStoreAllTakes();
     buildAndStoreAllThreats();

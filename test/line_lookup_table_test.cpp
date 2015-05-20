@@ -91,6 +91,65 @@ TEST_F(LineLookupTableFixture, MixedNoMatch) {
 }
 
 /////////////////////////////////////////////////////
+// Fours
+/////////////////////////////////////////////////////
+
+TEST_F(LineLookupTableFixture, FourBlackLeft) {
+	LinePattern *pattern = processMaskString("BBBB ");
+	EXPECT_EQ(P1, pattern->_colour);
+	EXPECT_EQ(Line4, pattern->_patternType);
+	EXPECT_EQ(4, pattern->_inds[0]);
+	ASSERT_THAT(0, pattern->vulnerable(0));
+	ASSERT_THAT(1, pattern->vulnerable(1));
+	ASSERT_THAT(2, pattern->vulnerable(2));
+	ASSERT_THAT(3, pattern->vulnerable(3));
+}
+
+TEST_F(LineLookupTableFixture, FourWhiteRight) {
+	LinePattern *pattern = processMaskString(" WWWW");
+	EXPECT_EQ(P2, pattern->_colour);
+	EXPECT_EQ(Line4, pattern->_patternType);
+	EXPECT_EQ(0, pattern->_inds[0]);
+	ASSERT_THAT(1, pattern->vulnerable(0));
+	ASSERT_THAT(2, pattern->vulnerable(1));
+	ASSERT_THAT(3, pattern->vulnerable(2));
+	ASSERT_THAT(4, pattern->vulnerable(3));
+}
+
+TEST_F(LineLookupTableFixture, FourWhiteMiddle) {
+	LinePattern *pattern = processMaskString("WW WW");
+	EXPECT_EQ(P2, pattern->_colour);
+	EXPECT_EQ(Line4, pattern->_patternType);
+	EXPECT_EQ(2, pattern->_inds[0]);
+	ASSERT_THAT(0, pattern->vulnerable(0));
+	ASSERT_THAT(1, pattern->vulnerable(1));
+	ASSERT_THAT(3, pattern->vulnerable(2));
+	ASSERT_THAT(4, pattern->vulnerable(3));
+}
+
+TEST_F(LineLookupTableFixture, FourBlackMidLeft) {
+	LinePattern *pattern = processMaskString("B BBB");
+	EXPECT_EQ(P1, pattern->_colour);
+	EXPECT_EQ(Line4, pattern->_patternType);
+	EXPECT_EQ(1, pattern->_inds[0]);
+	ASSERT_THAT(0, pattern->vulnerable(0));
+	ASSERT_THAT(2, pattern->vulnerable(1));
+	ASSERT_THAT(3, pattern->vulnerable(2));
+	ASSERT_THAT(4, pattern->vulnerable(3));
+}
+
+TEST_F(LineLookupTableFixture, FourBlackMidRight) {
+	LinePattern *pattern = processMaskString("BBB B");
+	EXPECT_EQ(P1, pattern->_colour);
+	EXPECT_EQ(Line4, pattern->_patternType);
+	EXPECT_EQ(3, pattern->_inds[0]);
+	ASSERT_THAT(0, pattern->vulnerable(0));
+	ASSERT_THAT(1, pattern->vulnerable(1));
+	ASSERT_THAT(2, pattern->vulnerable(2));
+	ASSERT_THAT(4, pattern->vulnerable(3));
+}
+
+/////////////////////////////////////////////////////
 // Takes
 /////////////////////////////////////////////////////
 

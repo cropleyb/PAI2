@@ -81,6 +81,11 @@ public:
 		return _inds[0];
 	}
 
+	Breadth vulnerable(int index) const {
+		// only applicable to fours so far...
+		return _inds[index + 1];
+	}
+
 	// For debugging only
 	friend std::ostream & operator<<(std::ostream &os, const LinePattern& lti);
 
