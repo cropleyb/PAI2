@@ -15,6 +15,8 @@ possibly fragmented line, as well as counting these possibilities.
 Here, we build a lookup table, which is a mapping from a bit pattern
 to the information we need - the colour, current length and empty indices
 of the row of 5 positions that we are currently looking at.
+For takes, we store the indices that can be taken.
+For the more important patterns (Line4, Blocked4, Take) we also store the takeable indices.
 */
 
 Breadth candidateLookup[5] {3,1,0,2,4};
