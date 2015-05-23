@@ -23,6 +23,9 @@ typedef unsigned char PattCount;
 typedef double UtilityValue;
 typedef char RulesType;
 typedef short StId;
+typedef unsigned char Coord;
+typedef short CompressedLoc;
+
 
 const Colour EMPTY = 0;
 const Colour P1 = 1;
@@ -39,8 +42,11 @@ enum DirectionType
 	W_DIR=4,
 	NW_DIR=5,
 	S_DIR=6,
-	SW_DIR=7
+	SW_DIR=7,
+	MAX_BOTH_DIR=8,
 };
+
+extern CompressedLoc dirOffsets[MAX_BOTH_DIR];
 
 #define WIN_LENGTH 5
 #define MAX_CANDS 20

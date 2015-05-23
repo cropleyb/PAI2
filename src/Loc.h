@@ -1,15 +1,14 @@
 #ifndef _LOC_H
 #define _LOC_H
 
-typedef unsigned char Coord;
-typedef short CompressedLoc;
-
 // max x * max y * 2 (2 for diagonals)
 #define MAX_LOCS (20 * 32 * 2)
 #define INVALID_LOC_VAL 7788
 
 #include <assert.h>
 #include <ostream>
+
+#include <defines.h>
 
 using std::ostream;
 

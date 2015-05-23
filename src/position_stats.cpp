@@ -36,7 +36,7 @@ void PositionStats::maintainTake(const SpanEntry &spanEntry, const LinePattern &
 	const SpecialOccsTable &sot = _specialOccsTable[oc];
 
 	Loc trigger = spanEntry.convertIndToLoc(patternEntry._inds[0]);
-	//cout << "trigger: " << trigger._value << endl;
+	cout << "MAINTAINTAKE Trigger: " << trigger._value << endl;
 	for (int dist=1; dist<=2; dist++) {
 		CompressedLoc vuln = _takeTable[c].addOneCap(trigger, spanEntry._direction, spanEntry._offsetPerIndex, dist, inc);
 		cout << "vuln: " << vuln << endl;
@@ -50,8 +50,11 @@ void PositionStats::maintainTake(const SpanEntry &spanEntry, const LinePattern &
 			if (numFTs > 0) {
 				cout << "numFTs: " << numFTs << endl;
 				PriorityLevel &level = _levels[c][FourTake];
-				//level.addOrRemoveCandidate(trigger, inc*numFTs);
-				level.addOrRemoveCandidate(trigger, inc);
+				cout << "adjust: " << (int)oc << " trigger: " << (int)trigger._value << " with diff: " << inc*numFTs << endl;
+				level.addOrRemoveCandidate(trigger, inc*numFTs);
+				cout << "leaving: " << level.getCount(trigger) << endl;
+				cout << "-> " << (int)level.getNumCands() << endl;
+				//level.addOrRemoveCandidate(trigger, inc);
 			}
 		}
 	}
@@ -63,6 +66,7 @@ void PositionStats::maintainFour(const SpanEntry &spanEntry, const LinePattern &
 	Colour oc = otherPlayer(c);
 	SpecialOccsTable &sot = _specialOccsTable[c];
 
+	cout << "MAINTAINFOUR" << endl;
 	for (int ind=0; ind<=3; ind++) {
 		Loc occupied = spanEntry.convertIndToLoc(patternEntry.occupied(ind));
 		CompressedLoc cOccupied = occupied._value;
@@ -71,11 +75,20 @@ void PositionStats::maintainFour(const SpanEntry &spanEntry, const LinePattern &
 		cout << " changed fours to: " << (int)sot._counts[cOccupied].fours << endl;
 
 		CapTable &ct = _takeTable[oc];
-		bool hasTake = ct.hasTake(cOccupied);
-		cout << "hasTake: " << hasTake << endl;
-		if (hasTake) {
+		CompressedLoc takeDirs = ct.getTakes(cOccupied);
+		cout << "hasTake: " << takeDirs << endl;
+		if (takeDirs) {
 			PriorityLevel &level = _levels[oc][FourTake];
-			level.addOrRemoveCandidate(occupied, inc);
+			int dir;
+			for (dir=0; dir<MAX_DIR; dir++) {
+				Loc trigger = ct.getTriggerInDirection(cOccupied, (DirectionType)dir);
+				if (trigger.isValid()) {
+					cout << "adjust: " << (int)oc << " trigger: " << (int)trigger._value << " with diff: " << inc << endl;
+					level.addOrRemoveCandidate(trigger, inc);
+					cout << "leaving: " << level.getCount(trigger) << endl;
+					cout << "-> " << (int)level.getNumCands() << endl;
+				}
+			}
 		}
 	}
 }

@@ -3,6 +3,17 @@
 
 SpanEntry spanLookupTable[MAX_DIR][MAX_LOCS];
 
+CompressedLoc dirOffsets[MAX_BOTH_DIR] = {
+	1,
+	31,
+	32,
+	33,
+	-1,
+	-31,
+	-32,
+	-33
+};
+
 void buildESpanTable(BoardWidth boardSize)
 {
 	for (BoardWidth x=0; x<boardSize; x+=1)
