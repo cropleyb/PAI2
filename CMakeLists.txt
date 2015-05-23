@@ -36,7 +36,7 @@ endfunction(set_memcheck_test_properties)
 
 # For callgrind
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG -g -O3")
-set(CMAKE_BUILD_TYPE Debug)
+#set(CMAKE_BUILD_TYPE Debug)
 # For max speed
 # set(CMAKE_CXX_FLAGS_DEBUG "-O3")
 

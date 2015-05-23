@@ -26,23 +26,56 @@ void PositionStats::reportCandidates(Colour colour, LinePatternType pt, const ve
 }
 
 //#include <assert.h>
+#include <iostream>
+using namespace std;
 
 void PositionStats::maintainTake(const SpanEntry &spanEntry, const LinePattern &patternEntry, int inc)
 {
 	Colour c = patternEntry._colour;
+	Colour oc = otherPlayer(c);
+	const SpecialOccsTable &sot = _specialOccsTable[oc];
 
 	Loc trigger = spanEntry.convertIndToLoc(patternEntry._inds[0]);
+	//cout << "trigger: " << trigger._value << endl;
 	for (int dist=1; dist<=2; dist++) {
 		CompressedLoc vuln = _takeTable[c].addOneCap(trigger, spanEntry._direction, spanEntry._offsetPerIndex, dist, inc);
+		cout << "vuln: " << vuln << endl;
 
-		SpecialOccsTable &sot = _specialOccsTable[c];
-		bool numSpecials = sot.isSpecial(vuln);
-		if (numSpecials > 0) {
+		bool hasSpecials = sot.isSpecial(vuln);
+		if (hasSpecials > 0) {
+			cout << "hasSpecials: " << hasSpecials << endl;
 			SpecialOccCounts soc = sot.getCounts(vuln);
 
 			int numFTs = soc.fours;
-			PriorityLevel &level = _levels[c][FourTake];
-			level.addOrRemoveCandidate(trigger, inc*numFTs);
+			if (numFTs > 0) {
+				cout << "numFTs: " << numFTs << endl;
+				PriorityLevel &level = _levels[c][FourTake];
+				//level.addOrRemoveCandidate(trigger, inc*numFTs);
+				level.addOrRemoveCandidate(trigger, inc);
+			}
+		}
+	}
+}
+
+void PositionStats::maintainFour(const SpanEntry &spanEntry, const LinePattern &patternEntry, int inc)
+{
+	Colour c = patternEntry._colour;
+	Colour oc = otherPlayer(c);
+	SpecialOccsTable &sot = _specialOccsTable[c];
+
+	for (int ind=0; ind<=3; ind++) {
+		Loc occupied = spanEntry.convertIndToLoc(patternEntry.occupied(ind));
+		CompressedLoc cOccupied = occupied._value;
+		cout << "cOccupied: " << cOccupied << endl;
+		sot._counts[cOccupied].fours += inc;
+		cout << " changed fours to: " << (int)sot._counts[cOccupied].fours << endl;
+
+		CapTable &ct = _takeTable[oc];
+		bool hasTake = ct.hasTake(cOccupied);
+		cout << "hasTake: " << hasTake << endl;
+		if (hasTake) {
+			PriorityLevel &level = _levels[oc][FourTake];
+			level.addOrRemoveCandidate(occupied, inc);
 		}
 	}
 }
@@ -54,7 +87,7 @@ void PositionStats::maintainTakePLs(const SpanEntry &spanEntry, const LinePatter
 
 	switch (pt) {
 		case Line4:
-			// _specialOccs.add(Loc trigger, DirectionType dir, int inc);
+			maintainFour(spanEntry, patternEntry, inc);
 			break;
 		case Blocked4:
 			// _specialOccs.add(Loc trigger, DirectionType dir, int inc);
@@ -71,6 +104,7 @@ void PositionStats::maintainTakePLs(const SpanEntry &spanEntry, const LinePatter
 // and update appropriately
 void PositionStats::report(const SpanEntry &spanEntry, const LinePattern &patternEntry, int inc)
 {
+	//cout << "report: inc: " << (int)inc << endl;
 	Colour c = patternEntry._colour;
 	LinePatternType pt = patternEntry._patternType;
 	//assert(pt < MAX_LINE_PATTERN_TYPE);

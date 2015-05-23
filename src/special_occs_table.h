@@ -18,14 +18,13 @@ public:
 	SpecialOccsTable() : _counts{0} {}
 
     bool isSpecial(CompressedLoc cLoc) const {
-        return _counts[cLoc].all;
+        return _counts[cLoc].all > 0;
     }
 
     const SpecialOccCounts getCounts(CompressedLoc cLoc) const {
         return _counts[cLoc];
     }
 
-private:
 	SpecialOccCounts _counts[MAX_LOCS];
 };
 

@@ -792,3 +792,72 @@ TEST_F(PenteGameFixture, VCT) {
 	EXPECT_EQ(EMPTY, centre);
 }
 #endif
+
+/////////////////////////////////////////////////////////
+// Take targeting
+/////////////////////////////////////////////////////////
+
+TEST_F(PenteGameFixture, TakeFourWithFourFirst) {
+	g.setRules('s');
+	g.setBoardSize(19);
+	g._posStats._takeTargeting = true;
+
+	g.makeMove(Loc(9,9), P1);
+	g.makeMove(Loc(8,8), P2);
+	g.makeMove(Loc(8,9), P1);
+	g.makeMove(Loc(8,6), P2);
+	g.makeMove(Loc(7,9), P1);
+	g.makeMove(Loc(8,3), P2);
+	g.makeMove(Loc(6,9), P1);
+	g.makeMove(Loc(8,1), P2);
+	g.makeMove(Loc(10,10), P1);
+
+	const PriorityLevel &pl = g._posStats.getPriorityLevel(P2, FourTake);
+	EXPECT_EQ(1, pl.getNumCands());
+
+	// take it
+	g.makeMove(Loc(11,11), P2);
+	EXPECT_EQ(0, pl.getNumCands());
+
+	// undo
+	g.undoLastMove();
+	EXPECT_EQ(1, pl.getNumCands());
+
+	// and again to the point before the FourTake should have been created.
+	g.undoLastMove();
+	EXPECT_EQ(0, pl.getNumCands());
+}
+
+#if 0
+TEST_F(PenteGameFixture, TakeFourWithTakeFirst) {
+	g.setRules('s');
+	g.setBoardSize(19);
+	g._posStats._takeTargeting = true;
+
+	g.makeMove(Loc(9,9), P2);
+	g.makeMove(Loc(8,8), P1);
+	g.makeMove(Loc(9,8), P2);
+	g.makeMove(Loc(6,8), P1);
+	g.makeMove(Loc(9,7), P2);
+	g.makeMove(Loc(3,8), P1);
+	g.makeMove(Loc(10,10), P2);
+	g.makeMove(Loc(1,8), P1);
+	g.makeMove(Loc(9,6), P2);
+
+	const PriorityLevel &pl = g._posStats.getPriorityLevel(P1, FourTake);
+	EXPECT_EQ(1, pl.getNumCands());
+
+	// take it
+	g.makeMove(Loc(11,11), P1);
+	EXPECT_EQ(0, pl.getNumCands());
+
+//	// undo
+//	g.undoLastMove();
+//	EXPECT_EQ(1, pl.getNumCands());
+//
+//	// and again to the point before the FourTake should have been created.
+//	g.undoLastMove();
+//	EXPECT_EQ(0, pl.getNumCands());
+}
+#endif
+
