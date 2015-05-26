@@ -36,10 +36,10 @@ void PositionStats::maintainTake(const SpanEntry &spanEntry, const LinePattern &
 	const SpecialOccsTable &sot = _specialOccsTable[oc];
 
 	Loc trigger = spanEntry.convertIndToLoc(patternEntry._inds[0]);
-	cout << "MAINTAINTAKE Trigger: " << trigger._value << endl;
+	cout << "MAINTAINTAKE Trigger: " << trigger << " (" << trigger._value << ")" << endl;
 	for (int dist=1; dist<=2; dist++) {
 		CompressedLoc vuln = _takeTable[c].addOneCap(trigger, spanEntry._direction, spanEntry._offsetPerIndex, dist, inc);
-		cout << "vuln: " << vuln << endl;
+		cout << "vuln: " << Loc(vuln) << " (" << vuln << ")" << endl;
 
 		bool hasSpecials = sot.isSpecial(vuln);
 		if (hasSpecials > 0) {
@@ -48,13 +48,20 @@ void PositionStats::maintainTake(const SpanEntry &spanEntry, const LinePattern &
 
 			int numFTs = soc.fours;
 			if (numFTs > 0) {
+				cout << "MAINTAINTAKE still" << endl;
 				cout << "numFTs: " << numFTs << endl;
 				PriorityLevel &level = _levels[c][FourTake];
-				cout << "adjust: " << (int)oc << " trigger: " << (int)trigger._value << " with diff: " << inc*numFTs << endl;
+				cout << "adjust: P" << (int)c << " trigger: " << (int)trigger._value << " with diff: " << inc*numFTs << endl;
+				cout << "count before: " << level.getCount(trigger) << " benefits for trigger." << endl;
 				level.addOrRemoveCandidate(trigger, inc*numFTs);
-				cout << "leaving: " << level.getCount(trigger) << endl;
-				cout << "-> " << (int)level.getNumCands() << endl;
-				//level.addOrRemoveCandidate(trigger, inc);
+#if 0
+				if (level.getCount(trigger) < 0) {
+					// Abort
+					*(int *)0 = 1;
+				}
+#endif
+				cout << "leaving: " << level.getCount(trigger) << " benefits for trigger." << endl;
+				cout << "-> " << (int)level.getNumCands() << " candidates" << endl;
 			}
 		}
 	}
@@ -83,10 +90,11 @@ void PositionStats::maintainFour(const SpanEntry &spanEntry, const LinePattern &
 			for (dir=0; dir<MAX_DIR; dir++) {
 				Loc trigger = ct.getTriggerInDirection(cOccupied, (DirectionType)dir);
 				if (trigger.isValid()) {
-					cout << "adjust: " << (int)oc << " trigger: " << (int)trigger._value << " with diff: " << inc << endl;
+					cout << "MAINTAINFOUR still" << endl;
+					cout << "adjust: P" << (int)oc << " trigger: " << (int)trigger._value << " with diff: " << inc << endl;
 					level.addOrRemoveCandidate(trigger, inc);
-					cout << "leaving: " << level.getCount(trigger) << endl;
-					cout << "-> " << (int)level.getNumCands() << endl;
+					cout << "leaving: " << level.getCount(trigger) << " benefits for trigger" << endl;
+					cout << "-> " << (int)level.getNumCands() << " candidates." << endl;
 				}
 			}
 		}
@@ -117,9 +125,10 @@ void PositionStats::maintainTakePLs(const SpanEntry &spanEntry, const LinePatter
 // and update appropriately
 void PositionStats::report(const SpanEntry &spanEntry, const LinePattern &patternEntry, int inc)
 {
-	//cout << "report: inc: " << (int)inc << endl;
 	Colour c = patternEntry._colour;
 	LinePatternType pt = patternEntry._patternType;
+	Loc loc = spanEntry.convertIndToLoc(patternEntry._inds[0]);
+	//cout << "REPORT: type: " << (int)pt << " inc: " << (int)inc << " for: " << loc << " dir: " << spanEntry._direction << endl;
 	//assert(pt < MAX_LINE_PATTERN_TYPE);
 
 	if (_takeTargeting) {

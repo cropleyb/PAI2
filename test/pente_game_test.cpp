@@ -833,11 +833,14 @@ TEST_F(PenteGameFixture, TakeFourWithFourFirst) {
 #include <iostream>
 using namespace std;
 
+// b pente_game.cpp:154
+// run --gtest_filter="*TakeFourWithT*" 
 TEST_F(PenteGameFixture, TakeFourWithTakeFirst) {
 	g.setRules('s');
 	g.setBoardSize(19);
 	g._posStats._takeTargeting = true;
 
+	// Starting with P2 is dodgy, but currently works...
 	g.makeMove(Loc(9,9), P2);
 	g.makeMove(Loc(8,8), P1);
 	g.makeMove(Loc(9,8), P2);
@@ -846,23 +849,26 @@ TEST_F(PenteGameFixture, TakeFourWithTakeFirst) {
 	g.makeMove(Loc(3,8), P1);
 	g.makeMove(Loc(10,10), P2);
 	g.makeMove(Loc(1,8), P1);
+
 	g.makeMove(Loc(9,6), P2);
+
+	EXPECT_EQ(2, g._posStats.getPriorityLevel(P2, Line4).getNumCands());
 
 	const PriorityLevel &pl = g._posStats.getPriorityLevel(P1, FourTake);
 	EXPECT_EQ(1, pl.getNumCands());
 
-	//cout << "TAKING..." << endl;
-
 	// take it
 	g.makeMove(Loc(11,11), P1);
 	EXPECT_EQ(0, pl.getNumCands());
+	EXPECT_EQ(0, g._posStats.getPriorityLevel(P2, Line4).getNumCands());
 
 	// undo
 	g.undoLastMove();
+	EXPECT_EQ(2, g._posStats.getPriorityLevel(P2, Line4).getNumCands());
 	EXPECT_EQ(1, pl.getNumCands());
-//
-//	// and again to the point before the FourTake should have been created.
-//	g.undoLastMove();
-//	EXPECT_EQ(0, pl.getNumCands());
+
+	// and again to the point before the FourTake should have been created.
+	g.undoLastMove();
+	EXPECT_EQ(0, pl.getNumCands());
 }
 
