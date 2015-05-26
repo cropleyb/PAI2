@@ -161,14 +161,14 @@ void PenteGame::undoLastMove()
 	std::cout << " U->" << _moveHist.getLastMove() << ' ';
 #endif
 
+	Colour movedPlayer = _boardReps.getOcc(l);
 	_boardReps.setOcc(l, EMPTY);
-	Colour movedPlayer = 1 + (mn) % 2;
 
 	_posStats.updateStrategicStats(movedPlayer, l, -1);
 
 	if (cd)
 	{
-		Colour capturedPlayer = 1 + (mn + 1) % 2;
+		Colour capturedPlayer = otherPlayer(movedPlayer);
 
 		// Must undo some captures
 		for (int dir=0; dir<8; dir++)
