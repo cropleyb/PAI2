@@ -84,6 +84,21 @@ TEST_F(PriorityLevelFixture, testAddTwoRemoveOne)
 	EXPECT_EQ(l2, locBuffer[0]);
 }
 
+// b priority_level.cpp:42
+// run --gtest_filter="*testAddOneTwiceRemoveTwo*"
+TEST_F(PriorityLevelFixture, testAddOneTwiceRemoveTwo)
+{
+	Loc l1(4,5);
+	arc(l1);
+	arc(l1);
+	arc(l1, -2);
+	
+	int candCount = pl.getCands(locBuffer, 5, seen);
+
+	EXPECT_EQ(0, candCount);
+	EXPECT_EQ(0, pl.getCount(l1));
+}
+
 TEST_F(PriorityLevelFixture, testAddTooManyToIterateOver)
 {
 	Loc l1(1,1);

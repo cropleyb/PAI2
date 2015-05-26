@@ -144,6 +144,7 @@ Ind PriorityLevel::getNumCands() const
 Ind PriorityLevel::getCount(Loc l) const
 {
 	Ind nodeInd = _nodeIndByLoc[l._value];
+	if (nodeInd < 0) return 0;
 	const DLNode &node = _dlNodes[nodeInd];
 	return node._count;
 }
