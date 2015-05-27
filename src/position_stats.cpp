@@ -41,11 +41,9 @@ void PositionStats::maintainTake(const SpanEntry &spanEntry, const LinePattern &
 		CompressedLoc vuln = _takeTable[c].addOneCap(trigger, spanEntry._direction, spanEntry._offsetPerIndex, dist, inc);
 		cout << "vuln: " << Loc(vuln) << " (" << vuln << ")" << endl;
 
-		bool hasSpecials = sot.isSpecial(vuln);
-		if (hasSpecials > 0) {
-			cout << "hasSpecials: " << hasSpecials << endl;
-			SpecialOccCounts soc = sot.getCounts(vuln);
+		SpecialOccCounts soc = sot.getCounts(vuln);
 
+		if (soc.all > 0) {
 			int numFTs = soc.fours;
 			if (numFTs > 0) {
 				cout << "MAINTAINTAKE still" << endl;
@@ -54,12 +52,18 @@ void PositionStats::maintainTake(const SpanEntry &spanEntry, const LinePattern &
 				cout << "adjust: P" << (int)c << " trigger: " << (int)trigger._value << " with diff: " << inc*numFTs << endl;
 				cout << "count before: " << level.getCount(trigger) << " benefits for trigger." << endl;
 				level.addOrRemoveCandidate(trigger, inc*numFTs);
-#if 0
-				if (level.getCount(trigger) < 0) {
-					// Abort
-					*(int *)0 = 1;
-				}
-#endif
+				cout << "leaving: " << level.getCount(trigger) << " benefits for trigger." << endl;
+				cout << "-> " << (int)level.getNumCands() << " candidates" << endl;
+			}
+			int numBFTs = soc.blocked4s;
+			if (numBFTs > 0) {
+				// FIXME copy & paste
+				cout << "MAINTAINTAKE still" << endl;
+				cout << "numBFTs: " << numBFTs << endl;
+				PriorityLevel &level = _levels[c][Blocked4Take];
+				cout << "adjust: P" << (int)c << " trigger: " << (int)trigger._value << " with diff: " << inc*numFTs << endl;
+				cout << "count before: " << level.getCount(trigger) << " benefits for trigger." << endl;
+				level.addOrRemoveCandidate(trigger, inc*numBFTs);
 				cout << "leaving: " << level.getCount(trigger) << " benefits for trigger." << endl;
 				cout << "-> " << (int)level.getNumCands() << " candidates" << endl;
 			}
@@ -67,30 +71,66 @@ void PositionStats::maintainTake(const SpanEntry &spanEntry, const LinePattern &
 	}
 }
 
-void PositionStats::maintainFour(const SpanEntry &spanEntry, const LinePattern &patternEntry, int inc)
+void PositionStats::maintainSpecial(const SpanEntry &spanEntry, const LinePattern &patternEntry, int inc)
 {
+	cout << "MAINTAINSPECIAL" << endl;
 	Colour c = patternEntry._colour;
+	LinePatternType pt = patternEntry._patternType;
+	int numInds = 1;
+	if (pt == Line4) {
+		numInds = 4;
+	} else {
+		c = otherPlayer(c);
+	}
 	Colour oc = otherPlayer(c);
 	SpecialOccsTable &sot = _specialOccsTable[c];
 
-	cout << "MAINTAINFOUR" << endl;
-	for (int ind=0; ind<=3; ind++) {
-		Loc occupied = spanEntry.convertIndToLoc(patternEntry.occupied(ind));
-		CompressedLoc cOccupied = occupied._value;
-		cout << "cOccupied: " << cOccupied << endl;
-		sot._counts[cOccupied].fours += inc;
-		cout << " changed fours to: " << (int)sot._counts[cOccupied].fours << endl;
+	for (int ind=0; ind<numInds; ind++) {
+		Loc target = spanEntry.convertIndToLoc(patternEntry.target(ind));
+		CompressedLoc cTarget = target._value;
+		cout << "ind: " << ind << endl;
+		cout << "cTarget: " << cTarget << endl;
 
+		switch (pt) {
+			case Line4:
+				sot._counts[cTarget].fours += inc;
+				break;
+			case Blocked4:
+				sot._counts[cTarget].blocked4s += inc;
+				break;
+			case Take:
+				sot._counts[cTarget].takes += inc;
+				break;
+			default:
+				break;
+		}
+			
 		CapTable &ct = _takeTable[oc];
-		CompressedLoc takeDirs = ct.getTakes(cOccupied);
+		CompressedLoc takeDirs = ct.getTakes(cTarget);
 		cout << "hasTake: " << takeDirs << endl;
 		if (takeDirs) {
-			PriorityLevel &level = _levels[oc][FourTake];
+			ExtraPriorityLevels epl;
+
+			switch (pt) {
+				case Line4:
+					epl = FourTake;
+					break;
+				case Blocked4:
+					epl = Blocked4Take;
+					break;
+				case Take:
+					epl = TakeTake;
+					break;
+				default:
+					// Error
+					break;
+			}
+			PriorityLevel &level = _levels[oc][epl];
 			int dir;
 			for (dir=0; dir<MAX_DIR; dir++) {
-				Loc trigger = ct.getTriggerInDirection(cOccupied, (DirectionType)dir);
+				Loc trigger = ct.getTriggerInDirection(cTarget, (DirectionType)dir);
 				if (trigger.isValid()) {
-					cout << "MAINTAINFOUR still" << endl;
+					cout << "MAINTAINSPECIAL still" << endl;
 					cout << "adjust: P" << (int)oc << " trigger: " << (int)trigger._value << " with diff: " << inc << endl;
 					level.addOrRemoveCandidate(trigger, inc);
 					cout << "leaving: " << level.getCount(trigger) << " benefits for trigger" << endl;
@@ -108,10 +148,10 @@ void PositionStats::maintainTakePLs(const SpanEntry &spanEntry, const LinePatter
 
 	switch (pt) {
 		case Line4:
-			maintainFour(spanEntry, patternEntry, inc);
+			maintainSpecial(spanEntry, patternEntry, inc); // TEMP -- PUT IT BACK!
 			break;
 		case Blocked4:
-			// _specialOccs.add(Loc trigger, DirectionType dir, int inc);
+			maintainSpecial(spanEntry, patternEntry, inc);
 			break;
 		case Take:
 			maintainTake(spanEntry, patternEntry, inc);

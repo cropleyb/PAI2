@@ -830,8 +830,9 @@ TEST_F(PenteGameFixture, TakeFourWithFourFirst) {
 	EXPECT_EQ(0, pl.getNumCands());
 }
 
-#include <iostream>
-using namespace std;
+
+//#include <iostream>
+//using namespace std;
 
 // b pente_game.cpp:154
 // run --gtest_filter="*TakeFourWithT*" 
@@ -872,3 +873,47 @@ TEST_F(PenteGameFixture, TakeFourWithTakeFirst) {
 	EXPECT_EQ(0, pl.getNumCands());
 }
 
+/////////////////////////////////////////////////
+// BlockedFourTakes
+/////////////////////////////////////////////////
+
+TEST_F(PenteGameFixture, TakeBlockedFourWithBlockFirst) {
+	g.setRules('s');
+	g.setBoardSize(19);
+	g._posStats._takeTargeting = true;
+
+	// P1 gets a blocked four, then a P1 take is created against the block.
+	// XOO
+	//  X
+	//  X
+	//  X
+	//  X
+	g.makeMove(Loc(9,9), P1);
+	g.makeMove(Loc(8,8), P2);
+	g.makeMove(Loc(9,8), P1);
+	g.makeMove(Loc(6,8), P2);
+	g.makeMove(Loc(9,7), P1);
+	g.makeMove(Loc(3,8), P2);
+	cout << "TEST MAKE THE 4" << endl;
+	g.makeMove(Loc(9,6), P1); // That's 4 in a row
+	cout << "TEST MAKE THE BLOCK" << endl;
+	g.makeMove(Loc(9,10), P2); // The block
+	g.makeMove(Loc(8,10), P1);
+	cout << "TEST MAKE THE TAKE" << endl;
+	g.makeMove(Loc(10,10), P2); // Create the Take
+
+	const PriorityLevel &pl = g._posStats.getPriorityLevel(P1, Blocked4Take);
+	EXPECT_EQ(1, pl.getNumCands());
+
+	// take it
+	g.makeMove(Loc(11,10), P2);
+	EXPECT_EQ(0, pl.getNumCands());
+
+	// undo
+	g.undoLastMove();
+	EXPECT_EQ(1, pl.getNumCands());
+
+	// and again to the point before the FourTake should have been created.
+	g.undoLastMove();
+	EXPECT_EQ(0, pl.getNumCands());
+}
