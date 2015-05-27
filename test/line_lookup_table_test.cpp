@@ -255,7 +255,7 @@ TEST_F(LineLookupTableFixture, BlackBlockedFarRight) {
 	EXPECT_EQ(P1, pattern->_colour);
 	EXPECT_EQ(Blocked4, pattern->_patternType);
 	ASSERT_THAT(inds(pattern), ElementsAre());
-	ASSERT_THAT(4, pattern->blocker());
+	ASSERT_THAT(4, pattern->target(0));
 }
 
 TEST_F(LineLookupTableFixture, BlackBlockedMidRight) {
@@ -263,7 +263,7 @@ TEST_F(LineLookupTableFixture, BlackBlockedMidRight) {
 	EXPECT_EQ(P1, pattern->_colour);
 	EXPECT_EQ(Blocked4, pattern->_patternType);
 	ASSERT_THAT(inds(pattern), ElementsAre());
-	ASSERT_THAT(3, pattern->blocker());
+	ASSERT_THAT(3, pattern->target(0));
 }
 
 TEST_F(LineLookupTableFixture, BlackBlockedMiddle) {
@@ -271,7 +271,7 @@ TEST_F(LineLookupTableFixture, BlackBlockedMiddle) {
 	EXPECT_EQ(P1, pattern->_colour);
 	EXPECT_EQ(Blocked4, pattern->_patternType);
 	ASSERT_THAT(inds(pattern), ElementsAre());
-	ASSERT_THAT(2, pattern->blocker());
+	ASSERT_THAT(2, pattern->target(0));
 }
 
 TEST_F(LineLookupTableFixture, BlackBlockedMidLeft) {
@@ -279,7 +279,7 @@ TEST_F(LineLookupTableFixture, BlackBlockedMidLeft) {
 	EXPECT_EQ(P1, pattern->_colour);
 	EXPECT_EQ(Blocked4, pattern->_patternType);
 	ASSERT_THAT(inds(pattern), ElementsAre());
-	ASSERT_THAT(1, pattern->blocker());
+	ASSERT_THAT(1, pattern->target(0));
 }
 
 TEST_F(LineLookupTableFixture, BlackBlockedFarLeft) {
@@ -287,7 +287,7 @@ TEST_F(LineLookupTableFixture, BlackBlockedFarLeft) {
 	EXPECT_EQ(P1, pattern->_colour);
 	EXPECT_EQ(Blocked4, pattern->_patternType);
 	ASSERT_THAT(inds(pattern), ElementsAre());
-	ASSERT_THAT(0, pattern->blocker());
+	ASSERT_THAT(0, pattern->target(0));
 }
 
 TEST_F(LineLookupTableFixture, WhiteBlockedFarRight) {
@@ -295,7 +295,7 @@ TEST_F(LineLookupTableFixture, WhiteBlockedFarRight) {
 	EXPECT_EQ(P2, pattern->_colour);
 	EXPECT_EQ(Blocked4, pattern->_patternType);
 	ASSERT_THAT(inds(pattern), ElementsAre());
-	ASSERT_THAT(4, pattern->blocker());
+	ASSERT_THAT(4, pattern->target(0));
 }
 
 TEST_F(LineLookupTableFixture, WhiteBlockedMidRight) {
@@ -303,7 +303,7 @@ TEST_F(LineLookupTableFixture, WhiteBlockedMidRight) {
 	EXPECT_EQ(P2, pattern->_colour);
 	EXPECT_EQ(Blocked4, pattern->_patternType);
 	ASSERT_THAT(inds(pattern), ElementsAre());
-	ASSERT_THAT(3, pattern->blocker());
+	ASSERT_THAT(3, pattern->target(0));
 }
 
 TEST_F(LineLookupTableFixture, WhiteBlockedMiddle) {
@@ -311,7 +311,7 @@ TEST_F(LineLookupTableFixture, WhiteBlockedMiddle) {
 	EXPECT_EQ(P2, pattern->_colour);
 	EXPECT_EQ(Blocked4, pattern->_patternType);
 	ASSERT_THAT(inds(pattern), ElementsAre());
-	ASSERT_THAT(2, pattern->blocker());
+	ASSERT_THAT(2, pattern->target(0));
 }
 
 TEST_F(LineLookupTableFixture, WhiteBlockedMidLeft) {
@@ -319,7 +319,7 @@ TEST_F(LineLookupTableFixture, WhiteBlockedMidLeft) {
 	EXPECT_EQ(P2, pattern->_colour);
 	EXPECT_EQ(Blocked4, pattern->_patternType);
 	ASSERT_THAT(inds(pattern), ElementsAre());
-	ASSERT_THAT(1, pattern->blocker());
+	ASSERT_THAT(1, pattern->target(0));
 }
 
 TEST_F(LineLookupTableFixture, WhiteBlockedFarLeft) {
@@ -327,6 +327,6 @@ TEST_F(LineLookupTableFixture, WhiteBlockedFarLeft) {
 	EXPECT_EQ(P2, pattern->_colour);
 	EXPECT_EQ(Blocked4, pattern->_patternType);
 	ASSERT_THAT(inds(pattern), ElementsAre());
-	ASSERT_THAT(0, pattern->blocker());
+	ASSERT_THAT(0, pattern->target(0));
 }
 
