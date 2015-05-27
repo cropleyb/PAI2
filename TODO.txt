@@ -453,6 +453,14 @@ At the LinePattern level, there is only 1 LinePatternType.
 #Add Locs to LinePattern for capturable stones
 Create PLs from LinePatterns (with SpecialOccsTable and CapTable) in PosStats(?)
 
-Fukami
-------
+Colour swaps and pattern types for take targeting
+-------------------------------------------------
+Target pattern  Special         Take              High level pattern
+(incoming col)  (store)         (incoming&store)  (update)
+Line4 P1        four P2(4)      Take P2 _takes    FourTake P2
+Take P1         take P2(1)      Take P2 _takes    TakeTake P2
+Blocked4 P1     blocked4s P1(1) Take P1 _takes    Blocked4Take P1
+
+Fukami?
+-------
 
