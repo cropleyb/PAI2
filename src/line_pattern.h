@@ -86,6 +86,19 @@ public:
 		return _inds[index + 1];
 	}
 
+	Breadth target(int index) const {
+		if (_patternType == Line4) {
+			return occupied(index);
+		}
+		else if (_patternType == Blocked4) {
+			return blocker();
+		}
+		else if (_patternType == Take) {
+			return taker();
+		}
+		return 0;
+	}
+
 	// For debugging only
 	friend std::ostream & operator<<(std::ostream &os, const LinePattern& lti);
 
