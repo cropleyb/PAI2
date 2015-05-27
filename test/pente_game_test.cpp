@@ -914,7 +914,7 @@ TEST_F(PenteGameFixture, TakeBlockedFourWithBlockFirst) {
 	g.undoLastMove();
 	EXPECT_EQ(1, pl.getNumCands());
 
-	// and again to the point before the FourTake should have been created.
+	// and again to the point before the Blocked4FourTake should have been created.
 	g.undoLastMove();
 	EXPECT_EQ(0, pl.getNumCands());
 }
@@ -956,7 +956,51 @@ TEST_F(PenteGameFixture, TakeBlockedFourWithTakeFirst) {
 	g.undoLastMove();
 	EXPECT_EQ(1, pl.getNumCands());
 
-	// and again to the point before the FourTake should have been created.
+	// and again to the point before the Blocked4Take should have been created.
 	g.undoLastMove();
 	EXPECT_EQ(0, pl.getNumCands());
 }
+
+// TODO: block not at the end tests
+
+/////////////////////////////////////////////////
+// TakeTakes
+/////////////////////////////////////////////////
+
+TEST_F(PenteGameFixture, TakeTakeWithTargetFirst) {
+	g.setRules('s');
+	g.setBoardSize(19);
+	g._posStats._takeTargeting = true;
+	const PriorityLevel &pl = g._posStats.getPriorityLevel(P2, TakeTake);
+
+	// P1 gets a take, then a P2 take is created against the first take's target.
+	// XOO
+	// X
+	// O
+	g.makeMove(Loc(9,9), P1);
+	g.makeMove(Loc(10,9), P2);
+	g.makeMove(Loc(9,8), P1);
+	cout << "TEST MAKE THE TARGET TAKE (P2 (9,9))" << endl;
+	g.makeMove(Loc(11,9), P2);
+	g.makeMove(Loc(3,3), P1); // Irrel.
+	EXPECT_EQ(0, pl.getNumCands());
+
+	cout << "TEST MAKE THE TAKER (P2 (9,10))" << endl;
+	g.makeMove(Loc(9,7), P2);
+	EXPECT_EQ(1, pl.getNumCands());
+	g.makeMove(Loc(4,4), P1); // Irrel.
+
+	cout << "TEST MAKE THE CAPTURE" << endl;
+	g.makeMove(Loc(9,10), P2); // capture it
+	EXPECT_EQ(0, pl.getNumCands());
+
+	// undo
+	g.undoLastMove();
+	EXPECT_EQ(1, pl.getNumCands());
+
+	// and again to the point before the TakeTake should have been created.
+	g.undoLastMove();
+	g.undoLastMove();
+	EXPECT_EQ(0, pl.getNumCands());
+}
+

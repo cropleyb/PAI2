@@ -67,6 +67,18 @@ void PositionStats::maintainTake(const SpanEntry &spanEntry, const LinePattern &
 				cout << "leaving: " << level.getCount(trigger) << " benefits for trigger." << endl;
 				cout << "-> " << (int)level.getNumCands() << " candidates" << endl;
 			}
+			int numTakes = soc.takes;
+			if (numTakes > 0) {
+				// FIXME copy & paste
+				cout << "MAINTAINTAKE still" << endl;
+				cout << "numTakes: " << numTakes << endl;
+				PriorityLevel &level = _levels[c][TakeTake];
+				cout << "adjust: P" << (int)c << " trigger: " << (int)trigger._value << " with diff: " << inc*numFTs << endl;
+				cout << "count before: " << level.getCount(trigger) << " benefits for trigger." << endl;
+				level.addOrRemoveCandidate(trigger, inc*numTakes);
+				cout << "leaving: " << level.getCount(trigger) << " benefits for trigger." << endl;
+				cout << "-> " << (int)level.getNumCands() << " candidates" << endl;
+			}
 		}
 	}
 }
@@ -79,7 +91,7 @@ void PositionStats::maintainSpecial(const SpanEntry &spanEntry, const LinePatter
 	int numInds = 1;
 	if (pt == Line4) {
 		numInds = 4;
-	} else {
+	} else if (pt == Blocked4) {
 		c = otherPlayer(c);
 	}
 	Colour oc = otherPlayer(c);
@@ -154,6 +166,7 @@ void PositionStats::maintainTakePLs(const SpanEntry &spanEntry, const LinePatter
 			maintainSpecial(spanEntry, patternEntry, inc);
 			break;
 		case Take:
+			maintainSpecial(spanEntry, patternEntry, inc);
 			maintainTake(spanEntry, patternEntry, inc);
 			break;
 		default:
