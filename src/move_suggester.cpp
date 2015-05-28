@@ -267,16 +267,18 @@ void MoveSuggester::fillPriorityLevels(Colour ourColour, Colour theirColour)
 {
 	int i=0;
 	int level;
+#if 0
 	if (_posStats._takeTargeting) {
 		// Targetted takes should be searched first
 		// There is no point including FourTakes as they will have been used above if necessary
-		//for (level=Blocked4Take; level>=TakeTake; level--)
-		for (level=FourTake; level>=TakeTake; level--)
+		for (level=Blocked4Take; level>=TakeTake; level--)
+		//for (level=FourTake; level>=TakeTake; level--)
 		{
 			_toSearchLevels[i++] = &_posStats.getPriorityLevel(ourColour, (LinePatternType)level);
 			_toSearchLevels[i++] = &_posStats.getPriorityLevel(theirColour, (LinePatternType)level);
 		}
 	}
+#endif
 	for (level=Take; level>=Line1; level--)
 	{
 		_toSearchLevels[i++] = &_posStats.getPriorityLevel(ourColour, (LinePatternType)level);
