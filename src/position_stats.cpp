@@ -36,48 +36,48 @@ void PositionStats::maintainTake(const SpanEntry &spanEntry, const LinePattern &
 	const SpecialOccsTable &sot = _specialOccsTable[oc];
 
 	Loc trigger = spanEntry.convertIndToLoc(patternEntry._inds[0]);
-	cout << "MAINTAINTAKE Trigger: " << trigger << " (" << trigger._value << ")" << endl;
+	// cout << "MAINTAINTAKE Trigger: " << trigger << " (" << trigger._value << ")" << endl;
 	for (int dist=1; dist<=2; dist++) {
 		CompressedLoc vuln = _takeTable[c].addOneCap(trigger, spanEntry._direction, spanEntry._offsetPerIndex, dist, inc);
-		cout << "vuln: " << Loc(vuln) << " (" << vuln << ")" << endl;
+		// cout << "vuln: " << Loc(vuln) << " (" << vuln << ")" << endl;
 
 		SpecialOccCounts soc = sot.getCounts(vuln);
 
 		if (soc.all > 0) {
 			int numFTs = soc.fours;
 			if (numFTs > 0) {
-				cout << "MAINTAINTAKE still" << endl;
-				cout << "numFTs: " << numFTs << endl;
+				// cout << "MAINTAINTAKE still" << endl;
+				// cout << "numFTs: " << numFTs << endl;
 				PriorityLevel &level = _levels[c][FourTake];
-				cout << "adjust: P" << (int)c << " trigger: " << (int)trigger._value << " with diff: " << inc*numFTs << endl;
-				cout << "count before: " << level.getCount(trigger) << " benefits for trigger." << endl;
+				// cout << "adjust: P" << (int)c << " trigger: " << (int)trigger._value << " with diff: " << inc*numFTs << endl;
+				// cout << "count before: " << level.getCount(trigger) << " benefits for trigger." << endl;
 				level.addOrRemoveCandidate(trigger, inc*numFTs);
-				cout << "leaving: " << level.getCount(trigger) << " benefits for trigger." << endl;
-				cout << "-> " << (int)level.getNumCands() << " candidates" << endl;
+				// cout << "leaving: " << level.getCount(trigger) << " benefits for trigger." << endl;
+				// cout << "-> " << (int)level.getNumCands() << " candidates" << endl;
 			}
 			int numBFTs = soc.blocked4s;
 			if (numBFTs > 0) {
 				// FIXME copy & paste
-				cout << "MAINTAINTAKE still" << endl;
-				cout << "numBFTs: " << numBFTs << endl;
+				// cout << "MAINTAINTAKE still" << endl;
+				// cout << "numBFTs: " << numBFTs << endl;
 				PriorityLevel &level = _levels[c][Blocked4Take];
-				cout << "adjust: P" << (int)c << " trigger: " << (int)trigger._value << " with diff: " << inc*numFTs << endl;
-				cout << "count before: " << level.getCount(trigger) << " benefits for trigger." << endl;
+				// cout << "adjust: P" << (int)c << " trigger: " << (int)trigger._value << " with diff: " << inc*numFTs << endl;
+				// cout << "count before: " << level.getCount(trigger) << " benefits for trigger." << endl;
 				level.addOrRemoveCandidate(trigger, inc*numBFTs);
-				cout << "leaving: " << level.getCount(trigger) << " benefits for trigger." << endl;
-				cout << "-> " << (int)level.getNumCands() << " candidates" << endl;
+				// cout << "leaving: " << level.getCount(trigger) << " benefits for trigger." << endl;
+				// cout << "-> " << (int)level.getNumCands() << " candidates" << endl;
 			}
 			int numTakes = soc.takes;
 			if (numTakes > 0) {
 				// FIXME copy & paste
-				cout << "MAINTAINTAKE still" << endl;
-				cout << "numTakes: " << numTakes << endl;
+				// cout << "MAINTAINTAKE still" << endl;
+				// cout << "numTakes: " << numTakes << endl;
 				PriorityLevel &level = _levels[c][TakeTake];
-				cout << "adjust: P" << (int)c << " trigger: " << (int)trigger._value << " with diff: " << inc*numFTs << endl;
-				cout << "count before: " << level.getCount(trigger) << " benefits for trigger." << endl;
+				// cout << "adjust: P" << (int)c << " trigger: " << (int)trigger._value << " with diff: " << inc*numFTs << endl;
+				// cout << "count before: " << level.getCount(trigger) << " benefits for trigger." << endl;
 				level.addOrRemoveCandidate(trigger, inc*numTakes);
-				cout << "leaving: " << level.getCount(trigger) << " benefits for trigger." << endl;
-				cout << "-> " << (int)level.getNumCands() << " candidates" << endl;
+				// cout << "leaving: " << level.getCount(trigger) << " benefits for trigger." << endl;
+				// cout << "-> " << (int)level.getNumCands() << " candidates" << endl;
 			}
 		}
 	}
@@ -85,7 +85,7 @@ void PositionStats::maintainTake(const SpanEntry &spanEntry, const LinePattern &
 
 void PositionStats::maintainSpecial(const SpanEntry &spanEntry, const LinePattern &patternEntry, int inc)
 {
-	cout << "MAINTAINSPECIAL" << endl;
+	// cout << "MAINTAINSPECIAL" << endl;
 	Colour c = patternEntry._colour;
 	LinePatternType pt = patternEntry._patternType;
 	int numInds = 1;
@@ -100,8 +100,8 @@ void PositionStats::maintainSpecial(const SpanEntry &spanEntry, const LinePatter
 	for (int ind=0; ind<numInds; ind++) {
 		Loc target = spanEntry.convertIndToLoc(patternEntry.target(ind));
 		CompressedLoc cTarget = target._value;
-		cout << "ind: " << ind << endl;
-		cout << "cTarget: " << cTarget << endl;
+		// cout << "ind: " << ind << endl;
+		// cout << "cTarget: " << cTarget << endl;
 
 		switch (pt) {
 			case Line4:
@@ -119,7 +119,7 @@ void PositionStats::maintainSpecial(const SpanEntry &spanEntry, const LinePatter
 			
 		CapTable &ct = _takeTable[oc];
 		CompressedLoc takeDirs = ct.getTakes(cTarget);
-		cout << "hasTake: " << takeDirs << endl;
+		// cout << "hasTake: " << takeDirs << endl;
 		if (takeDirs) {
 			ExtraPriorityLevels epl;
 
@@ -142,11 +142,11 @@ void PositionStats::maintainSpecial(const SpanEntry &spanEntry, const LinePatter
 			for (dir=0; dir<MAX_DIR; dir++) {
 				Loc trigger = ct.getTriggerInDirection(cTarget, (DirectionType)dir);
 				if (trigger.isValid()) {
-					cout << "MAINTAINSPECIAL still" << endl;
-					cout << "adjust: P" << (int)oc << " trigger: " << (int)trigger._value << " with diff: " << inc << endl;
+					// cout << "MAINTAINSPECIAL still" << endl;
+					// cout << "adjust: P" << (int)oc << " trigger: " << (int)trigger._value << " with diff: " << inc << endl;
 					level.addOrRemoveCandidate(trigger, inc);
-					cout << "leaving: " << level.getCount(trigger) << " benefits for trigger" << endl;
-					cout << "-> " << (int)level.getNumCands() << " candidates." << endl;
+					// cout << "leaving: " << level.getCount(trigger) << " benefits for trigger" << endl;
+					// cout << "-> " << (int)level.getNumCands() << " candidates." << endl;
 				}
 			}
 		}
