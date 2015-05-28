@@ -71,7 +71,6 @@ TEST_F(RunAIFixture, run_another_game) {
 	EXPECT_LT(0.0001, res._times[true]);
 }
 
-#if 1
 TEST_F(RunAIFixture, RunMatch) {
 	PenteGame p1;
 	PenteGame p2;
@@ -89,7 +88,6 @@ TEST_F(RunAIFixture, RunMatch) {
 	EXPECT_EQ("Rules", allStats.getCategory(3)._catName);
 	EXPECT_EQ("Overall", allStats.getCategory(4)._catName);
 }
-#endif
 
 class AccumFixture : public testing::Test {
 public:
@@ -197,7 +195,6 @@ TEST_F(AccumFixture, AddTwoGamesP1ContenderWon) {
 	EXPECT_EQ("0.2500", gc.getTimeStr()); // Average ratio
 }
 
-#if 1
 TEST_F(AccumFixture, TestReport) {
 	AllStats as;
 	GameResult gr;
@@ -224,7 +221,6 @@ TEST_F(AccumFixture, TestReport) {
 	string wholeReport = as.report();
 	EXPECT_EQ(expectedReportStr, wholeReport);
 }
-#endif
 
 #if 0
 x/y: contender wins / defender wins
