@@ -78,7 +78,7 @@ void PenteGame::makeMove(Loc l, Colour p)
 	std::cout << l;
 #endif
 	if (!isLegalMove(l)) {
-		std::cerr << "Illegal move requested\n";
+		std::cerr << "Illegal move requested: " << l << endl;
 		// TODO - Dump stack trace, board state etc. for pente.org:
 		// bailOut();
 	}
