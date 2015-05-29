@@ -453,10 +453,16 @@ At the LinePattern level, there is only 1 LinePatternType.
 # Add Locs to LinePattern for capturable stones
 # Create PLs from LinePatterns (with SpecialOccsTable and CapTable) in PosStats
 # Test with maintenance only (no usage)
-Test with each usage individually:
-# util calc (slightly faster)
-# MSG (faster)
-- PG for VCT
+# Test with each usage individually:
+# - util calc (slightly faster)
+# - MSG (faster)
+# - PG for VCT
+RunAI
+- compare with w/o MSG mod?
+- try different weightings for the 3 new util vars:
+	_takeBlocked4ScoreBase = 500; // Guesses for take targeting
+	_takeTakeScoreBase = 500;
+	_takeFourScoreBase = 500;
 
 Colour swaps and pattern types for take targeting
 -------------------------------------------------
