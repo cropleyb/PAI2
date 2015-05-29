@@ -25,6 +25,15 @@ void PositionStats::reportCandidates(Colour colour, LinePatternType pt, const ve
 	}
 }
 
+void PositionStats::reportCandidate(Colour colour, ExtraPriorityLevels pt, Loc loc, Step inc)
+{
+	_patternCounts[colour][pt] += inc;
+
+	PriorityLevel &level = _levels[colour][pt];
+	level.addOrRemoveCandidate(loc, inc);
+}
+
+
 //#include <assert.h>
 #include <iostream>
 using namespace std;
@@ -46,38 +55,15 @@ void PositionStats::maintainTake(const SpanEntry &spanEntry, const LinePattern &
 		if (soc.all > 0) {
 			int numFTs = soc.fours;
 			if (numFTs > 0) {
-				// cout << "MAINTAINTAKE still" << endl;
-				// cout << "numFTs: " << numFTs << endl;
-				PriorityLevel &level = _levels[c][FourTake];
-				// cout << "adjust: P" << (int)c << " trigger: " << (int)trigger._value << " with diff: " << inc*numFTs << endl;
-				// cout << "count before: " << level.getCount(trigger) << " benefits for trigger." << endl;
-				level.addOrRemoveCandidate(trigger, inc*numFTs);
-				// cout << "leaving: " << level.getCount(trigger) << " benefits for trigger." << endl;
-				// cout << "-> " << (int)level.getNumCands() << " candidates" << endl;
+				reportCandidate(c, FourTake, trigger, inc*numFTs);
 			}
 			int numBFTs = soc.blocked4s;
 			if (numBFTs > 0) {
-				// FIXME copy & paste
-				// cout << "MAINTAINTAKE still" << endl;
-				// cout << "numBFTs: " << numBFTs << endl;
-				PriorityLevel &level = _levels[c][Blocked4Take];
-				// cout << "adjust: P" << (int)c << " trigger: " << (int)trigger._value << " with diff: " << inc*numFTs << endl;
-				// cout << "count before: " << level.getCount(trigger) << " benefits for trigger." << endl;
-				level.addOrRemoveCandidate(trigger, inc*numBFTs);
-				// cout << "leaving: " << level.getCount(trigger) << " benefits for trigger." << endl;
-				// cout << "-> " << (int)level.getNumCands() << " candidates" << endl;
+				reportCandidate(c, Blocked4Take, trigger, inc*numBFTs);
 			}
 			int numTakes = soc.takes;
 			if (numTakes > 0) {
-				// FIXME copy & paste
-				// cout << "MAINTAINTAKE still" << endl;
-				// cout << "numTakes: " << numTakes << endl;
-				PriorityLevel &level = _levels[c][TakeTake];
-				// cout << "adjust: P" << (int)c << " trigger: " << (int)trigger._value << " with diff: " << inc*numFTs << endl;
-				// cout << "count before: " << level.getCount(trigger) << " benefits for trigger." << endl;
-				level.addOrRemoveCandidate(trigger, inc*numTakes);
-				// cout << "leaving: " << level.getCount(trigger) << " benefits for trigger." << endl;
-				// cout << "-> " << (int)level.getNumCands() << " candidates" << endl;
+				reportCandidate(c, TakeTake, trigger, inc*numTakes);
 			}
 		}
 	}
@@ -160,7 +146,7 @@ void PositionStats::maintainTakePLs(const SpanEntry &spanEntry, const LinePatter
 
 	switch (pt) {
 		case Line4:
-			maintainSpecial(spanEntry, patternEntry, inc); // TEMP -- PUT IT BACK!
+			maintainSpecial(spanEntry, patternEntry, inc);
 			break;
 		case Blocked4:
 			maintainSpecial(spanEntry, patternEntry, inc);
@@ -187,25 +173,6 @@ void PositionStats::report(const SpanEntry &spanEntry, const LinePattern &patter
 	if (_takeTargeting) {
 		maintainTakePLs(spanEntry, patternEntry, inc);
 	}
-
-#if 0
-	StId stId = -1;
-
-    if (pt == Line4 or pt == Blocked4 or pt == Line3)
-    {
-        if (inc > 0) {
-			Structure &str = _structureMap.add(pt);
-			str._pattern = pt;
-			stId = str._id;
-			_structureLookup[pt][spanEntry._baseLoc] = stId;
-		} else {
-			// TODO _structureLookup needs to include direction as well
-	// spanEntry._direction; // Direction that this strip goes - up to MAX_DIR (i.e. 4)
-			stId = _structureLookup[pt][spanEntry._baseLoc];
-			_structureMap.remove(stId);
-		}
-	}
-#endif
 
 	_patternCounts[c][pt] += inc;
 	if (pt == Line5) updateWonBy(c);

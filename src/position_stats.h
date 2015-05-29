@@ -17,7 +17,8 @@ class PositionStats
 public:
 	PositionStats()
 	{
-		_takeTargeting = false;
+		//_takeTargeting = false;
+		_takeTargeting = true;
 		_canWinByCaptures = true;
 		reset();
 	}
@@ -113,6 +114,7 @@ public:
 			return 2;
 		}
 		// TODO: skip VCT earlier in the game...
+		// TODO: VCT > 3
 		return 3;
 	}
 
@@ -210,6 +212,7 @@ private:
 	// Test code only
 	void reportCandidate(Colour colour, LinePatternType pt, Loc loc, Step inc);
 	void reportCandidates(Colour colour, LinePatternType pt, const vector<Loc> &locArr, Step inc);
+	void reportCandidate(Colour colour, ExtraPriorityLevels pt, Loc loc, Step inc);
 
 	// TODO: Extract player stats?
 	PriorityLevel _levels[3][MAX_PATTERN_TYPE];
