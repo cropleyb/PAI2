@@ -65,6 +65,8 @@ public:
 	// Get up to three of the above candidates have a count of 2 or more lines.
 	Breadth getMultiCands(Loc multiCands[3]) const;
 
+	Breadth getMultiCount() const;
+
 	// Get the count of times that the given location provides this PL's
 	// advantage.
 	Ind getCount(Loc l) const;

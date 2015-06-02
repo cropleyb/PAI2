@@ -118,7 +118,11 @@ public:
 		return 3;
 	}
 
-#if 0
+	Breadth getMultiCount(Colour c, int level) const {
+		return _levels[c][level].getMultiCount();
+	}
+
+#if 1
 	void updateSpreadCounts(Colour c, Loc loc, int inc)
 	{
 		_totalStones[c] += inc;
@@ -150,7 +154,7 @@ public:
         _stripeStats[c][0][stripe[0]] += inc;
         _stripeStats[c][1][stripe[1]] += inc;
 
-#if 0
+#if 1
 		updateSpreadCounts(c, loc, inc);
 #endif
 	}
@@ -183,7 +187,7 @@ public:
 		return ret;
 	}
 
-#if 0
+#if 1
 	UtilityValue getSpreadContrib(Colour c) const
 	{
 		float diff = (_totalDist[c] * _totalDist[c]) - (_totalStones[c] * _totalDistSqr[c]);
@@ -193,6 +197,8 @@ public:
 		return stddev;
 	}
 #endif
+
+	float getStonesOnBoard(Colour c) const { return _totalStones[c]; }
 
 	void setCanWinByCaptures(bool c) { _canWinByCaptures = c; }
 	bool getCanWinByCaptures() const { return _canWinByCaptures; }
@@ -222,7 +228,9 @@ private:
 	// Strategic features
 	UtilityValue _checkerboardStats[3][2];
 	UtilityValue _stripeStats[3][2][2];
-#if 0
+
+#if 1
+	// for Spread
 	float _totalStones[3];
 	float _totalDistSqr[3];
 	float _totalDist[3];

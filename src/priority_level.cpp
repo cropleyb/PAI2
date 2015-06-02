@@ -253,3 +253,27 @@ Breadth PriorityLevel::getMultiCands(Loc multiCands[3]) const
 	}
 	return multis;
 }
+
+Breadth PriorityLevel::getMultiCount() const
+{
+	Ind currInd = _dlHeadInd;
+    Ind multis = 0;
+
+	while ((currInd >= 0))
+	{
+		const DLNode &currNode = _dlNodes[currInd];
+		if (currNode._loc == Loc::INVALID)
+		{
+			PLD(cout << "getMultiCount 3 - INVALID" << endl);
+			break;
+		}
+		if (currNode._count > 1)
+		{
+			PLD(cout << "getMultiCount 4 - found one" << endl);
+			multis++;
+		}
+		currInd = currNode._nextInd;
+	}
+	return multis;
+
+}
