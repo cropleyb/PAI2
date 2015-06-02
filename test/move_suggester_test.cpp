@@ -484,15 +484,15 @@ TEST_F(MoveSuggesterFixture, test_multiple_entries_searched_first)
 ////////////////////////////////////////////////////////////////////////
 
 // debug/tests --gtest_filter="*takeFourFirst*"
-TEST_F(MoveSuggesterFixture, takeFourBeforeBlockingIt)
+TEST_F(MoveSuggesterFixture, blockFourBeforeTakingIt)
 {
 	ps._takeTargeting = true;
 	arcs(P2, Line4, 1, Loc(2,4));
 	arcs(P1, FourTake, 1, Loc(3,3));
 	LocArr la = getLocsInOrder(0);
 	EXPECT_EQ((UL)2, la.size());
-	EXPECT_EQ(Loc(3,3), la[0]);
-	EXPECT_EQ(Loc(2,4), la[1]);
+	EXPECT_EQ(Loc(2,4), la[0]);
+	EXPECT_EQ(Loc(3,3), la[1]);
 }
 
 TEST_F(MoveSuggesterFixture, OnlyTakeFourWhenThereAreTwoFours)
