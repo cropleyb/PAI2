@@ -472,6 +472,22 @@ Line4 P1        four P2(4)      Take P2 _takes    FourTake P2
 Take P1         take P2(1)      Take P2 _takes    TakeTake P2
 Blocked4 P1     blocked4s P1(1) Take P1 _takes    Blocked4Take P1
 
+Hmmm still not as good as PAI1?!
+Turn off PAI2 features and find example(s) where PAI2 comes up with a different result.
+- VCT
+- Stripe value
+- Take Targeting
+- set other old values back to PAI1 defaults
+
+PAI1 runai, add PAI2 features, see what breaks it.
+Does PAI2 equal PAI1 with PAI1 settings?
+
+PAI2 run AI seems to be giving opposite results?!
+
+Ideas from Pente Strategy book
+------------------------------
+subtypes in utility function - single gap 2s and Trias (continuous 3s) should be worth extra.
+
 Fukami?
 -------
 
