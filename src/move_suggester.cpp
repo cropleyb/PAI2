@@ -39,7 +39,7 @@ void MoveSuggester::setPartPAI2()
 	_shallowCutoff = 5;
 
 #if 0
-	_maxMovesShallow = 7;
+	_maxMovesShallow = 7; // 32/24 in PAI2, but still no improvement versus real PAI1
 	_maxMovesDeep = 7;
 	_shallowCutoff = 5;
 #endif

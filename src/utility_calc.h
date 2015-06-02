@@ -57,6 +57,8 @@ public:
 		_multiFactor = 0.0;
 		_sobCapFactor = 0.0;
 		_sobSqrCapFactor = 0.0;
+		_sobCheckFactor = 0.0;
+		_sobSqrCheckFactor = 0.0;
 	}
 
 	void setPartPAI2()
@@ -66,6 +68,7 @@ public:
         _captureScoreBase = 600; // Doubled because it is per pair
         _takeScoreBase = 80;
         _threatScoreBase = 20;
+		//_sobCheckFactor = 0.001; 24/28
 		//_sobCapFactor = 0.005; 29/27
 		//_sobCapFactor = 0.003; 23/33
 		//_sobCapFactor = 0.001; 28/28
@@ -124,6 +127,8 @@ private:
 	double _multiFactor;
 	double _sobCapFactor;
 	double _sobSqrCapFactor;
+	double _sobCheckFactor;
+	double _sobSqrCheckFactor;
 };
 
 template <class PS>
@@ -227,10 +232,11 @@ UtilityValue UtilityCalc<PS>::utilityScore(Colour evalColour, Colour /*turnColou
 	// on pairs
 	captured /= 2;
 
+	float sob = _posStats.getStonesOnBoard(evalColour);
+
 	if (_posStats.getCanWinByCaptures())
 	{
 		// stones on the board
-		float sob = _posStats.getStonesOnBoard(evalColour);
 		float sobFactor = sob*sob*_sobSqrCapFactor + sob*_sobCapFactor + 1;
 		UtilityValue cc = sobFactor * capturedContrib(captured);
 		score += cc;
@@ -249,7 +255,8 @@ UtilityValue UtilityCalc<PS>::utilityScore(Colour evalColour, Colour /*turnColou
 
 	// Give an advantage to having more pieces on one colour of squares
 	// of a checkerboard
-	bc = _posStats.getCheckerboardContrib(evalColour) * _checkerboardValue;
+	float sobTotCheckFactor = sob*sob*_sobSqrCheckFactor + sob*_sobCheckFactor + 1;
+	bc = _posStats.getCheckerboardContrib(evalColour) * _checkerboardValue * sobTotCheckFactor;
 	score += bc;
 
 	// Give an advantage to having more pieces on one colour of squares

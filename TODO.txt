@@ -486,7 +486,11 @@ PAI2 run AI seems to be giving opposite results?!
 
 Ideas from Pente Strategy book
 ------------------------------
+# piece on board weighting for caps/takes/threats or checkerboard contrib.
 subtypes in utility function - single gap 2s and Trias (continuous 3s) should be worth extra.
+Triangles
+3d patterns in opening
+opening strategy
 
 Fukami?
 -------
