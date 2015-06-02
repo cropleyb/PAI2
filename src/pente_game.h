@@ -22,6 +22,9 @@ public:
 	PenteGame();
 	virtual ~PenteGame();
 
+	void setPAI1(); // For debugging PAI2 with PAI1 settings...
+	void setPartPAI2();
+
 	void setColour(Colour ourColour) { _ourColour = ourColour; }
 	void resetSearch() { _moveSuggester.reset(); _currDepth=0; _penteGame_=this; clearTT(); }
 	void restartGame() { 

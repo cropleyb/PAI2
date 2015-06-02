@@ -31,6 +31,8 @@ PenteGame::PenteGame()
 	buildSpanTable(19);
 	setRules('s');
 	_isInTT = false;
+	//setPAI1();
+	setPartPAI2();
 }
 
 PenteGame::~PenteGame() {
@@ -38,6 +40,25 @@ PenteGame::~PenteGame() {
 	{
 		_penteGame_ = 0;
 	}
+}
+
+void PenteGame::setPAI1()
+{
+	_moveSuggester.setPAI1();
+	_utilCalc.setPAI1();
+	setVCTDepth(0);
+	_posStats._takeTargeting = false;
+}	
+
+void PenteGame::setPartPAI2()
+{
+	setPAI1();
+	_moveSuggester.setPartPAI2();
+	_utilCalc.setPartPAI2();
+#if 0
+	_posStats._takeTargeting = true;
+#endif
+	//setVCTDepth(3);
 }
 
 bool PenteGame::isLegalMove(Loc l) const

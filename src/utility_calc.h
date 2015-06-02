@@ -37,7 +37,58 @@ public:
         //_stripeValue = 0;
         _stripeValue = 400;
         //_spreadValue = 0;
+		_multiFactor = 0.0;
+	}
+
+	void setPAI1()
+	{
+		_moveFactor = 45.0;
+		_captureScoreBase = 600; // Doubled because it is per pair
+		_takeScoreBase = 80;
+		_threatScoreBase = 20;
+		_blockedFourBase = 400;
+		_lengthFactor = 35;
+		_checkerboardValue = 35;
+		_takeBlocked4ScoreBase = 0;
+		_takeTakeScoreBase = 0;
+		_takeFourScoreBase = 0;
+		_stripeValue = 0;
+		_spreadValue = 0;
+		_multiFactor = 0.0;
+		_sobCapFactor = 0.0;
+		_sobSqrCapFactor = 0.0;
+	}
+
+	void setPartPAI2()
+	{
+		// TEMP until we have an equiv. to ai_genome
+		_moveFactor = 45.0;
+        _captureScoreBase = 600; // Doubled because it is per pair
+        _takeScoreBase = 80;
+        _threatScoreBase = 20;
+		//_sobCapFactor = 0.005; 29/27
+		//_sobCapFactor = 0.003; 23/33
+		//_sobCapFactor = 0.001; 28/28
+		//_sobCapFactor = 0.0005; 27/29
+		//_sobSqrCapFactor = 0.0001; 26/30
+		//_sobSqrCapFactor = 0.00003; 29/27
+		//_sobSqrCapFactor = 0.00001; 26/30
+        //_spreadValue = 30; // Better for Standard, worse for Tournament
+        //_stripeValue = 15; // Better for Standard, same for Tournament
+		//_multiFactor = 0.3;
+        //_blockedFourBase = 200; // Halved as only one is blocked
+        //_takeTakeScoreBase = 100;
+        //_takeBlocked4ScoreBase = 100; // Guesses for take targeting
+        //_takeFourScoreBase = 20;
+#if 0
+        _blockedFourBase = 0;
+        _lengthFactor = 35;
+        //_checkerboardValue = 35;
+        _checkerboardValue = 400;
+        //_stripeValue = 0;
+        //_spreadValue = 0;
         _spreadValue = 0;
+#endif
 	}
 
 	UtilityValue calcUtility(Colour turnColour, Colour searchColour, MoveNumber moveNumber) const;
@@ -70,6 +121,9 @@ private:
 	int _checkerboardValue;
 	int _stripeValue;
 	int _spreadValue;
+	double _multiFactor;
+	double _sobCapFactor;
+	double _sobSqrCapFactor;
 };
 
 template <class PS>
@@ -115,7 +169,6 @@ UtilityValue UtilityCalc<PS>::calcUtility(Colour turnColour, Colour searchColour
 	// No forceable win has been found, so fudge up a score
 	UtilityValue utilScores[3] = {0.0, 0.0, 0.0};
 
-
 	for (int evalColour=P1; evalColour<=P2; evalColour++) // in (turn_colour, other_colour):
 	{
 		UtilityValue util = utilityScore(evalColour, turnColour);
@@ -156,7 +209,12 @@ UtilityValue UtilityCalc<PS>::utilityScore(Colour evalColour, Colour /*turnColou
 	{
 		if (i == Take || i == Threat) continue;
 		score *= _lengthFactor;
-		score += evalPatterns[i] * _patternScale[i];
+		double contrib = evalPatterns[i] * _patternScale[i];
+		if (_multiFactor > 0 and i >= Line3) {
+			Breadth multis = _posStats.getMultiCount(evalColour, i);
+			contrib *= (multis + 1) * _multiFactor;
+		}
+		score += contrib;
 	}
     bool takeTargeting = _posStats._takeTargeting;
     if (takeTargeting) {
@@ -171,14 +229,17 @@ UtilityValue UtilityCalc<PS>::utilityScore(Colour evalColour, Colour /*turnColou
 
 	if (_posStats.getCanWinByCaptures())
 	{
-		UtilityValue cc = capturedContrib(captured);
+		// stones on the board
+		float sob = _posStats.getStonesOnBoard(evalColour);
+		float sobFactor = sob*sob*_sobSqrCapFactor + sob*_sobCapFactor + 1;
+		UtilityValue cc = sobFactor * capturedContrib(captured);
 		score += cc;
 
 		UtilityValue tc;
-		tc  = takeContrib(evalPatterns[Take], captured);
+		tc  = sobFactor * takeContrib(evalPatterns[Take], captured);
 		score += tc;
 
-		tc = threatContrib(evalPatterns[Threat], captured);
+		tc = sobFactor * threatContrib(evalPatterns[Threat], captured);
 		score += tc;
 	}
 
@@ -196,14 +257,16 @@ UtilityValue UtilityCalc<PS>::utilityScore(Colour evalColour, Colour /*turnColou
 	bc = _posStats.getStripeContrib(evalColour) * _stripeValue;
 	score += bc;
 
-#if 0
+#if 1
 	// Give an advantage to having pieces closer together
 	bc = _posStats.getSpreadContrib(evalColour) * _spreadValue;
 	score += bc;
+#if 0
 	if (_spreadValue>0) {
 		cout << "Spread val: " << _spreadValue << endl;
 		cout << "bc: " << bc << endl;
 	}
+#endif
 #endif
 
 	return score;
