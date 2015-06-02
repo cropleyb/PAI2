@@ -55,6 +55,18 @@ public:
 		return 0;
 	}
 
+	Breadth getMultiCount(Colour /*c*/, int /*level*/) const
+	{
+		// TODO: test this...
+		return 0;
+	}
+
+	float getStonesOnBoard(Colour /*c*/) const
+	{
+		// TODO: test this...
+		return 0;
+	}
+
 	bool getCanWinByCaptures() const { return true; }
 	
 	CapCount _captured[3];
