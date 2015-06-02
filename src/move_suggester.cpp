@@ -21,10 +21,28 @@ MoveSuggester::MoveSuggester(PositionStats &ps)
 	// but they can't be compared with PAI1. Or can they?
 	_maxMovesShallow = 7;
 	_maxMovesDeep = 4;
-	//_maxMovesShallow = 9;
-	//_maxMovesDeep = 5;
 	_shallowCutoff = 4;
 	_candCache = new CandidateCache();
+}
+
+void MoveSuggester::setPAI1()
+{
+	_maxMovesShallow = 9;
+	_maxMovesDeep = 4;
+	_shallowCutoff = 5;
+}
+
+void MoveSuggester::setPartPAI2()
+{
+	_maxMovesShallow = 9;
+	_maxMovesDeep = 4;
+	_shallowCutoff = 5;
+
+#if 0
+	_maxMovesShallow = 7;
+	_maxMovesDeep = 7;
+	_shallowCutoff = 5;
+#endif
 }
 
 MoveSuggester::~MoveSuggester()
@@ -144,11 +162,13 @@ bool MoveSuggester::getPriorityLevels(Colour ourColour)
 				_toSearchLevels[_numSearchLevels++] = &ourTakes;
 				// We will lose unless we capture
 				MSD(cout << "P" << (int)ourColour << " lose by 5 in a row unless we take" << endl;)
+				MSD(cout << "adding ourTakes: " << &ourTakes << endl;)
 				onePoss = false;
 			}
-			if (takeTargeting and ourFourTakes.getNumCands() > 0) {
+			else if (takeTargeting and ourFourTakes.getNumCands() > 0) {
 				// TODO: only those that take at least one stone from EACH of their 4s
 				_toSearchLevels[_numSearchLevels++] = &ourFourTakes;
+				MSD(cout << "adding ourFourTakes: " << &ourFourTakes << endl;)
 				onePoss = false;
 			}
 
@@ -156,6 +176,7 @@ bool MoveSuggester::getPriorityLevels(Colour ourColour)
 				MSD(cout << " lose by 5 in a row imminently." << endl;)
 			}
 			// Might as well block one of them, can't stop 'em all
+			MSD(cout << "emergency level: " << &theirFours << endl;)
 			_emergencySearchLevel = &theirFours;
 			return onePoss;
 		}
@@ -165,6 +186,7 @@ bool MoveSuggester::getPriorityLevels(Colour ourColour)
 		MSD(cout << "P" << (int)ourColour << " lose by 5 in a row unless we block or capture part of it." << endl;)
 		_numSearchLevels = 0;
 		onePoss = true;
+		_toSearchLevels[_numSearchLevels++] = &theirFours;
 
 		if (takeTargeting and ourFourTakes.getNumCands() > 0) {
 		   	// Only include caps that take from a four.
@@ -309,7 +331,7 @@ Breadth MoveSuggester::filterCandidates(Loc *moveBuffer, Depth depth, Breadth ma
 		const PriorityLevel *pl = _toSearchLevels[slotInd];
 		Breadth foundFromPL = pl->getCands(moveBuffer, maxMoves-found, seen);
 #ifdef MSDEBUG
-		cout << "MS Found " << (int)foundFromPL << " in PL " << pl->getLevelName();
+		cout << "MS Found " << (int)foundFromPL << " in PL " << pl->getLevelName() << "@" << pl;
 		if (foundFromPL > 0) {
 			cout << ": ";
 			for (int ii=0; ii<foundFromPL; ii++) {

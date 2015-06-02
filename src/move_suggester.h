@@ -13,6 +13,9 @@ public:
 	MoveSuggester(PositionStats &ps);
 	~MoveSuggester();
 
+	void setPAI1();
+	void setPartPAI2();
+
 	void reset();
 
 	Loc getNextMove(Depth d, Colour searchColour);
