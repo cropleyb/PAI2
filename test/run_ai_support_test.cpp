@@ -65,8 +65,8 @@ TEST_F(RunAIFixture, run_another_game) {
 	EXPECT_EQ("13", res._size);
 	EXPECT_EQ("t", res._rules);
 	EXPECT_EQ("P2", res._contenderP);
-	EXPECT_GT(1.0, res._times[false]);
-	EXPECT_GT(1.0, res._times[true]);
+	EXPECT_GT(2.0, res._times[false]);
+	EXPECT_GT(2.0, res._times[true]);
 	EXPECT_LT(0.0001, res._times[false]);
 	EXPECT_LT(0.0001, res._times[true]);
 }
