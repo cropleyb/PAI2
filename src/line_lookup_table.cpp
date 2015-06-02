@@ -196,11 +196,14 @@ void buildAndStoreBlocked(Colour c, int blockInd)
 		factor *= 4;
 	}
 
-	LinePattern lti;
-	lti._colour = c;
-	lti._patternType = Blocked4;
-	lti._inds[0] = blockInd;
-	lengthLookup[occVal] = lti;
+	if (blockInd != 2) {
+		// Don't count mid-blocked 4s as a blocked 4 - they are usually just a take fork.
+		LinePattern lti;
+		lti._colour = c;
+		lti._patternType = Blocked4;
+		lti._inds[0] = blockInd;
+		lengthLookup[occVal] = lti;
+	}
 }
 
 void buildAndStoreAllBlocked()
