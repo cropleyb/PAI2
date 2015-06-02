@@ -53,9 +53,9 @@ list(REMOVE_ITEM SRC_FILES ${MAIN_SRC})
 list(REMOVE_ITEM SRC_FILES ${RUNAI_SRC})
 
 # Executable dependencies
-if(SRC_FILES)
-	add_executable("${EXECUTABLE_NAME}" ${SRC_FILES} ${MAIN_SRC}) 
-endif(SRC_FILES)
+# if(SRC_FILES)
+#    add_executable("${EXECUTABLE_NAME}" ${SRC_FILES} ${MAIN_SRC}) 
+# endif(SRC_FILES)
 
 # Set link libraries
 # target_link_libraries($EXECUTABLE_NAME ...)
