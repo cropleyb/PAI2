@@ -895,14 +895,14 @@ TEST_F(PenteGameFixture, TakeBlockedFourWithBlockFirst) {
 	g.makeMove(Loc(6,8), P2);
 	g.makeMove(Loc(9,7), P1);
 	g.makeMove(Loc(3,8), P2);
-	cout << "TEST MAKE THE 4" << endl;
+	//cout << "TEST MAKE THE 4" << endl;
 	g.makeMove(Loc(9,6), P1); // That's 4 in a row
-	cout << "TEST MAKE THE BLOCK" << endl;
+	//cout << "TEST MAKE THE BLOCK" << endl;
 	g.makeMove(Loc(9,10), P2); // The block
 	g.makeMove(Loc(8,10), P1);
 	EXPECT_EQ(0, pl.getNumCands());
 
-	cout << "TEST MAKE THE TAKE" << endl;
+	//cout << "TEST MAKE THE TAKE" << endl;
 	g.makeMove(Loc(10,10), P2); // Create the Take
 	EXPECT_EQ(1, pl.getNumCands());
 
@@ -936,14 +936,14 @@ TEST_F(PenteGameFixture, TakeBlockedFourWithTakeFirst) {
 	g.makeMove(Loc(9,8), P1);
 	g.makeMove(Loc(6,8), P2);
 	g.makeMove(Loc(8,10), P1);
-	cout << "TEST MAKE THE TAKE" << endl;
+	//cout << "TEST MAKE THE TAKE" << endl;
 	g.makeMove(Loc(10,10), P2); // Create the Take
 	g.makeMove(Loc(9,7), P1);
-	cout << "TEST MAKE THE BLOCK" << endl;
+	//cout << "TEST MAKE THE BLOCK" << endl;
 	g.makeMove(Loc(9,10), P2); // The block
 	EXPECT_EQ(0, pl.getNumCands());
 
-	cout << "TEST MAKE THE 4" << endl;
+	//cout << "TEST MAKE THE 4" << endl;
 	g.makeMove(Loc(9,6), P1); // That's 4 in a row
 
 	EXPECT_EQ(1, pl.getNumCands());
@@ -980,17 +980,17 @@ TEST_F(PenteGameFixture, TakeTakeWithTargetFirst) {
 	g.makeMove(Loc(9,9), P1);
 	g.makeMove(Loc(10,9), P2);
 	g.makeMove(Loc(9,8), P1);
-	cout << "TEST MAKE THE TARGET TAKE (P2 (9,9))" << endl;
+	//cout << "TEST MAKE THE TARGET TAKE (P2 (9,9))" << endl;
 	g.makeMove(Loc(11,9), P2);
 	g.makeMove(Loc(3,3), P1); // Irrel.
 	EXPECT_EQ(0, pl.getNumCands());
 
-	cout << "TEST MAKE THE TAKER (P2 (9,10))" << endl;
+	//cout << "TEST MAKE THE TAKER (P2 (9,10))" << endl;
 	g.makeMove(Loc(9,7), P2);
 	EXPECT_EQ(1, pl.getNumCands());
 	g.makeMove(Loc(4,4), P1); // Irrel.
 
-	cout << "TEST MAKE THE CAPTURE" << endl;
+	//cout << "TEST MAKE THE CAPTURE" << endl;
 	g.makeMove(Loc(9,10), P2); // capture it
 	EXPECT_EQ(0, pl.getNumCands());
 
@@ -1020,16 +1020,16 @@ TEST_F(PenteGameFixture, TakeTakeWithTargetSecond) {
 	g.makeMove(Loc(9,8), P1);
 	EXPECT_EQ(0, pl.getNumCands());
 
-	cout << "TEST MAKE THE TAKER (P2 (9,10))" << endl;
+	//cout << "TEST MAKE THE TAKER (P2 (9,10))" << endl;
 	g.makeMove(Loc(9,7), P2);
 	g.makeMove(Loc(4,4), P1); // Irrel.
 
-	cout << "TEST MAKE THE TARGET TAKE (P2 (9,9))" << endl;
+	//cout << "TEST MAKE THE TARGET TAKE (P2 (9,9))" << endl;
 	g.makeMove(Loc(11,9), P2);
 	EXPECT_EQ(1, pl.getNumCands());
 	g.makeMove(Loc(3,3), P1); // Irrel.
 
-	cout << "TEST MAKE THE CAPTURE" << endl;
+	//cout << "TEST MAKE THE CAPTURE" << endl;
 	g.makeMove(Loc(9,10), P2); // capture it
 	EXPECT_EQ(0, pl.getNumCands());
 
@@ -1042,4 +1042,5 @@ TEST_F(PenteGameFixture, TakeTakeWithTargetSecond) {
 	g.undoLastMove();
 	EXPECT_EQ(0, pl.getNumCands());
 }
+
 
