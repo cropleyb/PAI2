@@ -150,6 +150,49 @@ TEST_F(LineLookupTableFixture, FourBlackMidRight) {
 }
 
 /////////////////////////////////////////////////////
+// Threes
+/////////////////////////////////////////////////////
+
+TEST_F(LineLookupTableFixture, TriaLeftBlack) {
+	LinePattern *pattern = processMaskString("BBB  ");
+	EXPECT_EQ(P1, pattern->_colour);
+	EXPECT_EQ(Line3, pattern->_patternType);
+	EXPECT_EQ(true, pattern->_isTriaOrPot);
+}
+
+TEST_F(LineLookupTableFixture, TriaRightWhite) {
+	LinePattern *pattern = processMaskString("  WWW");
+	EXPECT_EQ(P2, pattern->_colour);
+	EXPECT_EQ(Line3, pattern->_patternType);
+	EXPECT_EQ(true, pattern->_isTriaOrPot);
+}
+
+TEST_F(LineLookupTableFixture, NotTriaLeft) {
+	LinePattern *pattern = processMaskString("BB B ");
+	EXPECT_EQ(P1, pattern->_colour);
+	EXPECT_EQ(Line3, pattern->_patternType);
+	EXPECT_EQ(false, pattern->_isTriaOrPot);
+}
+
+/////////////////////////////////////////////////////
+// Twos
+/////////////////////////////////////////////////////
+
+TEST_F(LineLookupTableFixture, PotentialLeftBlack) {
+	LinePattern *pattern = processMaskString("B B  ");
+	EXPECT_EQ(P1, pattern->_colour);
+	EXPECT_EQ(Line2, pattern->_patternType);
+	EXPECT_EQ(true, pattern->_isTriaOrPot);
+}
+
+TEST_F(LineLookupTableFixture, NoPotentialRightWhite) {
+	LinePattern *pattern = processMaskString("   WW");
+	EXPECT_EQ(P2, pattern->_colour);
+	EXPECT_EQ(Line2, pattern->_patternType);
+	EXPECT_EQ(false, pattern->_isTriaOrPot);
+}
+
+/////////////////////////////////////////////////////
 // Takes
 /////////////////////////////////////////////////////
 

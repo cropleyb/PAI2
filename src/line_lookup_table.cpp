@@ -26,7 +26,7 @@ void buildAndStoreLineValues(int levelsDone, Mask occVal, LinePattern lti, vecto
 
 #include <assert.h>
 
-void extendAndStoreLineLookups(Colour occ, int levelsDone,  Mask occVal, LinePattern lti, vector<Breadth> occupied)
+void extendAndStoreLineLookups(Colour occ, int levelsDone, Mask occVal, LinePattern lti, vector<Breadth> occupied)
 {
     /*
     occ is the colour of the stone (or EMPTY) that we are extending by
@@ -65,8 +65,17 @@ void extendAndStoreLineLookups(Colour occ, int levelsDone,  Mask occVal, LinePat
             // candidates = [(candidateLookup[i], i) for i in emptyList]
             // candidates.sort()
             // candidates = [i for o,i in candidates]
-			for (unsigned long i=0; i<occupied.size(); i++) {
+			unsigned long i;
+			for (i=0; i<occupied.size(); i++) {
 				lti._inds[i + lti._numCands] = occupied[i];
+			}
+			if (i > 0)
+			{
+				Breadth pattWidth = occupied[i-1] - occupied[0];
+				if (pattWidth == 2) {
+					// "Tria" or "Potential", worth much more
+					lti._isTriaOrPot = true;
+				}
 			}
             lengthLookup[occVal] = lti;
 		}

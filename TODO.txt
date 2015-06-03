@@ -492,6 +492,18 @@ Triangles
 3d patterns in opening
 opening strategy
 
+Subtypes
+--------
+#Add subtypes to LinePatterns - added flag Tria or Potential
+ xxx..
+ .xxx.
+ ..xxx
+ x.x..
+ .x.x.
+ ..x.x
+Count them in PosStats
+Use them in UtilCalc
+
 Fukami?
 -------
 

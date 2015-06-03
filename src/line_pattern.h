@@ -32,12 +32,13 @@ enum ExtraPriorityLevels {
 class LinePattern
 {
 public:
-	LinePattern() : _colour(EMPTY), _patternType(NoPattern), _numCands(0) {}
+	LinePattern() : _colour(EMPTY), _patternType(NoPattern), _numCands(0), _isTriaOrPot(false) {}
 
 	LinePattern(const LinePattern &orig) :
 		_colour(orig._colour),
 		_patternType(orig._patternType),
-		_numCands(orig._numCands)
+		_numCands(orig._numCands),
+		_isTriaOrPot(orig._isTriaOrPot)
 	{
 		for (int i=0; i<5; i++) {
 			_inds[i] = orig._inds[i];
@@ -106,6 +107,7 @@ public:
 	LinePatternType _patternType;
 	Breadth _inds[5];
     unsigned char _numCands;
+	bool _isTriaOrPot;
 };
 
 #endif
