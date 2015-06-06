@@ -173,6 +173,13 @@ void PositionStats::report(const SpanEntry &spanEntry, const LinePattern &patter
 	if (_takeTargeting) {
 		maintainTakePLs(spanEntry, patternEntry, inc);
 	}
+	if (patternEntry._isTriaOrPot) {
+		if (pt == Line2) {
+			_potentials[c] += inc;
+		} else {
+			_trias[c] += inc;
+		}
+	}
 
 	_patternCounts[c][pt] += inc;
 	if (pt == Line5) updateWonBy(c);

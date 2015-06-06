@@ -67,6 +67,18 @@ public:
 		return 0;
 	}
 
+	float getTriaCount(Colour /*c*/) const
+	{
+		// TODO: test this...
+		return 0;
+	}
+
+	float getPotentialCount(Colour /*c*/) const
+	{
+		// TODO: test this...
+		return 0;
+	}
+
 	bool getCanWinByCaptures() const { return true; }
 	
 	CapCount _captured[3];

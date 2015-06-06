@@ -38,6 +38,10 @@ public:
         _stripeValue = 400;
         //_spreadValue = 0;
 		_multiFactor = 0.0;
+		_triaValue = 0.0;
+		_potentialValue = 0.0;
+
+		_openingMove = 0;
 	}
 
 	void setPAI1()
@@ -46,7 +50,7 @@ public:
 		_captureScoreBase = 600; // Doubled because it is per pair
 		_takeScoreBase = 80;
 		_threatScoreBase = 20;
-		_blockedFourBase = 400;
+		_blockedFourBase = 0;
 		_lengthFactor = 35;
 		_checkerboardValue = 35;
 		_takeBlocked4ScoreBase = 0;
@@ -59,6 +63,8 @@ public:
 		_sobSqrCapFactor = 0.0;
 		_sobCheckFactor = 0.0;
 		_sobSqrCheckFactor = 0.0;
+		_triaValue = 0.0;
+		_potentialValue = 0.0;
 	}
 
 	void setPartPAI2()
@@ -68,18 +74,87 @@ public:
         _captureScoreBase = 600; // Doubled because it is per pair
         _takeScoreBase = 80;
         _threatScoreBase = 20;
+		//exit(0);
+
+		// With triaValue & potentialValue
+		//_openingMove = 12; // 26/30
+		//_openingMove = 20; // 28/28
+		//_openingMove = 22; // 28/28
+		//_openingMove = 25; // 28/28
+		//_openingMove = 28; // 28/28
+		//_openingMove = 40; // 29/27
+		//_openingMove = 50; // 30/26
+		//_openingMove = 60; // 30/26
+		// with just checkerboard value
+		//_openingMove = 14; // 32/24
+		//_openingMove = 17; // 33/23
+		//_openingMove = 18; // 33/23
+		//_openingMove = 20; // 32/24
+		//_openingMove = 10; // 31/25
+		// with checkerboard & stripe
+		//_openingMove = 16; // 33/23
+		// _openingMove = 19; // 35/21
+		_openingMove = 0;
+		// _triaValue = 5; // 32/24 but weighted a little to low depth
+		// _triaValue = 7; // 34/22
+		// _triaValue = 8; // 34/22
+		// _triaValue = 9; // 34/22
+		// _triaValue = 10.0; // 33/23 but weighted a little to low depth
+		// _triaValue = 12; // 32/24
+		// _triaValue = 20.0; // 30/26 but weighted to low depth
+		// _triaValue = 50.0; // 30/26 but weighted to low depth
+		// Above were junk?
+		//_triaValue = 30.0; // 21/21
+		//_triaValue = 50.0; // 28/28
+		//_triaValue = 80.0; // 29/27
+		//_triaValue = 100.0; // 28/28
+		//_triaValue = 130.0; // 28/28
+		//_triaValue = 90.0; // 29/27 To be continued...
+		//_triaValue = 200.0; // 24/25
+
+		// _potentialValue = 2; // 34/22
+		// _potentialValue = 3; // 35/21 !
+		// _potentialValue = 4; // 34/22
+		// _potentialValue = 5; // 34/22
+		// junk above
+		//_potentialValue = 10; // 28/28
+		//_potentialValue = 15; // 28/28
+		//_potentialValue = 18; // 29/27
+		//_potentialValue = 19; // 29/27
+		//_potentialValue = 20; // 31/25, with _capturesScale change: 35/21
+		//_potentialValue = 21; // 30/26
+		// _potentialValue = 22; // 30/26
+		//_potentialValue = 25; // 29/27
+		//_potentialValue = 40; // 27/29
+		_checkerboardValue = 35; // default
+
+        // _capturesScale = {1, 2, 4, 8, 16, 32}; // by itself: 33/19
+        //_capturesScale = {1, 1, 1, 1, 2, 4}; // by itself: 33/19
 		//_sobCheckFactor = 0.001; 24/28
-		//_sobCapFactor = 0.005; 29/27
-		//_sobCapFactor = 0.003; 23/33
 		//_sobCapFactor = 0.001; 28/28
+		//_sobCapFactor = 0.003; // 23/33
+		//_sobCapFactor = 0.005; 29/27
 		//_sobCapFactor = 0.0005; 27/29
 		//_sobSqrCapFactor = 0.0001; 26/30
 		//_sobSqrCapFactor = 0.00003; 29/27
 		//_sobSqrCapFactor = 0.00001; 26/30
-        //_spreadValue = 30; // Better for Standard, worse for Tournament
-        //_stripeValue = 15; // Better for Standard, same for Tournament
+        // _spreadValue = -20; // 16/26
+        // _spreadValue = 10; // 15/23
+        // _spreadValue = 5; // 16/25
+        // _spreadValue = 2; // 20/26
+        // _stripeValue = 10; // 22/28
+        // _stripeValue = 5; // 22/27
+        // _stripeValue = 2; // 18/23
+        // _stripeValue = -15; // 23/22
+        // _stripeValue = -20; // 25/19
+        // _stripeValue = -23; // 32/24
+        // _stripeValue = -25; // 32/24
+        // _stripeValue = -27; // 31/25
+        // _stripeValue = -24; // 32/24
+        // _stripeValue = -30; // 22/26
+        // _stripeValue = -50; // 22/26
 		//_multiFactor = 0.3;
-        //_blockedFourBase = 200; // Halved as only one is blocked
+        _blockedFourBase = 200; // Halved as only one is blocked
         //_takeTakeScoreBase = 100;
         //_takeBlocked4ScoreBase = 100; // Guesses for take targeting
         //_takeFourScoreBase = 20;
@@ -97,7 +172,7 @@ public:
 	UtilityValue calcUtility(Colour turnColour, Colour searchColour, MoveNumber moveNumber) const;
 
 private:
-	UtilityValue utilityScore(Colour evalColour, Colour turnColour) const;
+	UtilityValue utilityScore(Colour evalColour, MoveNumber moveNumber) const;
 
 	bool zeroTurnWin(Colour evalColour, Colour turnColour) const;
 	bool oneTurnWin(Colour evalColour, Colour turnColour) const;
@@ -117,7 +192,7 @@ private:
 	int _takeBlocked4ScoreBase;
 	int _takeTakeScoreBase;
 	int _takeFourScoreBase;
-	std::array<int,6> _capturesScale;
+	std::array<float,6> _capturesScale;
 	// _lengthScale;
 	int _lengthFactor;
 	int _judgement;
@@ -129,6 +204,9 @@ private:
 	double _sobSqrCapFactor;
 	double _sobCheckFactor;
 	double _sobSqrCheckFactor;
+	double _triaValue;
+	double _potentialValue;
+	int _openingMove;
 };
 
 template <class PS>
@@ -176,7 +254,7 @@ UtilityValue UtilityCalc<PS>::calcUtility(Colour turnColour, Colour searchColour
 
 	for (int evalColour=P1; evalColour<=P2; evalColour++) // in (turn_colour, other_colour):
 	{
-		UtilityValue util = utilityScore(evalColour, turnColour);
+		UtilityValue util = utilityScore(evalColour, moveNumber);
 		utilScores[evalColour] = util;
 	}
 
@@ -198,7 +276,7 @@ UtilityValue UtilityCalc<PS>::calcUtility(Colour turnColour, Colour searchColour
 }
 
 template <class PS>
-UtilityValue UtilityCalc<PS>::utilityScore(Colour evalColour, Colour /*turnColour*/) const
+UtilityValue UtilityCalc<PS>::utilityScore(Colour evalColour, MoveNumber moveNumber) const
 {
 	Colour evalCaptured = _posStats.getCaptured(evalColour);
 	Colour otherColour = otherPlayer(evalColour);
@@ -221,6 +299,7 @@ UtilityValue UtilityCalc<PS>::utilityScore(Colour evalColour, Colour /*turnColou
 		}
 		score += contrib;
 	}
+
     bool takeTargeting = _posStats._takeTargeting;
     if (takeTargeting) {
         score += evalPatterns[TakeTake] * _takeTakeScoreBase;
@@ -253,28 +332,35 @@ UtilityValue UtilityCalc<PS>::utilityScore(Colour evalColour, Colour /*turnColou
 	bc = evalPatterns[Blocked4] * _blockedFourBase;
 	score += bc;
 
-	// Give an advantage to having more pieces on one colour of squares
-	// of a checkerboard
-	float sobTotCheckFactor = sob*sob*_sobSqrCheckFactor + sob*_sobCheckFactor + 1;
-	bc = _posStats.getCheckerboardContrib(evalColour) * _checkerboardValue * sobTotCheckFactor;
-	score += bc;
+	if (_openingMove and (moveNumber < _openingMove))
+	{
+		score += _posStats.getTriaCount(evalColour) * _triaValue;
+		score += _posStats.getPotentialCount(evalColour) * _potentialValue;
 
-	// Give an advantage to having more pieces on one colour of squares
-	// of a horizontally or vertically striped board
-	bc = _posStats.getStripeContrib(evalColour) * _stripeValue;
-	score += bc;
+		// cout << "score after: " << score << endl;
+		// Give an advantage to having more pieces on one colour of squares
+		// of a checkerboard
+		float sobTotCheckFactor = sob*sob*_sobSqrCheckFactor + sob*_sobCheckFactor + 1;
+		bc = _posStats.getCheckerboardContrib(evalColour) * _checkerboardValue * sobTotCheckFactor;
+		score += bc;
+
+		// Give an advantage to having more pieces on one colour of squares
+		// of a horizontally or vertically striped board
+		bc = _posStats.getStripeContrib(evalColour) * _stripeValue;
+		score += bc;
 
 #if 1
-	// Give an advantage to having pieces closer together
-	bc = _posStats.getSpreadContrib(evalColour) * _spreadValue;
-	score += bc;
+		// Give an advantage to having pieces closer together
+		bc = _posStats.getSpreadContrib(evalColour) * _spreadValue;
+		score += bc;
 #if 0
-	if (_spreadValue>0) {
-		cout << "Spread val: " << _spreadValue << endl;
-		cout << "bc: " << bc << endl;
+		if (_spreadValue>0) {
+			cout << "Spread val: " << _spreadValue << endl;
+			cout << "bc: " << bc << endl;
+		}
+#endif
+#endif
 	}
-#endif
-#endif
 
 	return score;
 }

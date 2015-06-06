@@ -16,10 +16,40 @@ void runAI()
 	PenteGame defender;
 	// Match match(contender, defender);
 	Match match(defender, contender);
+	cout << "Defender: " << &defender << endl;
+	cout << "Contender: " << &contender << endl;
+	cout << "Defender cS: " << defender._utilCalc._capturesScale[5] << endl;
+	cout << "Contender cS: " << contender._utilCalc._capturesScale[5] << endl;
+	cout << "Contender tV: " << contender._utilCalc._triaValue << endl;
 	defender.setPAI1();
+	//defender._utilCalc._capturesScale = {1, 2, 4, 8, 16, 32};
 	//contender.setPAI1();
 	//defender.setPartPAI2();
 	contender.setPartPAI2();
+	cout << "Defender cS: " << defender._utilCalc._capturesScale[5] << endl;
+	cout << "Contender cS: " << contender._utilCalc._capturesScale[5] << endl;
+	cout << "Contender tV: " << contender._utilCalc._triaValue << endl;
+	// exit(0);
+
+	//contender._utilCalc._triaValue = 10000.0;
+	//contender._utilCalc._potentialValue = 0.0;
+	//contender._utilCalc._capturesScale = {1, 1, 2, 4, 8, 16}; // 31/25
+	//contender._utilCalc._capturesScale = {1, 2, 4, 8, 16, 32}; // 33/23
+	//contender._utilCalc._capturesScale = {1, 3, 9, 27, 81, 243}; // 21/24
+    //contender._utilCalc._captureScoreBase = 650;
+#if 0
+	float prev=1.0;
+	for (int i=0; i<6; i++) {
+		cout << "capturesScale " << i << ": " << prev << endl;
+		contender._utilCalc._capturesScale[i] = prev;
+		// prev *= 1.7; // 30/26
+		// prev *= 1.8; // 33/23
+		prev *= 1.9; // 33/23
+		// prev *= 2.0; // 33/23
+		// prev *= 2.1; // 28/28
+	}
+#endif
+
 	//contender._utilCalc._multiFactor = .1;
 	//contender._utilCalc._multiFactor = 2.2;
 	

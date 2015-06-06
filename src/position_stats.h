@@ -28,6 +28,8 @@ public:
 		for (int c=0; c<3; c++)
 		{
 			_captured[c] = 0;
+			_trias[c] = 0;
+			_potentials[c] = 0;
 
 #if 0
 			// For calculating spread
@@ -200,6 +202,9 @@ public:
 
 	float getStonesOnBoard(Colour c) const { return _totalStones[c]; }
 
+	PattCount getTriaCount(Colour c) const { return _trias[c]; }
+	PattCount getPotentialCount(Colour c) const { return _potentials[c]; }
+
 	void setCanWinByCaptures(bool c) { _canWinByCaptures = c; }
 	bool getCanWinByCaptures() const { return _canWinByCaptures; }
 
@@ -228,6 +233,9 @@ private:
 	// Strategic features
 	UtilityValue _checkerboardStats[3][2];
 	UtilityValue _stripeStats[3][2][2];
+
+	PattCount _trias[3];
+	PattCount _potentials[3];
 
 #if 1
 	// for Spread

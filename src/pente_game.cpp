@@ -32,7 +32,7 @@ PenteGame::PenteGame()
 	setRules('s');
 	_isInTT = false;
 	//setPAI1();
-	setPartPAI2();
+	//setPartPAI2();
 }
 
 PenteGame::~PenteGame() {
@@ -48,7 +48,7 @@ void PenteGame::setPAI1()
 	_utilCalc.setPAI1();
 	setVCTDepth(0);
 	_posStats._takeTargeting = false;
-}	
+}
 
 void PenteGame::setPartPAI2()
 {

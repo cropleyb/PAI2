@@ -482,15 +482,28 @@ Turn off PAI2 features and find example(s) where PAI2 comes up with a different 
 PAI1 runai, add PAI2 features, see what breaks it.
 Does PAI2 equal PAI1 with PAI1 settings?
 
-PAI2 run AI seems to be giving opposite results?!
+PAI2 run AI seems to be giving opposite results?! Yes it was flipped :(
+
+Openings book dominating
+- Many features are opening oriented:
+  - checkerboard
+  - stripe effect
+  - tria value
+  - potential value
+  # Turn them down/off as turn number increases.
 
 Ideas from Pente Strategy book
 ------------------------------
 # piece on board weighting for caps/takes/threats or checkerboard contrib.
-subtypes in utility function - single gap 2s and Trias (continuous 3s) should be worth extra.
+# subtypes in utility function - single gap 2s and Trias (continuous 3s) should be worth extra.
 Triangles
-3d patterns in opening
+3d patterns in opening?
 opening strategy
+implement PAI1 openings book in PAI2?
+interface to pente.org DB?
+Test PAI2 versions via PAI1 ([no] openings book)
+Improve RunAI unit tests.
+Veryify RunAI vs. run_ai.py
 
 Subtypes
 --------

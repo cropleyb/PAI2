@@ -49,7 +49,8 @@ public:
 	LinePattern(const LinePattern &orig, Breadth candOffset) :
 		_colour(orig._colour),
 		_patternType(orig._patternType),
-		_numCands(orig._numCands)
+		_numCands(orig._numCands),
+		_isTriaOrPot(orig._isTriaOrPot)
 	{
 		for (int i=0; i<5; i++)
 		{

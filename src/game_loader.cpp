@@ -74,6 +74,7 @@ Loc doTheSearch(const string &gameStr, PenteGame *game)
 		game = new PenteGame();
 		allocated = true;
 	}
+	game->setPartPAI2();
 	loadGameStr(*game, gameStr);
 
 	AlphaBeta ab(*game);
