@@ -483,6 +483,8 @@ PAI1 runai, add PAI2 features, see what breaks it.
 Does PAI2 equal PAI1 with PAI1 settings?
 
 PAI2 run AI seems to be giving opposite results?! Yes it was flipped :(
+- How can this be tested reliably? Named the parameters for a start.
+- Yeah it's working now.
 
 Openings book dominating
 - Many features are opening oriented:
