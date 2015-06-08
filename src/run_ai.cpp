@@ -14,7 +14,6 @@ void runAI()
 {
 	PenteGame contender;
 	PenteGame defender;
-	// Match match(contender, defender);
 	Match match(defender, contender);
 	cout << "Defender: " << &defender << endl;
 	cout << "Contender: " << &contender << endl;
