@@ -969,7 +969,6 @@ TEST_F(AISubsystemFixture, missTake4) {
 "23.(8, 10)\n"
 #endif
 
-
 #if 0
 // Works, but slow
 #if 0
