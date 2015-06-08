@@ -147,7 +147,7 @@ private:
 class Match
 {
 public:
-	Match(PenteGame &p1, PenteGame &p2) : _players {&p1, &p2}, _silent(false), _showReport(false) {}
+	Match(PenteGame &defender, PenteGame &contender) : _players {&defender, &contender}, _silent(false), _showReport(false) {}
 
 	void setDepthRange(Depth minDepth, Depth maxDepth) { _minDepth = minDepth; _maxDepth = maxDepth; }
 
