@@ -1,0 +1,84 @@
+PAI2 is an artificial intelligence for playing the abstract strategic board game of Pente. It is based on the project Pentai (written in Python), but is implemented in C++ for speed.
+
+As a second cut, the core AI functionality has been redesigned both for better design goals (separation of concerns etc.) and for more speed.
+
+classes
+-------
+PenteGame
+This is the main top level class that is used to do a search of the game tree.
+
+	AlphaBeta
+	The search algorithm for trimming a minimax search of the game tree.
+
+	MoveHistory
+
+	CapTable
+
+PositionStats
+Holds the various higher level info about the current position.
+
+	BoardReps
+	Represent the board as 4 arrays of integers, 1 for each direction.
+
+	BoardStrip
+	Represent a line of current occupancies as a single integer.
+
+	LinePattern
+	A mid level feature of a position that is to be recognized and tracked, e.g. a line of current length 3 that could grow into a 5.
+
+MoveSuggester
+	Suggests a number of potential good moves for evaluation.
+
+	CandidateCache
+	Saves the list of candidate moves at each level of the search.
+
+	PriorityLevel
+	Each potential move of a particular level of priority gets maintained here.
+
+UtilityCalc
+	Evaluates the current position and gives it a score, based on the information in the PositionStats instance.
+
+	TranspositionTable
+	If a position has been seen and evaluated already (at any level of the tree) then it will be stored in the TT for a short cut lookup.
+
+GameLoader
+	Processes the protocol and turns a string into a PenteGame instance for searching.
+
+RunAiSupport
+	For running different configurations of the AI against each other.
+
+
+Speed goal
+----------
+In game tree search, AI speed is equivalent to skill - other things being equal, the more depth levels, the stronger the AI. With somewhere in the range of 5 to 20 moves considered per depth level, a speed up of that magnitude should improve the playing strength by a depth level.
+C++ is typically around an order of magnitude faster than python, so that alone should gain us one depth level of skill.
+
+Another technique that has been used in PAI2 (but not Pentai) is completely incremental state maintenance:
+For instance, making a move (for either player) changes many parts of the state of the AI's enhanced understanding of the game. When that branch of the tree is finished being evaluated, the move will be undone, and all the state that was affected will be undone to how it was before the move was made and the branch evaluated.
+
+The alternative that was used in Pentai was to keep a copy of the state for each active node of the current tree. It's not really that big a win in space, as the number of active nodes is only O(d) * O(w) where d is the maximum search depth and w is the average search width.
+
+Protocol
+--------
+key:value pairs for config, followed by a list of moves:
+E.g. so far:
+
+depth:6
+boardsize:19
+rules:Tournament
+(9, 9)
+(8, 8)
+(9, 12)
+(10, 8)
+(9, 8)
+(9, 10)
+(9, 7)
+(11, 10)
+
+The supported keys so far are boardsize, depth and rules, in any order.
+depth: the number of moves that the AI looks ahead.
+boardsize: width and height of the square board. We could default this to 19 if you like.
+rules: "Standard", "Tournament" or "5-In-A-Row"
+  Standard: No restriction
+  Tournament: P1 must start in the centre & the second move by P1 cannot be too close to the centre.
+  5-In-A-Row: No win by captures, no move restrictions
